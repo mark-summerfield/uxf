@@ -1,4 +1,11 @@
-# TODO
+# TODO py
+# - create branch x
+# - change Lexer so that the Parser needs _no_ lookahead,
+#   e.g., add these fields to _Token class: comment ttype ktype vtype (all
+#   default to None)
+# - change Parser to elminate lookahead by using extra _Token data
+
+# TODO rs
 # - test_field <
 # - test_tclass <
 # - TClass

@@ -753,11 +753,18 @@ class TClass:
         self.comment = comment
         self._RecordClass = None
         if fields is not None:
+            seen = set()
             for field in fields:
                 if isinstance(field, str):
                     self.fields.append(Field(field))
                 else:
                     self.fields.append(field)
+                name = self.fields[-1].name
+                if name in seen:
+                    raise Error('#336:can\'t have duplicate table tclass '
+                                f'field names, got {name!r} twice')
+                else:
+                    seen.add(name)
 
 
     @property
@@ -799,6 +806,12 @@ class TClass:
             self.fields.append(name_or_field)
         else:
             self.fields.append(Field(name_or_field, vtype))
+        name = self.fields[-1].name
+        for field in self.fields[:-1]:
+            if field.name == name:
+                raise Error('#338:can\'t append duplicate table tclass '
+                            f'field names, got {name!r}')
+
 
 
     def set_vtype(self, index, vtype):
