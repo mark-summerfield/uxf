@@ -19,7 +19,7 @@ from xml.sax.saxutils import escape, unescape
 import editabletuple
 
 
-__version__ = '1.2.2' # uxf module version
+__version__ = '1.2.3' # uxf module version
 VERSION = 1.0 # UXF file format version
 
 UTF8 = 'utf-8'
@@ -322,7 +322,7 @@ class _Lexer:
             if self.peek() == '<':
                 self.pos += 1 # skip the leading <
                 value = self.match_to('>', what='comment string')
-                self.add_token(_Kind.COMMENT, unescape(value))
+                self.add_token(_Kind.FILE_COMMENT, unescape(value))
             else:
                 self.error(160, 'invalid comment syntax: expected \'<\', '
                            f'got {self.peek()}')
@@ -416,7 +416,7 @@ class _Lexer:
             self.pos += 1 # skip the leading <
             value = self.match_to('>', what='comment string')
             if value:
-                self.add_token(_Kind.COMMENT, unescape(value))
+                self.tokens[-1].comment = unescape(value)
         else:
             self.error(190, 'comments may only occur at the start of '
                        'Lists, Maps, Tables, and TClasses')
@@ -600,6 +600,10 @@ class _Token:
         self.kind = kind
         self.value = value # literal, i.e., correctly typed item
         self.lino = lino
+        self.comment = None
+        self.ttype = None
+        self.ktype = None
+        self.vtype = None
 
 
     def __str__(self):
@@ -628,7 +632,7 @@ class _Kind(enum.Enum):
     LIST_END = enum.auto()
     MAP_BEGIN = enum.auto()
     MAP_END = enum.auto()
-    COMMENT = enum.auto()
+    FILE_COMMENT = enum.auto()
     NULL = enum.auto()
     BOOL = enum.auto()
     INT = enum.auto()
@@ -730,7 +734,7 @@ def _check_name(name):
                         f'or underscores, got {name}')
 
 
-class TClass:
+class TClass: # TODO make immutable
 
     def __init__(self, ttype, fields=None, *, comment=None):
         '''The type of a Table
@@ -748,6 +752,7 @@ class TClass:
 
             fieldless_class = TClass('SomeEnumValue')
         '''
+        # TODO Add to above after .comment: TClasses are immutable.
         self.ttype = ttype
         self.fields = []
         self.comment = comment
@@ -857,13 +862,17 @@ class TClass:
 
 class Field:
 
+    __slots__ = ('_name', 'vtype') # TODO _vtype
+
     def __init__(self, name, vtype=None):
         '''The type of one field in a Table
         .name holds the field's name (equivalent to a vtype or ktype name);
         may not be the same as a built-in type name or constant
         .vtype holds a UXF type name ('int', 'real', …)'''
-        self.name = name
-        self.vtype = vtype
+        # TODO Add to above: Fields are immutable.
+        _check_name(name)
+        self._name = name
+        self.vtype = vtype # TODO self._vtype = vtype
 
 
     @property
@@ -871,10 +880,7 @@ class Field:
         return self._name
 
 
-    @name.setter
-    def name(self, name):
-        _check_name(name)
-        self._name = name
+    # TODO @property\ndef vtype(self):\n\treturn self._vtype
 
 
     def __eq__(self, other): # for testing
@@ -1199,8 +1205,6 @@ class _Parser:
                     data = self.stack[0]
             elif self._is_collection_end(kind):
                 self._on_collection_end(token)
-            elif kind is _Kind.COMMENT:
-                self._handle_comment(i, token)
             elif kind is _Kind.IDENTIFIER:
                 self._handle_identifier(i, token)
             elif kind is _Kind.TYPE:
@@ -1270,32 +1274,17 @@ class _Parser:
             self.error(code, f'{what}s: {diff}')
 
 
-    def _handle_comment(self, i, token):
-        parent = self.stack[-1]
-        prev_token = self.tokens[i - 1]
-        if not self._is_collection_start(prev_token.kind):
-            self.error(440, 'comments may only be put at the beginning '
-                       f'of a map, list, or table, not after {prev_token}')
-        parent.comment = token.value
-
-
     def _handle_identifier(self, i, token):
         if not self.stack:
             self.error(441, 'invalid UXF data')
             return # in case user on_error doesn't raise
         parent = self.stack[-1]
         if (self.tokens[i - 1].kind is _Kind.TYPE and
-            (self.tokens[i - 2].kind is _Kind.MAP_BEGIN or
-                (self.tokens[i - 2].kind is _Kind.COMMENT and
-                 self.tokens[i - 3].kind is _Kind.MAP_BEGIN))):
+                self.tokens[i - 2].kind is _Kind.MAP_BEGIN):
             self._handle_type_identifier(parent, token)
-        elif self.tokens[i - 1].kind is _Kind.LIST_BEGIN or (
-                self.tokens[i - 1].kind is _Kind.COMMENT and
-                self.tokens[i - 2].kind is _Kind.LIST_BEGIN):
+        elif self.tokens[i - 1].kind is _Kind.LIST_BEGIN:
             self._handle_vtype_identifier(parent, token)
-        elif self.tokens[i - 1].kind is _Kind.TABLE_BEGIN or (
-                self.tokens[i - 1].kind is _Kind.COMMENT and
-                self.tokens[i - 2].kind is _Kind.TABLE_BEGIN):
+        elif self.tokens[i - 1].kind is _Kind.TABLE_BEGIN:
             self._handle_ttype_identifier(parent, token)
         else:
             self._handle_incorrect_identifier(token)
@@ -1462,7 +1451,7 @@ class _Parser:
         if self.tokens:
             token = self.tokens[0]
             self.lino = token.lino
-            if token.kind is _Kind.COMMENT:
+            if token.kind is _Kind.FILE_COMMENT:
                 self.tokens = self.tokens[1:]
                 return token.value
         return None
@@ -1487,8 +1476,6 @@ class _Parser:
                 tclass, ok = self._handle_tclass_begin(tclass)
                 if not ok:
                     return # in case on_error doesn't raise
-            elif token.kind is _Kind.COMMENT:
-                tclass.comment = token.value
             elif token.kind is _Kind.IDENTIFIER:
                 if not self._handle_tclass_ttype(tclass, token.value):
                     return # in case user on_error doesn't raise
