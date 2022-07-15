@@ -4,6 +4,7 @@
 #   e.g., add these fields to _Token class: comment ttype ktype vtype (all
 #   default to None)
 # - change Parser to elminate lookahead by using extra _Token data
+# - try to make Field & TClass immutable
 
 # TODO rs
 # - TClass tests
