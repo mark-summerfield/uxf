@@ -1,5 +1,6 @@
 # TODO py
-# - create branch x
+# - change tclass parsing so that a complete TClass is created with all
+#   fields present (if not fieldless)
 # - change Lexer so that the Parser needs _no_ lookahead,
 #   e.g., add these fields to _Token class: comment ttype ktype vtype (all
 #   default to None)

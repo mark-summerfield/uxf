@@ -86,7 +86,7 @@ uxflint.py:l60.uxf:5:#486:converted str '13' to int 13
 uxflint.py:t13.uxf:43:#422:unused ttypes: 'IPv4', 'IntPair', 'Playlists', 'RGB', 'RGBA'
 uxflint.py:t14.uxf:39:#422:unused ttypes: 'Categories', 'IPv4', 'IntPair', 'Playlists', 'RGB', 'RGBA'
 uxflint.py:t28.uxf:39:#422:unused ttypes: 'IPv4', 'IntPair', 'Playlists', 'RGB', 'RGBA'
-uxflint.py:t33.uxf:10:#506:expected map, got Table (no fields) (0 records)
+uxflint.py:t33.uxf:10:#506:expected map, got Table (no fields) comment='Window dimensions and scales' (0 records)
 uxflint.py:t33.uxf:10:#456:expected table value of type map, got value of type Geometry
 uxflint.py:t54.uxf:4:#422:unused ttype: 'Pair'
 uxflint.py:t55.uxf:4:#422:unused ttype: 'Pair'

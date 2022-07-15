@@ -21,6 +21,7 @@ ERROR_FILES = {'t13.uxf', 't14.uxf', 't28.uxf', 't33.uxf', 't54.uxf',
                't55.uxf', 'l56.uxf', 'l57.uxf', 'l58.uxf', 'l59.uxf',
                'l60.uxf', 't63.uxf', 't63r.uxf'}
 ALL_LINTS = 'uxflint.txt'
+MAX_DIFF_LEN = 100
 
 
 def main():
@@ -96,7 +97,7 @@ def check_bad(name, regression):
         return 0
     if expected != actual:
         if not regression:
-            if len(actual) < 100 and len(expected) < 100:
+            if len(actual) < MAX_DIFF_LEN and len(expected) < MAX_DIFF_LEN:
                 print(f'{cmd} • (bad) FAIL\nEXPECTED {expected!r}\n'
                       f'ACTUAL   {actual!r}')
             else:

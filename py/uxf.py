@@ -283,7 +283,7 @@ class _Lexer:
     def tokenize(self, uxt):
         self.text = uxt
         self.scan_header()
-        self.maybe_read_comment()
+        self.maybe_read_file_comment()
         while not self.at_end():
             self.scan_next()
         self.add_token(_Kind.EOF)
@@ -315,7 +315,7 @@ class _Lexer:
             self.custom = parts[2]
 
 
-    def maybe_read_comment(self):
+    def maybe_read_file_comment(self):
         self.skip_ws()
         if not self.at_end() and self.text[self.pos] == '#':
             self.pos += 1 # skip the #
@@ -1400,11 +1400,11 @@ class _Parser:
     def _on_collection_start(self, token):
         kind = token.kind
         if kind is _Kind.MAP_BEGIN:
-            value = Map()
+            value = Map(comment=token.comment)
         elif kind is _Kind.LIST_BEGIN:
-            value = List()
+            value = List(comment=token.comment)
         elif kind is _Kind.TABLE_BEGIN:
-            value = Table()
+            value = Table(comment=token.comment)
         else:
             self.error(504, f'expected to create map, list, or table, '
                        f'got {token}')
@@ -1473,7 +1473,8 @@ class _Parser:
         for index, token in enumerate(self.tokens):
             self.lino = token.lino
             if token.kind is _Kind.TCLASS_BEGIN:
-                tclass, ok = self._handle_tclass_begin(tclass)
+                tclass, ok = self._handle_tclass_begin(tclass,
+                                                       token.comment)
                 if not ok:
                     return # in case on_error doesn't raise
             elif token.kind is _Kind.IDENTIFIER:
@@ -1491,7 +1492,7 @@ class _Parser:
         self.tokens = self.tokens[offset:]
 
 
-    def _handle_tclass_begin(self, tclass):
+    def _handle_tclass_begin(self, tclass, comment):
         if tclass is not None:
             if tclass.ttype is None:
                 self.error(518, 'TClass without ttype', fail=True)
@@ -1499,7 +1500,7 @@ class _Parser:
             _add_to_tclasses(self.tclasses, tclass, lino=self.lino,
                              code=520, on_error=self.on_error)
             self.lino_for_tclass[tclass.ttype] = self.lino
-        return TClass(None), True
+        return TClass(None, comment=comment), True
 
 
     def _handle_tclass_ttype(self, tclass, value):
