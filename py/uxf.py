@@ -587,6 +587,12 @@ class _Lexer:
 
 
     def add_token(self, kind, value=None):
+        # if self.tokens and self.tokens[-1] in
+        # TODO if prev token is LIST_BEGIN, or MAP_BEGIN
+        # and kind is _Kind.TYPE then subsume;
+        # elif prev token is TABLE_BEGIN and kind is _Kind.IDENTIFIER then
+        # subsume
+        # else as now
         self.tokens.append(_Token(kind, value, lino=self.lino))
 
 
@@ -1538,11 +1544,20 @@ class _Parser:
     def _on_collection_start(self, token):
         kind = token.kind
         if kind is _Kind.MAP_BEGIN:
-            value = Map(comment=token.comment)
+            value = Map(ktype=token.ktype, vtype=token.vtype,
+                        comment=token.comment)
         elif kind is _Kind.LIST_BEGIN:
-            value = List(comment=token.comment)
+            value = List(vtype=token.vtype, comment=token.comment)
         elif kind is _Kind.TABLE_BEGIN:
-            value = Table(comment=token.comment)
+            if token.ttype is not None:
+                tclass = self.tclasses.get(token.ttype)
+                if tclass is None:
+                    self.error(502, 'can\'t create a table with an '
+                               f'undefined tclass {token.tclass}')
+                value = Table(tclass, comment=token.comment)
+            else: # TODO delete value = line & uncomment error
+                value = Table(comment=token.comment)
+                # self.error(503, 'can\'t create a table without a tclass')
         else:
             self.error(504, f'expected to create map, list, or table, '
                        f'got {token}')
