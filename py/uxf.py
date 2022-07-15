@@ -629,14 +629,15 @@ class Error(Exception):
 
 class _Token:
 
-    def __init__(self, kind, value=None, lino=0):
+    def __init__(self, kind, value=None, *, lino=0, comment=None,
+                 ttype=None, ktype=None, vtype=None):
         self.kind = kind
         self.value = value # literal, i.e., correctly typed item
         self.lino = lino
-        self.comment = None
-        self.ttype = None
-        self.ktype = None
-        self.vtype = None
+        self.comment = comment
+        self.ttype = ttype
+        self.ktype = ktype
+        self.vtype = vtype
 
 
     def __str__(self):
@@ -696,23 +697,21 @@ class List(collections.UserList):
     def __init__(self, seq=None, *, vtype=None, comment=None):
         '''Takes an optional sequence (list, tuple, iterable)
         .data holds the actual list
-        .comment holds an optional comment
-        .vtype holds a UXF type name ('int', 'real', …)'''
+        .comment holds an optional read-only comment
+        .vtype holds a read-only UXF type name ('int', 'real', …)'''
         super().__init__(seq)
-        self.vtype = vtype
-        self.comment = comment
-        # self._vtype = vtype # TODO once I have subsumed! & then Map & Table
-        # self._comment = comment
+        self._vtype = vtype
+        self._comment = comment
 
 
-#    @property
-#    def vtype(self):
-#        return self._vtype
-#
-#
-#    @property
-#    def comment(self):
-#        return self._comment
+    @property
+    def vtype(self):
+        return self._vtype
+
+
+    @property
+    def comment(self):
+        return self._comment
 
 
 class Map(collections.UserDict):
@@ -724,9 +723,9 @@ class Map(collections.UserDict):
         .ktype and .vtype hold a UXF type name ('int', 'str', …);
         .ktype may only be bytes, date, datetime, int, or str'''
         super().__init__(d)
-        self.ktype = ktype
-        self.vtype = vtype
-        self.comment = comment
+        self._ktype = ktype
+        self._vtype = vtype
+        self._comment = comment
         self._pending_key = _MISSING
 
 
@@ -735,12 +734,14 @@ class Map(collections.UserDict):
         return self._ktype
 
 
-    @ktype.setter
-    def ktype(self, ktype):
-        if ktype is not None and ktype not in _KEY_TYPES:
-            raise Error('#280: ktype may only be bytes, date, datetime, '
-                        f'int, or str, got {ktype}')
-        self._ktype = ktype
+    @property
+    def vtype(self):
+        return self._vtype
+
+
+    @property
+    def comment(self):
+        return self._comment
 
 
     def _append(self, value):
@@ -833,11 +834,12 @@ class TClass:
 
     def __init__(self, ttype, fields=None, *, comment=None):
         '''The type of a Table
-        .ttype holds the tclass's name (equivalent to a vtype or ktype
-        name); it may not be the same as a built-in type name or constant
-        .fields holds a sequence of Fields which may be supplied as field
-        names (so their vtype's are None) or Field objects
-        .comment holds an optional comment
+        .ttype holds the tclass's read-only name (equivalent to a vtype or
+        ktype name); it may not be the same as a built-in type name or
+        constant
+        .fields holds a read-only sequence of Fields which may be supplied
+        as field names (so their vtype's are None) or Field objects
+        .comment holds an optional read-only comment
 
         This is best to use when you want to pass a sequence of fields:
 
@@ -1017,9 +1019,10 @@ class Field:
 
     def __init__(self, name, vtype=None):
         '''The type of one field in a Table
-        .name holds the field's name (equivalent to a vtype or ktype name);
-        may not be the same as a built-in type name or constant
-        .vtype holds a UXF type name ('int', 'real', …)
+        .name holds the field's read-only name (equivalent to a vtype or
+        ktype name); may not be the same as a built-in type name or constant
+        .vtype holds a read-only UXF type name ('int', 'real', …) or None
+        (meaning any UXF type is acceptable)
         Fields are immutable.'''
         _check_name(name)
         if vtype is not None:
@@ -1080,7 +1083,7 @@ class FieldBuilder:
         return Field(self.name, self.vtype)
 
 
-def table(ttype, fields, *, comment=None):
+def table(ttype, fields=(), *, comment=None):
     '''Convenience function for creating empty tables with a new tclass.
     See also the Table constructor.'''
     return Table(TClass(ttype, fields), comment=comment)
@@ -1107,17 +1110,19 @@ class Table:
     Some tables are fieldless, for example to represent enumerations.
     '''
 
-    def __init__(self, tclass=None, *, records=None, comment=None):
+    def __init__(self, tclass, *, records=None, comment=None):
         '''
-        A Table may be created empty, e.g., Table(). However, if records is
-        not None, then the tclass (of type TClass) must be given.
+        A Table must be created with a TClass but may be created with no
+        records.
+
+        .tclass is the table's read-only TClass
 
         .records can be a flat list of values (which will be put into a list
         of lists with each sublist being len(fields) long), or a list of
         lists in which case each list is _assumed_ to be len(fields) i.e.,
         len(tclass.fields), long
 
-        comment is an optional str.
+        .comment is an optional read-only str.
 
         .RecordClass is a read-only property holding a dynamically created
         custom class that is used when accessing a single record via [] or
@@ -1125,10 +1130,9 @@ class Table:
 
         See also the table() convenience function.
         '''
-        self._RecordClass = None
-        self.tclass = tclass
+        self._tclass = tclass
         self.records = []
-        self.comment = comment
+        self._comment = comment
         if records:
             if tclass is None:
                 raise Error(
@@ -1143,9 +1147,20 @@ class Table:
 
 
     @property
+    def tclass(self):
+        return self._tclass
+
+
+    @property
+    def comment(self):
+        return self._comment
+
+
+    @property
     def RecordClass(self):
-        if self.tclass is None:
-            raise Error('#332:table has no tclass')
+        if self.tclass.RecordClass is None:
+            raise Error('#332:cannot have records in a table with a '
+                        'fieldless tclass')
         return self.tclass.RecordClass
 
 
@@ -1389,7 +1404,7 @@ class _Parser:
                 self.error(402,
                            f'expected a map, list, or table, got {token}')
             if collection_start:
-                self._on_collection_start(token)
+                self._on_collection_start(i, token)
                 if data is None:
                     data = self.stack[0]
             elif self._is_collection_end(kind):
@@ -1472,16 +1487,19 @@ class _Parser:
                 self.used_tclasses.add(tclass.ttype)
 
 
-    def _verify_ttype_identifier(self, tclass, ttype):
-        if tclass is None:
-            self.error(450, f'expected table ttype, got {ttype}',
-                       fail=True) # A table with no tclass is invalid
+    def _verify_ttype_identifier(self, i, tclass):
+        if tclass is None: # A table with no tclass is invalid
+            i += 1
+            value = None
+            if i < len(self.tokens):
+                value = self.tokens[i].value
+            value = f', got {value}' if value is not None else ''
+            self.error(450, f'expected table ttype{value}', fail=True)
         else:
             self.used_tclasses.add(tclass.ttype)
             if len(self.stack) > 1:
-                grand_parent = self.stack[-2]
-                # map or list:
-                vtype = getattr(grand_parent, 'vtype', None)
+                parent = self.stack[-1]
+                vtype = getattr(parent, 'vtype', None)
                 if (vtype is not None and vtype != 'table' and
                         vtype != tclass.ttype):
                     self.error(456, f'expected table value of type {vtype},'
@@ -1534,10 +1552,10 @@ class _Parser:
         append_to_parent(self.stack[-1], value)
 
 
-    def _on_collection_start(self, token):
+    def _on_collection_start(self, i, token):
         kind = token.kind
         if kind is _Kind.MAP_BEGIN:
-            if token.ktype not in _KEY_TYPES:
+            if token.ktype is not None and token.ktype not in _KEY_TYPES:
                 self.error(448, f'expected list ktype, got {token.ktype}')
             self._verify_type_identifier(token.vtype)
             value = Map(ktype=token.ktype, vtype=token.vtype,
@@ -1547,7 +1565,7 @@ class _Parser:
             value = List(vtype=token.vtype, comment=token.comment)
         elif kind is _Kind.TABLE_BEGIN:
             tclass = self.tclasses.get(token.ttype)
-            self._verify_ttype_identifier(tclass, token.ttype)
+            self._verify_ttype_identifier(i, tclass)
             value = Table(tclass, comment=token.comment)
         else:
             self.error(504, f'expected to create map, list, or table, '
@@ -1809,13 +1827,18 @@ class _Parser:
             self.error(590, 'invalid UXF data')
             return None, None # in case user on_error doesn't raise
         parent = self.stack[-1]
-        if isinstance(parent, Map):
-            vtype = parent.ktype if parent._next_is_key else parent.vtype
-        elif isinstance(parent, List):
+        if isinstance(parent, List):
             vtype = parent.vtype
-        elif isinstance(parent, List):
+        elif isinstance(parent, Map):
+            vtype = parent.ktype if parent._next_is_key else parent.vtype
+            if (vtype is not None and isinstance(value, Table) and vtype !=
+                    value.ttype):
+                self.error(454, f'expected table value of type {vtype},'
+                           f' got table of type {value.ttype}')
+                return None, None # handled
+        elif isinstance(parent, Table):
             vtype = parent._next_vtype
-        else: # must be a Table
+        else:
             return None, f'expected collection, got {value}'
         if value is not None and vtype is not None:
             if vtype in _BUILT_IN_NAMES:

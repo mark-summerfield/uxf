@@ -27,8 +27,8 @@ def main():
         regression = True
     total = ok = 0
 
-    t = uxf.Table()
-    t.tclass = uxf.TClass('point', ('x', 'y'))
+    tclass = uxf.TClass('point', ('x', 'y'))
+    t = uxf.Table(tclass)
     # append
     t.append((1, -6))
     t.append((3, 21))

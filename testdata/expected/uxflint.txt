@@ -74,7 +74,7 @@ uxflint.py:l58.uxf:34:#500:expected int, got date 1990-01-11
 uxflint.py:l58.uxf:35:#500:expected int, got datetime 1995-03-15 22:30:00
 uxflint.py:l58.uxf:35:#500:expected int, got datetime 1998-10-17 20:18:45
 uxflint.py:l58.uxf:36:#500:expected int, got bytes b'UXF 1.0'
-uxflint.py:l58.uxf:36:#506:expected int, got Table (no fields) (0 records)
+uxflint.py:l58.uxf:36:#506:expected int, got Table ttype='p' fields=[Field('a', 'int'), Field('b', 'int')] (0 records)
 uxflint.py:l58.uxf:36:#488:expected int, got str a
 uxflint.py:l58.uxf:36:#488:expected int, got str b
 uxflint.py:l58.uxf:39:#422:unused ttype: 'by'
@@ -86,8 +86,7 @@ uxflint.py:l60.uxf:5:#486:converted str '13' to int 13
 uxflint.py:t13.uxf:43:#422:unused ttypes: 'IPv4', 'IntPair', 'Playlists', 'RGB', 'RGBA'
 uxflint.py:t14.uxf:39:#422:unused ttypes: 'Categories', 'IPv4', 'IntPair', 'Playlists', 'RGB', 'RGBA'
 uxflint.py:t28.uxf:39:#422:unused ttypes: 'IPv4', 'IntPair', 'Playlists', 'RGB', 'RGBA'
-uxflint.py:t33.uxf:10:#506:expected map, got Table (no fields) comment='Window dimensions and scales' (0 records)
-uxflint.py:t33.uxf:10:#456:expected table value of type map, got value of type Geometry
+uxflint.py:t33.uxf:10:#454:expected table value of type map, got table of type Geometry
 uxflint.py:t54.uxf:4:#422:unused ttype: 'Pair'
 uxflint.py:t55.uxf:4:#422:unused ttype: 'Pair'
 uxflint.py:t63.uxf:14:#422:unused ttype: 'dob'

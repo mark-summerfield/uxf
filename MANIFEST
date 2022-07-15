@@ -1,8 +1,8 @@
 # TODO py
-# - fix test_lints & test_errors bugs
-# - try to make List.vtype Table.tclass Map.{ktype, vtype} all r/o properties
 # - go through py/uxf.py & make sure as many error codes as possible are
 #   tested in py/t/test_errors.py
+# - update docs
+# - pypi
 
 # TODO rs
 # - TClass tests
@@ -40,7 +40,7 @@ rs/Cargo.toml
 rs/README.md
 # TODO port tlm to use rust uxf
 
-py/uxf.py # TODO add_token() _on_collection_start()
+py/uxf.py
 py/uxfconvert.py
 py/uxflint.py
 py/uxfcompare.py

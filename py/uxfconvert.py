@@ -681,9 +681,8 @@ class _UxfSaxHandler(xml.sax.handler.ContentHandler):
                                  comment=d.get('comment'))
             self.start_container(container)
         elif name == 'table':
-            container = uxf.Table(uxf.TClass(d['name']),
-                                  comment=d.get('comment'))
-            container.tclass = self.uxo.tclasses[d['name']]
+            tclass = self.uxo.tclasses[d['name']]
+            container = uxf.Table(tclass, comment=d.get('comment'))
             self.start_container(container)
         elif name in {'key', 'value'}:
             pass # container.append() doesn't need this distinction

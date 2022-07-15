@@ -1,2 +1,1 @@
-uxf.py:t33.uxf:10:#506:expected map, got Table (no fields) comment='Window dimensions and scales' (0 records)
-uxf.py:t33.uxf:10:#456:expected table value of type map, got value of type Geometry
+uxf.py:t33.uxf:10:#454:expected table value of type map, got table of type Geometry

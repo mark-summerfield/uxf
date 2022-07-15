@@ -282,10 +282,10 @@ uxf.py:t63.uxf:14:#422:unused ttype: 'dob'
 uxf.py:t63.uxf:14:#422:unused ttype: 'dob'
 uxf.py:t63r.uxf:29:#422:unused ttype: 'dob'
 uxf.py:i64.uxi:1:#176:a UXF file cannot import itself
-uxf.py:i66.uxi:4:#450:expected table ttype, got 4:IDENTIFIER='img'
+uxf.py:i66.uxi:4:#450:expected table ttype
 uxf.py:i65.uxi:1:#580:cannot do circular imports \
 '/home/mark/app/uxf/testdata/i66.uxi'
-uxf.py:i65.uxi:4:#450:expected table ttype, got 4:IDENTIFIER='img'
+uxf.py:i65.uxi:4:#450:expected table ttype
 uxf.py:i66.uxi:1:#580:cannot do circular imports \
 '/home/mark/app/uxf/testdata/i65.uxi'
 uxf.py:i67.uxi:11:#422:unused ttype: 'dob'
