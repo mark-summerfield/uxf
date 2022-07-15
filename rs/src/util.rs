@@ -19,23 +19,23 @@ pub(crate) fn check_name(name: &str) -> Result<()> {
 
 pub(crate) fn check_type_name(name: &str) -> Result<()> {
     if name.is_empty() {
-        bail!("#600:type names must be nonempty");
+        bail!("#298:names must be nonempty");
     }
     let first = name.chars().next().unwrap(); // safe because nonempty
     if !(first == '_' || first.is_alphabetic()) {
         bail!(
-            "#602:type names must start with a letter or underscore, \
+            "#300:type names must start with a letter or underscore, \
               got {}",
             name
         );
     }
     if name == BOOL_TRUE || name == BOOL_FALSE {
-        bail!("#604:type names may not be yes or no got {}", name);
+        bail!("#302:names may not be yes or no got {}", name);
     }
     for (i, c) in name.chars().enumerate() {
         if i == MAX_IDENTIFIER_LEN {
             bail!(
-                "#606:type names may be at most {} characters long, \
+                "#306:type names may be at most {} characters long, \
                   got {} ({} characters)",
                 MAX_IDENTIFIER_LEN,
                 name,
@@ -44,7 +44,7 @@ pub(crate) fn check_type_name(name: &str) -> Result<()> {
         }
         if !(c == '_' || c.is_alphanumeric()) {
             bail!(
-                "#608:type names may only contain letters, digits, or \
+                "#310:names may only contain letters, digits, or \
                   underscores, got {}",
                 name
             );

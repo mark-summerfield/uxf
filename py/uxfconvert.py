@@ -668,7 +668,8 @@ class _UxfSaxHandler(xml.sax.handler.ContentHandler):
         elif name == 'import':
             self.imports_list.append(d['filename'])
         elif name == 'ttype':
-            self.tclass = uxf.TClass(d['name'], comment=d.get('comment'))
+            self.tclass = uxf.TClassBuilder(d['name'],
+                                            comment=d.get('comment'))
         elif name == 'field':
             self.tclass.append(d['name'], d.get('vtype'))
         elif name == 'map':
@@ -716,7 +717,7 @@ class _UxfSaxHandler(xml.sax.handler.ContentHandler):
             if self.imports_list:
                 self.uxo.imports = _get_imports(self.imports_list)
         elif name == 'ttype':
-            self.uxo.tclasses[self.tclass.ttype] = self.tclass
+            self.uxo.tclasses[self.tclass.ttype] = self.tclass.build()
             self.tclass = None
         elif name in {'map', 'list', 'table'}:
             self.stack.pop()

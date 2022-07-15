@@ -233,6 +233,15 @@ def main():
     try:
         total += 1
         e = 298
+        tclass = uxf.TClassBuilder('')
+        tclass = tclass.build()
+        fail(f'test_errors • #{e} FAIL', regression)
+    except uxf.Error as err:
+        ok += got_error(e, err, regression)
+
+    try:
+        total += 1
+        e = 298
         uxf.Table(uxf.TClass(''), records=(1, 2))
         fail(f'test_errors • #{e} FAIL', regression)
     except uxf.Error as err:
@@ -248,6 +257,22 @@ def main():
 
     try:
         total += 1
+        e = 300
+        _ = uxf.Field('$1st')
+        fail(f'test_errors • #{e} FAIL', regression)
+    except uxf.Error as err:
+        ok += got_error(e, err, regression)
+
+    try:
+        total += 1
+        e = 302
+        _ = uxf.Field('yes')
+        fail(f'test_errors • #{e} FAIL', regression)
+    except uxf.Error as err:
+        ok += got_error(e, err, regression)
+
+    try:
+        total += 1
         e = 304
         _ = uxf.Field('int')
         fail(f'test_errors • #{e} FAIL', regression)
@@ -256,8 +281,16 @@ def main():
 
     try:
         total += 1
+        e = 306
+        _ = uxf.Field('x' * 80)
+        fail(f'test_errors • #{e} FAIL', regression)
+    except uxf.Error as err:
+        ok += got_error(e, err, regression)
+
+    try:
+        total += 1
         e = 310
-        _ = uxf.Field('$1st')
+        _ = uxf.Field('x-5')
         fail(f'test_errors • #{e} FAIL', regression)
     except uxf.Error as err:
         ok += got_error(e, err, regression)
@@ -350,8 +383,7 @@ def main():
     try:
         total += 1
         e = 334
-        t = uxf.table('t1', ('a', 'b'))
-        t.tclass.fields = []
+        t = uxf.table('t1', None)
         t._append(1)
         fail(f'test_errors • #{e} FAIL', regression)
     except uxf.Error as err:
@@ -368,19 +400,10 @@ def main():
     try:
         total += 1
         e = 338
-        tclass = uxf.TClass('T1', ('A', 'B', 'C'))
+        tclass = uxf.TClassBuilder('T1', ('A', 'B', 'C'))
         tclass.append('a')
         tclass.append('b')
         tclass.append('C')
-        fail(f'test_errors • #{e} FAIL', regression)
-    except uxf.Error as err:
-        ok += got_error(e, err, regression)
-
-    try:
-        total += 1
-        e = 350
-        t = uxf.table('a', ())
-        t.append(1)
         fail(f'test_errors • #{e} FAIL', regression)
     except uxf.Error as err:
         ok += got_error(e, err, regression)
@@ -696,6 +719,17 @@ def main():
         fail(f'test_errors • #{e} FAIL', regression)
     except uxf.Error as err:
         ok += got_error(e, err, regression)
+
+    try:
+        total += 1
+        t = uxf.table('enum', ())
+        t.append((1,))
+        fail('test_errors • TypeError(1) FAIL', regression)
+    except TypeError as err:
+        if str(err) == 'UXF_enum accepts up to 0 args; got 1':
+            ok += 1
+        else:
+            fail(f'test_errors • TypeError(2) FAIL: {err}', regression)
 
     if not regression:
         result = 'OK' if total == ok else 'FAIL'

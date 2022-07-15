@@ -30,9 +30,9 @@ _VALUE_TYPES = frozenset(_KEY_TYPES | {'bool', 'real'})
 _ANY_VALUE_TYPES = frozenset(_VALUE_TYPES | {'list', 'map', 'table'})
 _BOOL_FALSE = frozenset({'no'})
 _BOOL_TRUE = frozenset({'yes'})
-_CONSTANTS = frozenset(_BOOL_FALSE | _BOOL_TRUE)
-_BAREWORDS = frozenset(_ANY_VALUE_TYPES | _CONSTANTS)
-RESERVED_WORDS = frozenset(_ANY_VALUE_TYPES | {'null'} | _CONSTANTS)
+_BOOLS = frozenset(_BOOL_FALSE | _BOOL_TRUE)
+_BAREWORDS = frozenset(_ANY_VALUE_TYPES | _BOOLS)
+RESERVED_WORDS = frozenset(_ANY_VALUE_TYPES | {'null'} | _BOOLS)
 _MISSING = object()
 
 
@@ -720,27 +720,72 @@ class Map(collections.UserDict):
 
 
 def _check_name(name):
-    if not name:
-        raise Error('#298:fields and tables must have nonempty names')
-    if isasciidigit(name[0]):
-        raise Error('#300:names must start with a letter or '
-                    f'underscore, got {name}')
+    _check_type_name(name)
     if name in RESERVED_WORDS:
         raise Error('#304:names cannot be the same as built-in type '
                     'names or constants, got {name}')
+
+
+def _check_type_name(name):
+    if not name:
+        raise Error('#298:names must be nonempty')
+    if name[0] != '_' and not name[0].isalpha():
+        raise Error('#300:names must start with a letter or '
+                    f'underscore, got {name}')
+    if name in _BOOLS:
+        raise Error(f'#302:names may not be yes or no got {name}')
+    if len(name) > _MAX_IDENTIFIER_LEN:
+        raise Error(f'#306:names may at most {_MAX_IDENTIFIER_LEN} '
+                    f'characters long, got {name} ({len(name)} characters)')
     for c in name:
         if not (c == '_' or c.isalnum()):
             raise Error('#310:names may only contain letters, digits, '
                         f'or underscores, got {name}')
 
 
-class TClass: # TODO make immutable
+class _TClassBase:
+
+    def __init__(self, ttype, fields=None, *, comment=None):
+        self._ttype = ttype
+        self._fields = []
+        self._comment = comment
+        if fields is not None:
+            seen = set()
+            for field in fields:
+                if isinstance(field, str):
+                    self._fields.append(Field(field))
+                else:
+                    self._fields.append(field)
+                name = self._fields[-1].name
+                if name in seen:
+                    raise Error('#336:can\'t have duplicate table tclass '
+                                f'field names, got {name!r} twice')
+                else:
+                    seen.add(name)
+
+    @property
+    def ttype(self):
+        return self._ttype
+
+
+    @property
+    def fields(self):
+        return self._fields
+
+
+    @property
+    def comment(self):
+        return self._comment
+
+
+class TClass(_TClassBase):
 
     def __init__(self, ttype, fields=None, *, comment=None):
         '''The type of a Table
         .ttype holds the tclass's name (equivalent to a vtype or ktype
         name); it may not be the same as a built-in type name or constant
-        .fields holds a sequence of field names or of fields of type Field
+        .fields holds a sequence of Fields which may be supplied as field
+        names (so their vtype's are None) or Field objects
         .comment holds an optional comment
 
         This is best to use when you want to pass a sequence of fields:
@@ -751,76 +796,29 @@ class TClass: # TODO make immutable
         Or no fields at all:
 
             fieldless_class = TClass('SomeEnumValue')
-        '''
-        # TODO Add to above after .comment: TClasses are immutable.
-        self.ttype = ttype
-        self.fields = []
-        self.comment = comment
-        self._RecordClass = None
-        if fields is not None:
-            seen = set()
-            for field in fields:
-                if isinstance(field, str):
-                    self.fields.append(Field(field))
-                else:
-                    self.fields.append(field)
-                name = self.fields[-1].name
-                if name in seen:
-                    raise Error('#336:can\'t have duplicate table tclass '
-                                f'field names, got {name!r} twice')
-                else:
-                    seen.add(name)
 
+        TClasses are immutable.')
+        '''
+        super().__init__(ttype, fields, comment=comment)
+        self._RecordClass = None
+        _check_name(ttype)
+        if self.fields is not None:
+            for field in self.fields:
+                _check_name(field.name)
+                if field.vtype is not None:
+                    _check_type_name(field.vtype)
+            self._RecordClass = editabletuple.editabletuple(
+                f'UXF_{self.ttype}', # prefix avoids name clashes
+                *[field.name for field in self.fields])
 
     @property
     def RecordClass(self):
-        if self._RecordClass is None:
-            self._make_RecordClass()
         return self._RecordClass
-
-
-    def _make_RecordClass(self):
-        if not self.ttype:
-            raise Error('#340:can\'t use an unnamed table tclass')
-        if not self.fields:
-            raise Error("#350:can't create a table's tclass with no fields")
-        self._RecordClass = editabletuple.editabletuple(
-            f'UXF_{self.ttype}', # prefix avoids name clashes
-            *[field.name for field in self.fields])
-
-
-    @property
-    def ttype(self):
-        return self._ttype
-
-
-    @ttype.setter
-    def ttype(self, ttype):
-        if ttype is not None:
-            _check_name(ttype)
-        self._ttype = ttype
 
 
     @property
     def isfieldless(self):
         return not bool(self.fields)
-
-
-    def append(self, name_or_field, vtype=None):
-        if isinstance(name_or_field, Field):
-            self.fields.append(name_or_field)
-        else:
-            self.fields.append(Field(name_or_field, vtype))
-        name = self.fields[-1].name
-        for field in self.fields[:-1]:
-            if field.name == name:
-                raise Error('#338:can\'t append duplicate table tclass '
-                            f'field names, got {name!r}')
-
-
-
-    def set_vtype(self, index, vtype):
-        self.fields[index].vtype = vtype
 
 
     def __eq__(self, other):
@@ -858,6 +856,40 @@ class TClass: # TODO make immutable
             fields = ''
         return (f'{self.__class__.__name__}({self.ttype!r},{fields}'
                 f'comment={self.comment!r})')
+
+
+class TClassBuilder(_TClassBase):
+
+    @property
+    def ttype(self):
+        return self._ttype
+
+
+    @ttype.setter
+    def ttype(self, ttype):
+        if ttype is not None:
+            _check_name(ttype)
+        self._ttype = ttype
+
+
+    def set_vtype(self, index, vtype):
+        self.fields[index].vtype = vtype
+
+
+    def append(self, name_or_field, vtype=None):
+        if isinstance(name_or_field, Field):
+            self.fields.append(name_or_field)
+        else:
+            self.fields.append(Field(name_or_field, vtype))
+        name = self.fields[-1].name
+        for field in self.fields[:-1]:
+            if field.name == name:
+                raise Error('#338:can\'t append duplicate table tclass '
+                            f'field names, got {name!r}')
+
+
+    def build(self):
+        return TClass(self.ttype, self.fields, comment=self.comment)
 
 
 class Field:
@@ -1489,6 +1521,10 @@ class _Parser:
                 offset = index + 1
             else:
                 break # no TClasses at all
+        for ttype in list(self.tclasses.keys()):
+            tclass = self.tclasses[ttype]
+            if isinstance(tclass, TClassBuilder):
+                self.tclasses[ttype] = tclass.build()
         self.tokens = self.tokens[offset:]
 
 
@@ -1500,7 +1536,7 @@ class _Parser:
             _add_to_tclasses(self.tclasses, tclass, lino=self.lino,
                              code=520, on_error=self.on_error)
             self.lino_for_tclass[tclass.ttype] = self.lino
-        return TClass(None, comment=comment), True
+        return TClassBuilder(None, comment=comment), True
 
 
     def _handle_tclass_ttype(self, tclass, value):
@@ -1685,6 +1721,10 @@ def _add_to_tclasses(tclasses, tclass, *, lino, code, on_error):
     if first_tclass is None: # this is the first definition of this ttype
         tclasses[tclass.ttype] = tclass
         return True
+    if isinstance(first_tclass, TClassBuilder):
+        first_tclass = first_tclass.build()
+    if isinstance(tclass, TClassBuilder):
+        tclass = tclass.build()
     if first_tclass == tclass:
         if tclass.comment and tclass.comment != first_tclass.comment:
             first_tclass.comment = tclass.comment # last comment wins
