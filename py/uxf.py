@@ -778,7 +778,7 @@ class _TClassBase:
         return self._comment
 
 
-class TClass(_TClassBase):
+class TClass:
 
     def __init__(self, ttype, fields=None, *, comment=None):
         '''The type of a Table
@@ -799,17 +799,42 @@ class TClass(_TClassBase):
 
         TClasses are immutable.')
         '''
-        super().__init__(ttype, fields, comment=comment)
-        self._RecordClass = None
         _check_name(ttype)
-        if self.fields is not None:
-            for field in self.fields:
-                _check_name(field.name)
-                if field.vtype is not None:
-                    _check_type_name(field.vtype)
+        self._ttype = ttype
+        self._fields = []
+        self._comment = comment
+        self._RecordClass = None
+        if fields is not None:
+            seen = set()
+            for field in fields:
+                if isinstance(field, str):
+                    self._fields.append(Field(field))
+                else:
+                    assert isinstance(field, Field)
+                    self._fields.append(field)
+                name = self._fields[-1].name
+                if name in seen:
+                    raise Error('#336:can\'t have duplicate table tclass '
+                                f'field names, got {name!r} twice')
+                else:
+                    seen.add(name)
             self._RecordClass = editabletuple.editabletuple(
                 f'UXF_{self.ttype}', # prefix avoids name clashes
                 *[field.name for field in self.fields])
+
+    @property
+    def ttype(self):
+        return self._ttype
+
+
+    @property
+    def fields(self):
+        return self._fields
+
+
+    @property
+    def comment(self):
+        return self._comment
 
     @property
     def RecordClass(self):
@@ -858,7 +883,15 @@ class TClass(_TClassBase):
                 f'comment={self.comment!r})')
 
 
-class TClassBuilder(_TClassBase):
+class TClassBuilder:
+
+    def __init__(self, ttype, fields=None, *, comment=None):
+        self._ttype = ttype
+        self._fields = []
+        if fields is not None:
+            self.fields = fields
+        self._comment = comment
+
 
     @property
     def ttype(self):
@@ -872,6 +905,35 @@ class TClassBuilder(_TClassBase):
         self._ttype = ttype
 
 
+    @property
+    def fields(self):
+        return self._fields
+
+
+    @fields.setter
+    def fields(self, fields):
+        self._fields.clear()
+        for field in fields:
+            if isinstance(field, str):
+                self._fields.append(FieldBuilder(field))
+            elif isinstance(field, Field):
+                self._fields.append(FieldBuilder(field.name, field.vtype))
+            elif isinstance(field, FieldBuilder):
+                self._fields.append(field)
+            else:
+                assert False, 'expected str, Field, or FieldBuilder'
+
+
+    @property
+    def comment(self):
+        return self._comment
+
+
+    @comment.setter
+    def comment(self, comment):
+        self._comment = comment
+
+
     def set_vtype(self, index, vtype):
         self.fields[index].vtype = vtype
 
@@ -880,7 +942,7 @@ class TClassBuilder(_TClassBase):
         if isinstance(name_or_field, Field):
             self.fields.append(name_or_field)
         else:
-            self.fields.append(Field(name_or_field, vtype))
+            self.fields.append(FieldBuilder(name_or_field, vtype))
         name = self.fields[-1].name
         for field in self.fields[:-1]:
             if field.name == name:
@@ -889,22 +951,30 @@ class TClassBuilder(_TClassBase):
 
 
     def build(self):
-        return TClass(self.ttype, self.fields, comment=self.comment)
+        fields = []
+        for field in self.fields:
+            if isinstance(field, FieldBuilder):
+                fields.append(field.build())
+            else:
+                fields.append(field)
+        return TClass(self.ttype, fields, comment=self.comment)
 
 
 class Field:
 
-    __slots__ = ('_name', 'vtype') # TODO _vtype
+    __slots__ = ('_name', '_vtype')
 
     def __init__(self, name, vtype=None):
         '''The type of one field in a Table
         .name holds the field's name (equivalent to a vtype or ktype name);
         may not be the same as a built-in type name or constant
-        .vtype holds a UXF type name ('int', 'real', …)'''
-        # TODO Add to above: Fields are immutable.
+        .vtype holds a UXF type name ('int', 'real', …)
+        Fields are immutable.'''
         _check_name(name)
+        if vtype is not None:
+            _check_type_name(vtype)
         self._name = name
-        self.vtype = vtype # TODO self._vtype = vtype
+        self._vtype = vtype
 
 
     @property
@@ -912,7 +982,9 @@ class Field:
         return self._name
 
 
-    # TODO @property\ndef vtype(self):\n\treturn self._vtype
+    @property
+    def vtype(self):
+        return self._vtype
 
 
     def __eq__(self, other): # for testing
@@ -921,6 +993,40 @@ class Field:
 
     def __repr__(self):
         return f'{self.__class__.__name__}({self.name!r}, {self.vtype!r})'
+
+
+class FieldBuilder:
+
+    def __init__(self, name, vtype=None):
+        self._name = name
+        self._vtype = vtype
+
+
+    @property
+    def name(self):
+        return self._name
+
+
+    @name.setter
+    def name(self, name):
+        _check_name(name)
+        self._name = name
+
+
+    @property
+    def vtype(self):
+        return self._vtype
+
+
+    @vtype.setter
+    def vtype(self, vtype):
+        if vtype is not None:
+            _check_type_name(vtype)
+        self._vtype = vtype
+
+
+    def build(self):
+        return Field(self.name, self.vtype)
 
 
 def table(ttype, fields, *, comment=None):
