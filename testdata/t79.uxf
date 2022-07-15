@@ -1,5 +1,5 @@
-uxf 1.0 Experimental Lexer Test
-#<This is a test for the experimental lexer's comments>
+uxf 1.0 Custom text
+#<File level comment>
 = IPv4 A:int B:int C:int D:int
 = #<0-255 per component> rgb red:int green:int blue:int
 = #<0-255 per component> rgba red:int green:int blue:int alpha:int
