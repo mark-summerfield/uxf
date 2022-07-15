@@ -595,27 +595,31 @@ class _Lexer:
 
     def subsumed(self, kind, value):
         top = self.tokens[-1]
-        if kind is _Kind.IDENTIFIER:
-            if top.kind in {_Kind.LIST_BEGIN, _Kind.MAP_BEGIN}:
+        if kind in {_Kind.IDENTIFIER, _Kind.TYPE}:
+            if top.kind is _Kind.LIST_BEGIN:
                 if top.vtype is None:
                     top.vtype = value
                 else:
                     self.error(272, f'expected value got type, {value}')
                 return True
-            elif top.kind is _Kind.TABLE_BEGIN:
+            elif top.kind is _Kind.MAP_BEGIN:
+                if top.ktype is None:
+                    if kind is _Kind.IDENTIFIER:
+                        self.error(273, f'expected ktype got, {value}')
+                    else:
+                        top.ktype = value
+                elif top.vtype is None:
+                    top.vtype = value
+                else:
+                    self.error(276,
+                               f'expected first map key got type, {value}')
+                return True
+            elif top.kind is _Kind.TABLE_BEGIN and kind is _Kind.IDENTIFIER:
                 if top.ttype is None:
                     top.ttype = value
                 else:
                     self.error(274, f'expected value got type, {value}')
                 return True
-        elif kind is _Kind.TYPE and top.kind is _Kind.MAP_BEGIN:
-            if top.ktype is None:
-                top.ktype = value
-            elif top.vtype is None:
-                top.vtype = value
-            else:
-                self.error(276, f'expected map key got type, {value}')
-            return True
         return False
 
 
@@ -1392,8 +1396,6 @@ class _Parser:
                 self._on_collection_end(token)
             elif kind is _Kind.IDENTIFIER: # Correct ones are subsumed
                 self._handle_incorrect_identifier(i, token)
-            elif kind is _Kind.TYPE: # TODO why is this called?
-                self._handle_type(i, token)
             elif kind is _Kind.STR:
                 self._handle_str(i, token)
             elif kind.is_scalar:
@@ -1461,7 +1463,7 @@ class _Parser:
 
     def _verify_type_identifier(self, vtype):
         if vtype is not None:
-            if vtype in _VALUE_TYPES:
+            if vtype in _ANY_VALUE_TYPES:
                 return # built-in type
             tclass = self.tclasses.get(vtype)
             if tclass is None:
@@ -1492,29 +1494,6 @@ class _Parser:
         else:
             self.error(460, 'ttypes may only appear at the start of a '
                        f'map (as the value type), list, or table, {token}')
-
-
-    def _handle_type(self, i, token): # TODO shouldn't subsume obviate this?
-        if not self.stack:
-            self.error(469, 'invalid UXF data')
-            return # in case user on_error doesn't raise
-        parent = self.stack[-1]
-        if isinstance(parent, List):
-            if parent.vtype is not None:
-                self.error(470, 'can only have at most one vtype for a '
-                           f'list, got {token}')
-            parent.vtype = token.value
-        elif isinstance(parent, Map):
-            if parent.ktype is None:
-                parent.ktype = token.value
-            elif parent.vtype is None:
-                parent.vtype = token.value
-            else:
-                self.error(480, 'can only have at most one ktype and one '
-                           f'vtype for a map, got {token}')
-        else:
-            self.error(484, 'ktypes and vtypes are only allowed at the '
-                       f'start of maps and lists, got {token}')
 
 
     def _handle_str(self, i, token):
@@ -1834,8 +1813,10 @@ class _Parser:
             vtype = parent.ktype if parent._next_is_key else parent.vtype
         elif isinstance(parent, List):
             vtype = parent.vtype
-        else: # must be a Table
+        elif isinstance(parent, List):
             vtype = parent._next_vtype
+        else: # must be a Table
+            return None, f'expected collection, got {value}'
         if value is not None and vtype is not None:
             if vtype in _BUILT_IN_NAMES:
                 if not isinstance(value, _TYPECHECK_CLASSES[vtype]):

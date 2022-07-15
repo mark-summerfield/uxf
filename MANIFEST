@@ -1,6 +1,5 @@
 # TODO py
 # - fix test_lints & test_errors bugs
-# - try to understand why I still need _handle_type()
 # - try to make List.vtype Table.tclass Map.{ktype, vtype} all r/o properties
 # - go through py/uxf.py & make sure as many error codes as possible are
 #   tested in py/t/test_errors.py
