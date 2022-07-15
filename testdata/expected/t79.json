@@ -1,0 +1,188 @@
+{
+  "UXF^custom": "Custom text",
+  "UXF^comment": "File level comment",
+  "UXF^ttypes": [
+    {
+      "UXF^ttype": {
+        "name": "IPv4",
+        "fields": {
+          "A": "int",
+          "B": "int",
+          "C": "int",
+          "D": "int"
+        }
+      }
+    },
+    {
+      "UXF^ttype": {
+        "name": "rgb",
+        "fields": {
+          "red": "int",
+          "green": "int",
+          "blue": "int"
+        },
+        "comment": "0-255 per component"
+      }
+    },
+    {
+      "UXF^ttype": {
+        "name": "rgba",
+        "fields": {
+          "red": "int",
+          "green": "int",
+          "blue": "int",
+          "alpha": "int"
+        },
+        "comment": "0-255 per component"
+      }
+    }
+  ],
+  "UXF^data": {
+    "General": {
+      "UXF^map": {
+        "comment": "Map comment",
+        "ktype": null,
+        "vtype": null,
+        "map": {
+          "saved": {
+            "UXF^date": "2022-03-21"
+          },
+          "autosave": true,
+          "historysize": -35,
+          "volume": 0.7,
+          "files": {
+            "current": "/home/mark/app/rs/tlm/PlaylistsTest.tlm",
+            "recent1": "/home/mark/app/rs/tlm/PlaylistsTest.tlm",
+            "recent2": "/home/mark/data/playlists-all.tlm"
+          }
+        }
+      }
+    },
+    "Window": {
+      "pos": [
+        383,
+        124
+      ],
+      "size": [
+        590,
+        536
+      ],
+      "scale": 1.1
+    },
+    "More Tests": {
+      "one": {
+        "UXF^table": {
+          "name": "IPv4",
+          "comment": null,
+          "fields": {
+            "A": "int",
+            "B": "int",
+            "C": "int",
+            "D": "int"
+          },
+          "records": [
+            [
+              141,
+              179,
+              19,
+              9
+            ]
+          ]
+        }
+      },
+      "many": {
+        "UXF^table": {
+          "name": "IPv4",
+          "comment": "Table comment",
+          "fields": {
+            "A": "int",
+            "B": "int",
+            "C": "int",
+            "D": "int"
+          },
+          "records": [
+            [
+              172,
+              16,
+              254,
+              1
+            ],
+            [
+              192,
+              0,
+              2,
+              235
+            ],
+            [
+              127,
+              0,
+              0,
+              1
+            ]
+          ]
+        }
+      },
+      "red": {
+        "UXF^table": {
+          "name": "rgb",
+          "comment": null,
+          "fields": {
+            "red": "int",
+            "green": "int",
+            "blue": "int"
+          },
+          "records": [
+            [
+              255,
+              0,
+              0
+            ]
+          ]
+        }
+      },
+      "semi-transparent blue": {
+        "UXF^table": {
+          "name": "rgba",
+          "comment": null,
+          "fields": {
+            "red": "int",
+            "green": "int",
+            "blue": "int",
+            "alpha": "int"
+          },
+          "records": [
+            [
+              0,
+              0,
+              255,
+              80
+            ]
+          ]
+        }
+      }
+    },
+    "Magic": {
+      "UXF^bytes": "1F8B"
+    },
+    "Nested Map": {
+      "Classical": [
+        5,
+        true
+      ],
+      "Modern Instrumental": {
+        "UXF^list": {
+          "comment": "List comment",
+          "vtype": null,
+          "list": [
+            4,
+            false
+          ]
+        }
+      },
+      "New Acquistions": [
+        1,
+        false
+      ]
+    }
+  }
+}

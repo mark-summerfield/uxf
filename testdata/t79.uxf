@@ -1,0 +1,34 @@
+uxf 1.0 Custom text
+#<File level comment>
+= IPv4 A:int B:int C:int D:int
+= #<0-255 per component> rgb red:int green:int blue:int
+= #<0-255 per component> rgba red:int green:int blue:int alpha:int
+{
+    <General> {#<Map comment>
+        <saved> 2022-03-21
+        <autosave> yes
+        <historysize> -35
+        <volume> 0.7
+        <files> {
+            <current> </home/mark/app/rs/tlm/PlaylistsTest.tlm>
+            <recent1> </home/mark/app/rs/tlm/PlaylistsTest.tlm>
+            <recent2> </home/mark/data/playlists-all.tlm>
+        }
+    }
+    <Window> {<pos> [383 124] <size> [590 536] <scale> 1.1}
+    <More Tests> {
+        <one> (IPv4 141 179 19 9)
+        <many> (#<Table comment> IPv4
+                172 16 254 1
+                192 0 2 235
+                127 0 0 1)
+        <red> (rgb 255 0 0)
+        <semi-transparent blue> (rgba 0 0 255 80)
+    }
+    <Magic> (:1F 8B:)
+    <Nested Map> {
+        <Classical> [5 yes]
+        <Modern Instrumental> [#<List comment> 4 no]
+        <New Acquistions> [1 no]
+    }
+}

@@ -1,0 +1,221 @@
+<?xml version="1.0" ?>
+<uxf version="1.0" custom="Custom text" comment="File level comment">
+  <ttypes>
+    <ttype name="IPv4">
+      <field name="A" vtype="int"/>
+      <field name="B" vtype="int"/>
+      <field name="C" vtype="int"/>
+      <field name="D" vtype="int"/>
+    </ttype>
+    <ttype name="rgb" comment="0-255 per component">
+      <field name="red" vtype="int"/>
+      <field name="green" vtype="int"/>
+      <field name="blue" vtype="int"/>
+    </ttype>
+    <ttype name="rgba" comment="0-255 per component">
+      <field name="red" vtype="int"/>
+      <field name="green" vtype="int"/>
+      <field name="blue" vtype="int"/>
+      <field name="alpha" vtype="int"/>
+    </ttype>
+  </ttypes>
+  <map>
+    <key>
+      <str>General</str>
+    </key>
+    <value>
+      <map comment="Map comment">
+        <key>
+          <str>saved</str>
+        </key>
+        <value>
+          <date v="2022-03-21"/>
+        </value>
+        <key>
+          <str>autosave</str>
+        </key>
+        <value>
+          <yes/>
+        </value>
+        <key>
+          <str>historysize</str>
+        </key>
+        <value>
+          <int v="-35"/>
+        </value>
+        <key>
+          <str>volume</str>
+        </key>
+        <value>
+          <real v="0.7"/>
+        </value>
+        <key>
+          <str>files</str>
+        </key>
+        <value>
+          <map>
+            <key>
+              <str>current</str>
+            </key>
+            <value>
+              <str>/home/mark/app/rs/tlm/PlaylistsTest.tlm</str>
+            </value>
+            <key>
+              <str>recent1</str>
+            </key>
+            <value>
+              <str>/home/mark/app/rs/tlm/PlaylistsTest.tlm</str>
+            </value>
+            <key>
+              <str>recent2</str>
+            </key>
+            <value>
+              <str>/home/mark/data/playlists-all.tlm</str>
+            </value>
+          </map>
+        </value>
+      </map>
+    </value>
+    <key>
+      <str>Window</str>
+    </key>
+    <value>
+      <map>
+        <key>
+          <str>pos</str>
+        </key>
+        <value>
+          <list>
+            <int v="383"/>
+            <int v="124"/>
+          </list>
+        </value>
+        <key>
+          <str>size</str>
+        </key>
+        <value>
+          <list>
+            <int v="590"/>
+            <int v="536"/>
+          </list>
+        </value>
+        <key>
+          <str>scale</str>
+        </key>
+        <value>
+          <real v="1.1"/>
+        </value>
+      </map>
+    </value>
+    <key>
+      <str>More Tests</str>
+    </key>
+    <value>
+      <map>
+        <key>
+          <str>one</str>
+        </key>
+        <value>
+          <table name="IPv4">
+            <row>
+              <int v="141"/>
+              <int v="179"/>
+              <int v="19"/>
+              <int v="9"/>
+            </row>
+          </table>
+        </value>
+        <key>
+          <str>many</str>
+        </key>
+        <value>
+          <table name="IPv4" comment="Table comment">
+            <row>
+              <int v="172"/>
+              <int v="16"/>
+              <int v="254"/>
+              <int v="1"/>
+            </row>
+            <row>
+              <int v="192"/>
+              <int v="0"/>
+              <int v="2"/>
+              <int v="235"/>
+            </row>
+            <row>
+              <int v="127"/>
+              <int v="0"/>
+              <int v="0"/>
+              <int v="1"/>
+            </row>
+          </table>
+        </value>
+        <key>
+          <str>red</str>
+        </key>
+        <value>
+          <table name="rgb">
+            <row>
+              <int v="255"/>
+              <int v="0"/>
+              <int v="0"/>
+            </row>
+          </table>
+        </value>
+        <key>
+          <str>semi-transparent blue</str>
+        </key>
+        <value>
+          <table name="rgba">
+            <row>
+              <int v="0"/>
+              <int v="0"/>
+              <int v="255"/>
+              <int v="80"/>
+            </row>
+          </table>
+        </value>
+      </map>
+    </value>
+    <key>
+      <str>Magic</str>
+    </key>
+    <value>
+      <bytes>1F8B</bytes>
+    </value>
+    <key>
+      <str>Nested Map</str>
+    </key>
+    <value>
+      <map>
+        <key>
+          <str>Classical</str>
+        </key>
+        <value>
+          <list>
+            <int v="5"/>
+            <yes/>
+          </list>
+        </value>
+        <key>
+          <str>Modern Instrumental</str>
+        </key>
+        <value>
+          <list comment="List comment">
+            <int v="4"/>
+            <no/>
+          </list>
+        </value>
+        <key>
+          <str>New Acquistions</str>
+        </key>
+        <value>
+          <list>
+            <int v="1"/>
+            <no/>
+          </list>
+        </value>
+      </map>
+    </value>
+  </map>
+</uxf>
