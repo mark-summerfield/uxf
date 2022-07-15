@@ -670,7 +670,7 @@ mandatory `list`, `map`, or `table` (which may be empty).
     CONTENT      ::= COMMENT? IMPORT* TTYPEDEF* (MAP | LIST | TABLE)
     IMPORT       ::= '!' /\s*/ IMPORT_FILE '\n' # See below for IMPORT_FILE
     TTYPEDEF     ::= '=' COMMENT? OWS IDENFIFIER (RWS FIELD)* # IDENFIFIER is the ttype (i.e., the table name)
-    FIELD        ::= IDENFIFIER (OWS ':' OWS VALUETYPE)? # IDENFIFIER is the field name
+    FIELD        ::= IDENFIFIER (OWS ':' OWS VALUETYPE)? # IDENFIFIER is the field name (see note below)
     MAP          ::= '{' COMMENT? MAPTYPES? OWS (KEY RWS VALUE)? (RWS KEY RWS VALUE)* OWS '}'
     MAPTYPES     ::= OWS KEYTYPE (RWS VALUETYPE)?
     KEYTYPE      ::=  'bytes' | 'date' | 'datetime' | 'int' | 'str'
@@ -716,6 +716,8 @@ need to distinguish between one row and the next (although it is common to
 start new rows on new lines) since the number of fields indicate how many
 values each row has. It is possible to create tables that have no fields;
 these might be used for representing enumerations or states.
+
+Note that for any given table each field name must be unique.
 
 If a list value, map key, or table value's type is specified, then the UXF
 processor is expected to be able to check for (and if requested and
