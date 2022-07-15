@@ -6,6 +6,8 @@ use crate::map::Map;
 use crate::table::Table;
 use chrono::prelude::*;
 
+pub type Row = Vec<Option<Value>>;
+
 #[derive(Clone, Debug)]
 pub enum Value {
     Bool(bool),

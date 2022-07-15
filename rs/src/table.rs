@@ -2,13 +2,13 @@
 // License: GPLv3
 
 use crate::tclass::TClass;
-use crate::value::Value;
+use crate::value::{Row, Value};
 
 #[derive(Clone, Debug)]
 pub struct Table {
     tclass: TClass,
     comment: Option<String>,
-    records: Vec<Vec<Option<Value>>>,
+    records: Vec<Row>,
 }
 
 impl Table {

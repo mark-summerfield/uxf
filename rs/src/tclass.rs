@@ -3,7 +3,7 @@
 
 use crate::field::Field;
 use crate::util;
-use crate::value::Value;
+use crate::value::{Row, Value};
 use anyhow::{bail, Result};
 use std::fmt::Write as _;
 use std::{cmp::Ordering, collections::HashSet, fmt};
@@ -35,8 +35,11 @@ impl TClass {
         for field in &fields {
             let name = field.name();
             if seen.contains(&name) {
-                bail!("#336:can't have duplicate table tclass field \
-                names, got {:?} twice", &name);
+                bail!(
+                    "#336:can't have duplicate table tclass field \
+                names, got {:?} twice",
+                    &name
+                );
             } else {
                 seen.insert(&name);
             }
@@ -89,7 +92,7 @@ impl TClass {
     /// Returns a record with `TClass.len()` (i.e., `fields.len()`) fields,
     /// each holding an `Option<Value>` whose value is `None`.
     /// This is a helper for adding new rows to ``Table``s.
-    pub fn record_of_nulls(&self) -> Result<Vec<Option<Value>>> {
+    pub fn record_of_nulls(&self) -> Result<Row> {
         if self.is_fieldless() {
             bail!(
                 "#352:can't create a record of nulls for a fieldless \
