@@ -1,11 +1,9 @@
 # TODO py
-# - change tclass parsing so that a complete TClass is created with all
-#   fields present (if not fieldless)
-# - change Lexer so that the Parser needs _no_ lookahead,
-#   e.g., add these fields to _Token class: comment ttype ktype vtype (all
-#   default to None)
-# - change Parser to elminate lookahead by using extra _Token data
-# - try to make Field & TClass immutable
+# - fix test_lints & test_errors bugs
+# - try to understand why I still need _handle_type()
+# - try to make List.vtype Table.tclass Map.{ktype, vtype} all r/o properties
+# - go through py/uxf.py & make sure as many error codes as possible are
+#   tested in py/t/test_errors.py
 
 # TODO rs
 # - TClass tests

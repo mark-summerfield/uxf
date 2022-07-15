@@ -19,7 +19,7 @@ from xml.sax.saxutils import escape, unescape
 import editabletuple
 
 
-__version__ = '1.2.3' # uxf module version
+__version__ = '1.3.0' # uxf module version
 VERSION = 1.0 # UXF file format version
 
 UTF8 = 'utf-8'
@@ -587,13 +587,36 @@ class _Lexer:
 
 
     def add_token(self, kind, value=None):
-        # if self.tokens and self.tokens[-1] in
-        # TODO if prev token is LIST_BEGIN, or MAP_BEGIN
-        # and kind is _Kind.TYPE then subsume;
-        # elif prev token is TABLE_BEGIN and kind is _Kind.IDENTIFIER then
-        # subsume
-        # else as now
+        if not self.in_tclass and self.tokens:
+            if self.subsumed(kind, value):
+                return
         self.tokens.append(_Token(kind, value, lino=self.lino))
+
+
+    def subsumed(self, kind, value):
+        top = self.tokens[-1]
+        if kind is _Kind.IDENTIFIER:
+            if top.kind in {_Kind.LIST_BEGIN, _Kind.MAP_BEGIN}:
+                if top.vtype is None:
+                    top.vtype = value
+                else:
+                    self.error(272, f'expected value got type, {value}')
+                return True
+            elif top.kind is _Kind.TABLE_BEGIN:
+                if top.ttype is None:
+                    top.ttype = value
+                else:
+                    self.error(274, f'expected value got type, {value}')
+                return True
+        elif kind is _Kind.TYPE and top.kind is _Kind.MAP_BEGIN:
+            if top.ktype is None:
+                top.ktype = value
+            elif top.vtype is None:
+                top.vtype = value
+            else:
+                self.error(276, f'expected map key got type, {value}')
+            return True
+        return False
 
 
 class Error(Exception):
@@ -622,7 +645,13 @@ class _Token:
     def __repr__(self):
         parts = [f'{self.__class__.__name__}({self.kind.name}']
         if self.value is not None:
-            parts.append(f', {self.value!r}')
+            parts.append(f', value={self.value!r}')
+        if self.ttype is not None:
+            parts.append(f', ttype={self.ttype!r}')
+        if self.ktype is not None:
+            parts.append(f', ktype={self.ktype!r}')
+        if self.vtype is not None:
+            parts.append(f', vtype={self.vtype!r}')
         parts.append(')')
         return ''.join(parts)
 
@@ -668,6 +697,18 @@ class List(collections.UserList):
         super().__init__(seq)
         self.vtype = vtype
         self.comment = comment
+        # self._vtype = vtype # TODO once I have subsumed! & then Map & Table
+        # self._comment = comment
+
+
+#    @property
+#    def vtype(self):
+#        return self._vtype
+#
+#
+#    @property
+#    def comment(self):
+#        return self._comment
 
 
 class Map(collections.UserDict):
@@ -1349,9 +1390,9 @@ class _Parser:
                     data = self.stack[0]
             elif self._is_collection_end(kind):
                 self._on_collection_end(token)
-            elif kind is _Kind.IDENTIFIER:
-                self._handle_identifier(i, token)
-            elif kind is _Kind.TYPE:
+            elif kind is _Kind.IDENTIFIER: # Correct ones are subsumed
+                self._handle_incorrect_identifier(i, token)
+            elif kind is _Kind.TYPE: # TODO why is this called?
                 self._handle_type(i, token)
             elif kind is _Kind.STR:
                 self._handle_str(i, token)
@@ -1418,49 +1459,22 @@ class _Parser:
             self.error(code, f'{what}s: {diff}')
 
 
-    def _handle_identifier(self, i, token):
-        if not self.stack:
-            self.error(441, 'invalid UXF data')
-            return # in case user on_error doesn't raise
-        parent = self.stack[-1]
-        if (self.tokens[i - 1].kind is _Kind.TYPE and
-                self.tokens[i - 2].kind is _Kind.MAP_BEGIN):
-            self._handle_type_identifier(parent, token)
-        elif self.tokens[i - 1].kind is _Kind.LIST_BEGIN:
-            self._handle_vtype_identifier(parent, token)
-        elif self.tokens[i - 1].kind is _Kind.TABLE_BEGIN:
-            self._handle_ttype_identifier(parent, token)
-        else:
-            self._handle_incorrect_identifier(token)
+    def _verify_type_identifier(self, vtype):
+        if vtype is not None:
+            if vtype in _VALUE_TYPES:
+                return # built-in type
+            tclass = self.tclasses.get(vtype)
+            if tclass is None:
+                self.error(446, f'expected list vtype, got {vtype}')
+            else:
+                self.used_tclasses.add(tclass.ttype)
 
 
-    def _handle_type_identifier(self, parent, token):
-        tclass = self.tclasses.get(token.value)
+    def _verify_ttype_identifier(self, tclass, ttype):
         if tclass is None:
-            self.error(442, f'expected map vtype, got {token}')
-        elif tclass.ttype is None:
-            self.error(444, f'tclass without a ttype, got {token}')
-        else:
-            parent.vtype = tclass.ttype
-            self.used_tclasses.add(tclass.ttype)
-
-
-    def _handle_vtype_identifier(self, parent, token):
-        tclass = self.tclasses.get(token.value)
-        if tclass is None:
-            self.error(446, f'expected list vtype, got {token}')
-        else:
-            parent.vtype = tclass.ttype
-            self.used_tclasses.add(tclass.ttype)
-
-
-    def _handle_ttype_identifier(self, parent, token):
-        tclass = self.tclasses.get(token.value)
-        if tclass is None:
-            self.error(450, f'expected table ttype, got {token}',
+            self.error(450, f'expected table ttype, got {ttype}',
                        fail=True) # A table with no tclass is invalid
         else:
-            parent.tclass = tclass
             self.used_tclasses.add(tclass.ttype)
             if len(self.stack) > 1:
                 grand_parent = self.stack[-2]
@@ -1472,7 +1486,7 @@ class _Parser:
                                f' got value of type {tclass.ttype}')
 
 
-    def _handle_incorrect_identifier(self, token):
+    def _handle_incorrect_identifier(self, _i, token):
         if token.value.upper() in {'TRUE', 'FALSE'}:
             self.error(458, 'boolean values are represented by yes or no')
         else:
@@ -1480,7 +1494,7 @@ class _Parser:
                        f'map (as the value type), list, or table, {token}')
 
 
-    def _handle_type(self, i, token):
+    def _handle_type(self, i, token): # TODO shouldn't subsume obviate this?
         if not self.stack:
             self.error(469, 'invalid UXF data')
             return # in case user on_error doesn't raise
@@ -1544,20 +1558,18 @@ class _Parser:
     def _on_collection_start(self, token):
         kind = token.kind
         if kind is _Kind.MAP_BEGIN:
+            if token.ktype not in _KEY_TYPES:
+                self.error(448, f'expected list ktype, got {token.ktype}')
+            self._verify_type_identifier(token.vtype)
             value = Map(ktype=token.ktype, vtype=token.vtype,
                         comment=token.comment)
         elif kind is _Kind.LIST_BEGIN:
+            self._verify_type_identifier(token.vtype)
             value = List(vtype=token.vtype, comment=token.comment)
         elif kind is _Kind.TABLE_BEGIN:
-            if token.ttype is not None:
-                tclass = self.tclasses.get(token.ttype)
-                if tclass is None:
-                    self.error(502, 'can\'t create a table with an '
-                               f'undefined tclass {token.tclass}')
-                value = Table(tclass, comment=token.comment)
-            else: # TODO delete value = line & uncomment error
-                value = Table(comment=token.comment)
-                # self.error(503, 'can\'t create a table without a tclass')
+            tclass = self.tclasses.get(token.ttype)
+            self._verify_ttype_identifier(tclass, token.ttype)
+            value = Table(tclass, comment=token.comment)
         else:
             self.error(504, f'expected to create map, list, or table, '
                        f'got {token}')
