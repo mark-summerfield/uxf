@@ -1554,15 +1554,15 @@ class _Parser:
 
     def _on_collection_start(self, i, token):
         kind = token.kind
-        if kind is _Kind.MAP_BEGIN:
+        if kind is _Kind.LIST_BEGIN:
+            self._verify_type_identifier(token.vtype)
+            value = List(vtype=token.vtype, comment=token.comment)
+        elif kind is _Kind.MAP_BEGIN:
             if token.ktype is not None and token.ktype not in _KEY_TYPES:
                 self.error(448, f'expected list ktype, got {token.ktype}')
             self._verify_type_identifier(token.vtype)
             value = Map(ktype=token.ktype, vtype=token.vtype,
                         comment=token.comment)
-        elif kind is _Kind.LIST_BEGIN:
-            self._verify_type_identifier(token.vtype)
-            value = List(vtype=token.vtype, comment=token.comment)
         elif kind is _Kind.TABLE_BEGIN:
             tclass = self.tclasses.get(token.ttype)
             self._verify_ttype_identifier(i, tclass)
