@@ -31,6 +31,25 @@ pub fn value_to_str(v: Value) -> String {
 
 pub fn check_error_code(error: &str, code: i32, name: &str) {
     match code {
+        304 => {
+            assert_eq!(code, 304, "code={} name={}", code, name);
+            assert_eq!(
+                error,
+                format!(
+                    "#304:names cannot be the same \
+                               as built-in type names or constants, got {}",
+                    name
+                )
+            );
+        }
+        336 => assert_eq!(
+            error,
+            format!(
+                "#336:can't have duplicate table tclass field names, \
+                got {:?} twice",
+                name
+            )
+        ),
         600 => assert_eq!(error, "#600:type names must be nonempty"),
         602 => assert_eq!(
             error,
@@ -64,16 +83,6 @@ pub fn check_error_code(error: &str, code: i32, name: &str) {
                 name
             )
         ),
-        _ => {
-            assert_eq!(code, 304, "code={} name={}", code, name);
-            assert_eq!(
-                error,
-                format!(
-                    "#304:names cannot be the same \
-                               as built-in type names or constants, got {}",
-                    name
-                )
-            );
-        }
+        _ => assert!(false, "unexpected error code {} ({:?})", code, name),
     }
 }

@@ -65,6 +65,18 @@ mod tests {
     }
 
     #[test]
+    fn t_field_lt() {
+        // We only care about the name and prefer case-insensitive
+        let a = Field::new_anyvtype("Alpha").unwrap();
+        let b = Field::new("bravo", "int").unwrap();
+        let c = Field::new("Charlie", "MyType4").unwrap();
+        let d = Field::new_anyvtype("Delta").unwrap();
+        let e = Field::new_anyvtype("ECHO").unwrap();
+        let f = Field::new_anyvtype("echo").unwrap();
+        assert!(a < b && b < c && c < d && d < e && e < f);
+    }
+
+    #[test]
     fn t_field_new_invalid_name() {
         for (code, name) in [
             (304, VALUE_NAME_NULL),

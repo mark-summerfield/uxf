@@ -6,7 +6,7 @@ use crate::util;
 use crate::value::Value;
 use anyhow::{bail, Result};
 use std::fmt::Write as _;
-use std::{cmp::Ordering, fmt};
+use std::{cmp::Ordering, collections::HashSet, fmt};
 
 /// Provides a definition of a tclass (`name`, `fields`, and `comment`)
 /// for use in ``Table``s.
@@ -21,7 +21,8 @@ pub struct TClass {
 
 impl TClass {
     /// Creates a new `TClass` with the given `name`, `fields`, and
-    /// `commment` _or_ returns an Err if the `name` is invalid.
+    /// `commment` _or_ returns an Err if the `name` is invalid or if
+    /// there are duplicate field names.
     /// See `Field::make_fields()` for a function that can generate a
     /// suitable vector of fields.
     pub fn new(
@@ -30,6 +31,16 @@ impl TClass {
         comment: Option<&str>,
     ) -> Result<Self> {
         util::check_name(ttype)?;
+        let mut seen = HashSet::<&str>::new();
+        for field in &fields {
+            let name = field.name();
+            if seen.contains(&name) {
+                bail!("#336:can't have duplicate table tclass field \
+                names, got {:?} twice", &name);
+            } else {
+                seen.insert(&name);
+            }
+        }
         Ok(TClass {
             ttype: ttype.to_string(),
             comment: comment.map(|s| s.to_string()),

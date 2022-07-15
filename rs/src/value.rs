@@ -6,9 +6,6 @@ use crate::map::Map;
 use crate::table::Table;
 use chrono::prelude::*;
 
-// See also Michael-F-Bryan's replies in
-// https://users.rust-lang.org/t/how-do-i-create-an-enum-that-subsumes-others/78232/8?u=mark
-
 #[derive(Clone, Debug)]
 pub enum Value {
     Bool(bool),

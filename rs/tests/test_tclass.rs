@@ -47,6 +47,29 @@ mod tests {
     }
 
     #[test]
+    fn t_tclass_lt() {
+        // We only care about the ttype and prefer case-insensitive
+        let fields = valid_fields();
+        let a = TClass::new("Alpha", fields, None).unwrap();
+        let fields = valid_fields()[..6].to_vec();
+        let b = TClass::new("bravo", fields, None).unwrap();
+        let fields = valid_fields()[..3].to_vec();
+        let c = TClass::new("Charlie", fields, None).unwrap();
+        let d = TClass::new_fieldless("Delta", None).unwrap();
+        let e = TClass::new_fieldless("ECHO", None).unwrap();
+        let f = TClass::new_fieldless("echo", None).unwrap();
+        assert!(a < b && b < c && c < d && d < e && e < f);
+    }
+
+    #[test]
+    fn t_tclass_duplicate_field() {
+        let mut fields = valid_fields();
+        fields.push(Field::new_anyvtype("size").unwrap());
+        let e = TClass::new("General", fields, None).unwrap_err();
+        check_error_code(&e.to_string(), 336, "size");
+    }
+
+    #[test]
     fn t_tclass_invalid_ttype() {
         for (code, name) in [
             (304, VALUE_NAME_NULL),

@@ -6,9 +6,7 @@
 # - change Parser to elminate lookahead by using extra _Token data
 
 # TODO rs
-# - test_field <
-# - test_tclass <
-# - TClass
+# - TClass tests
 # - List
 # - Map
 # - Table
