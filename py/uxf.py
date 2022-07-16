@@ -1565,50 +1565,40 @@ class _Parser:
 
 
     def _parse_tclasses(self):
-        tclass = None
+        tclass_builder = None
         offset = 0
+        lino = 0
         for index, token in enumerate(self.tokens):
             self.lino = token.lino
             if token.kind is _Kind.TCLASS_BEGIN:
-                tclass, ok = self._handle_tclass_begin(tclass, token.value,
-                                                       token.comment)
-                if not ok:
-                    return # in case on_error doesn't raise
+                tclass_builder = TClassBuilder(token.value,
+                                               comment=token.comment)
+                lino = self.lino
             elif token.kind is _Kind.FIELD:
-                tclass.append(Field(token.value, token.vtype))
+                if tclass_builder is None:
+                    self.error(524, 'Field outside TClass', fail=True)
+                    return # in case user on_error doesn't raise
+                tclass_builder.append(Field(token.value, token.vtype))
             elif token.kind is _Kind.TCLASS_END:
-                if not self._handle_tclass_end(tclass):
+                if not self._handle_tclass_end(tclass_builder, lino):
                     return # in case user on_error doesn't raise
                 offset = index + 1
+                tclass_builder = None
+                lino = 0
             else:
                 break # no TClasses at all
-        for ttype in list(self.tclasses.keys()):
-            tclass = self.tclasses[ttype]
-            if isinstance(tclass, TClassBuilder):
-                self.tclasses[ttype] = tclass.build()
         self.tokens = self.tokens[offset:]
 
 
-    def _handle_tclass_begin(self, tclass, ttype, comment):
-        if tclass is not None:
-            if tclass.ttype is None:
-                self.error(518, 'TClass without ttype', fail=True)
-                return None, False # in case user on_error doesn't raise
-            _add_to_tclasses(self.tclasses, tclass, lino=self.lino,
-                             code=520, on_error=self.on_error)
-            self.lino_for_tclass[tclass.ttype] = self.lino
-        return TClassBuilder(ttype, comment=comment), True
-
-
-    def _handle_tclass_end(self, tclass):
-        if tclass is not None:
-            if tclass.ttype is None:
+    def _handle_tclass_end(self, tclass_builder, lino):
+        if tclass_builder is not None:
+            if tclass_builder.ttype is None:
                 self.error(526, 'TClass without ttype', fail=True)
                 return False # in case user on_error doesn't raise
+            tclass = tclass_builder.build()
             _add_to_tclasses(self.tclasses, tclass, lino=self.lino,
                              code=528, on_error=self.on_error)
-            if tclass.ttype not in self.lino_for_tclass:
-                self.lino_for_tclass[tclass.ttype] = self.lino
+            self.lino_for_tclass[tclass.ttype] = lino
         return True
 
 
@@ -1767,10 +1757,6 @@ def _add_to_tclasses(tclasses, tclass, *, lino, code, on_error):
     if first_tclass is None: # this is the first definition of this ttype
         tclasses[tclass.ttype] = tclass
         return True
-    if isinstance(first_tclass, TClassBuilder):
-        first_tclass = first_tclass.build()
-    if isinstance(tclass, TClassBuilder):
-        tclass = tclass.build()
     if first_tclass == tclass:
         if tclass.comment and tclass.comment != first_tclass.comment:
             first_tclass.comment = tclass.comment # last comment wins
