@@ -42,44 +42,43 @@ pub fn check_error_code(error: &str, code: i32, name: &str) {
                 )
             );
         }
-        336 => assert_eq!(
+        298 => assert_eq!(error, "#298:names must be nonempty"),
+        300 => assert_eq!(
             error,
             format!(
-                "#336:can't have duplicate table tclass field names, \
-                got {:?} twice",
-                name
-            )
-        ),
-        600 => assert_eq!(error, "#600:type names must be nonempty"),
-        602 => assert_eq!(
-            error,
-            format!(
-                "#602:type names must start \
+                "#300:names must start \
                                   with a letter or underscore, got {}",
                 name
             )
         ),
-        604 => assert_eq!(
+        302 => assert_eq!(
             error,
-            format!("#604:type names may not be yes or no got {}", name)
+            format!("#302:names may not be yes or no got {}", name)
         ),
-        606 => {
+        306 => {
             let n = name.len(); // byte count is fine: all ASCII
             assert_eq!(
                 error,
                 format!(
-                    "#606:type names may be at most \
+                    "#306:names may be at most \
                                {} characters long, got {} ({} characters)",
                     MAX_IDENTIFIER_LEN, name, n
                 )
             );
         }
-        608 => assert_eq!(
+        310 => assert_eq!(
             error,
             format!(
-                "#608:type names may only \
-                                  contain letters, digits, or \
+                "#310:names may only contain letters, digits, or \
                                   underscores, got {}",
+                name
+            )
+        ),
+        336 => assert_eq!(
+            error,
+            format!(
+                "#336:can't have duplicate table tclass field names, \
+                got {:?} twice",
                 name
             )
         ),

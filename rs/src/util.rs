@@ -24,8 +24,7 @@ pub(crate) fn check_type_name(name: &str) -> Result<()> {
     let first = name.chars().next().unwrap(); // safe because nonempty
     if !(first == '_' || first.is_alphabetic()) {
         bail!(
-            "#300:type names must start with a letter or underscore, \
-              got {}",
+            "#300:names must start with a letter or underscore, got {}",
             name
         );
     }
@@ -35,7 +34,7 @@ pub(crate) fn check_type_name(name: &str) -> Result<()> {
     for (i, c) in name.chars().enumerate() {
         if i == MAX_IDENTIFIER_LEN {
             bail!(
-                "#306:type names may be at most {} characters long, \
+                "#306:names may be at most {} characters long, \
                   got {} ({} characters)",
                 MAX_IDENTIFIER_LEN,
                 name,

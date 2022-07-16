@@ -41,7 +41,7 @@ impl TClass {
                     &name
                 );
             } else {
-                seen.insert(&name);
+                seen.insert(name);
             }
         }
         Ok(TClass {

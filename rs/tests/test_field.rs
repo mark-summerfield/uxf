@@ -79,6 +79,11 @@ mod tests {
     #[test]
     fn t_field_new_invalid_name() {
         for (code, name) in [
+            (300, "*abc"),
+            (300, "1int"),
+            (300, "€200"),
+            (302, BOOL_FALSE),
+            (302, BOOL_TRUE),
             (304, VALUE_NAME_NULL),
             (304, VTYPE_NAME_BOOL),
             (304, VTYPE_NAME_BYTES),
@@ -90,19 +95,14 @@ mod tests {
             (304, VTYPE_NAME_REAL),
             (304, VTYPE_NAME_STR),
             (304, VTYPE_NAME_TABLE),
-            (602, "*abc"),
-            (602, "1int"),
-            (602, "€200"),
-            (604, BOOL_FALSE),
-            (604, BOOL_TRUE),
             (
-                606,
+                306,
                 "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\
                    xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxy",
             ),
-            (608, "e—"),
-            (608, "_almost#1"),
-            (608, "f1:"),
+            (310, "e—"),
+            (310, "_almost#1"),
+            (310, "f1:"),
         ] {
             // With Some vtype
             let f =
@@ -122,25 +122,25 @@ mod tests {
     #[test]
     fn t_field_new_invalid_vtype() {
         for (code, vtype) in [
-            (600, ""),
-            (602, "*abc"),
-            (602, ".Custom_"),
-            (602, "1int"),
-            (602, "€200"),
-            (604, BOOL_FALSE),
-            (604, BOOL_TRUE),
+            (298, ""),
+            (300, "*abc"),
+            (300, ".Custom_"),
+            (300, "1int"),
+            (300, "€200"),
+            (302, BOOL_FALSE),
+            (302, BOOL_TRUE),
             (
-                606,
+                306,
                 "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\
                    xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxy",
             ),
-            (608, "My.Type"),
-            (608, "_9.9"),
-            (608, "_almost#1"),
-            (608, "_special."),
-            (608, "a_y_47ĕặæ_."),
-            (608, "e—"),
-            (608, "f1:"),
+            (310, "My.Type"),
+            (310, "_9.9"),
+            (310, "_almost#1"),
+            (310, "_special."),
+            (310, "a_y_47ĕặæ_."),
+            (310, "e—"),
+            (310, "f1:"),
         ] {
             let f = Field::new("test", vtype);
             assert!(f.is_err(), "expected err of #{} on {}", code, vtype);

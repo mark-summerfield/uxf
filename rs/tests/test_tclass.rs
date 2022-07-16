@@ -72,6 +72,11 @@ mod tests {
     #[test]
     fn t_tclass_invalid_ttype() {
         for (code, name) in [
+            (300, "*abc"),
+            (300, "1int"),
+            (300, "€200"),
+            (302, BOOL_FALSE),
+            (302, BOOL_TRUE),
             (304, VALUE_NAME_NULL),
             (304, VTYPE_NAME_BOOL),
             (304, VTYPE_NAME_BYTES),
@@ -83,19 +88,14 @@ mod tests {
             (304, VTYPE_NAME_REAL),
             (304, VTYPE_NAME_STR),
             (304, VTYPE_NAME_TABLE),
-            (602, "*abc"),
-            (602, "1int"),
-            (602, "€200"),
-            (604, BOOL_FALSE),
-            (604, BOOL_TRUE),
             (
-                606,
+                306,
                 "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\
                    xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxy",
             ),
-            (608, "e—"),
-            (608, "_almost#1"),
-            (608, "f1:"),
+            (310, "e—"),
+            (310, "_almost#1"),
+            (310, "f1:"),
         ] {
             // With fields
             let fields = valid_fields();
