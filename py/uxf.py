@@ -865,6 +865,7 @@ class TClass:
                 f'UXF_{self.ttype}', # prefix avoids name clashes
                 *[field.name for field in self.fields])
 
+
     @property
     def ttype(self):
         return self._ttype
@@ -1329,7 +1330,6 @@ class _Parser:
         if not tokens:
             return
         self.tokens = tokens
-        ends = []
         data = None
         comment = self._parse_file_comment()
         self._parse_imports()
@@ -1344,14 +1344,11 @@ class _Parser:
             if collection_start:
                 next_value = (self.tokens[i + 1].value
                               if i + 1 < len(self.tokens) else None)
-                end = self._on_collection_start(token, next_value)
-                if end is not None:
-                    ends.append(end)
+                self._on_collection_start(token, next_value)
                 if data is None:
                     data = self.stack[0]
             elif self._is_collection_end(kind):
-                self._on_collection_end(token, ends[-1] if ends else None)
-                ends.pop()
+                self._on_collection_end(token)
             elif kind is _Kind.IDENTIFIER: # All the valid ones are subsumed
                 self._handle_incorrect_identifier(token)
             elif kind is _Kind.STR:
@@ -1359,9 +1356,6 @@ class _Parser:
             elif kind.is_scalar:
                 self._handle_scalar(token)
             elif kind is _Kind.EOF:
-                if ends:
-                    s = '' if len(ends) == 1 else 's'
-                    self.error(408, f'missing closer{s}: {" ".join(ends)}')
                 break
             else:
                 self.error(410, f'unexpected token, got {token}')
@@ -1496,23 +1490,19 @@ class _Parser:
 
     def _on_collection_start(self, token, next_value):
         kind = token.kind
-        end = None
         if kind is _Kind.LIST_BEGIN:
             self._verify_type_identifier(token.vtype)
             value = List(vtype=token.vtype, comment=token.comment)
-            end = ']'
         elif kind is _Kind.MAP_BEGIN:
             if token.ktype is not None and token.ktype not in _KEY_TYPES:
                 self.error(448, f'expected list ktype, got {token.ktype}')
             self._verify_type_identifier(token.vtype)
             value = Map(ktype=token.ktype, vtype=token.vtype,
                         comment=token.comment)
-            end = '}'
         elif kind is _Kind.TABLE_BEGIN:
             tclass = self.tclasses.get(token.ttype)
             self._verify_ttype_identifier(tclass, next_value)
             value = Table(tclass, comment=token.comment)
-            end = ')'
         else:
             self.error(504, f'expected to create map, list, or table, '
                        f'got {token}')
@@ -1523,10 +1513,9 @@ class _Parser:
             # add the collection to the parent
             append_to_parent(self.stack[-1], value)
         self.stack.append(value) # make the collection the current parent
-        return end
 
 
-    def _on_collection_end(self, token, expected_end):
+    def _on_collection_end(self, token):
         if not self.stack:
             self.error(510, f'unexpected {token} suggests unmatched map, '
                        'list, or table start/end pair')
@@ -1543,9 +1532,6 @@ class _Parser:
             end = ')'
         if not isinstance(parent, Class):
             self.error(512, f'expected {end!r}, got {token.value!r}')
-        elif expected_end != end:
-            self.error(514,
-                       f'expected {expected_end!r}, got {token.value!r}')
         self.stack.pop()
 
 
