@@ -434,6 +434,30 @@ def main():
 
     try:
         total += 1
+        e = 402
+        uxf.loads('uxf 1.0\np a b\n(p 1 2)', on_error=on_error)
+        fail(f'test_errors • #{e} FAIL', regression)
+    except uxf.Error as err:
+        ok += got_error(e, err, regression)
+
+    try:
+        total += 1
+        e = 402
+        uxf.loads('uxf 1.0\nA b c\n(A 1 2)', on_error=on_error)
+        fail(f'test_errors • #{e} FAIL', regression)
+    except uxf.Error as err:
+        ok += got_error(e, err, regression)
+
+    try:
+        total += 1
+        e = 402
+        uxf.loads('uxf 1.0\nint', on_error=on_error)
+        fail(f'test_errors • #{e} FAIL', regression)
+    except uxf.Error as err:
+        ok += got_error(e, err, regression)
+
+    try:
+        total += 1
         e = 422
         uxf.load('i67.uxi', on_error=on_error)
         fail(f'test_errors • #{e} FAIL', regression)
@@ -620,33 +644,9 @@ def main():
 
     try:
         total += 1
-        e = 522
-        uxf.loads('uxf 1.0\np a b\n(p 1 2)', on_error=on_error)
-        fail(f'test_errors • #{e} FAIL', regression)
-    except uxf.Error as err:
-        ok += got_error(e, err, regression)
-
-    try:
-        total += 1
-        e = 522
-        uxf.loads('uxf 1.0\nA b c\n(A 1 2)', on_error=on_error)
-        fail(f'test_errors • #{e} FAIL', regression)
-    except uxf.Error as err:
-        ok += got_error(e, err, regression)
-
-    try:
-        total += 1
         e = 528
         uxf.loads('uxf 1.0\n!complex\n=Complex a b\n(Complex 1 2)',
                   on_error=on_error)
-        fail(f'test_errors • #{e} FAIL', regression)
-    except uxf.Error as err:
-        ok += got_error(e, err, regression)
-
-    try:
-        total += 1
-        e = 524
-        uxf.loads('uxf 1.0\nint', on_error=on_error)
         fail(f'test_errors • #{e} FAIL', regression)
     except uxf.Error as err:
         ok += got_error(e, err, regression)

@@ -520,18 +520,33 @@ class _Lexer:
             return
         start = self.pos - 1
         if self.text[start] == '_' or self.text[start].isalpha():
-            identifier = self. match_identifier(start, 'identifier')
-            self.add_token(_Kind.IDENTIFIER, identifier)
+            self.read_ttype_or_identifier(start)
         else:
             i = self.text.find('\n', self.pos)
             text = self.text[self.pos - 1:i if i > -1 else self.pos + 8]
             self.error(250, f'expected const or identifier, got {text!r}')
 
 
+    def read_ttype_or_identifier(self, start):
+        identifier = self.match_identifier(start, 'identifier')
+        if self.in_tclass:
+            top = self.tokens[-1] # if in_tclass there must be a prev token
+            if top.kind is _Kind.TCLASS_BEGIN and top.value is None:
+                top.value = identifier
+            else:
+                self.add_token(_Kind.FIELD, identifier)
+        else:
+            self.add_token(_Kind.IDENTIFIER, identifier)
+
+
     def read_field_vtype(self):
         self.skip_ws()
         identifier = self.match_identifier(self.pos, 'field vtype')
-        self.add_token(_Kind.TYPE, identifier)
+        if (self.in_tclass and self.tokens and
+                self.tokens[-1].kind is _Kind.FIELD):
+            self.tokens[-1].vtype = identifier
+        else:
+            self.error(248, f'expected field vtype, got {identifier!r}')
 
 
     def peek(self):
@@ -597,30 +612,41 @@ class _Lexer:
         top = self.tokens[-1]
         if kind in {_Kind.IDENTIFIER, _Kind.TYPE}:
             if top.kind is _Kind.LIST_BEGIN:
-                if top.vtype is None:
-                    top.vtype = value
-                else:
-                    self.error(272, f'expected value got type, {value}')
-                return True
+                return self.subsume_list_vtype(top, value)
             elif top.kind is _Kind.MAP_BEGIN:
-                if top.ktype is None:
-                    if kind is _Kind.IDENTIFIER:
-                        self.error(273, f'expected ktype got, {value}')
-                    else:
-                        top.ktype = value
-                elif top.vtype is None:
-                    top.vtype = value
-                else:
-                    self.error(276,
-                               f'expected first map key got type, {value}')
-                return True
+                return self.subsume_map_type(kind, top, value)
             elif top.kind is _Kind.TABLE_BEGIN and kind is _Kind.IDENTIFIER:
-                if top.ttype is None:
-                    top.ttype = value
-                else:
-                    self.error(274, f'expected value got type, {value}')
-                return True
+                return self.subsume_table_ttype(kind, top, value)
         return False
+
+
+    def subsume_list_vtype(self, top, value):
+        if top.vtype is None:
+            top.vtype = value
+        else:
+            self.error(272, f'expected value got type, {value}')
+        return True
+
+
+    def subsume_map_type(self, kind, top, value):
+        if top.ktype is None:
+            if kind is _Kind.IDENTIFIER:
+                self.error(273, f'expected ktype got, {value}')
+            else:
+                top.ktype = value
+        elif top.vtype is None:
+            top.vtype = value
+        else:
+            self.error(276, f'expected first map key got type, {value}')
+        return True
+
+
+    def subsume_table_ttype(self, kind, top, value):
+        if top.ttype is None:
+            top.ttype = value
+        else:
+            self.error(274, f'expected value got type, {value}')
+        return True
 
 
 class Error(Exception):
@@ -665,6 +691,7 @@ class _Token:
 class _Kind(enum.Enum):
     IMPORT = enum.auto()
     TCLASS_BEGIN = enum.auto()
+    FIELD = enum.auto()
     TCLASS_END = enum.auto()
     TABLE_BEGIN = enum.auto()
     TABLE_END = enum.auto()
@@ -826,10 +853,8 @@ class TClass:
             seen = set()
             for field in fields:
                 if isinstance(field, str):
-                    self._fields.append(Field(field))
-                else:
-                    assert isinstance(field, Field)
-                    self._fields.append(field)
+                    field = Field(field)
+                self._fields.append(field)
                 name = self._fields[-1].name
                 if name in seen:
                     raise Error('#336:can\'t have duplicate table tclass '
@@ -907,7 +932,8 @@ class TClassBuilder:
         self._ttype = ttype
         self._fields = []
         if fields is not None:
-            self.fields = fields
+            for field in fields:
+                self.append(field)
         self._comment = comment
 
 
@@ -928,20 +954,6 @@ class TClassBuilder:
         return self._fields
 
 
-    @fields.setter
-    def fields(self, fields):
-        self._fields.clear()
-        for field in fields:
-            if isinstance(field, str):
-                self._fields.append(FieldBuilder(field))
-            elif isinstance(field, Field):
-                self._fields.append(FieldBuilder(field.name, field.vtype))
-            elif isinstance(field, FieldBuilder):
-                self._fields.append(field)
-            else:
-                assert False, 'expected str, Field, or FieldBuilder'
-
-
     @property
     def comment(self):
         return self._comment
@@ -952,15 +964,10 @@ class TClassBuilder:
         self._comment = comment
 
 
-    def set_vtype(self, index, vtype):
-        self.fields[index].vtype = vtype
-
-
-    def append(self, name_or_field, vtype=None):
-        if isinstance(name_or_field, Field):
-            self.fields.append(name_or_field)
-        else:
-            self.fields.append(FieldBuilder(name_or_field, vtype))
+    def append(self, field):
+        if isinstance(field, str):
+            field = Field(field)
+        self.fields.append(field)
         name = self.fields[-1].name
         for field in self.fields[:-1]:
             if field.name == name:
@@ -969,13 +976,7 @@ class TClassBuilder:
 
 
     def build(self):
-        fields = []
-        for field in self.fields:
-            if isinstance(field, FieldBuilder):
-                fields.append(field.build())
-            else:
-                fields.append(field)
-        return TClass(self.ttype, fields, comment=self.comment)
+        return TClass(self.ttype, self.fields, comment=self.comment)
 
 
 class Field:
@@ -1014,44 +1015,11 @@ class Field:
         return f'{self.__class__.__name__}({self.name!r}, {self.vtype!r})'
 
 
-class FieldBuilder:
-
-    def __init__(self, name, vtype=None):
-        self._name = name
-        self._vtype = vtype
-
-
-    @property
-    def name(self):
-        return self._name
-
-
-    @name.setter
-    def name(self, name):
-        _check_name(name)
-        self._name = name
-
-
-    @property
-    def vtype(self):
-        return self._vtype
-
-
-    @vtype.setter
-    def vtype(self, vtype):
-        if vtype is not None:
-            _check_type_name(vtype)
-        self._vtype = vtype
-
-
-    def build(self):
-        return Field(self.name, self.vtype)
-
-
-def table(ttype, fields=(), *, comment=None):
+def table(ttype, fields=(), *, comment=None, tclass_comment=None):
     '''Convenience function for creating empty tables with a new tclass.
     See also the Table constructor.'''
-    return Table(TClass(ttype, fields), comment=comment)
+    return Table(TClass(ttype, fields, comment=tclass_comment),
+                 comment=comment)
 
 
 class Table:
@@ -1143,10 +1111,14 @@ class Table:
         return self.tclass.fields[column]
 
 
+    def isfieldless(self):
+        return self.tclass.isfieldless
+
+
     @property
     def _next_vtype(self):
         if self.tclass is not None:
-            if self.tclass.isfieldless:
+            if self.isfieldless:
                 return None
             if not self.records:
                 return self.tclass.fields[0].vtype
@@ -1376,7 +1348,7 @@ class _Parser:
                     data = self.stack[0]
             elif self._is_collection_end(kind):
                 self._on_collection_end(token)
-            elif kind is _Kind.IDENTIFIER: # Correct ones are subsumed
+            elif kind is _Kind.IDENTIFIER: # All the valid ones are subsumed
                 self._handle_incorrect_identifier(token)
             elif kind is _Kind.STR:
                 self._handle_str(token)
@@ -1598,16 +1570,12 @@ class _Parser:
         for index, token in enumerate(self.tokens):
             self.lino = token.lino
             if token.kind is _Kind.TCLASS_BEGIN:
-                tclass, ok = self._handle_tclass_begin(tclass,
+                tclass, ok = self._handle_tclass_begin(tclass, token.value,
                                                        token.comment)
                 if not ok:
                     return # in case on_error doesn't raise
-            elif token.kind is _Kind.IDENTIFIER:
-                if not self._handle_tclass_ttype(tclass, token.value):
-                    return # in case user on_error doesn't raise
-            elif token.kind is _Kind.TYPE:
-                if not self._handle_tclass_vtype(tclass, token):
-                    return # in case user on_error doesn't raise
+            elif token.kind is _Kind.FIELD:
+                tclass.append(Field(token.value, token.vtype))
             elif token.kind is _Kind.TCLASS_END:
                 if not self._handle_tclass_end(tclass):
                     return # in case user on_error doesn't raise
@@ -1621,7 +1589,7 @@ class _Parser:
         self.tokens = self.tokens[offset:]
 
 
-    def _handle_tclass_begin(self, tclass, comment):
+    def _handle_tclass_begin(self, tclass, ttype, comment):
         if tclass is not None:
             if tclass.ttype is None:
                 self.error(518, 'TClass without ttype', fail=True)
@@ -1629,29 +1597,7 @@ class _Parser:
             _add_to_tclasses(self.tclasses, tclass, lino=self.lino,
                              code=520, on_error=self.on_error)
             self.lino_for_tclass[tclass.ttype] = self.lino
-        return TClassBuilder(None, comment=comment), True
-
-
-    def _handle_tclass_ttype(self, tclass, value):
-        if tclass is None:
-            self.error(522, 'missing ttype; is an `=` missing?', fail=True)
-            return False # in case user on_error doesn't raise
-        elif tclass.ttype is None:
-            tclass.ttype = value
-        else:
-            tclass.append(value)
-        return True
-
-
-    def _handle_tclass_vtype(self, tclass, token):
-        if not tclass:
-            self.error(524, 'cannot use a built-in type name or '
-                       f'constant as a tclass name, got {token}', fail=True)
-            return False # in case user on_error doesn't raise
-        else:
-            vtype = token.value
-            tclass.set_vtype(-1, vtype)
-            return True
+        return TClassBuilder(ttype, comment=comment), True
 
 
     def _handle_tclass_end(self, tclass):

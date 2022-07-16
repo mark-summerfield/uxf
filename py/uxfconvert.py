@@ -671,7 +671,7 @@ class _UxfSaxHandler(xml.sax.handler.ContentHandler):
             self.tclass = uxf.TClassBuilder(d['name'],
                                             comment=d.get('comment'))
         elif name == 'field':
-            self.tclass.append(d['name'], d.get('vtype'))
+            self.tclass.append(uxf.Field(d['name'], d.get('vtype')))
         elif name == 'map':
             container = uxf.Map(ktype=d.get('ktype'), vtype=d.get('vtype'),
                                 comment=d.get('comment'))
