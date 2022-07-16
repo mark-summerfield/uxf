@@ -795,41 +795,6 @@ def _check_type_name(name):
                         f'or underscores, got {name}')
 
 
-class _TClassBase:
-
-    def __init__(self, ttype, fields=None, *, comment=None):
-        self._ttype = ttype
-        self._fields = []
-        self._comment = comment
-        if fields is not None:
-            seen = set()
-            for field in fields:
-                if isinstance(field, str):
-                    self._fields.append(Field(field))
-                else:
-                    self._fields.append(field)
-                name = self._fields[-1].name
-                if name in seen:
-                    raise Error('#336:can\'t have duplicate table tclass '
-                                f'field names, got {name!r} twice')
-                else:
-                    seen.add(name)
-
-    @property
-    def ttype(self):
-        return self._ttype
-
-
-    @property
-    def fields(self):
-        return self._fields
-
-
-    @property
-    def comment(self):
-        return self._comment
-
-
 class TClass:
 
     def __init__(self, ttype, fields=None, *, comment=None):
@@ -1404,17 +1369,19 @@ class _Parser:
                 self.error(402,
                            f'expected a map, list, or table, got {token}')
             if collection_start:
-                self._on_collection_start(i, token)
+                next_value = (self.tokens[i + 1].value
+                              if i + 1 < len(self.tokens) else None)
+                self._on_collection_start(token, next_value)
                 if data is None:
                     data = self.stack[0]
             elif self._is_collection_end(kind):
                 self._on_collection_end(token)
             elif kind is _Kind.IDENTIFIER: # Correct ones are subsumed
-                self._handle_incorrect_identifier(i, token)
+                self._handle_incorrect_identifier(token)
             elif kind is _Kind.STR:
-                self._handle_str(i, token)
+                self._handle_str(token)
             elif kind.is_scalar:
-                self._handle_scalar(i, token)
+                self._handle_scalar(token)
             elif kind is _Kind.EOF:
                 break
             else:
@@ -1487,13 +1454,9 @@ class _Parser:
                 self.used_tclasses.add(tclass.ttype)
 
 
-    def _verify_ttype_identifier(self, i, tclass):
+    def _verify_ttype_identifier(self, tclass, next_value):
         if tclass is None: # A table with no tclass is invalid
-            i += 1
-            value = None
-            if i < len(self.tokens):
-                value = self.tokens[i].value
-            value = f', got {value}' if value is not None else ''
+            value = f', got {next_value}' if next_value is not None else ''
             self.error(450, f'expected table ttype{value}', fail=True)
         else:
             self.used_tclasses.add(tclass.ttype)
@@ -1506,7 +1469,7 @@ class _Parser:
                                f' got value of type {tclass.ttype}')
 
 
-    def _handle_incorrect_identifier(self, _i, token):
+    def _handle_incorrect_identifier(self, token):
         if token.value.upper() in {'TRUE', 'FALSE'}:
             self.error(458, 'boolean values are represented by yes or no')
         else:
@@ -1514,7 +1477,7 @@ class _Parser:
                        f'map (as the value type), list, or table, {token}')
 
 
-    def _handle_str(self, i, token):
+    def _handle_str(self, token):
         value = token.value
         vtype, message = self.typecheck(value)
         if value is not None and vtype is not None and vtype in {
@@ -1532,7 +1495,7 @@ class _Parser:
         append_to_parent(self.stack[-1], value)
 
 
-    def _handle_scalar(self, i, token):
+    def _handle_scalar(self, token):
         value = token.value
         vtype, message = self.typecheck(value)
         if value is not None and vtype is not None:
@@ -1552,7 +1515,7 @@ class _Parser:
         append_to_parent(self.stack[-1], value)
 
 
-    def _on_collection_start(self, i, token):
+    def _on_collection_start(self, token, next_value):
         kind = token.kind
         if kind is _Kind.LIST_BEGIN:
             self._verify_type_identifier(token.vtype)
@@ -1565,7 +1528,7 @@ class _Parser:
                         comment=token.comment)
         elif kind is _Kind.TABLE_BEGIN:
             tclass = self.tclasses.get(token.ttype)
-            self._verify_ttype_identifier(i, tclass)
+            self._verify_ttype_identifier(tclass, next_value)
             value = Table(tclass, comment=token.comment)
         else:
             self.error(504, f'expected to create map, list, or table, '

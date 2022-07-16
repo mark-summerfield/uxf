@@ -720,16 +720,6 @@ def main():
     except uxf.Error as err:
         ok += got_error(e, err, regression)
 
-    try:
-        total += 1
-        t = uxf.table('enum', ())
-        t.append((1,))
-        fail('test_errors • TypeError(1) FAIL', regression)
-    except TypeError as err:
-        if str(err) == 'UXF_enum accepts up to 0 args; got 1':
-            ok += 1
-        else:
-            fail(f'test_errors • TypeError(2) FAIL: {err}', regression)
 
     if not regression:
         result = 'OK' if total == ok else 'FAIL'
