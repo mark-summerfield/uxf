@@ -643,7 +643,7 @@ To make `on_event()` quieter:
 To make all errors fatal:
 
     def on_event(*args, **kwargs):
-        raise uxf.Error(event_text(*args, **kwargs))
+        raise uxf.Error(uxf.event_text(*args, **kwargs))
         
 For further examples of custom `on_event()` functions, see
 `t/test_errors.py`, `t/test_imports.py` `t/test_include.py`,
