@@ -71,19 +71,19 @@ def check(cmd, regression, filename, expected):
 
 
 def compare(filename, regression):
-    def error(*_args, **_kwargs):
+    def on_event(*_args, **_kwargs):
         pass
 
     try:
         name = f'actual/{filename}'
-        actual_uxo = uxf.load(name, on_error=error)
+        actual_uxo = uxf.load(name, on_event=on_event)
     except uxf.Error as err:
         if not regression:
             print(f'compare • FAIL {name!r}: {err}')
         return 0
     try:
         name = f'expected/{filename}'
-        expected_uxo = uxf.load(name, on_error=error)
+        expected_uxo = uxf.load(name, on_event=on_event)
     except uxf.Error as err:
         if not regression:
             print(f'compare • FAIL {name!r}: {err}')

@@ -34,7 +34,7 @@ def main():
             verbose = False
         elif uxf.isasciidigit(arg):
             scale = int(arg)
-    on_error = functools.partial(uxf.on_error, verbose=False)
+    on_event = functools.partial(uxf.on_event, verbose=False)
     print(f'scale={scale} ', end='', flush=True)
 
     uxt1s = []
@@ -49,7 +49,7 @@ def main():
     t = time.monotonic()
     uxos = []
     for uxt1 in uxt1s:
-        uxos.append(uxf.loads(uxt1, on_error=on_error))
+        uxos.append(uxf.loads(uxt1, on_event=on_event))
     load_t = time.monotonic() - t
     print(f'load={load_t:.03f}s ', end='', flush=True)
 
@@ -62,7 +62,7 @@ def main():
     total = load_t + dump_t
     print(f'dump={dump_t:0.03f}s (total={total:0.03f}s', end='')
 
-    d = dict(drop_unused=True, replace_imports=True, on_error=on_error)
+    d = dict(drop_unused=True, replace_imports=True, on_event=on_event)
     ok = 0
     for i in range(scale):
         uxo1 = uxf.loads(uxt1s[i], **d)

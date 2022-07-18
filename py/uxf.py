@@ -19,7 +19,7 @@ from xml.sax.saxutils import escape, unescape
 import editabletuple
 
 
-__version__ = '1.3.0' # uxf module version
+__version__ = '2.0.0' # uxf module version
 VERSION = 1.0 # UXF file format version
 
 UTF8 = 'utf-8'
@@ -36,55 +36,33 @@ RESERVED_WORDS = frozenset(_ANY_VALUE_TYPES | {'null'} | _BOOLS)
 _MISSING = object()
 
 
-def on_error(lino, code, message, *, filename='-', fail=False,
-             verbose=True):
-    '''The default on_error() error handler.
-    Is called with the line number (lino), error code, error message,
-    and filename. The filename may be '-' or empty if the UXF is created in
-    memory rather than loaded from a file. If fail is True it means the
-    error is unrecoverable, so the normal action would be to raise. If
-    verbose is True the normal action is to print a textual version of the
-    error data to stderr.'''
-    text = f'uxf.py:{filename}:{lino}:#{code}:{message}'
-    if fail:
-        raise Error(text)
-    if verbose:
-        print(text, file=sys.stderr)
-
-
 @enum.unique
-class EventKind(enum.Enum):
+class Event(enum.Enum):
     WARNING = enum.auto()
     REPAIR = enum.auto()
     ERROR = enum.auto()
     FATAL = enum.auto()
 
 
-Event = collections.namedtuple('Event', 'kind code message filename lino')
-Event.__doc__ += '''
-.kind is an EventKind, .code is an event code, .message the description,
-.filename the filename or '-' if unknown or stdin, .lino the line number or
-0 if unknown.'''
-
-
-def on_event(event, *, filename=None, verbose=True):
-    '''The default event handler.
-    Is called with an Event object and filename and verbose keyword
-    arguments.
-    If filename is not None it should be used to override event.filename,
-    e.g., on_event = functools.partial(uxf.on_event, verbose=False).
-    '''
-    if filename is not None:
-        event.filename = filename
-    if not event.filename:
-        event.filename = '-'
-    kind = event.kind.name[0]
-    text = ':'.join(os.path.basename(__file__), kind, str(event.code),
-                    event.filename, str(event.lino), event.message)
-    if kind is EventKind.FATAL:
+def on_event(event: Event, code: int, message: str, *, filename='-',
+             lino=0, verbose=True):
+    '''The default event handler.'''
+    text = event_text(event, code, message, filename=filename, lino=lino)
+    if event is Event.FATAL:
         raise Error(text)
     if verbose:
         print(text, file=sys.stderr)
+
+
+def event_text(event: Event, code: int, message: str, *, filename='-',
+               lino=0, verbose=None):
+    '''Convenience method for custom on_event() handlers.'''
+    return (f'{os.path.basename(__file__)}:{event.name[0]}{code}:'
+            f'{filename}:{lino}:{message}')
+
+
+def _raise_error(code, message):
+    raise Error(event_text(Event.FATAL, code, message))
 
 
 def _validate_format(name, value): # If invalid we return the valid default
@@ -117,28 +95,31 @@ decimal place are needed to represent the given `real` (i.e., Python
 class Uxf:
 
     def __init__(self, value=None, *, custom='', tclasses=None,
-                 comment=None):
+                 comment=None, on_event=on_event):
         '''value may be a list, List, tuple, dict, Map, or Table and will
         default to a List if not specified; if given tclasses must be a dict
         whose values are TClasses and whose corresponding keys are the
         TClasses' ttypes (i.e., their names); if given the comment is a
         file-level comment that follows the uxf header and precedes any
-        TClasses and the value'''
+        TClasses and the value.
+        on_event is used instead of raise to give users more control'''
+        self.on_event = on_event
         self.value = value
         self.custom = custom
         self.comment = comment
         self._tclasses = {} # tclasses key=ttype value=TClass
         self.tclasses = tclasses if tclasses is not None else {}
         self.imports = {} # key=ttype value=import text
-        self.on_error = functools.partial(on_error, filename='-')
 
 
     def add_tclasses(self, tclass, *tclasses):
         for tclass in (tclass,) + tclasses:
             if not tclass.ttype:
-                raise Error('#200:cannot add an unnamed TClass')
+                self.on_event(Event.FATAL, 200,
+                              'cannot add an unnamed TClass')
+                return # in case user on_event doesn't raise
             _add_to_tclasses(self.tclasses, tclass, lino=0, code=690,
-                             on_error=self.on_error)
+                             on_event=self.on_event)
 
 
     @property
@@ -150,7 +131,9 @@ class Uxf:
     def tclasses(self, tclasses):
         for ttype, tclass in tclasses.items():
             if not ttype:
-                raise Error('#694:cannot set an unnamed TClass')
+                self.on_event(Event.FATAL, 694,
+                              'cannot set an unnamed TClass')
+                return # in case user on_event doesn't raise
             self._tclasses[ttype] = tclass
 
 
@@ -183,44 +166,34 @@ class Uxf:
         elif isinstance(value, (set, frozenset, tuple, collections.deque)):
             value = List()
         if not _is_uxf_collection(value):
-            raise Error('#100:Uxf value must be a list, List, dict, Map, '
-                        f'or Table, got {value.__class__.__name__}')
+            self.on_event(
+                Event.FATAL, 100, 'Uxf value must be a list, List, dict, '
+                f'Map, or Table, got {value.__class__.__name__}')
+            return # in case user on_event doesn't raise
         self._value = value
 
 
-    def dump(self, filename_or_filelike, *, on_error=on_error,
+    def dump(self, filename_or_filelike, *, on_event=on_event,
              format=Format()):
         '''Convenience method that wraps the module-level dump() function'''
-        dump(filename_or_filelike, self, on_error=on_error, format=format)
+        dump(filename_or_filelike, self, on_event=on_event, format=format)
 
 
-    def dumps(self, *, on_error=on_error, format=Format()):
+    def dumps(self, *, on_event=on_event, format=Format()):
         '''Convenience method that wraps the module-level dumps()
         function'''
-        return dumps(self, on_error=on_error, format=format)
+        return dumps(self, on_event=on_event, format=format)
 
 
-    def load(self, filename_or_filelike, *, on_error=on_error,
+    def load(self, filename_or_filelike, *, on_event=on_event,
              drop_unused=False, replace_imports=False):
         '''Convenience method that wraps the module-level load()
         function'''
         filename = (filename_or_filelike if isinstance(filename_or_filelike,
                     (str, pathlib.Path)) else '-')
         value, custom, tclasses, imports, comment = _loads(
-            _read_text(filename_or_filelike), filename, on_error=on_error,
-            drop_unused=drop_unused, replace_imports=replace_imports)
-        self.value = value
-        self.custom = custom
-        self.tclasses = tclasses
-        self.comment = comment
-
-
-    def loads(self, uxt, filename='-', *, on_error=on_error,
-              drop_unused=False, replace_imports=False):
-        '''Convenience method that wraps the module-level loads()
-        function'''
-        value, custom, tclasses, imports, comment = _loads(
-            uxt, filename, on_error=on_error, drop_unused=drop_unused,
+            _read_text(filename_or_filelike, on_event), filename,
+            on_event=on_event, drop_unused=drop_unused,
             replace_imports=replace_imports)
         self.value = value
         self.custom = custom
@@ -228,7 +201,20 @@ class Uxf:
         self.comment = comment
 
 
-def load(filename_or_filelike, *, on_error=on_error, drop_unused=False,
+    def loads(self, uxt, filename='-', *, on_event=on_event,
+              drop_unused=False, replace_imports=False):
+        '''Convenience method that wraps the module-level loads()
+        function'''
+        value, custom, tclasses, imports, comment = _loads(
+            uxt, filename, on_event=on_event, drop_unused=drop_unused,
+            replace_imports=replace_imports)
+        self.value = value
+        self.custom = custom
+        self.tclasses = tclasses
+        self.comment = comment
+
+
+def load(filename_or_filelike, *, on_event=on_event, drop_unused=False,
          replace_imports=False, _imported=None, _is_import=False):
     '''
     Returns a Uxf object.
@@ -239,15 +225,17 @@ def load(filename_or_filelike, *, on_error=on_error, drop_unused=False,
     filename = (filename_or_filelike if isinstance(filename_or_filelike,
                 (str, pathlib.Path)) else '-')
     value, custom, tclasses, imports, comment = _loads(
-        _read_text(filename_or_filelike), filename, on_error=on_error,
-        drop_unused=drop_unused, replace_imports=replace_imports,
-        _imported=_imported, _is_import=_is_import)
-    uxo = Uxf(value, custom=custom, tclasses=tclasses, comment=comment)
+        _read_text(filename_or_filelike, on_event), filename,
+        on_event=on_event, drop_unused=drop_unused,
+        replace_imports=replace_imports, _imported=_imported,
+        _is_import=_is_import)
+    uxo = Uxf(value, custom=custom, tclasses=tclasses, comment=comment,
+              on_event=on_event)
     uxo.imports = imports
     return uxo
 
 
-def loads(uxt, filename='-', *, on_error=on_error, drop_unused=False,
+def loads(uxt, filename='-', *, on_event=on_event, drop_unused=False,
           replace_imports=False, _imported=None, _is_import=False):
     '''
     Returns a Uxf object.
@@ -255,31 +243,32 @@ def loads(uxt, filename='-', *, on_error=on_error, drop_unused=False,
     uxt must be a string of UXF data.
     '''
     value, custom, tclasses, imports, comment = _loads(
-        uxt, filename, on_error=on_error, drop_unused=drop_unused,
+        uxt, filename, on_event=on_event, drop_unused=drop_unused,
         replace_imports=replace_imports, _imported=_imported,
         _is_import=_is_import)
-    uxo = Uxf(value, custom=custom, tclasses=tclasses, comment=comment)
+    uxo = Uxf(value, custom=custom, tclasses=tclasses, comment=comment,
+              on_event=on_event)
     uxo.imports = imports
     return uxo
 
 
-def _loads(uxt, filename='-', *, on_error=on_error, drop_unused=False,
+def _loads(uxt, filename='-', *, on_event=on_event, drop_unused=False,
            replace_imports=False, _imported=None, _is_import=False):
-    tokens, custom, text = _tokenize(uxt, filename, on_error=on_error)
+    tokens, custom, text = _tokenize(uxt, filename, on_event=on_event)
     value, comment, tclasses, imports = _parse(
-        tokens, filename, on_error=on_error, drop_unused=drop_unused,
+        tokens, filename, on_event=on_event, drop_unused=drop_unused,
         replace_imports=replace_imports, _imported=_imported,
         _is_import=_is_import)
     return value, custom, tclasses, imports, comment
 
 
-def _tokenize(uxt, filename='-', *, on_error=on_error):
-    lexer = _Lexer(filename, on_error=on_error)
+def _tokenize(uxt, filename='-', *, on_event=on_event):
+    lexer = _Lexer(filename, on_event=on_event)
     tokens = lexer.tokenize(uxt)
     return tokens, lexer.custom, uxt
 
 
-def _read_text(filename_or_filelike):
+def _read_text(filename_or_filelike, on_event):
     if not isinstance(filename_or_filelike, (str, pathlib.Path)):
         return filename_or_filelike.read()
     try:
@@ -291,20 +280,34 @@ def _read_text(filename_or_filelike):
             with open(filename_or_filelike, 'rt', encoding=UTF8) as file:
                 return file.read()
     except OSError as err:
-        raise Error(f'#102:failed to read UXF text: {err}')
+        on_event(Event.FATAL, 102, f'failed to read UXF text: {err}')
 
 
-class _Lexer:
+class _EventMixin:
 
-    def __init__(self, filename, *, on_error=on_error):
+    def warning(self, code, message):
+        self.on_event(Event.WARNING, code, message, lino=self.lino)
+
+
+    def repair(self, code, message):
+        self.on_event(Event.REPAIR, code, message, lino=self.lino)
+
+
+    def error(self, code, message):
+        self.on_event(Event.ERROR, code, message, lino=self.lino)
+
+
+    def fatal(self, code, message):
+        self.on_event(Event.FATAL, code, message, lino=self.lino)
+
+
+class _Lexer(_EventMixin):
+
+    def __init__(self, filename, *, on_event=on_event):
         self.filename = filename
-        self.on_error = functools.partial(
-            on_error, filename=os.path.basename(filename))
+        self.on_event = functools.partial(
+            on_event, filename=os.path.basename(filename))
         self.clear()
-
-
-    def error(self, code, message, *, fail=False):
-        self.on_error(self.lino, code, message, fail=fail)
 
 
     def clear(self):
@@ -328,22 +331,21 @@ class _Lexer:
     def scan_header(self):
         i = self.text.find('\n')
         if i == -1:
-            self.error(110, 'missing UXF file header or empty file',
-                       fail=True)
-            return # in case user on_error doesn't raise
+            self.fatal(110, 'missing UXF file header or empty file')
+            return # in case user on_event doesn't raise
         self.pos = i
         parts = self.text[:i].split(None, 2)
         if len(parts) < 2:
-            self.error(120, 'invalid UXF file header', fail=True)
-            return # in case user on_error doesn't raise
+            self.fatal(120, 'invalid UXF file header')
+            return # in case user on_event doesn't raise
         if parts[0] != 'uxf':
-            self.error(130, 'not a UXF file', fail=True)
-            return # in case user on_error doesn't raise
+            self.fatal(130, 'not a UXF file')
+            return # in case user on_event doesn't raise
         try:
             version = float(parts[1])
             if version > VERSION:
-                self.error(141,
-                           f'version ({version}) > current ({VERSION})')
+                self.warning(141,
+                             f'version ({version}) > current ({VERSION})')
         except ValueError:
             self.error(151, 'failed to read UXF file version number')
         if len(parts) > 2:
@@ -430,9 +432,8 @@ class _Lexer:
             value = self.match_to('\n', what='import')
             value = value.strip()
             if this_file == _full_filename(value, path):
-                self.error(176, 'a UXF file cannot import itself',
-                           fail=True)
-                return # in case user on_error doesn't raise
+                self.fatal(176, 'a UXF file cannot import itself')
+                return # in case user on_event doesn't raise
             else:
                 self.add_token(_Kind.IMPORT, value)
             if self.peek() == '!':
@@ -536,8 +537,8 @@ class _Lexer:
         try:
             value = convert(text[:19])
             self.add_token(_Kind.DATE_TIME, value)
-            self.error(231, f'skipped timezone data, used {text[:19]!r}, '
-                       f'got {text!r}')
+            self.error(231, 'skipped timezone data, '
+                       f'used {text[:19]!r}, got {text!r}')
         except ValueError as err:
             self.error(240, f'invalid datetime: {text!r}: {err}')
 
@@ -817,11 +818,11 @@ class Map(collections.UserDict):
                 prefix = ('map keys may only be of type int, date, '
                           'datetime, str, or bytes, got ')
                 if isinstance(value, Table):
-                    raise Error(f'#290:{prefix}a Table ( … ), maybe bytes '
-                                '(: … :) was intended?')
+                    _raise_error(290, f'{prefix}a Table ( … ), maybe '
+                                 'bytes (: … :) was intended?')
                 else:
-                    raise Error(f'#294:{prefix}{value.__class__.__name__} '
-                                f'{value!r}')
+                    _raise_error(294, f'{prefix}{value.__class__.__name__} '
+                                 f'{value!r}')
             self._pending_key = value
         else:
             self.data[self._pending_key] = value
@@ -836,25 +837,25 @@ class Map(collections.UserDict):
 def _check_name(name):
     _check_type_name(name)
     if name in RESERVED_WORDS:
-        raise Error('#304:names cannot be the same as built-in type '
-                    'names or constants, got {name}')
+        _raise_error(304, 'names cannot be the same as built-in type '
+                     'names or constants, got {name}')
 
 
 def _check_type_name(name):
     if not name:
-        raise Error('#298:names must be nonempty')
+        _raise_error(298, 'names must be nonempty')
     if name[0] != '_' and not name[0].isalpha():
-        raise Error('#300:names must start with a letter or '
-                    f'underscore, got {name}')
+        _raise_error(300, 'names must start with a letter or '
+                     f'underscore, got {name}')
     if name in _BOOLS:
-        raise Error(f'#302:names may not be yes or no got {name}')
+        _raise_error(302, f'names may not be yes or no got {name}')
     if len(name) > _MAX_IDENTIFIER_LEN:
-        raise Error(f'#306:names may at most {_MAX_IDENTIFIER_LEN} '
-                    f'characters long, got {name} ({len(name)} characters)')
+        _raise_error(306, f'names may at most {_MAX_IDENTIFIER_LEN} char'
+                     f'acters long, got {name} ({len(name)} characters)')
     for c in name:
         if not (c == '_' or c.isalnum()):
-            raise Error('#310:names may only contain letters, digits, '
-                        f'or underscores, got {name}')
+            _raise_error(310, 'names may only contain letters, digits, '
+                         f'or underscores, got {name}')
 
 
 class TClass:
@@ -892,8 +893,8 @@ class TClass:
                 self._fields.append(field)
                 name = self._fields[-1].name
                 if name in seen:
-                    raise Error('#336:can\'t have duplicate table tclass '
-                                f'field names, got {name!r} twice')
+                    _raise_error(336, 'can\'t have duplicate table tclass '
+                                 f'field names, got {name!r} twice')
                 else:
                     seen.add(name)
             self._RecordClass = editabletuple.editabletuple(
@@ -1007,8 +1008,8 @@ class TClassBuilder:
         name = self.fields[-1].name
         for field in self.fields[:-1]:
             if field.name == name:
-                raise Error('#338:can\'t append duplicate table tclass '
-                            f'field names, got {name!r}')
+                _raise_error(338, 'can\'t append duplicate table tclass '
+                             f'field names, got {name!r}')
 
 
     def build(self):
@@ -1104,10 +1105,10 @@ class Table:
         self._comment = comment
         if records:
             if tclass is None:
-                raise Error(
-                    '#320:can\'t create a nonempty table without fields')
+                _raise_error(320, 'can\'t create a nonempty table '
+                             'without fields')
             elif not tclass.ttype:
-                raise Error('#330:can\'t create an unnamed nonempty table')
+                _raise_error(330, 'can\'t create an unnamed nonempty table')
             if isinstance(records, (list, List)):
                 self.records = list(records)
             else:
@@ -1128,8 +1129,8 @@ class Table:
     @property
     def RecordClass(self):
         if self.tclass.RecordClass is None:
-            raise Error('#332:cannot have records in a table with a '
-                        'fieldless tclass')
+            _raise_error(332, 'cannot have records in a table with a '
+                         'fieldless tclass')
         return self.tclass.RecordClass
 
 
@@ -1171,7 +1172,7 @@ class Table:
         the last record (row) if that isn't full, or as the first value in a
         new record (row)'''
         if not self.fields:
-            raise Error('#334:can\'t append to a fieldless table')
+            _raise_error(334, 'can\'t append to a fieldless table')
         if not self.records or len(self.records[-1]) >= len(self.tclass):
             self.records.append([])
         self.records[-1].append(value)
@@ -1316,22 +1317,22 @@ class Table:
                 f'records={self.records!r}, comment={self.comment!r})')
 
 
-def _parse(tokens, filename='-', *, on_error=on_error, drop_unused=False,
+def _parse(tokens, filename='-', *, on_event=on_event, drop_unused=False,
            replace_imports=False, _imported=None, _is_import=False):
-    parser = _Parser(filename, on_error=on_error, drop_unused=drop_unused,
+    parser = _Parser(filename, on_event=on_event, drop_unused=drop_unused,
                      replace_imports=replace_imports, _imported=_imported,
                      _is_import=_is_import)
     data, comment = parser.parse(tokens)
     return data, comment, parser.tclasses, parser.imports
 
 
-class _Parser:
+class _Parser(_EventMixin):
 
-    def __init__(self, filename, *, on_error=on_error, drop_unused=False,
+    def __init__(self, filename, *, on_event=on_event, drop_unused=False,
                  replace_imports=False, _imported=None, _is_import=False):
         self.filename = filename
-        self.on_error = functools.partial(
-            on_error, filename=os.path.basename(filename))
+        self.on_event = functools.partial(
+            on_event, filename=os.path.basename(filename))
         self.drop_unused = drop_unused
         self.replace_imports = replace_imports
         self._is_import = _is_import
@@ -1341,13 +1342,9 @@ class _Parser:
         if filename and filename != '-':
             filename = _full_filename(filename)
             if filename in self.imported:
-                self.error(400, f'already imported {filename}', fail=True)
-                return # in case user on_error doesn't raise
+                self.fatal(400, f'already imported {filename}')
+                return # in case user on_event doesn't raise
             self.imported.add(filename)
-
-
-    def error(self, code, message, *, fail=False):
-        self.on_error(self.lino, code, message, fail=fail)
 
 
     def clear(self):
@@ -1443,12 +1440,13 @@ class _Parser:
 
 
     def _report_problem(self, diff, code, what):
+        handle = self.warning if code == 422 else self.error
         diff = sorted(diff)
         if len(diff) == 1:
-            self.error(code, f'{what}: {diff[0]!r}')
+            handle(code, f'{what}: {diff[0]!r}')
         else:
             diff = ', '.join(repr(t) for t in diff)
-            self.error(code, f'{what}s: {diff}')
+            handle(code, f'{what}s: {diff}')
 
 
     def _verify_type_identifier(self, vtype):
@@ -1465,7 +1463,7 @@ class _Parser:
     def _verify_ttype_identifier(self, tclass, next_value):
         if tclass is None: # A table with no tclass is invalid
             value = f', got {next_value}' if next_value is not None else ''
-            self.error(450, f'expected table ttype{value}', fail=True)
+            self.fatal(450, f'expected table ttype{value}')
         else:
             self.used_tclasses.add(tclass.ttype)
             if len(self.stack) > 1:
@@ -1492,14 +1490,14 @@ class _Parser:
                 'bool', 'int', 'real', 'date', 'datetime'}:
             new_value = naturalize(value)
             if new_value != value:
-                self.error(486,
-                           f'converted str {value!r} to {vtype} {value}')
+                self.repair(486,
+                            f'converted str {value!r} to {vtype} {value}')
                 value = new_value
             else:
                 self.error(488, message)
         if not self.stack:
-            self.error(489, 'invalid UXF data')
-            return # in case user on_error doesn't raise
+            self.fatal(489, 'invalid UXF data')
+            return # in case user on_event doesn't raise
         append_to_parent(self.stack[-1], value)
 
 
@@ -1509,17 +1507,17 @@ class _Parser:
         if value is not None and vtype is not None:
             if vtype == 'real' and isinstance(value, int):
                 v = float(value)
-                self.error(496, f'converted int {value} to real {v}')
+                self.repair(496, f'converted int {value} to real {v}')
                 value = v
             elif vtype == 'int' and isinstance(value, float):
                 v = round(value)
-                self.error(498, f'converted real {value} to int {v}')
+                self.repair(498, f'converted real {value} to int {v}')
                 value = v
             else:
                 self.error(500, message)
         if not self.stack:
-            self.error(501, 'invalid UXF data')
-            return # in case user on_error doesn't raise
+            self.fatal(501, 'invalid UXF data')
+            return # in case user on_event doesn't raise
         append_to_parent(self.stack[-1], value)
 
 
@@ -1539,7 +1537,7 @@ class _Parser:
             self._verify_ttype_identifier(tclass, next_value)
             value = Table(tclass, comment=token.comment)
         else:
-            self.error(504, f'expected to create map, list, or table, '
+            self.error(504, 'expected to create map, list, or table, '
                        f'got {token}')
         if self.stack:
             _, message = self.typecheck(value)
@@ -1612,12 +1610,12 @@ class _Parser:
                 lino = self.lino
             elif token.kind is _Kind.FIELD:
                 if tclass_builder is None:
-                    self.error(524, 'Field outside TClass', fail=True)
-                    return # in case user on_error doesn't raise
+                    self.fatal(524, 'Field outside TClass')
+                    return # in case user on_event doesn't raise
                 tclass_builder.append(Field(token.value, token.vtype))
             elif token.kind is _Kind.TCLASS_END:
                 if not self._handle_tclass_end(tclass_builder, lino):
-                    return # in case user on_error doesn't raise
+                    return # in case user on_event doesn't raise
                 offset = index + 1
                 tclass_builder = None
                 lino = 0
@@ -1629,11 +1627,11 @@ class _Parser:
     def _handle_tclass_end(self, tclass_builder, lino):
         if tclass_builder is not None:
             if tclass_builder.ttype is None:
-                self.error(526, 'TClass without ttype', fail=True)
-                return False # in case user on_error doesn't raise
+                self.fatal(526, 'TClass without ttype')
+                return False # in case user on_event doesn't raise
             tclass = tclass_builder.build()
             _add_to_tclasses(self.tclasses, tclass, lino=self.lino,
-                             code=528, on_error=self.on_error)
+                             code=528, on_event=self.on_event)
             self.lino_for_tclass[tclass.ttype] = lino
         return True
 
@@ -1652,15 +1650,15 @@ class _Parser:
             elif text is not None:
                 uxo = self._parse_url_text(text, value)
             else:
-                self.error(540, 'there are no ttype definitions to import '
+                self.fatal(540, 'there are no ttype definitions to import '
                            f'{value!r} ({filename!r})')
                 return # should never get here
             if uxo is None:
-                self.error(541, 'invalid UXF data')
-                return # in case user on_error doesn't raise
+                self.fatal(541, 'invalid UXF data')
+                return # in case user on_event doesn't raise
             for ttype, tclass in uxo.tclasses.items():
                 if _add_to_tclasses(self.tclasses, tclass, lino=self.lino,
-                                    code=544, on_error=self.on_error):
+                                    code=544, on_event=self.on_event):
                     self.imports[ttype] = value
         except _AlreadyImported:
             pass # don't reimport & errors already handled
@@ -1684,7 +1682,7 @@ class _Parser:
     def _parse_url_text(self, text, filename):
         try:
             return loads(text, filename=filename,
-                         on_error=self._on_import_error,
+                         on_event=self._on_import_error,
                          _imported=self.imported, _is_import=True)
         except Error as err:
             self.error(530, f'failed to import {filename!r}: {err}')
@@ -1706,7 +1704,7 @@ class _Parser:
 
     def _system_import_tclass(self, tclass, name):
         if _add_to_tclasses(self.tclasses, tclass, lino=self.lino,
-                            code=570, on_error=self.on_error):
+                            code=570, on_event=self.on_event):
             self.imports[tclass.ttype] = name
 
 
@@ -1715,13 +1713,12 @@ class _Parser:
         if fullname in self.imported:
             raise _AlreadyImported # don't reimport
         try:
-            return load(fullname, on_error=self._on_import_error,
+            return load(fullname, on_event=self._on_import_error,
                         _imported=self.imported, _is_import=True)
         except (FileNotFoundError, Error) as err:
             if fullname in self.imported:
-                self.error(580, f'cannot do circular imports {fullname!r}',
-                           fail=True)
-                return # in case user on_error doesn't raise
+                self.fatal(580, f'cannot do circular imports {fullname!r}')
+                return # in case user on_event doesn't raise
             else:
                 self.error(586, f'failed to import {fullname!r}: {err}')
             raise _AlreadyImported # couldn't import
@@ -1749,18 +1746,18 @@ class _Parser:
         return _full_filename(filename)
 
 
-    def _on_import_error(self, lino, code, message, *, filename, fail=False,
-                         verbose=True):
+    def _on_import_error(self, event, code, message, *, filename='-',
+                         lino=0, verbose=True):
         if code == 418: # we expect all ttypes to be unused here
             return
-        self.on_error(lino, code, message, filename=filename, fail=fail,
+        self.on_event(event, code, message, filename=filename, lino=lino,
                       verbose=verbose)
 
 
     def typecheck(self, value):
         if not self.stack:
-            self.error(590, 'invalid UXF data')
-            return None, None # in case user on_error doesn't raise
+            self.fatal(590, 'invalid UXF data')
+            return None, None # in case user on_event doesn't raise
         parent = self.stack[-1]
         if isinstance(parent, List):
             vtype = parent.vtype
@@ -1788,7 +1785,7 @@ class _Parser:
         return None, None
 
 
-def _add_to_tclasses(tclasses, tclass, *, lino, code, on_error):
+def _add_to_tclasses(tclasses, tclass, *, lino, code, on_event):
     first_tclass = tclasses.get(tclass.ttype)
     if first_tclass is None: # this is the first definition of this ttype
         tclasses[tclass.ttype] = tclass
@@ -1798,9 +1795,9 @@ def _add_to_tclasses(tclasses, tclass, *, lino, code, on_error):
             first_tclass.comment = tclass.comment # last comment wins
         return True # harmless duplicate
     else:
-        on_error(lino, code,
+        on_event(Event.FATAL, code,
                  f'conflicting ttype definitions for {tclass.ttype}',
-                 fail=True)
+                 lino=lino)
     return False
 
 
@@ -1811,7 +1808,7 @@ _TYPECHECK_CLASSES = dict(
 _BUILT_IN_NAMES = tuple(_TYPECHECK_CLASSES.keys())
 
 
-def dump(filename_or_filelike, data, *, on_error=on_error, format=Format()):
+def dump(filename_or_filelike, data, *, on_event=on_event, format=Format()):
     '''
     filename_or_filelike is sys.stdout or a filename or an open writable
     file (text mode UTF-8 encoded). If filename_or_filelike is a filename
@@ -1831,14 +1828,14 @@ def dump(filename_or_filelike, data, *, on_error=on_error, format=Format()):
         file = filename_or_filelike
     try:
         if not isinstance(data, Uxf):
-            data = Uxf(data)
-        _Writer(file, data, on_error, format)
+            data = Uxf(data, on_event=on_event)
+        _Writer(file, data, on_event, format)
     finally:
         if close:
             file.close()
 
 
-def dumps(data, *, on_error=on_error, format=Format()):
+def dumps(data, *, on_event=on_event, format=Format()):
     '''
     data is a Uxf object, or a list, List, dict, Map, or Table that this
     function will write to a string in UXF format which will then be
@@ -1846,16 +1843,16 @@ def dumps(data, *, on_error=on_error, format=Format()):
     '''
     string = io.StringIO()
     if not isinstance(data, Uxf):
-        data = Uxf(data)
-    _Writer(string, data, on_error, format)
+        data = Uxf(data, on_event=on_event)
+    _Writer(string, data, on_event, format)
     return string.getvalue()
 
 
 class _Writer:
 
-    def __init__(self, file, uxo, on_error, format):
+    def __init__(self, file, uxo, on_event, format):
         self.file = file
-        self.on_error = on_error
+        self.on_event = on_event
         self.format = format
         self.column = 0
         self.indent = 0
@@ -1872,10 +1869,6 @@ class _Writer:
             self.write_tclasses(uxo.tclasses, uxo.imports)
         self.write_value(uxo.value)
         self._write_pending('\n' if self.prev != '\n' else '', force=True)
-
-
-    def error(self, code, message, *, fail=False):
-        self.on_error(0, code, message, fail=fail)
 
 
     @property
@@ -2117,10 +2110,10 @@ class _Writer:
         elif isinstance(item, (bytes, bytearray)):
             self._write_one(f'(:{item.hex().upper()}:)')
         else:
-            self.error(561, 'unexpected item of type '
-                       f'{item.__class__.__name__}: {item!r};'
-                       'consider using a ttype', fail=True)
-            return # in case user on_error doesn't raise
+            self.on_event(Event.FATAL, 561, 'unexpected item of type '
+                          f'{item.__class__.__name__}: {item!r};'
+                          'consider using a ttype')
+            return # in case user on_event doesn't raise
         return False
 
 
@@ -2452,18 +2445,18 @@ to allow later imports to override earlier ones.
                 raise SystemExit(f'uxf.py:error:won\'t overwrite {outfile}')
     try:
         lint = config.lint or (config.lint is None and outfile is None)
-        on_error = functools.partial(on_error, verbose=config.lint,
+        on_event = functools.partial(on_event, verbose=config.lint,
                                      filename=infile)
-        uxo = load(infile, on_error=on_error, drop_unused=config.dropunused,
+        uxo = load(infile, on_event=on_event, drop_unused=config.dropunused,
                    replace_imports=config.replaceimports)
         do_dump = outfile is not None
         outfile = sys.stdout if outfile == '-' else outfile
-        on_error = functools.partial(on_error, verbose=config.lint,
+        on_event = functools.partial(on_event, verbose=config.lint,
                                      filename=outfile)
         if do_dump:
             format = Format(indent=config.indent,
                             wrap_width=config.wrapwidth)
-            dump(outfile, uxo, on_error=on_error, format=format)
+            dump(outfile, uxo, on_event=on_event, format=format)
     except (OSError, Error) as err:
         message = str(err)
         if not message.startswith('uxf.py'):

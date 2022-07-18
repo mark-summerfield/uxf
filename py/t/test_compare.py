@@ -25,14 +25,14 @@ def main():
     if len(sys.argv) > 1 and sys.argv[1] in {'-r', '--regression'}:
         regression = True
     total = ok = 0
-    on_error = functools.partial(uxf.on_error, verbose=False)
+    on_event = functools.partial(uxf.on_event, verbose=False)
 
     # Two files with the equivalent UXF content; but different actual
     # content
     filename1 = 't63.uxf'
     filename2 = os.path.join(tempfile.gettempdir(), '63.uxf')
     uxo = uxf.load(filename1, drop_unused=True, replace_imports=True)
-    uxo.dump(filename2, on_error=on_error)
+    uxo.dump(filename2, on_event=on_event)
     total, ok = test(total, ok, regression, 1, filename1, filename2,
                      different=False, equal=False, equivalent=True)
 
@@ -66,7 +66,7 @@ def main():
 
 def test(total, ok, regression, n, filename1, filename2, *, different,
          equal, equivalent):
-    on_error = functools.partial(uxf.on_error, verbose=False)
+    on_event = functools.partial(uxf.on_event, verbose=False)
 
     total += 1
     if filecmp.cmp(filename1, filename2, shallow=False) == different:
@@ -76,14 +76,14 @@ def test(total, ok, regression, n, filename1, filename2, *, different,
               'same')
 
     total += 1
-    if compare1.compare(filename1, filename2, on_error=on_error) == equal:
+    if compare1.compare(filename1, filename2, on_event=on_event) == equal:
         ok += 1
     elif not regression:
         print(f'{n}.2 uxfcompare.compare() • FAIL files compared '
               'unexpectedly unequal')
 
     total += 1
-    if compare2.compare(filename1, filename2, on_error=on_error) == equal:
+    if compare2.compare(filename1, filename2, on_event=on_event) == equal:
         ok += 1
     elif not regression:
         print(f'{n}.3 compare.compare() • FAIL files compared '
@@ -91,14 +91,14 @@ def test(total, ok, regression, n, filename1, filename2, *, different,
 
     total += 1
     if compare1.compare(filename1, filename2, equivalent=True,
-                        on_error=on_error) == equivalent:
+                        on_event=on_event) == equivalent:
         ok += 1
     elif not regression:
         print(f'{n}.4 uxfcompare.compare() • FAIL files compared '
               'unexpectedly nonequivalent')
     total += 1
     if compare2.compare(filename1, filename2, equivalent=True,
-                        on_error=on_error) == equivalent:
+                        on_event=on_event) == equivalent:
         ok += 1
     elif not regression:
         print(f'{n}.5 compare.compare() • FAIL files compared '

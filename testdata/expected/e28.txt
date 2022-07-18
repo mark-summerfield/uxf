@@ -1,1 +1,1 @@
-uxf.py:t28.uxf:39:#422:unused ttypes: 'IPv4', 'IntPair', 'Playlists', 'RGB', 'RGBA'
+uxf.py:W422:t28.uxf:39:unused ttypes: 'IPv4', 'IntPair', 'Playlists', 'RGB', 'RGBA'

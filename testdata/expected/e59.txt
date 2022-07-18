@@ -1,1 +1,1 @@
-uxf.py:l59.uxf:20:#422:unused ttypes: 'one', 'three', 'two'
+uxf.py:W422:l59.uxf:20:unused ttypes: 'one', 'three', 'two'

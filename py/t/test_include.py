@@ -53,12 +53,12 @@ def check(cmd, regression, expected):
 
 
 def compare(filename, regression):
-    def error(*_args, **_kwargs):
+    def on_event(*_args, **_kwargs):
         pass
 
     try:
-        actual_uxo = uxf.load(f'actual/{filename}', on_error=error)
-        expected_uxo = uxf.load(f'expected/{filename}', on_error=error)
+        actual_uxo = uxf.load(f'actual/{filename}', on_event=on_event)
+        expected_uxo = uxf.load(f'expected/{filename}', on_event=on_event)
         if eq.eq(actual_uxo, expected_uxo):
             return 1
         if not regression:

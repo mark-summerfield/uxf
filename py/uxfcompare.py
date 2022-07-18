@@ -23,9 +23,9 @@ def main():
             filename2 = arg
     if (filename1 is not None and filename2 is not None and
             os.path.exists(filename1) and os.path.exists(filename2)):
-        on_error = functools.partial(uxf.on_error, verbose=False)
+        on_event = functools.partial(uxf.on_event, verbose=False)
         eq = compare(filename1, filename2, equivalent=equivalent,
-                     on_error=on_error)
+                     on_event=on_event)
         print(f'{filename1} {"==" if eq else "!="} {filename2}')
     else:
         raise SystemExit(
@@ -33,7 +33,7 @@ def main():
 
 
 def compare(filename1: str, filename2: str, *, equivalent=False,
-            on_error=uxf.on_error):
+            on_event=uxf.on_event):
     '''If equivalent=False, returns True if filename1 is the same as
     filename2 (ignoring insignificant whitespace); otherwise returns False.
     If equivalent=True, returns True if filename1 is equivalent to filename2
@@ -42,7 +42,7 @@ def compare(filename1: str, filename2: str, *, equivalent=False,
     define—if they are used); otherwise returns False.'''
     drop_unused = replace_imports = equivalent
     d = dict(drop_unused=drop_unused, replace_imports=replace_imports,
-             on_error=on_error)
+             on_event=on_event)
     try:
         uxo1 = uxf.load(filename1, **d)
     except uxf.Error as err:

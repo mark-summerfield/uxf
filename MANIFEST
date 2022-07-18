@@ -56,7 +56,6 @@ py/t/test_imports.py
 py/t/test_merge.py
 py/t/test_include.py
 py/t/test_use_config.py
-py/t/test_use_config2.py
 py/t/test_editabletuple.py
 py/t/test_compare.py
 py/t/test_tlm.py

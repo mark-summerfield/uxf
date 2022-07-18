@@ -1,2 +1,2 @@
-uxf.py:l57.uxf:14:#488:expected real, got str wrong
-uxf.py:l57.uxf:20:#496:converted int 9 to real 9.0
+uxf.py:E488:l57.uxf:14:expected real, got str wrong
+uxf.py:R496:l57.uxf:20:converted int 9 to real 9.0

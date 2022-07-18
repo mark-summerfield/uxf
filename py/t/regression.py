@@ -147,21 +147,21 @@ def test_uxf_loads_dumps(uxffiles, total, ok, *, verbose, max_total):
         except UnicodeDecodeError:
             with gzip.open(name, 'rt', encoding='utf-8') as file:
                 uxt = file.read()
-        on_error = functools.partial(uxf.on_error, verbose=verbose)
+        on_event = functools.partial(uxf.on_event, verbose=verbose)
         try:
             if random.choice((0, 1)):
-                uxo = uxf.loads(uxt, on_error=on_error)
+                uxo = uxf.loads(uxt, on_event=on_event)
             else:
-                temp_uxo.loads(uxt, on_error=on_error)
+                temp_uxo.loads(uxt, on_event=on_event)
                 uxo = temp_uxo
         except uxf.Error as err:
             print(f'loads()/dumps() • {name} FAIL: {err}')
         if random.choice((0, 1)):
-            new_uxt = uxo.dumps(on_error=on_error)
+            new_uxt = uxo.dumps(on_event=on_event)
         else:
-            new_uxt = uxf.dumps(uxo, on_error=on_error)
+            new_uxt = uxf.dumps(uxo, on_event=on_event)
         try:
-            new_uxo = uxf.loads(new_uxt, on_error=on_error)
+            new_uxo = uxf.loads(new_uxt, on_event=on_event)
         except uxf.Error as err:
             print(f'{name} • FAIL (loads()/dumps()): {err}')
             continue
@@ -192,9 +192,9 @@ def test_uxf_equal(uxffiles, total, ok, *, verbose, max_total):
         except UnicodeDecodeError:
             with gzip.open(name, 'rt', encoding='utf-8') as file:
                 uxt = file.read()
-        on_error = functools.partial(uxf.on_error, verbose=verbose)
+        on_event = functools.partial(uxf.on_event, verbose=verbose)
         try:
-            uxo1 = uxf.loads(uxt, on_error=on_error)
+            uxo1 = uxf.loads(uxt, on_event=on_event)
         except uxf.Error as err:
             print(f'eq() 1 • {name} FAIL: {err}')
         expected = f'expected/{name}'
@@ -205,7 +205,7 @@ def test_uxf_equal(uxffiles, total, ok, *, verbose, max_total):
             with gzip.open(name, 'rt', encoding='utf-8') as file:
                 uxt = file.read()
         try:
-            uxo2 = uxf.loads(uxt, on_error=on_error)
+            uxo2 = uxf.loads(uxt, on_event=on_event)
         except uxf.Error as err:
             print(f'eq() 2 • {expected} FAIL: {err}')
         try:
@@ -298,8 +298,8 @@ def test_table_is_scalar(total, ok, *, verbose):
     for (filename, is_scalar) in (('t40.uxf', True), ('t41.uxf', False),
                                   ('t42.uxf', True), ('t43.uxf', False)):
         total += 1
-        on_error = functools.partial(uxf.on_error, verbose=verbose)
-        uxo = uxf.load(filename, on_error=on_error)
+        on_event = functools.partial(uxf.on_event, verbose=verbose)
+        uxo = uxf.load(filename, on_event=on_event)
         if is_scalar == uxo.value.is_scalar:
             ok += 1
             if verbose:

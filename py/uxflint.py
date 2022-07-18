@@ -14,15 +14,13 @@ def main():
     for filename in sys.argv[1:]:
         if os.path.isfile(filename):
             try:
-                uxf.load(filename, on_error=on_error)
+                uxf.load(filename, on_event=on_event)
             except (uxf.Error, OSError) as err:
                 print(f'uxflint.py:{filename}:{err}')
 
 
-def on_error(lino, code, message, *, filename='-', fail=False,
-             verbose=True):
-    fail = 'fatal:' if fail else ''
-    print(f'uxflint.py:{filename}:{lino}:{fail}#{code}:{message}')
+def on_event(*args, **kwargs):
+    print(uxf.event_text(*args, **kwargs))
 
 
 if __name__ == '__main__':

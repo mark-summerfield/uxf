@@ -27,7 +27,7 @@ def main():
     total += 1
     actual_uxo = uxf.Uxf()
     try:
-        actual_uxo = uxf.load(filename, on_error=on_error)
+        actual_uxo = uxf.load(filename, on_event=on_event)
         ok += 1
     except uxf.Error as err:
         if not regression:
@@ -37,10 +37,10 @@ def main():
     filename = 't63.uxf'
     try:
         total += 1
-        uxo1 = uxf.load(filename, on_error=on_error, replace_imports=True)
+        uxo1 = uxf.load(filename, on_event=on_event, replace_imports=True)
         ok += 1
         total += 1
-        uxo2 = uxf.load('t63r.uxf', on_error=on_error)
+        uxo2 = uxf.load('t63r.uxf', on_event=on_event)
         ok += 1
         total += 1
         if eq.eq(uxo1, uxo2):
@@ -52,7 +52,7 @@ def main():
     total += 1
     try:
         expected_uxo = uxf.loads(EXPECTED_UXT63,
-                                 on_error=lambda *_a, **_k: None)
+                                 on_event=lambda *_a, **_k: None)
         ok += 1
     except uxf.Error as err:
         if not regression:
@@ -63,7 +63,7 @@ def main():
     try: # attempt to import itself
         total += 1
         e = 176
-        actual_uxo = uxf.load('i64.uxi', on_error=on_error)
+        actual_uxo = uxf.load('i64.uxi', on_event=on_event)
         fail(f'test_errors • #{e} FAIL', regression)
     except uxf.Error as err:
         ok += got_error(e, err, regression)
@@ -71,7 +71,7 @@ def main():
     try: # attempt to do circular import #1
         total += 1
         e = 580
-        actual_uxo = uxf.load('i65.uxi', on_error=on_error)
+        actual_uxo = uxf.load('i65.uxi', on_event=on_event)
         fail(f'test_errors • #{e} FAIL', regression)
     except uxf.Error as err:
         ok += got_error(e, err, regression)
@@ -79,7 +79,7 @@ def main():
     try: # attempt to do circular import #2
         total += 1
         e = 580
-        actual_uxo = uxf.load('i66.uxi', on_error=on_error)
+        actual_uxo = uxf.load('i66.uxi', on_event=on_event)
         fail(f'test_errors • #{e} FAIL', regression)
     except uxf.Error as err:
         ok += got_error(e, err, regression)
@@ -88,7 +88,7 @@ def main():
     total += 1
     filename = 'i67.uxi'
     try:
-        actual_uxo = uxf.load(filename, on_error=on_error)
+        actual_uxo = uxf.load(filename, on_event=on_event)
         ok += 1
     except uxf.Error as err:
         if not regression:
@@ -98,7 +98,7 @@ def main():
     total += 1
     filename = 'pairimportd.uxi'
     try:
-        uxf.load(filename, on_error=on_error)
+        uxf.load(filename, on_event=on_event)
         ok += 1
     except uxf.Error as err:
         if not regression:
@@ -107,15 +107,15 @@ def main():
     try: # conflicting duplicate imports
         total += 1
         e = 544
-        uxf.load('pairimportc.uxi', on_error=on_error)
+        uxf.load('pairimportc.uxi', on_event=on_event)
         fail(f'test_errors • #{e} FAIL', regression)
     except uxf.Error as err:
         ok += got_error(e, err, regression)
 
     try:
         total += 1
-        uxo1 = uxf.load('t72.uxi', on_error=on_error)
-        uxo2 = uxf.load('expected/t72l.uxf', on_error=on_error)
+        uxo1 = uxf.load('t72.uxi', on_event=on_event)
+        uxo2 = uxf.load('expected/t72l.uxf', on_event=on_event)
         if eq.eq(uxo1, uxo2):
             ok += 1
     except uxf.Error as err:
@@ -123,8 +123,8 @@ def main():
 
     try:
         total += 1
-        uxo1 = uxf.load('t72.uxi', on_error=on_error, replace_imports=True)
-        uxo2 = uxf.load('expected/t72r.uxf', on_error=on_error)
+        uxo1 = uxf.load('t72.uxi', on_event=on_event, replace_imports=True)
+        uxo2 = uxf.load('expected/t72r.uxf', on_event=on_event)
         if eq.eq(uxo1, uxo2):
             ok += 1
     except uxf.Error as err:
@@ -132,8 +132,8 @@ def main():
 
     try:
         total += 1
-        uxo1 = uxf.load('t72.uxi', on_error=on_error, drop_unused=True)
-        uxo2 = uxf.load('expected/t72d.uxf', on_error=on_error)
+        uxo1 = uxf.load('t72.uxi', on_event=on_event, drop_unused=True)
+        uxo2 = uxf.load('expected/t72d.uxf', on_event=on_event)
         if eq.eq(uxo1, uxo2):
             ok += 1
     except uxf.Error as err:
@@ -141,9 +141,9 @@ def main():
 
     try:
         total += 1
-        uxo1 = uxf.load('t72.uxi', on_error=on_error, drop_unused=True,
+        uxo1 = uxf.load('t72.uxi', on_event=on_event, drop_unused=True,
                         replace_imports=True)
-        uxo2 = uxf.load('expected/t72d.uxf', on_error=on_error)
+        uxo2 = uxf.load('expected/t72d.uxf', on_event=on_event)
         if eq.eq(uxo1, uxo2):
             ok += 1
     except uxf.Error as err:
@@ -152,7 +152,7 @@ def main():
     total += 1
     try:
         expected_uxo = uxf.loads(EXPECTED_UXT63,
-                                 on_error=lambda *_a, **_k: None)
+                                 on_event=lambda *_a, **_k: None)
         ok += 1
         total += 1
         if not expected_uxo.imports:
@@ -168,10 +168,10 @@ def main():
             print(err)
 
     total += 1
-    if on_error.errors == EXPECTED_ERRORS:
+    if on_event.errors == EXPECTED_ERRORS:
         ok += 1
     elif not regression:
-        for e, a in zip(EXPECTED_ERRORS, on_error.errors):
+        for e, a in zip(EXPECTED_ERRORS, on_event.errors):
             if e != a:
                 print('-', e)
                 print('+', a)
@@ -205,17 +205,17 @@ def test(total, ok, actual_uxo, expected_uxo, expected_imports, filename,
     return total, ok
 
 
-def on_error(lino, code, message, *, filename, fail=False, verbose=True):
-    text = f'uxf.py:{filename}:{lino}:#{code}:{strip_path(message)}'
-    on_error.errors.append(text)
-    if fail:
+def on_event(event, code, message, *, filename, lino=0, verbose=True):
+    text = f'uxf.py:{event.name[0]}{code}:{filename}:{lino}:{message}'
+    on_event.errors.append(strip_path(text))
+    if event is uxf.Event.FATAL:
         raise uxf.Error(text)
-on_error.errors = [] # noqa: E305
+on_event.errors = [] # noqa: E305
 
 
 def got_error(code, err, regression):
     err = str(err)
-    code = f'#{code}:'
+    code = f'F{code}:'
     if code not in err:
         fail(f'test_errors • expected {code} got, {err!r} FAIL',
              regression)
@@ -278,22 +278,20 @@ EXPECTED_IMPORTS63 = {
     'point2d': 't63.uxt'}
 
 EXPECTED_ERRORS = strip_path('''\
-uxf.py:t63.uxf:14:#422:unused ttype: 'dob'
-uxf.py:t63.uxf:14:#422:unused ttype: 'dob'
-uxf.py:t63r.uxf:29:#422:unused ttype: 'dob'
-uxf.py:i64.uxi:1:#176:a UXF file cannot import itself
-uxf.py:i66.uxi:4:#450:expected table ttype
-uxf.py:i65.uxi:1:#580:cannot do circular imports \
-'/home/mark/app/uxf/testdata/i66.uxi'
-uxf.py:i65.uxi:4:#450:expected table ttype
-uxf.py:i66.uxi:1:#580:cannot do circular imports \
-'/home/mark/app/uxf/testdata/i65.uxi'
-uxf.py:i67.uxi:11:#422:unused ttype: 'dob'
-uxf.py:pairimportc.uxi:1:#544:conflicting ttype definitions for pair
-uxf.py:t72.uxi:12:#422:unused ttypes: 'dob', 'point3d'
-uxf.py:t72l.uxf:12:#422:unused ttypes: 'dob', 'point3d'
-uxf.py:t72.uxi:12:#422:unused ttypes: 'dob', 'point3d'
-uxf.py:t72r.uxf:12:#422:unused ttypes: 'dob', 'point3d'
+uxf.py:W422:t63.uxf:14:unused ttype: 'dob'
+uxf.py:W422:t63.uxf:14:unused ttype: 'dob'
+uxf.py:W422:t63r.uxf:29:unused ttype: 'dob'
+uxf.py:F176:i64.uxi:1:a UXF file cannot import itself
+uxf.py:F450:i66.uxi:4:expected table ttype
+uxf.py:F580:i65.uxi:1:cannot do circular imports 'testdata/i66.uxi'
+uxf.py:F450:i65.uxi:4:expected table ttype
+uxf.py:F580:i66.uxi:1:cannot do circular imports 'testdata/i65.uxi'
+uxf.py:W422:i67.uxi:11:unused ttype: 'dob'
+uxf.py:F544:pairimportc.uxi:1:conflicting ttype definitions for pair
+uxf.py:W422:t72.uxi:12:unused ttypes: 'dob', 'point3d'
+uxf.py:W422:t72l.uxf:12:unused ttypes: 'dob', 'point3d'
+uxf.py:W422:t72.uxi:12:unused ttypes: 'dob', 'point3d'
+uxf.py:W422:t72r.uxf:12:unused ttypes: 'dob', 'point3d'
 ''').splitlines()
 
 

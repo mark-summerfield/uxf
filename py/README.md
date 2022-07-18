@@ -192,12 +192,14 @@ tests).
 
 ##### Constructor
 
-**`Uxf(value=None, *, custom='', tclasses=None, comment=None)`**
+**`Uxf(value=None, *, custom='', tclasses=None, comment=None,
+on_event=on_event)`**
 
 The `Uxf` constructor takes an optional `value` (a `list`, `List`, `tuple`,
 `dict`, `Map`, or `Table`) and optional (by keyword arguments) `custom`
 string, `tclasses` (a `dict` whose names are _ttypes_ and whose values are
-the corresponding [TClass](#tclass-class)es), and `comment` string.
+the corresponding [TClass](#tclass-class)es), and `comment` string. You can
+also pass a custom [on\_event()](#on_event-def) handler.
 
 To create a `Uxf` programmatically (rather than by using, say,
 [load()](#load-def), you can either create it empty, or with some data and
@@ -247,23 +249,23 @@ import filenames.
 ##### Methods
 
 <a name="Uxf.load-def"></a>
-**`.load(filename_or_filelike, *, on_error=on_error, drop_unused=False, replace_imports=False)`**
+**`.load(filename_or_filelike, *, on_event=on_event, drop_unused=False, replace_imports=False)`**
 
 Convenience method that wraps the module-level [load()](#load-def) function.
 
 <a name="Uxf.loads-def"></a>
-**`.loads(uxt, filename='-', *, on_error=on_error, drop_unused=False, replace_imports=False)`**
+**`.loads(uxt, filename='-', *, on_event=on_event, drop_unused=False, replace_imports=False)`**
 
 Convenience method that wraps the module-level [loads()](#loads-def)
 function.
 
 <a name="Uxf.dump-def"></a>
-**`.dump(filename_or_filelike, *, on_error=on_error, format=Format())`**
+**`.dump(filename_or_filelike, *, on_event=on_event, format=Format())`**
 
 Convenience method that wraps the module-level [dump()](#dump-def) function.
 
 <a name="Uxf.dumps-def"></a>
-**`.dumps(*, on_error=on_error, format=Format())`**
+**`.dumps(*, on_event=on_event, format=Format())`**
 
 Convenience method that wraps the module-level [dumps()](#dumps-def)
 function.
@@ -395,7 +397,7 @@ The table's last record or `None`.
 
 **`.isfieldless`**
 
-This is `True` if the table's `TClass` is fieldless (and is aa convenience
+This is `True` if the table's `TClass` is fieldless (and is a convenience
 for ``.tclass.isfieldless``).
 
 **`.is_scalar`**
@@ -542,17 +544,18 @@ ordered links:
 [canonicalize()](#canonicalize-def),
 [dump()](#dump-def),
 [dumps()](#dumps-def),
+[event\_text()](#event_text-def),
 [isoformat()](#isoformat-def),
 [isasciidigit()](#isasciidigit-def),
 [is\_scalar()](#is_scalar-def),
 [load()](#load-def),
 [loads()](#loads-def),
 [naturalize()](#naturalize-def),
-[on\_error()](#on_error-def),
+[on\_event()](#on_event-def),
 [table()](#table-def).
 
 <a name="load-def"></a>
-**`load(filename_or_filelike, *, on_error=on_error, drop_unused=False,
+**`load(filename_or_filelike, *, on_event=on_event, drop_unused=False,
 replace_imports=False)`**
 
 Returns a [Uxf](uxf-class) object.
@@ -561,8 +564,8 @@ Returns a [Uxf](uxf-class) object.
 `pathlib.Path`) or an open readable file (text mode UTF-8 encoded,
 optionally gzipped).
 
-`on_error` is a custom error handling function that defaults to
-[on\_error](#on_error-def).
+`on_event` is a custom error handling function that defaults to
+[on\_event](#on_event-def).
 
 If `drop_unused` is `True`, then any _ttype_ definitions in the file that
 aren't actually used in the data are dropped. So if the `Uxf` is later
@@ -575,7 +578,7 @@ definitions. Normally, if you use `replace_imports=True`, then you would
 also use `drop_unused=True`.
 
 <a name="loads-def"></a>
-**`loads(uxt, filename='-', *, on_error=on_error, drop_unused=False,
+**`loads(uxt, filename='-', *, on_event=on_event, drop_unused=False,
 replace_imports=False)`**
 
 Returns a [Uxf](#uxf-class) object.
@@ -587,7 +590,7 @@ If given, the `filename` is used for error messages.
 For more on the other argument see [load()](#load-def).
 
 <a name="dump-def"></a>
-**`dump(filename_or_filelike, data, *, on_error=on_error,
+**`dump(filename_or_filelike, data, *, on_event=on_event,
 format=Format())`**
 
 `filename_or_filelike` is `sys.stdout` or a filename or an open writable
@@ -602,7 +605,7 @@ to the `filename_or_filelike` in UXF format.
 [Format](#format-class) class for details.
 
 <a name="dumps-def"></a>
-**`dumps(data, *, on_error=on_error, format=Format())`**
+**`dumps(data, *, on_event=on_event, format=Format())`**
 
 `data` is a [Uxf](#uxf-class) object, or a list, [List](#list-class), dict,
 [Map](#map-class), or [Table](#table-class) that this function will write to
@@ -618,31 +621,39 @@ Convenience function for creating empty tables with a new
 
 See also the [Table](#table-class) constructor.
 
-<a name="on_error-def"></a>
-**`on_error(lino, code, message, *, filename, fail=False, verbose=True)`**
+<a name="on_event-def"></a>
+**`on_event(event, code, message, *, filename='-', lino=0, verbose=True)`**
 
 This is the default error handler which you can replace by passing a custom
 one to [load()](#load-def), [loads()](#loads-def), [dump()](#dump-def), or
 [dumps()](#dumps-def).
 
-This is called with the line number (lino), error code, error message, and
-filename. The filename may be '-' or empty if the UXF is created in memory
-rather than loaded from a file. If fail is `True` it means the error is
-unrecoverable, so the normal action would be to raise. If verbose is `True`
-the normal action is to print a textual version of the error data to
+This is called with an event of type `uxf.Event` (an `enum` of `WARNING`,
+`REPAIR`, `ERROR`, and `FATAL`), an event code, a message, the filename (or
+`'-'` if unknown or `stdin`), the line number (`0` if unknown or not
+applicable), and verbosity. If `event` is `Event.FATAL` it means the event
+is unrecoverable, so the normal action would be to raise. If verbose is
+`True` the normal action is to print a textual version of the event data to
 `stderr`.
 
-To make `on_error()` quieter:
+To make `on_event()` quieter:
 
-    on_error = functools.partial(uxf.on_error, verbose=False)
+    on_event = functools.partial(uxf.on_event, verbose=False)
 
 To make all errors fatal:
 
-    on_error = functools.partial(uxf.on_error, fail=True, verbose=False)
-
-For further examples of custom `on_error()` functions, see
+    def on_event(*args, **kwargs):
+        raise uxf.Error(event_text(*args, **kwargs))
+        
+For further examples of custom `on_event()` functions, see
 `t/test_errors.py`, `t/test_imports.py` `t/test_include.py`,
 `t/test_merge.py`, and `t/test_sqlite.py`.
+
+<a name="event_text-def"></a>
+**`event_text(event, code, message, *, filename='-', lino=0, verbose=True)`**
+
+Returns a `str` containing the event in ``uxf``'s standard format. Useful
+for `on_event()` reimplementations.
 
 <a name="isasciidigit-def"></a>
 **`isasciidigit(s)`**

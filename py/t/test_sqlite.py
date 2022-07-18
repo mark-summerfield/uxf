@@ -44,8 +44,8 @@ def main():
 
 
 def check(total, ok, name, regression):
-    on_error = functools.partial(uxf.on_error, verbose=not regression)
-    uxo1 = uxf.load(name, on_error=on_error)
+    on_event = functools.partial(uxf.on_event, verbose=not regression)
+    uxo1 = uxf.load(name, on_event=on_event)
     filename = os.path.join(tempfile.gettempdir(), name.replace('.uxf',
                                                                 '.sqlite'))
     with contextlib.suppress(FileNotFoundError):
