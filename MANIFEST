@@ -1,11 +1,5 @@
-# TODO py
-# - go through py/uxf.py & make sure as many error codes as possible are
-#   tested in py/t/test_errors.py
-# - update docs
-# - pypi
-
 # TODO rs
-# - TClass tests
+# - TClass make immutable; tests; TClassBuilder
 # - List
 # - Map
 # - Table
