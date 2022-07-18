@@ -732,8 +732,8 @@ or
     `comment` are immutable; `records` remains mutable.
   - ``TClass``es are immutable after construction.
   - ``Field``s are immutable after construction.
-  - Internal changes are refactorings and a sligthly smarter lexer (and a
-    correspondingly sligthly simpler parser). And, of course, more tests.
+  - Internal changes are refactorings and a slightly smarter lexer (and a
+    correspondingly slightly simpler parser). And, of course, more tests.
 - 1.1.2 Additional tests.
 - 1.1.1 Internal improvements plus moved `.RecordClass` to `TClass` (without
   changing ``Table``'s API).
