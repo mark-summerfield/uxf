@@ -204,6 +204,14 @@ def main():
 
     try:
         total += 1
+        e = 274
+        uxf.loads('uxf 1.0\n=a b\n(a x)', on_event=on_event)
+        fail(f'test_errors • #{e} FAIL', regression)
+    except uxf.Error as err:
+        ok += got_error(e, err, regression)
+
+    try:
+        total += 1
         e = 276
         uxf.loads('uxf 1.0\n{int real str}', on_event=on_event)
         fail(f'test_errors • #{e} FAIL', regression)
@@ -251,6 +259,14 @@ def main():
         e = 298
         tclass = uxf.TClassBuilder('')
         tclass = tclass.build()
+        fail(f'test_errors • #{e} FAIL', regression)
+    except uxf.Error as err:
+        ok += got_error(e, err, regression)
+
+    try:
+        total += 1
+        e = 298
+        uxf.Table(uxf.TClass(''), records=(1,))
         fail(f'test_errors • #{e} FAIL', regression)
     except uxf.Error as err:
         ok += got_error(e, err, regression)
@@ -307,6 +323,14 @@ def main():
         total += 1
         e = 310
         _ = uxf.Field('x-5')
+        fail(f'test_errors • #{e} FAIL', regression)
+    except uxf.Error as err:
+        ok += got_error(e, err, regression)
+
+    try:
+        total += 1
+        e = 320
+        uxf.Table(None, records=(1,))
         fail(f'test_errors • #{e} FAIL', regression)
     except uxf.Error as err:
         ok += got_error(e, err, regression)
@@ -515,6 +539,14 @@ def main():
     try:
         total += 1
         e = 450
+        uxf.loads('uxf 1.0\n(a)', on_event=on_event)
+        fail(f'test_errors • #{e} FAIL', regression)
+    except uxf.Error as err:
+        ok += got_error(e, err, regression)
+
+    try:
+        total += 1
+        e = 450
         uxf.loads('uxf 1.0\n(T 5)', on_event=on_event)
         fail(f'test_errors • #{e} FAIL', regression)
     except uxf.Error as err:
@@ -626,6 +658,14 @@ def main():
 
     try:
         total += 1
+        e = 500
+        uxf.loads('uxf 1.0\n=a b:x\n[(a 1)]', on_event=on_event)
+        fail(f'test_errors • #{e} FAIL', regression)
+    except uxf.Error as err:
+        ok += got_error(e, err, regression)
+
+    try:
+        total += 1
         e = 510
         uxo = uxf.loads('uxf 1.0\n{1 2 3 4}]', on_event=on_event)
         print(uxo.dumps(on_event=on_event))
@@ -707,6 +747,16 @@ def main():
         total += 1
         e = 586
         uxf.loads('uxf 1.0\n!missing.uxf\n[]', on_event=on_event)
+        fail(f'test_errors • #{e} FAIL', regression)
+    except uxf.Error as err:
+        ok += got_error(e, err, regression)
+
+    try:
+        total += 1
+        e = 690
+        uxo = uxf.Uxf(on_event=on_event)
+        uxo.add_tclasses(uxf.TClass('a'), uxf.TClass('b'),
+                         uxf.TClass('a', ('x', 'y')))
         fail(f'test_errors • #{e} FAIL', regression)
     except uxf.Error as err:
         ok += got_error(e, err, regression)
