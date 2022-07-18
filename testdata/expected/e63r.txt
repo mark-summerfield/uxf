@@ -1,1 +1,1 @@
-uxf.py:W422:t63r.uxf:29:unused ttype: 'dob'
+uxf:W422:t63r.uxf:29:unused ttype: 'dob'

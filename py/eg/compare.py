@@ -27,7 +27,8 @@ def main():
             filename2 = arg
     if (filename1 is not None and filename2 is not None and
             os.path.exists(filename1) and os.path.exists(filename2)):
-        on_event = functools.partial(uxf.on_event, verbose=False)
+        on_event = functools.partial(uxf.on_event, verbose=False,
+                                     prefix='compare')
         eq = compare(filename1, filename2, equivalent=equivalent,
                      on_event=on_event)
         print(f'{filename1} {"==" if eq else "!="} {filename2}')

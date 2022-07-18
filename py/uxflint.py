@@ -20,6 +20,7 @@ def main():
 
 
 def on_event(*args, **kwargs):
+    kwargs['prefix'] = 'uxflint'
     print(uxf.event_text(*args, **kwargs))
 
 

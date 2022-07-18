@@ -19,7 +19,7 @@ from xml.sax.saxutils import escape, unescape
 import editabletuple
 
 
-__version__ = '2.0.0' # uxf module version
+__version__ = '2.0.1' # uxf module version
 VERSION = 1.0 # UXF file format version
 
 UTF8 = 'utf-8'
@@ -45,9 +45,10 @@ class Event(enum.Enum):
 
 
 def on_event(event: Event, code: int, message: str, *, filename='-',
-             lino=0, verbose=True):
+             lino=0, verbose=True, prefix='uxf'):
     '''The default event handler.'''
-    text = event_text(event, code, message, filename=filename, lino=lino)
+    text = event_text(event, code, message, filename=filename, lino=lino,
+                      prefix=prefix)
     if event is Event.FATAL:
         raise Error(text)
     if verbose:
@@ -55,10 +56,9 @@ def on_event(event: Event, code: int, message: str, *, filename='-',
 
 
 def event_text(event: Event, code: int, message: str, *, filename='-',
-               lino=0, verbose=None):
+               lino=0, verbose=None, prefix='uxf'):
     '''Convenience method for custom on_event() handlers.'''
-    return (f'{os.path.basename(__file__)}:{event.name[0]}{code}:'
-            f'{filename}:{lino}:{message}')
+    return f'{prefix}:{event.name[0]}{code}:{filename}:{lino}:{message}'
 
 
 def _raise_error(code, message):

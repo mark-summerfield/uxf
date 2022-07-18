@@ -205,8 +205,8 @@ def test(total, ok, actual_uxo, expected_uxo, expected_imports, filename,
     return total, ok
 
 
-def on_event(event, code, message, *, filename, lino=0, verbose=True):
-    text = f'uxf.py:{event.name[0]}{code}:{filename}:{lino}:{message}'
+def on_event(event, *args, **kwargs):
+    text = uxf.event_text(event, *args, **kwargs)
     on_event.errors.append(strip_path(text))
     if event is uxf.Event.FATAL:
         raise uxf.Error(text)
@@ -278,20 +278,20 @@ EXPECTED_IMPORTS63 = {
     'point2d': 't63.uxt'}
 
 EXPECTED_ERRORS = strip_path('''\
-uxf.py:W422:t63.uxf:14:unused ttype: 'dob'
-uxf.py:W422:t63.uxf:14:unused ttype: 'dob'
-uxf.py:W422:t63r.uxf:29:unused ttype: 'dob'
-uxf.py:F176:i64.uxi:1:a UXF file cannot import itself
-uxf.py:F450:i66.uxi:4:expected table ttype
-uxf.py:F580:i65.uxi:1:cannot do circular imports 'testdata/i66.uxi'
-uxf.py:F450:i65.uxi:4:expected table ttype
-uxf.py:F580:i66.uxi:1:cannot do circular imports 'testdata/i65.uxi'
-uxf.py:W422:i67.uxi:11:unused ttype: 'dob'
-uxf.py:F544:pairimportc.uxi:1:conflicting ttype definitions for pair
-uxf.py:W422:t72.uxi:12:unused ttypes: 'dob', 'point3d'
-uxf.py:W422:t72l.uxf:12:unused ttypes: 'dob', 'point3d'
-uxf.py:W422:t72.uxi:12:unused ttypes: 'dob', 'point3d'
-uxf.py:W422:t72r.uxf:12:unused ttypes: 'dob', 'point3d'
+uxf:W422:t63.uxf:14:unused ttype: 'dob'
+uxf:W422:t63.uxf:14:unused ttype: 'dob'
+uxf:W422:t63r.uxf:29:unused ttype: 'dob'
+uxf:F176:i64.uxi:1:a UXF file cannot import itself
+uxf:F450:i66.uxi:4:expected table ttype
+uxf:F580:i65.uxi:1:cannot do circular imports 'testdata/i66.uxi'
+uxf:F450:i65.uxi:4:expected table ttype
+uxf:F580:i66.uxi:1:cannot do circular imports 'testdata/i65.uxi'
+uxf:W422:i67.uxi:11:unused ttype: 'dob'
+uxf:F544:pairimportc.uxi:1:conflicting ttype definitions for pair
+uxf:W422:t72.uxi:12:unused ttypes: 'dob', 'point3d'
+uxf:W422:t72l.uxf:12:unused ttypes: 'dob', 'point3d'
+uxf:W422:t72.uxi:12:unused ttypes: 'dob', 'point3d'
+uxf:W422:t72r.uxf:12:unused ttypes: 'dob', 'point3d'
 ''').splitlines()
 
 

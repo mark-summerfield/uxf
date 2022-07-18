@@ -34,7 +34,8 @@ def main():
             verbose = False
         elif uxf.isasciidigit(arg):
             scale = int(arg)
-    on_event = functools.partial(uxf.on_event, verbose=False)
+    on_event = functools.partial(uxf.on_event, verbose=False,
+                                 prefix='benchmark')
     print(f'scale={scale} ', end='', flush=True)
 
     uxt1s = []

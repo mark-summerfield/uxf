@@ -1,1 +1,1 @@
-uxf.py:W422:t55.uxf:4:unused ttype: 'Pair'
+uxf:W422:t55.uxf:4:unused ttype: 'Pair'

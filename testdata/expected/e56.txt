@@ -1,12 +1,12 @@
-uxf.py:R486:l56.uxf:8:converted str '2' to int 2
-uxf.py:R486:l56.uxf:8:converted str '1983-04-07' to date 1983-04-07
-uxf.py:R498:l56.uxf:10:converted real 7.2 to int 7
-uxf.py:E488:l56.uxf:14:expected real, got str wrong
-uxf.py:R496:l56.uxf:17:converted int 4 to real 4.0
-uxf.py:R486:l56.uxf:19:converted str '6.7' to real 6.7
-uxf.py:R486:l56.uxf:20:converted str '9' to real 9
-uxf.py:R496:l56.uxf:21:converted int -8 to real -8.0
-uxf.py:R496:l56.uxf:22:converted int 11 to real 11.0
-uxf.py:R496:l56.uxf:23:converted int False to real 0.0
-uxf.py:R496:l56.uxf:24:converted int True to real 1.0
-uxf.py:R486:l56.uxf:24:converted str '2008-09-01T23:59:46' to datetime 2008-09-01T23:59:46
+uxf:R486:l56.uxf:8:converted str '2' to int 2
+uxf:R486:l56.uxf:8:converted str '1983-04-07' to date 1983-04-07
+uxf:R498:l56.uxf:10:converted real 7.2 to int 7
+uxf:E488:l56.uxf:14:expected real, got str wrong
+uxf:R496:l56.uxf:17:converted int 4 to real 4.0
+uxf:R486:l56.uxf:19:converted str '6.7' to real 6.7
+uxf:R486:l56.uxf:20:converted str '9' to real 9
+uxf:R496:l56.uxf:21:converted int -8 to real -8.0
+uxf:R496:l56.uxf:22:converted int 11 to real 11.0
+uxf:R496:l56.uxf:23:converted int False to real 0.0
+uxf:R496:l56.uxf:24:converted int True to real 1.0
+uxf:R486:l56.uxf:24:converted str '2008-09-01T23:59:46' to datetime 2008-09-01T23:59:46

@@ -622,7 +622,8 @@ Convenience function for creating empty tables with a new
 See also the [Table](#table-class) constructor.
 
 <a name="on_event-def"></a>
-**`on_event(event, code, message, *, filename='-', lino=0, verbose=True)`**
+**`on_event(event, code, message, *, filename='-', lino=0, verbose=True,
+prefix='uxf')`**
 
 This is the default error handler which you can replace by passing a custom
 one to [load()](#load-def), [loads()](#loads-def), [dump()](#dump-def), or
@@ -640,9 +641,11 @@ To make `on_event()` quieter:
 
     on_event = functools.partial(uxf.on_event, verbose=False)
 
-To make all errors fatal:
+To make all errors fatal and use your own prefix (rather than the default of
+`'uxf'`):
 
     def on_event(*args, **kwargs):
+        kwargs['prefix'] = 'myapp'
         raise uxf.Error(uxf.event_text(*args, **kwargs))
         
 For further examples of custom `on_event()` functions, see
@@ -650,7 +653,8 @@ For further examples of custom `on_event()` functions, see
 `t/test_merge.py`, and `t/test_sqlite.py`.
 
 <a name="event_text-def"></a>
-**`event_text(event, code, message, *, filename='-', lino=0, verbose=True)`**
+**`event_text(event, code, message, *, filename='-', lino=0, verbose=True,
+prefix='uxf')`**
 
 Returns a `str` containing the event in ``uxf``'s standard format. Useful
 for `on_event()` reimplementations.
@@ -722,6 +726,7 @@ or
 
 ## Changes
 
+- 2.0.1 `on_event()` now supports keyword argument `prefix`.
 - 2.0.0 API changes
   - `on_error()` has been replaced by `on_event()` with a different API.
   - ``List``: after construction, the `vtype` and `comment` are immutable;
