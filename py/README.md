@@ -283,7 +283,8 @@ The `seq` can be a `list`, `tuple`, or any iterable acceptable to the
 built-in `list()` type. The _vtype_ is a `str` signifying the type of value
 this list may hold; `None` means values may be of _any_ UXF-compatible type
 (see [Python UXF Types](#python-uxf-types)). A `str` may be passed as the
-`comment`.
+`comment`. Both the `vtype` and `comment` properties are immutable after
+construction.
 
 See [Python UXF Types](#python-uxf-types) for more about _vtypes_.
 
@@ -292,7 +293,8 @@ See [Python UXF Types](#python-uxf-types) for more about _vtypes_.
 
 A class used to represent a UXF map. It is a `collections.UserDict` subclass
 that holds its dict in the `.data` attribute and that also has `.comment`,
-`.ktype`, and `.vtype` attributes.
+`.ktype`, and `.vtype` attributes. The `ktype, `vtype`, and `comment`
+properties are immutable after construction.
 
 Note that although Python ``dict``s are insertion-ordered, UXF ``Map``s are
 unordered. This means that while this Python UXF library will always load
@@ -329,7 +331,8 @@ A `Table` can be created using the constructor, passing a
 [TClass](#tclass-class), and optionally, records (a list of lists, where
 each sublist has `len(tclass.fields)` values), and a comment (a `str`).
 Alternativvely, use the [table()](#table-def) convenience function which
-takes a _ttype_ (a `str`), and fields.
+takes a _ttype_ (a `str`), and fields. Both the `tclass` (i.e., the `ttype`)
+and `comment` properties are immutable after construction.
 
 See [Python UXF Types](#python-uxf-types) for more about and _ttypes_.
 
@@ -338,11 +341,11 @@ See [Python UXF Types](#python-uxf-types) for more about and _ttypes_.
 **`.tclass`**
 
 A [TClass](#tclass-class) which holds the table's _ttype_ and field names
-(and optional field types).
+(and optional field types). Immutable after construction.
 
 **`.ttype`**
 
-A convenience for `.tclass.ttype`.
+A convenience for `.tclass.ttype`. Immutable after construction.
 
 **`.records`**
 
@@ -353,7 +356,7 @@ The table's data: a list of values where each value is either a list with
 
 **`.RecordClass`**
 
-The table's record class, a dynamically created
+The table's record class, an
 [editabletuple](https://github.com/mark-summerfield/editabletuple), which
 can be used to create a single record by calling it with each of the
 record's fields' values (or with `*sequence` where `len(sequence)` equals
@@ -366,7 +369,7 @@ class.
 
 **`.fields`**
 
-A convenience for `.tclass.fields`.
+A convenience for `.tclass.fields`. Immutable after construction.
 
 **`.first`**
 
@@ -389,6 +392,11 @@ The table's fourth record or `None`.
 **`.last`**
 
 The table's last record or `None`.
+
+**`.isfieldless`**
+
+This is `True` if the table's `TClass` is fieldless (and is aa convenience
+for ``.tclass.isfieldless``).
 
 **`.is_scalar`**
 
@@ -468,11 +476,13 @@ an optional `str`.
 The `.isfieldless` property returns `True` if there are no fields (which is
 valid for a fieldless table); otherwise returns `False`.
 
-The `.RecordClass` property returns a dynamically created
+The `.RecordClass` property returns an
 [editabletuple](https://github.com/mark-summerfield/editabletuple), which
 can be used to create a single record by calling it with each of the
 record's fields' values (or with `*sequence` where `len(sequence)` equals
 the number of fields).
+
+Immutable after construction.
 
 <a name="field-class"></a>
 #### Field
@@ -491,6 +501,8 @@ the field may hold any valid UXF type (see [Python UXF
 Types](#python-uxf-types)); otherwise it must be one of these ``str``s:
 `'bool'`, `'bytes'`, `'date'`, `'datetime'`, `'int'`, `'real'`, `'list'`,
 `'map'`, `'str'`, or `'table'`; or a _ttype_ name.
+
+Immutable after construction.
 
 <a name="format-class"></a>
 #### Format
@@ -699,6 +711,18 @@ or
 
 ## Changes
 
+- 2.0.0 API changes
+  - `on_error()` has been replaced by `on_event()` with a different API.
+  - ``List``: after construction, the `vtype` and `comment` are immutable;
+    `data` values remain mutable.
+  - ``Map``: after construction, the `ktype`, `vtype`, and `comment` are
+    immutable; `data` items remain mutable.
+  - ``Table``: after construction, the `tclass` (i.e., the `ttype`) and
+    `comment` are immutable; `records` remains mutable.
+  - ``TClass``es are immutable after construction.
+  - ``Field``s are immutable after construction.
+  - Internal changes are refactorings and a sligthly smarter lexter (and a
+    correspondingly sligthly simpler parser). And, of course, more tests.
 - 1.1.2 Additional tests.
 - 1.1.1 Internal improvements plus moved `.RecordClass` to `TClass` (without
   changing ``Table``'s API).

@@ -52,6 +52,41 @@ def on_error(lino, code, message, *, filename='-', fail=False,
         print(text, file=sys.stderr)
 
 
+@enum.unique
+class EventKind(enum.Enum):
+    WARNING = enum.auto()
+    REPAIR = enum.auto()
+    ERROR = enum.auto()
+    FATAL = enum.auto()
+
+
+Event = collections.namedtuple('Event', 'kind code message filename lino')
+Event.__doc__ += '''
+.kind is an EventKind, .code is an event code, .message the description,
+.filename the filename or '-' if unknown or stdin, .lino the line number or
+0 if unknown.'''
+
+
+def on_event(event, *, filename=None, verbose=True):
+    '''The default event handler.
+    Is called with an Event object and filename and verbose keyword
+    arguments.
+    If filename is not None it should be used to override event.filename,
+    e.g., on_event = functools.partial(uxf.on_event, verbose=False).
+    '''
+    if filename is not None:
+        event.filename = filename
+    if not event.filename:
+        event.filename = '-'
+    kind = event.kind.name[0]
+    text = ':'.join(os.path.basename(__file__), kind, str(event.code),
+                    event.filename, str(event.lino), event.message)
+    if kind is EventKind.FATAL:
+        raise Error(text)
+    if verbose:
+        print(text, file=sys.stderr)
+
+
 def _validate_format(name, value): # If invalid we return the valid default
     if name == 'indent':
         return value if (value == '' or (
@@ -95,7 +130,7 @@ class Uxf:
         self._tclasses = {} # tclasses key=ttype value=TClass
         self.tclasses = tclasses if tclasses is not None else {}
         self.imports = {} # key=ttype value=import text
-        self.on_error = functools.partial(on_error, filename='')
+        self.on_error = functools.partial(on_error, filename='-')
 
 
     def add_tclasses(self, tclass, *tclasses):
