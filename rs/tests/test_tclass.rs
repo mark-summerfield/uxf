@@ -7,12 +7,68 @@ mod tests {
     use uxf::field::{make_fields, Field};
     use uxf::tclass::TClass;
     use uxf::test_utils::check_error_code;
+    use uxf::value::Value;
 
-    // TODO new() new_fieldless() is_fieldless() ttype() comment() len()
-    // record_of_nulls() == != < clone()
     #[test]
-    fn t_tclass() {
-        // TODO with & without comment
+    fn t_tclass_new() {
+        let f2 = Field::new("selected", "bool").unwrap();
+        let f5 = Field::new("timestamp", "datetime").unwrap();
+        let f6 = Field::new_anyvtype("Kind").unwrap();
+        let fields = valid_fields();
+        let asize = fields.len();
+        let a = TClass::new("AType", fields, Some("A row type")).unwrap();
+        assert!(!a.is_fieldless());
+        assert_eq!(a.len(), asize);
+        assert!(!a.is_empty());
+        assert_eq!(a.ttype(), "AType");
+        assert_eq!(a.comment(), Some("A row type"));
+        assert_eq!(a.fields().len(), asize);
+        let fields = a.fields();
+        assert_eq!(fields[2], f2);
+        assert_eq!(fields[5], f5);
+        assert_eq!(fields[6], f6);
+        let mut rec = a.record_of_nulls().unwrap();
+        assert_eq!(rec.len(), asize);
+        rec[0] = Some(Value::Bool(true));
+        rec[1] = Some(Value::Int(-17));
+        rec[2] = Some(Value::Str("Test data".to_string()));
+        assert_eq!(rec.len(), asize);
+        assert_eq!(rec[0].as_ref().unwrap().as_bool().unwrap(), true);
+        assert_eq!(rec[1].as_ref().unwrap().as_int().unwrap(), -17);
+        assert_eq!(rec[2].as_ref().unwrap().as_str().unwrap(), "Test data");
+        let bsize = 5;
+        let b =
+            TClass::new("BType", valid_fields()[..bsize].to_vec(), None)
+                .unwrap();
+        assert!(!b.is_fieldless());
+        assert_eq!(b.len(), bsize);
+        assert!(!b.is_empty());
+        assert_eq!(b.ttype(), "BType");
+        assert_eq!(b.comment(), None);
+        assert_eq!(b.fields().len(), bsize);
+        assert_eq!(b.fields()[2], f2);
+        let rec = b.record_of_nulls().unwrap();
+        assert_eq!(rec.len(), bsize);
+    }
+
+    #[test]
+    fn t_tclass_new_fieldless() {
+        let ready = TClass::new_fieldless("ReadyState", Some("Ready enum"))
+            .unwrap();
+        assert!(ready.is_fieldless());
+        assert_eq!(ready.len(), 0);
+        assert!(ready.is_empty());
+        assert_eq!(ready.ttype(), "ReadyState");
+        assert_eq!(ready.comment(), Some("Ready enum"));
+        assert_eq!(ready.fields().len(), 0);
+        let wait = TClass::new_fieldless("WaitState", None).unwrap();
+        assert!(wait.is_fieldless());
+        assert_eq!(wait.len(), 0);
+        assert!(wait.is_empty());
+        assert_eq!(wait.ttype(), "WaitState");
+        assert!(wait.comment().is_none());
+        let row = wait.record_of_nulls();
+        assert!(row.is_err());
     }
 
     #[test]
@@ -42,13 +98,8 @@ mod tests {
     }
 
     #[test]
-    fn t_tclass_new_fieldless() {
-        // TODO with & without comment
-    }
-
-    #[test]
-    fn t_tclass_lt() {
-        // We only care about the ttype and prefer case-insensitive
+    fn t_tclass_eq_lt() {
+        // For < we only care about the ttype and prefer case-insensitive
         let fields = valid_fields();
         let a = TClass::new("Alpha", fields, None).unwrap();
         let fields = valid_fields()[..6].to_vec();
@@ -59,6 +110,11 @@ mod tests {
         let e = TClass::new_fieldless("ECHO", None).unwrap();
         let f = TClass::new_fieldless("echo", None).unwrap();
         assert!(a < b && b < c && c < d && d < e && e < f);
+        assert!(a != b && b != c && c != d && d != e && e != f);
+        let b2 = b.clone();
+        let c2 = TClass::new("Charlie", valid_fields()[..3].to_vec(), None)
+            .unwrap();
+        assert!(b2 != c2 && b == b2 && c == c2);
     }
 
     #[test]

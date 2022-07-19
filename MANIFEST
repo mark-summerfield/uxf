@@ -1,5 +1,5 @@
 # TODO rs
-# - TClass make immutable; tests; TClassBuilder
+# - TClassBuilder
 # - List
 # - Map
 # - Table
@@ -21,6 +21,7 @@ rs/src/tclass.rs
 rs/src/field.rs
 rs/src/util.rs
 rs/src/constants.rs
+rs/src/event.rs
 rs/src/parser.rs
 rs/src/output.rs
 rs/src/test_utils.rs

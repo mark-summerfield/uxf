@@ -65,17 +65,17 @@ impl TClass {
         })
     }
 
-    /// Returns true if this is a fieldless TClass; otherwise returns false.
+    /// Returns `true` fieldless; otherwise returns `false`.
     pub fn is_fieldless(&self) -> bool {
         self.fields.is_empty()
     }
 
-    /// Returns this ``TClass``'s `ttype`.
+    /// Returns the `ttype`.
     pub fn ttype(&self) -> &str {
         &self.ttype
     }
 
-    /// Returns this ``TClass``'s `comment`.
+    /// Returns the optional `comment`.
     pub fn comment(&self) -> Option<&str> {
         match &self.comment {
             None => None,
@@ -83,10 +83,19 @@ impl TClass {
         }
     }
 
-    /// Returns how many fields this ``TClass`` has; this will be `0` for a
-    /// fieldless `TClass`.
+    /// Returns the `fields` (which will be empty if `is_fieldless()`).
+    pub fn fields(&self) -> &Vec<Field> {
+        &self.fields
+    }
+
+    /// Returns how many fields; this will be `0` if `is_fieldless()`.
     pub fn len(&self) -> usize {
         self.fields.len()
+    }
+
+    /// Returns `true` if `is_fieldless()`; otherwise `false`.
+    pub fn is_empty(&self) -> bool {
+        self.fields.is_empty()
     }
 
     /// Returns a record with `TClass.len()` (i.e., `fields.len()`) fields,
@@ -99,8 +108,8 @@ impl TClass {
                   table's tclass"
             );
         }
-        let mut record = Vec::with_capacity(self.len());
-        record.fill(None);
+        let mut record = Row::new();
+        record.resize(self.len(), None);
         Ok(record)
     }
 }
