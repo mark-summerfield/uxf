@@ -5,7 +5,7 @@
 mod tests {
     use uxf::constants::*;
     use uxf::field::{make_fields, Field};
-    use uxf::tclass::TClass;
+    use uxf::tclass::{TClass, TClassBuilder};
     use uxf::test_utils::check_error_code;
     use uxf::value::Value;
 
@@ -177,6 +177,48 @@ mod tests {
             let e = tclass.unwrap_err();
             check_error_code(&e.to_string(), code, name);
         }
+    }
+
+    #[test]
+    fn t_tclassbuilder_valid() {
+        let fields = valid_fields();
+        let asize = fields.len();
+        let mut b = TClassBuilder::new("Builder", "");
+        for field in &fields {
+            b.append(field);
+        }
+        let a = b.build().unwrap();
+        assert_eq!(a.len(), asize);
+        assert!(!a.is_empty());
+        assert_eq!(a.ttype(), "Builder");
+        assert_eq!(a.comment(), "");
+        assert_eq!(a.fields().len(), asize);
+        let asize = 3;
+        let mut c = TClassBuilder::new("BuilderX", "new build");
+        for field in &fields[..3] {
+            c.append(field);
+        }
+        let d = c.build().unwrap();
+        assert_eq!(d.len(), asize);
+        assert!(!d.is_empty());
+        assert_eq!(d.ttype(), "BuilderX");
+        assert_eq!(d.comment(), "new build");
+        assert_eq!(d.fields().len(), asize);
+    }
+
+    #[test]
+    fn t_tclassbuilder_invalid() {
+        let b = TClassBuilder::new("New Builder", "");
+        let e = b.build().unwrap_err();
+        check_error_code(&e.to_string(), 310, "New Builder");
+        let mut b = TClassBuilder::new("New_Builder", "");
+        let fields = valid_fields();
+        for field in &fields {
+            b.append(field);
+        }
+        b.append(&Field::new("Filename", "str").unwrap());
+        let e = b.build().unwrap_err();
+        check_error_code(&e.to_string(), 336, "Filename");
     }
 
     fn valid_fields() -> Vec<Field> {

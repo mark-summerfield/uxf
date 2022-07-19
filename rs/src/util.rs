@@ -5,6 +5,14 @@ use crate::constants::*;
 use crate::event::fatal;
 use anyhow::Result;
 
+pub(crate) fn check_ktype(ktype: &str) -> Result<()> {
+    if KTYPES.contains(&ktype) {
+        Ok(())
+    } else {
+        fatal(704, &format!("a ktype must be one of {:?}", KTYPES))
+    }
+}
+
 pub(crate) fn check_name(name: &str) -> Result<()> {
     check_type_name(name)?;
     if RESERVED_WORDS.contains(&name) {

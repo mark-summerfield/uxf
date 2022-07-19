@@ -1,14 +1,14 @@
+# TODO py
+# - check_ktype(str) & use check_* calls in __init__ for List & Map
+# (already de-facto done for Table in TClass)
 # TODO rs
-# - TClassBuilder tests (to check API) in test_tclass.rs
-# - List
-# - Map
-# - Table
-# - Parser (with(out) linting)
+# - List: immutable vtype & comment; mutable values + doc
+# - Map: immutable ktype, vtype, & comment; mutable items + doc
+# - Table: immutable tclass & comment; mutable records + doc
+# - Parser (without (& with?) linting)
 # - Output
 # List, Map, Table need full set of operators & methods including []
 # accessors, .get(), iteration, etc.
-# List & Map should have new() & default(); Table just new()
-# List, Map, Table are mutable; all other types are immutable
 # rs/README.md
 # IDEA: noncopy nonowned versions: UxfBuf ValueBuf ... FieldBuf
 
