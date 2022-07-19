@@ -6,8 +6,8 @@ use std::collections::HashMap;
 
 #[derive(Clone, Debug)]
 pub struct Map {
-    ktype: Option<String>,
-    vtype: Option<String>,
-    comment: Option<String>,
+    ktype: String,
+    vtype: String,
+    comment: String,
     items: HashMap<Key, Option<Value>>,
 }

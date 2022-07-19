@@ -9,6 +9,10 @@ alternative to csv, ini, json, sqlite, toml, xml, or yaml.
 
 TODO
 
+Comments, ktypes, vtypes, are all strings. If a ktype or vtype is empty this
+means that any valid ktype or vtype respectively is acceptable.
+For TClasses the ttype is also a string; but this may not be empty.
+
 */
 
 pub mod constants;

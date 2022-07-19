@@ -1,12 +1,13 @@
 // Copyright © 2022 Mark Summerfield. All rights reserved.
 // License: GPLv3
 
-use crate::field::Field;
+use crate::event::fatal;
+use crate::field::{check_fields, Field};
 use crate::util;
-use crate::value::{Row, Value};
-use anyhow::{bail, Result};
+use crate::value::Row;
+use anyhow::Result;
 use std::fmt::Write as _;
-use std::{cmp::Ordering, collections::HashSet, fmt};
+use std::{cmp::Ordering, fmt};
 
 /// Provides a definition of a tclass (`name`, `fields`, and `comment`)
 /// for use in ``Table``s.
@@ -16,7 +17,7 @@ use std::{cmp::Ordering, collections::HashSet, fmt};
 pub struct TClass {
     ttype: String,
     fields: Vec<Field>,
-    comment: Option<String>,
+    comment: String,
 }
 
 impl TClass {
@@ -25,43 +26,30 @@ impl TClass {
     /// there are duplicate field names.
     /// See `Field::make_fields()` for a function that can generate a
     /// suitable vector of fields.
+    /// `TClass` instances are immutable.
     pub fn new(
         ttype: &str,
         fields: Vec<Field>,
-        comment: Option<&str>,
+        comment: &str,
     ) -> Result<Self> {
         util::check_name(ttype)?;
-        let mut seen = HashSet::<&str>::new();
-        for field in &fields {
-            let name = field.name();
-            if seen.contains(&name) {
-                bail!(
-                    "#336:can't have duplicate table tclass field \
-                names, got {:?} twice",
-                    &name
-                );
-            } else {
-                seen.insert(name);
-            }
-        }
+        check_fields(&fields)?;
         Ok(TClass {
             ttype: ttype.to_string(),
-            comment: comment.map(|s| s.to_string()),
             fields,
+            comment: comment.to_string(),
         })
     }
 
     /// Creates a new `TClass` with the given `name`, no `fields`, and
     /// `commment` _or_ returns an Err if the `name` is invalid.
-    pub fn new_fieldless(
-        ttype: &str,
-        comment: Option<&str>,
-    ) -> Result<Self> {
+    /// `TClass` instances are immutable.
+    pub fn new_fieldless(ttype: &str, comment: &str) -> Result<Self> {
         util::check_name(ttype)?;
         Ok(TClass {
             ttype: ttype.to_string(),
-            comment: comment.map(|s| s.to_string()),
             fields: vec![],
+            comment: comment.to_string()
         })
     }
 
@@ -76,11 +64,8 @@ impl TClass {
     }
 
     /// Returns the optional `comment`.
-    pub fn comment(&self) -> Option<&str> {
-        match &self.comment {
-            None => None,
-            Some(comment) => Some(comment),
-        }
+    pub fn comment(&self) -> &str {
+        &self.comment
     }
 
     /// Returns the `fields` (which will be empty if `is_fieldless()`).
@@ -103,10 +88,11 @@ impl TClass {
     /// This is a helper for adding new rows to ``Table``s.
     pub fn record_of_nulls(&self) -> Result<Row> {
         if self.is_fieldless() {
-            bail!(
-                "#352:can't create a record of nulls for a fieldless \
-                  table's tclass"
-            );
+            fatal(
+                732,
+                "can't create a record of nulls for a \
+                       fieldless table's tclass",
+            )?;
         }
         let mut record = Row::new();
         record.resize(self.len(), None);
@@ -159,11 +145,35 @@ impl fmt::Display for TClass {
             }
             s.push_str("], ");
         }
-        s.push_str(&match &self.comment {
-            Some(comment) => format!("Some({:?})", comment),
-            None => "None".to_string(),
-        });
+        let _ = write!(s, "{:?}", self.comment);
         s.push(')');
         write!(f, "{}", s)
+    }
+}
+
+/// This allows us to build up a TClass incrementally since a real
+/// TClass is immutable.
+pub struct TClassBuilder {
+    ttype: String,
+    fields: Vec<Field>,
+    comment: String,
+}
+
+impl TClassBuilder {
+    pub fn new(ttype: &str, comment: &str) -> Self {
+        TClassBuilder {
+            ttype: ttype.to_string(),
+            fields: vec![],
+            comment: comment.to_string()
+        }
+    }
+
+    pub fn append(&mut self, field: &Field) {
+        self.fields.push(field.clone());
+    }
+
+    pub fn build(&self) -> Result<TClass> {
+        check_fields(&self.fields)?;
+        TClass::new(&self.ttype, self.fields.clone(), &self.comment)
     }
 }

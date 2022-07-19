@@ -19,7 +19,7 @@ from xml.sax.saxutils import escape, unescape
 import editabletuple
 
 
-__version__ = '2.0.1' # uxf module version
+__version__ = '2.0.2' # uxf module version
 VERSION = 1.0 # UXF file format version
 
 UTF8 = 'utf-8'
@@ -979,26 +979,14 @@ class TClassBuilder:
         return self._ttype
 
 
-    @ttype.setter
-    def ttype(self, ttype):
-        if ttype is not None:
-            _check_name(ttype)
-        self._ttype = ttype
-
-
-    @property
-    def fields(self):
-        return self._fields
-
-
     @property
     def comment(self):
         return self._comment
 
 
-    @comment.setter
-    def comment(self, comment):
-        self._comment = comment
+    @property
+    def fields(self):
+        return self._fields
 
 
     def append(self, field):

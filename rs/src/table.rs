@@ -2,17 +2,17 @@
 // License: GPLv3
 
 use crate::tclass::TClass;
-use crate::value::{Row, Value};
+use crate::value::Row;
 
 #[derive(Clone, Debug)]
 pub struct Table {
     tclass: TClass,
-    comment: Option<String>,
+    comment: String,
     records: Vec<Row>,
 }
 
 impl Table {
-    pub fn new(tclass: TClass) -> Self {
-        Table { tclass, comment: None, records: vec![] }
+    pub fn new(tclass: TClass, comment: &str) -> Self {
+        Table { tclass, comment: comment.to_string(), records: vec![] }
     }
 }

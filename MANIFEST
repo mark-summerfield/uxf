@@ -1,5 +1,5 @@
 # TODO rs
-# - TClassBuilder
+# - TClassBuilder tests (to check API) in test_tclass.rs
 # - List
 # - Map
 # - Table

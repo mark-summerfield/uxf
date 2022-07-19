@@ -10,13 +10,13 @@ mod tests {
 
     #[test]
     fn t_table() {
-        let tclass = TClass::new_fieldless("Point", None).unwrap();
-        let t = Table::new(tclass);
+        let tclass = TClass::new_fieldless("Point", "").unwrap();
+        let t = Table::new(tclass, "");
         let v = Value::Table(t);
         assert_eq!(
             value_to_str(v),
             "Table { tclass: TClass { ttype: \"Point\", fields: [], \
-            comment: None }, comment: None, records: [] }"
+            comment: \"\" }, comment: \"\", records: [] }"
         );
         // TODO lots more tests
     }

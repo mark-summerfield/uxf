@@ -13,15 +13,15 @@ mod tests {
     fn t_tclass_new() {
         let f2 = Field::new("selected", "bool").unwrap();
         let f5 = Field::new("timestamp", "datetime").unwrap();
-        let f6 = Field::new_anyvtype("Kind").unwrap();
+        let f6 = Field::new("Kind", "").unwrap();
         let fields = valid_fields();
         let asize = fields.len();
-        let a = TClass::new("AType", fields, Some("A row type")).unwrap();
+        let a = TClass::new("AType", fields, "A row type").unwrap();
         assert!(!a.is_fieldless());
         assert_eq!(a.len(), asize);
         assert!(!a.is_empty());
         assert_eq!(a.ttype(), "AType");
-        assert_eq!(a.comment(), Some("A row type"));
+        assert_eq!(a.comment(), "A row type");
         assert_eq!(a.fields().len(), asize);
         let fields = a.fields();
         assert_eq!(fields[2], f2);
@@ -37,14 +37,13 @@ mod tests {
         assert_eq!(rec[1].as_ref().unwrap().as_int().unwrap(), -17);
         assert_eq!(rec[2].as_ref().unwrap().as_str().unwrap(), "Test data");
         let bsize = 5;
-        let b =
-            TClass::new("BType", valid_fields()[..bsize].to_vec(), None)
-                .unwrap();
+        let b = TClass::new("BType", valid_fields()[..bsize].to_vec(), "")
+            .unwrap();
         assert!(!b.is_fieldless());
         assert_eq!(b.len(), bsize);
         assert!(!b.is_empty());
         assert_eq!(b.ttype(), "BType");
-        assert_eq!(b.comment(), None);
+        assert!(b.comment().is_empty());
         assert_eq!(b.fields().len(), bsize);
         assert_eq!(b.fields()[2], f2);
         let rec = b.record_of_nulls().unwrap();
@@ -53,20 +52,20 @@ mod tests {
 
     #[test]
     fn t_tclass_new_fieldless() {
-        let ready = TClass::new_fieldless("ReadyState", Some("Ready enum"))
-            .unwrap();
+        let ready =
+            TClass::new_fieldless("ReadyState", "Ready enum").unwrap();
         assert!(ready.is_fieldless());
         assert_eq!(ready.len(), 0);
         assert!(ready.is_empty());
         assert_eq!(ready.ttype(), "ReadyState");
-        assert_eq!(ready.comment(), Some("Ready enum"));
+        assert_eq!(ready.comment(), "Ready enum");
         assert_eq!(ready.fields().len(), 0);
-        let wait = TClass::new_fieldless("WaitState", None).unwrap();
+        let wait = TClass::new_fieldless("WaitState", "").unwrap();
         assert!(wait.is_fieldless());
         assert_eq!(wait.len(), 0);
         assert!(wait.is_empty());
         assert_eq!(wait.ttype(), "WaitState");
-        assert!(wait.comment().is_none());
+        assert!(wait.comment().is_empty());
         let row = wait.record_of_nulls();
         assert!(row.is_err());
     }
@@ -74,8 +73,7 @@ mod tests {
     #[test]
     fn t_tclass_display() {
         let fields = valid_fields();
-        let tclass =
-            TClass::new("General", fields, Some("first test")).unwrap();
+        let tclass = TClass::new("General", fields, "first test").unwrap();
         assert_eq!(
             tclass.to_string(),
             "TClass::new(\"General\", vec![Field::new(\"CID\", \"int\"), \
@@ -84,16 +82,20 @@ mod tests {
             Field::new(\"when\", \"date\"), \
             Field::new(\"size\", \"real\"), \
             Field::new(\"timestamp\", \"datetime\"), \
-            Field::new_anyvtype(\"Kind\"), \
-            Field::new_anyvtype(\"Filename\"), \
+            Field::new(\"Kind\", \"\"), \
+            Field::new(\"Filename\", \"\"), \
             Field::new(\"Categories\", \"Categories\"), \
-            Field::new(\"Extra\", \"Point\")], Some(\"first test\"))"
+            Field::new(\"Extra\", \"Point\")], \"first test\")"
         );
-        let tclass =
-            TClass::new_fieldless("StateReady", Some("enum")).unwrap();
+        let tclass = TClass::new_fieldless("StateReady", "enum").unwrap();
         assert_eq!(
             tclass.to_string(),
-            "TClass::new_fieldless(\"StateReady\", Some(\"enum\"))"
+            "TClass::new_fieldless(\"StateReady\", \"enum\")"
+        );
+        let tclass = TClass::new_fieldless("StateWait", "").unwrap();
+        assert_eq!(
+            tclass.to_string(),
+            "TClass::new_fieldless(\"StateWait\", \"\")"
         );
     }
 
@@ -101,18 +103,18 @@ mod tests {
     fn t_tclass_eq_lt() {
         // For < we only care about the ttype and prefer case-insensitive
         let fields = valid_fields();
-        let a = TClass::new("Alpha", fields, None).unwrap();
+        let a = TClass::new("Alpha", fields, "").unwrap();
         let fields = valid_fields()[..6].to_vec();
-        let b = TClass::new("bravo", fields, None).unwrap();
+        let b = TClass::new("bravo", fields, "").unwrap();
         let fields = valid_fields()[..3].to_vec();
-        let c = TClass::new("Charlie", fields, None).unwrap();
-        let d = TClass::new_fieldless("Delta", None).unwrap();
-        let e = TClass::new_fieldless("ECHO", None).unwrap();
-        let f = TClass::new_fieldless("echo", None).unwrap();
+        let c = TClass::new("Charlie", fields, "").unwrap();
+        let d = TClass::new_fieldless("Delta", "").unwrap();
+        let e = TClass::new_fieldless("ECHO", "").unwrap();
+        let f = TClass::new_fieldless("echo", "").unwrap();
         assert!(a < b && b < c && c < d && d < e && e < f);
         assert!(a != b && b != c && c != d && d != e && e != f);
         let b2 = b.clone();
-        let c2 = TClass::new("Charlie", valid_fields()[..3].to_vec(), None)
+        let c2 = TClass::new("Charlie", valid_fields()[..3].to_vec(), "")
             .unwrap();
         assert!(b2 != c2 && b == b2 && c == c2);
     }
@@ -120,8 +122,8 @@ mod tests {
     #[test]
     fn t_tclass_duplicate_field() {
         let mut fields = valid_fields();
-        fields.push(Field::new_anyvtype("size").unwrap());
-        let e = TClass::new("General", fields, None).unwrap_err();
+        fields.push(Field::new("size", "").unwrap());
+        let e = TClass::new("General", fields, "").unwrap_err();
         check_error_code(&e.to_string(), 336, "size");
     }
 
@@ -155,7 +157,7 @@ mod tests {
         ] {
             // With fields
             let fields = valid_fields();
-            let tclass = TClass::new(name, fields, None);
+            let tclass = TClass::new(name, fields, "");
             assert!(
                 tclass.is_err(),
                 "expected err of #{} on {}",
@@ -165,7 +167,7 @@ mod tests {
             let e = tclass.unwrap_err();
             check_error_code(&e.to_string(), code, name);
             // Fieldless
-            let tclass = TClass::new_fieldless(name, None);
+            let tclass = TClass::new_fieldless(name, "");
             assert!(
                 tclass.is_err(),
                 "expected err of #{} on {}",

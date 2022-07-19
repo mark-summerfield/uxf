@@ -3,6 +3,11 @@
 
 use anyhow::{bail, Result};
 
+pub fn fatal(code: i16, message: &str) -> Result<()> {
+    let event = Event::new(EventKind::Fatal, code, message);
+    bail!(event.text())
+}
+
 pub fn on_event(event: &Event) -> Result<()> {
     let text = event.text();
     if event.kind == EventKind::Fatal {

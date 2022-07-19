@@ -36,31 +36,31 @@ pub fn check_error_code(error: &str, code: i32, name: &str) {
             assert_eq!(
                 error,
                 format!(
-                    "#304:names cannot be the same \
+                    "uxf:F304:-:0:names cannot be the same \
                                as built-in type names or constants, got {}",
                     name
                 )
             );
         }
-        298 => assert_eq!(error, "#298:names must be nonempty"),
+        298 => assert_eq!(error, "uxf:F298:-:0:names must be nonempty"),
         300 => assert_eq!(
             error,
             format!(
-                "#300:names must start \
+                "uxf:F300:-:0:names must start \
                                   with a letter or underscore, got {}",
                 name
             )
         ),
         302 => assert_eq!(
             error,
-            format!("#302:names may not be yes or no got {}", name)
+            format!("uxf:F302:-:0:names may not be yes or no got {}", name)
         ),
         306 => {
             let n = name.len(); // byte count is fine: all ASCII
             assert_eq!(
                 error,
                 format!(
-                    "#306:names may be at most \
+                    "uxf:F306:-:0:names may be at most \
                                {} characters long, got {} ({} characters)",
                     MAX_IDENTIFIER_LEN, name, n
                 )
@@ -69,7 +69,7 @@ pub fn check_error_code(error: &str, code: i32, name: &str) {
         310 => assert_eq!(
             error,
             format!(
-                "#310:names may only contain letters, digits, or \
+                "uxf:F310:-:0:names may only contain letters, digits, or \
                                   underscores, got {}",
                 name
             )
@@ -77,11 +77,11 @@ pub fn check_error_code(error: &str, code: i32, name: &str) {
         336 => assert_eq!(
             error,
             format!(
-                "#336:can't have duplicate table tclass field names, \
-                got {:?} twice",
+                "uxf:F336:-:0:can't have duplicate table tclass field \
+                names, got {:?} twice",
                 name
             )
         ),
-        _ => assert!(false, "unexpected error code {} ({:?})", code, name),
+        _ => panic!("unexpected error code {} ({:?})", code, name),
     }
 }

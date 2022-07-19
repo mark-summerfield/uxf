@@ -9,7 +9,7 @@ mod tests {
 
     #[test]
     fn t_field() {
-        // Tests new() new_anyvtype() name() vtype() == != clone()
+        // Tests new() name() vtype() == != clone()
         for (i, vtype) in [
             VTYPE_NAME_BOOL,
             VTYPE_NAME_BYTES,
@@ -44,14 +44,14 @@ mod tests {
 
             // With vtype None
             let name = format!("{}{}", vtype, i + 1);
-            let h = Field::new_anyvtype(&name).unwrap();
+            let h = Field::new(&name, "").unwrap();
             assert_eq!(
                 h.to_string(),
-                format!("Field::new_anyvtype({:?})", name)
+                format!("Field::new({:?}, \"\")", name)
             );
             assert_eq!(h.name(), name);
             assert!(&h.vtype().is_none());
-            let i = Field::new_anyvtype(&name).unwrap();
+            let i = Field::new(&name, "").unwrap();
             assert!(h == i);
             assert!(f != h);
             assert!(g != i);
@@ -67,12 +67,12 @@ mod tests {
     #[test]
     fn t_field_lt() {
         // We only care about the name and prefer case-insensitive
-        let a = Field::new_anyvtype("Alpha").unwrap();
+        let a = Field::new("Alpha", "").unwrap();
         let b = Field::new("bravo", "int").unwrap();
         let c = Field::new("Charlie", "MyType4").unwrap();
-        let d = Field::new_anyvtype("Delta").unwrap();
-        let e = Field::new_anyvtype("ECHO").unwrap();
-        let f = Field::new_anyvtype("echo").unwrap();
+        let d = Field::new("Delta", "").unwrap();
+        let e = Field::new("ECHO", "").unwrap();
+        let f = Field::new("echo", "").unwrap();
         assert!(a < b && b < c && c < d && d < e && e < f);
     }
 
@@ -112,7 +112,7 @@ mod tests {
             check_error_code(&e.to_string(), code, name);
 
             // With vtype None
-            let f = Field::new_anyvtype(name);
+            let f = Field::new(name, "");
             assert!(f.is_err(), "expected err of #{} on {}", code, name);
             let e = f.unwrap_err();
             check_error_code(&e.to_string(), code, name);
@@ -121,8 +121,9 @@ mod tests {
 
     #[test]
     fn t_field_new_invalid_vtype() {
+        // A vtype of "" is valid since it is taken to be None i.e., any
+        // vtype is accepted
         for (code, vtype) in [
-            (298, ""),
             (300, "*abc"),
             (300, ".Custom_"),
             (300, "1int"),
