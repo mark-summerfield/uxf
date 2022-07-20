@@ -281,6 +281,22 @@ def main():
 
     try:
         total += 1
+        e = 298
+        uxf.List(vtype='')
+        fail(f'test_errors • #{e} FAIL', regression)
+    except uxf.Error as err:
+        ok += got_error(e, err, regression)
+
+    try:
+        total += 1
+        e = 300
+        _ = uxf.Map(vtype='$')
+        fail(f'test_errors • #{e} FAIL', regression)
+    except uxf.Error as err:
+        ok += got_error(e, err, regression)
+
+    try:
+        total += 1
         e = 300
         _ = uxf.Field('1st')
         fail(f'test_errors • #{e} FAIL', regression)
@@ -297,7 +313,23 @@ def main():
 
     try:
         total += 1
+        e = 300
+        uxf.List(vtype='@1')
+        fail(f'test_errors • #{e} FAIL', regression)
+    except uxf.Error as err:
+        ok += got_error(e, err, regression)
+
+    try:
+        total += 1
         e = 302
+        _ = uxf.Field('x', 'no')
+        fail(f'test_errors • #{e} FAIL', regression)
+    except uxf.Error as err:
+        ok += got_error(e, err, regression)
+
+    try:
+        total += 1
+        e = 304
         _ = uxf.Field('yes')
         fail(f'test_errors • #{e} FAIL', regression)
     except uxf.Error as err:
@@ -315,6 +347,22 @@ def main():
         total += 1
         e = 306
         _ = uxf.Field('x' * 80)
+        fail(f'test_errors • #{e} FAIL', regression)
+    except uxf.Error as err:
+        ok += got_error(e, err, regression)
+
+    try:
+        total += 1
+        e = 308
+        uxf.loads('uxf 1.0\n[{map 1 2}', on_event=on_event)
+        fail(f'test_errors • #{e} FAIL', regression)
+    except uxf.Error as err:
+        ok += got_error(e, err, regression)
+
+    try:
+        total += 1
+        e = 308
+        _ = uxf.Map(ktype='real')
         fail(f'test_errors • #{e} FAIL', regression)
     except uxf.Error as err:
         ok += got_error(e, err, regression)
@@ -524,14 +572,6 @@ def main():
         total += 1
         e = 446
         uxf.loads('uxf 1.0\n[q]', on_event=on_event)
-        fail(f'test_errors • #{e} FAIL', regression)
-    except uxf.Error as err:
-        ok += got_error(e, err, regression)
-
-    try:
-        total += 1
-        e = 448
-        uxf.loads('uxf 1.0\n[{map 1 2}', on_event=on_event)
         fail(f'test_errors • #{e} FAIL', regression)
     except uxf.Error as err:
         ok += got_error(e, err, regression)

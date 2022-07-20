@@ -9,12 +9,14 @@ pub(crate) fn check_ktype(ktype: &str) -> Result<()> {
     if KTYPES.contains(&ktype) {
         Ok(())
     } else {
-        fatal(704, &format!("a ktype must be one of {:?}", KTYPES))
+        fatal(
+            308,
+            &format!("a ktype must be one of {:?}, got {}", KTYPES, ktype),
+        )
     }
 }
 
 pub(crate) fn check_name(name: &str) -> Result<()> {
-    check_type_name(name)?;
     if RESERVED_WORDS.contains(&name) {
         fatal(
             304,
@@ -25,6 +27,7 @@ pub(crate) fn check_name(name: &str) -> Result<()> {
             ),
         )?;
     }
+    check_type_name(name)?;
     Ok(())
 }
 

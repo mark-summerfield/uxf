@@ -25,14 +25,14 @@ VERSION = 1.0 # UXF file format version
 UTF8 = 'utf-8'
 _MAX_IDENTIFIER_LEN = 60
 _SEP = ' '
-_KEY_TYPES = frozenset({'int', 'date', 'datetime', 'str', 'bytes'})
-_VALUE_TYPES = frozenset(_KEY_TYPES | {'bool', 'real'})
-_ANY_VALUE_TYPES = frozenset(_VALUE_TYPES | {'list', 'map', 'table'})
+_KTYPES = frozenset({'int', 'date', 'datetime', 'str', 'bytes'})
+_VTYPES = frozenset(_KTYPES | {'bool', 'real'})
+_ANY_VTYPES = frozenset(_VTYPES | {'list', 'map', 'table'})
 _BOOL_FALSE = frozenset({'no'})
 _BOOL_TRUE = frozenset({'yes'})
 _BOOLS = frozenset(_BOOL_FALSE | _BOOL_TRUE)
-_BAREWORDS = frozenset(_ANY_VALUE_TYPES | _BOOLS)
-RESERVED_WORDS = frozenset(_ANY_VALUE_TYPES | {'null'} | _BOOLS)
+_BAREWORDS = frozenset(_ANY_VTYPES | _BOOLS)
+RESERVED_WORDS = frozenset(_ANY_VTYPES | {'null'} | _BOOLS)
 _MISSING = object()
 
 
@@ -551,7 +551,7 @@ class _Lexer(_EventMixin):
         if match in _BOOL_TRUE:
             self.add_token(_Kind.BOOL, True)
             return
-        if match in _ANY_VALUE_TYPES:
+        if match in _ANY_VTYPES:
             self.add_token(_Kind.TYPE, match)
             return
         start = self.pos - 1
@@ -658,6 +658,7 @@ class _Lexer(_EventMixin):
 
     def subsume_list_vtype(self, top, value):
         if top.vtype is None:
+            _check_type_name(value, self.error)
             top.vtype = value
         else:
             self.error(272, f'expected value got type, {value}')
@@ -668,9 +669,10 @@ class _Lexer(_EventMixin):
         if top.ktype is None:
             if kind is _Kind.IDENTIFIER:
                 self.error(273, f'expected ktype got, {value}')
-            else:
-                top.ktype = value
+            _check_ktype(value, self.error)
+            top.ktype = value
         elif top.vtype is None:
+            _check_type_name(value, self.error)
             top.vtype = value
         else:
             self.error(276, f'expected first map key got type, {value}')
@@ -763,6 +765,8 @@ class List(collections.UserList):
         .comment holds an optional read-only comment
         .vtype holds a read-only UXF type name ('int', 'real', …)'''
         super().__init__(seq)
+        if vtype is not None:
+            _check_type_name(vtype)
         self._vtype = vtype
         self._comment = comment
 
@@ -783,10 +787,16 @@ class Map(collections.UserDict):
         '''Takes an optional dict
         .data holds the actual dict
         .comment holds an optional comment
-        .ktype and .vtype hold a UXF type name ('int', 'str', …);
-        .ktype may only be bytes, date, datetime, int, or str'''
+        .ktype may only be bytes, date, datetime, int, str — or None meaning
+        any valid ktype
+        .vtype may hold a UXF type name ('int', 'str', …) — or None meaning
+        any valid vtype'''
         super().__init__(d)
+        if ktype is not None:
+            _check_ktype(ktype)
         self._ktype = ktype
+        if vtype is not None:
+            _check_type_name(vtype)
         self._vtype = vtype
         self._comment = comment
         self._pending_key = _MISSING
@@ -834,28 +844,41 @@ class Map(collections.UserDict):
         return self._pending_key is _MISSING
 
 
-def _check_name(name):
-    _check_type_name(name)
+def _check_ktype(ktype, callback=None):
+    if callback is None:
+        callback = _raise_error
+    if ktype not in _KTYPES:
+        ktypes = ', '.join(sorted(_KTYPES))
+        return callback(308,
+                        f'a ktype must be one of ({ktypes}), got {ktype}')
+
+
+def _check_name(name, callback=None):
+    if callback is None:
+        callback = _raise_error
     if name in RESERVED_WORDS:
-        _raise_error(304, 'names cannot be the same as built-in type '
-                     'names or constants, got {name}')
+        return callback(304, 'names cannot be the same as built-in type '
+                        f'names or constants, got {name}')
+    _check_type_name(name, callback)
 
 
-def _check_type_name(name):
+def _check_type_name(name, callback=None):
+    if callback is None:
+        callback = _raise_error
     if not name:
-        _raise_error(298, 'names must be nonempty')
+        return callback(298, 'names must be nonempty')
     if name[0] != '_' and not name[0].isalpha():
-        _raise_error(300, 'names must start with a letter or '
-                     f'underscore, got {name}')
+        return callback(300, 'names must start with a letter or '
+                        f'underscore, got {name}')
     if name in _BOOLS:
-        _raise_error(302, f'names may not be yes or no got {name}')
+        return callback(302, f'names may not be yes or no got {name}')
     if len(name) > _MAX_IDENTIFIER_LEN:
-        _raise_error(306, f'names may at most {_MAX_IDENTIFIER_LEN} char'
-                     f'acters long, got {name} ({len(name)} characters)')
+        return callback(306, f'names may at most {_MAX_IDENTIFIER_LEN} char'
+                        f'acters long, got {name} ({len(name)} characters)')
     for c in name:
         if not (c == '_' or c.isalnum()):
-            _raise_error(310, 'names may only contain letters, digits, '
-                         f'or underscores, got {name}')
+            return callback(310, 'names may only contain letters, digits, '
+                            f'or underscores, got {name}')
 
 
 class TClass:
@@ -1171,7 +1194,7 @@ class Table:
         for field in self.fields:
             if field.vtype is None:
                 break # any type allowed so need to check records themselves
-            if field.vtype not in _VALUE_TYPES:
+            if field.vtype not in _VTYPES:
                 return False # non-scalar expected so not a scalar table
         else:
             return True # all vtypes specified and all scalar
@@ -1439,7 +1462,7 @@ class _Parser(_EventMixin):
 
     def _verify_type_identifier(self, vtype):
         if vtype is not None:
-            if vtype in _ANY_VALUE_TYPES:
+            if vtype in _ANY_VTYPES:
                 return # built-in type
             tclass = self.tclasses.get(vtype)
             if tclass is None:
@@ -1515,8 +1538,8 @@ class _Parser(_EventMixin):
             self._verify_type_identifier(token.vtype)
             value = List(vtype=token.vtype, comment=token.comment)
         elif kind is _Kind.MAP_BEGIN:
-            if token.ktype is not None and token.ktype not in _KEY_TYPES:
-                self.error(448, f'expected list ktype, got {token.ktype}')
+            if token.ktype is not None and token.ktype not in _KTYPES:
+                self.error(448, f'expected map ktype, got {token.ktype}')
             self._verify_type_identifier(token.vtype)
             value = Map(ktype=token.ktype, vtype=token.vtype,
                         comment=token.comment)

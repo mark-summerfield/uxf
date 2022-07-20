@@ -2,9 +2,10 @@
 # - check_ktype(str) & use check_* calls in __init__ for List & Map
 # (already de-facto done for Table in TClass)
 # TODO rs
-# - List: immutable vtype & comment; mutable values + doc
-# - Map: immutable ktype, vtype, & comment; mutable items + doc
-# - Table: immutable tclass & comment; mutable records + doc
+# - List: immutable vtype & comment; mutable values + tests + doc
+# - Map: immutable ktype (use check_ktype()), vtype, & comment; mutable
+#   items + tests + doc
+# - Table: immutable tclass & comment; mutable records + tests + doc
 # - Parser (without (& with?) linting)
 # - Output
 # List, Map, Table need full set of operators & methods including []
