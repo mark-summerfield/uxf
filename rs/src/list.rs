@@ -45,11 +45,9 @@ impl List {
         self.values[row].as_ref()
     }
 
-    /*
     pub fn get_mut(&mut self, row: usize) -> &mut Option<Value> {
-        // ???
+        &mut self.values[row]
     }
-    */
 
     pub fn push(&mut self, value: Option<Value>) {
         self.values.push(value);
@@ -66,22 +64,16 @@ impl Default for List {
     }
 }
 
-/*
 impl Index<usize> for List {
-    type Output = &Option<Value>;
+    type Output = Option<Value>;
 
     fn index(&self, row: usize) -> &Self::Output {
-        self.get(row)
+        &self.values[row]
     }
 }
-*/
 
-/*
 impl IndexMut<usize> for List {
-    type Output = &Option<Value>;
-
-    fn index(&self, row: usize) -> &mut Self::Output {
-        // ???
+    fn index_mut(&mut self, row: usize) -> &mut Self::Output {
+        &mut self.values[row]
     }
 }
-*/

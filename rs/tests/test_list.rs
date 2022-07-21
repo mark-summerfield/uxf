@@ -30,8 +30,26 @@ mod tests {
         assert!(l1.get(2).is_none());
         assert_eq!(l1.get(3).unwrap().as_str().unwrap(), "elephant ears");
         assert!(isclose64(l1.get(4).unwrap().as_real().unwrap(), 1.73e-5));
+        assert_eq!(l1[0].as_ref().unwrap().as_bool().unwrap(), true);
+        assert_eq!(l1[1].as_ref().unwrap().as_int().unwrap(), -919);
+        assert!(l1[2].as_ref().is_none());
+        assert_eq!(
+            l1[3].as_ref().unwrap().as_str().unwrap(),
+            "elephant ears"
+        );
+        assert!(isclose64(
+            l1[4].as_ref().unwrap().as_real().unwrap(),
+            1.73e-5
+        ));
+        *l1.get_mut(0) = Some(Value::Int(7070));
+        assert_eq!(l1.get(0).unwrap().as_int().unwrap(), 7070);
+        *l1.get_mut(1) = Some(Value::Bool(false));
+        assert_eq!(l1.get(1).unwrap().as_bool().unwrap(), false);
+        *l1.get_mut(1) = None;
+        assert!(l1.get(1).is_none());
+        // TODO try setting a string & a real
         // TODO nonempty vtype & comment
-        // TODO [] accessor for get & set
+        // TODO [] accessor for set
         // TODO typecheck
     }
 
