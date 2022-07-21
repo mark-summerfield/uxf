@@ -5,6 +5,11 @@ use crate::constants::*;
 use crate::event::fatal;
 use anyhow::Result;
 
+pub fn isclose64(a: f64, b: f64) -> bool {
+    (a..=(a + f64::EPSILON)).contains(&b)
+}
+
+
 pub(crate) fn check_ktype(ktype: &str) -> Result<()> {
     if KTYPES.contains(&ktype) {
         Ok(())

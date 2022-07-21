@@ -2,8 +2,9 @@
 // License: GPLv3
 
 use crate::util::check_name;
-use crate::value::Row;
+use crate::value::{Row, Value};
 use anyhow::Result;
+use std::ops::{Index, IndexMut};
 
 #[derive(Clone, Debug)]
 pub struct List {
@@ -23,6 +24,36 @@ impl List {
             values: Row::new(),
         })
     }
+
+    pub fn vtype(&self) -> &str {
+        &self.vtype
+    }
+
+    pub fn comment(&self) -> &str {
+        &self.comment
+    }
+
+    pub fn len(&self) -> usize {
+        self.values.len()
+    }
+
+    pub fn is_empty(&self) -> bool {
+        self.values.is_empty()
+    }
+
+    pub fn get(&self, row: usize) -> Option<&Value> {
+        self.values[row].as_ref()
+    }
+
+    /*
+    pub fn get_mut(&mut self, row: usize) -> &mut Option<Value> {
+        // ???
+    }
+    */
+
+    pub fn push(&mut self, value: Option<Value>) {
+        self.values.push(value);
+    }
 }
 
 impl Default for List {
@@ -34,3 +65,23 @@ impl Default for List {
         }
     }
 }
+
+/*
+impl Index<usize> for List {
+    type Output = &Option<Value>;
+
+    fn index(&self, row: usize) -> &Self::Output {
+        self.get(row)
+    }
+}
+*/
+
+/*
+impl IndexMut<usize> for List {
+    type Output = &Option<Value>;
+
+    fn index(&self, row: usize) -> &mut Self::Output {
+        // ???
+    }
+}
+*/

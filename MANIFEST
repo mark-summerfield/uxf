@@ -1,5 +1,7 @@
 # TODO rs
 # - List: immutable vtype & comment; mutable values + tests + doc
+#   make values private & provide for: iteration, get/set, typecheck,
+#   etc.
 # - Map: immutable ktype (use check_ktype()), vtype, & comment; mutable
 #   items + tests + doc
 # - Table: immutable tclass & comment; mutable records + tests + doc
@@ -18,17 +20,17 @@ rs/src/table.rs
 rs/src/tclass.rs
 rs/src/field.rs
 rs/src/util.rs
-rs/src/constants.rs
 rs/src/event.rs
+rs/src/constants.rs
 rs/src/parser.rs
 rs/src/output.rs
 rs/src/test_utils.rs
 rs/tests/test_field.rs
 rs/tests/test_tclass.rs
-rs/tests/test_value.rs
 rs/tests/test_list.rs
 rs/tests/test_map.rs
 rs/tests/test_table.rs
+rs/tests/test_value.rs
 rs/Cargo.toml
 rs/README.md
 # TODO port tlm to use rust uxf
