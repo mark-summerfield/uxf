@@ -206,10 +206,11 @@ def test(total, ok, actual_uxo, expected_uxo, expected_imports, filename,
 
 
 def on_event(event, *args, **kwargs):
-    text = uxf.event_text(event, *args, **kwargs)
+    error = uxf.Error(event, *args, **kwargs)
+    text = str(error)
     on_event.errors.append(strip_path(text))
     if event is uxf.Event.FATAL:
-        raise uxf.Error(text)
+        raise error
 on_event.errors = [] # noqa: E305
 
 

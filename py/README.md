@@ -531,7 +531,9 @@ could pass a format of `Format(wrap_width=None, realdp=3)`.
 <a name="error-class"></a>
 #### Error
 
-This class is used to propagate errors.
+This class is used to propagate errors. It holds the `uxf.Event`, an error
+code, an error message string, a filename (or `'-'`), and a line number
+(`lino` which may be `0`).
 
 (If this module produces an exception that isn't a `uxf.Error` or `OSError`
 subclass then it is probably a bug that should be reported.)

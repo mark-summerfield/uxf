@@ -21,7 +21,7 @@ def main():
 
 def on_event(*args, **kwargs):
     kwargs['prefix'] = 'uxflint'
-    print(uxf.event_text(*args, **kwargs))
+    print(uxf.Error(*args, **kwargs))
 
 
 if __name__ == '__main__':

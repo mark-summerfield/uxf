@@ -47,22 +47,16 @@ class Event(enum.Enum):
 def on_event(event: Event, code: int, message: str, *, filename='-',
              lino=0, verbose=True, prefix='uxf'):
     '''The default event handler.'''
-    text = event_text(event, code, message, filename=filename, lino=lino,
-                      prefix=prefix)
+    error = Error(event, code, message, filename=filename, lino=lino,
+                  verbose=verbose, prefix=prefix)
     if event is Event.FATAL:
-        raise Error(text)
+        raise error
     if verbose:
-        print(text, file=sys.stderr)
-
-
-def event_text(event: Event, code: int, message: str, *, filename='-',
-               lino=0, verbose=None, prefix='uxf'):
-    '''Convenience method for custom on_event() handlers.'''
-    return f'{prefix}:{event.name[0]}{code}:{filename}:{lino}:{message}'
+        print(str(error), file=sys.stderr)
 
 
 def _raise_error(code, message):
-    raise Error(event_text(Event.FATAL, code, message))
+    raise Error(Event.FATAL, code, message)
 
 
 def _validate_format(name, value): # If invalid we return the valid default
@@ -688,7 +682,21 @@ class _Lexer(_EventMixin):
 
 
 class Error(Exception):
-    pass
+
+    def __init__(self, event: Event, code: int, message: str, *,
+                 filename='-', lino=0, verbose=True, prefix='uxf'):
+        self.event = event
+        self.code = code
+        self.message = message
+        self.filename = filename
+        self.lino = lino
+        self.verbose = verbose
+        self.prefix = prefix
+
+
+    def __str__(self):
+        return (f'{self.prefix}:{self.event.name[0]}{self.code}:'
+                f'{self.filename}:{self.lino}:{self.message}')
 
 
 class _Token:

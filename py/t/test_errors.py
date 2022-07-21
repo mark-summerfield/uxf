@@ -3,7 +3,6 @@
 # License: GPLv3
 
 import os
-import re
 import sys
 
 try:
@@ -16,7 +15,7 @@ finally:
 
 
 def on_event(*args, **kwargs):
-    raise uxf.Error(uxf.event_text(*args, **kwargs))
+    raise uxf.Error(*args, **kwargs)
 
 
 def main():
@@ -819,8 +818,7 @@ def main():
 
 
 def got_error(code, err, regression):
-    err = str(err)
-    if re.search(r':[WREF]' + str(code) + ':', err):
+    if err.code == code:
         return 1
     fail(f'test_errors • expected {code} got, {err!r} FAIL', regression)
     return 0
