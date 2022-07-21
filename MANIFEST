@@ -1,6 +1,3 @@
-# TODO py
-# - check_ktype(str) & use check_* calls in __init__ for List & Map
-# (already de-facto done for Table in TClass)
 # TODO rs
 # - List: immutable vtype & comment; mutable values + tests + doc
 # - Map: immutable ktype (use check_ktype()), vtype, & comment; mutable

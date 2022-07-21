@@ -1,33 +1,38 @@
 // Copyright © 2022 Mark Summerfield. All rights reserved.
 // License: GPLv3
 
+// To access the Event details from a Result::Err
+//
+// if let Some(err) = err.downcast_ref::<Event>() {
+//     println!("kind={} code={} message={}", err.code, err.letter(), etc
+// }
+
 use anyhow::{bail, Result};
+use std::fmt;
 
 pub fn fatal(code: i16, message: &str) -> Result<()> {
-    let event = Event::new(EventKind::Fatal, code, message);
-    bail!(event.text())
+    bail!(Event::new(EventKind::Fatal, code, message))
 }
 
 pub fn on_event(event: &Event) -> Result<()> {
-    let text = event.text();
     if event.kind == EventKind::Fatal {
-        bail!(text);
+        bail!(event.clone());
     }
     if event.verbose {
-        eprintln!("{}", &text);
+        eprintln!("{}", event);
     }
     Ok(())
 }
 
 #[derive(Clone, Debug)]
 pub struct Event {
-    pub kind: EventKind,
-    pub code: i16,
-    pub message: String,
-    pub filename: String,
-    pub lino: u32,
-    pub verbose: bool,
-    pub prefix: String,
+    kind: EventKind,
+    code: i16,
+    message: String,
+    filename: String,
+    lino: u32,
+    verbose: bool,
+    prefix: String,
 }
 
 impl Event {
@@ -73,18 +78,6 @@ impl Event {
         }
     }
 
-    pub fn text(&self) -> String {
-        format!(
-            "{}:{}{}:{}:{}:{}",
-            self.prefix,
-            self.letter(),
-            self.code,
-            self.filename,
-            self.lino,
-            self.message
-        )
-    }
-
     fn letter(&self) -> char {
         match self.kind {
             EventKind::Warning => 'W',
@@ -94,6 +87,23 @@ impl Event {
         }
     }
 }
+
+impl fmt::Display for Event {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(
+            f,
+            "{}:{}{}:{}:{}:{}",
+            self.prefix,
+            self.letter(),
+            self.code,
+            self.filename,
+            self.lino,
+            self.message
+        )
+    }
+}
+
+impl std::error::Error for Event {}
 
 #[derive(Clone, Debug, PartialEq)]
 pub enum EventKind {
