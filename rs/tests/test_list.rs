@@ -47,11 +47,35 @@ mod tests {
         assert_eq!(l1.get_unchecked(1).as_bool().unwrap(), false);
         *l1.get_unchecked_mut(1) = Value::Null;
         assert!(l1.get_unchecked(1).is_null());
-        // TODO try setting a string & a real
-        // TODO repeat all above for []
-        // TODO repeat all above for checked get() & get_mut()
-        // TODO nonempty vtype & comment
-        // TODO typecheck
+        assert!(l1[2].is_null());
+        l1.push(Value::Null);
+        let i = l1.len() - 1;
+        *l1.get_unchecked_mut(i) = Value::Str("dog tail".to_string());
+        assert_eq!(l1[i].as_str().unwrap(), "dog tail");
+        l1.push(Value::Null);
+        let i = l1.len() - 1;
+        assert!(l1[i].is_null());
+        l1[i] = Value::Real(-9.4);
+        assert!(isclose64(l1[i].as_real().unwrap(), -9.4));
+        l1[i] = Value::Int(4);
+        assert_eq!(l1[i].as_int().unwrap(), 4);
+
+        let mut l2 = List::new("int", "Test of int").unwrap();
+        l2.push(Value::Null);
+        l2.push(Value::Int(5));
+        l2.push(Value::Int(17));
+        assert_eq!(l2.len(), 3);
+        assert!(!l2.is_empty());
+        assert!(l2[0].is_null());
+        assert_eq!(l2.vtype(), "int");
+        assert_eq!(l2.comment(), "Test of int");
+    }
+
+    #[test]
+    fn t_list_err() {
+        assert!(List::new("$1", "").is_err());
+        // TODO a few more err tests, checking specific codes & to show
+        // downcast_ref in practice
     }
 
     fn valid_row() -> Row {

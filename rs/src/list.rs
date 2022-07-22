@@ -1,7 +1,7 @@
 // Copyright © 2022 Mark Summerfield. All rights reserved.
 // License: GPLv3
 
-use crate::util::check_name;
+use crate::util::check_type_name;
 use crate::value::{Row, Value};
 use anyhow::Result;
 use std::fmt;
@@ -20,7 +20,7 @@ pub struct List {
 impl List {
     pub fn new(vtype: &str, comment: &str) -> Result<Self> {
         if !vtype.is_empty() {
-            check_name(vtype)?;
+            check_type_name(vtype)?;
         }
         Ok(List {
             vtype: vtype.to_string(),
@@ -48,12 +48,6 @@ impl List {
     /// Returns `Some(&Value)` if `index` is in bounds; otherwise `None`.
     pub fn get(&self, index: usize) -> Option<&Value> {
         self.values.get(index)
-    }
-
-    /// Returns `mut Some(&Value)` if `index` is in bounds;
-    /// otherwise `None`.
-    pub fn get_mut(&mut self, index: usize) -> Option<&mut Value> {
-        self.values.get_mut(index)
     }
 
     /// Returns `&Value` if `index` is in bounds; otherwise panics.
