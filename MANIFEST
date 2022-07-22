@@ -1,39 +1,28 @@
 # TODO rs
-# - List: immutable vtype & comment; mutable values + tests + doc
-#   make values private & provide for: iteration, get/set, typecheck,
-#   etc.
-# - Map: immutable ktype (use check_ktype()), vtype, & comment; mutable
-#   items + tests + doc
-# - Table: immutable tclass & comment; mutable records + tests + doc
-# - Parser (without (& with?) linting)
-# - Output
-# List, Map, Table need full set of operators & methods including []
-# accessors, .get(), iteration, etc.
-# rs/README.md
-# IDEA: noncopy nonowned versions: UxfBuf ValueBuf ... FieldBuf
 
-rs/src/lib.rs
-rs/src/value.rs
-rs/src/list.rs
-rs/src/map.rs
-rs/src/table.rs
+rs/src/lib.rs # add docs at the end
+rs/src/value.rs # TODO
+rs/src/list.rs # TODO
+rs/src/map.rs # TODO
+rs/src/table.rs # TODO
 rs/src/tclass.rs
 rs/src/field.rs
 rs/src/util.rs
 rs/src/event.rs
 rs/src/constants.rs
-rs/src/parser.rs
-rs/src/output.rs
+rs/src/parser.rs # TODO
+rs/src/output.rs # TODO
 rs/src/test_utils.rs
-rs/tests/test_field.rs
+rs/tests/test_value.rs # TODO
+rs/tests/test_list.rs # TODO
+rs/tests/test_map.rs # TODO
+rs/tests/test_table.rs # TODO
 rs/tests/test_tclass.rs
-rs/tests/test_list.rs
-rs/tests/test_map.rs
-rs/tests/test_table.rs
-rs/tests/test_value.rs
+rs/tests/test_field.rs
 rs/Cargo.toml
 rs/README.md
 # TODO port tlm to use rust uxf
+# IDEA: noncopy nonowned versions: UxfBuf ValueBuf ... FieldBuf
 
 py/uxf.py
 py/uxfconvert.py

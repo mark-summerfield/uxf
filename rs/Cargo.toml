@@ -1,6 +1,6 @@
 [package]
 name = "uxf"
-version = "0.1.0"
+version = "0.2.0"
 edition = "2021"
 publish = true
 authors = [ "Mark Summerfield <mark@qtrac.eu>",]
@@ -10,19 +10,19 @@ documentation = "https://github.com/mark-summerfield/uxf"
 homepage = "https://github.com/mark-summerfield/uxf"
 repository = "https://github.com/mark-summerfield/uxf"
 readme = "README.md"
-keywords = ["parser", "database", "uxf", "serialization", "configuration"]
-categories = [ "development-tools", "text-processing", "config", "parser-implementations", "database"]
+keywords = [ "parser", "database", "uxf", "serialization", "configuration",]
+categories = [ "development-tools", "text-processing", "config", "parser-implementations", "database",]
 license = "GPL-3.0"
+
+[dependencies]
+anyhow = "^1.0"
+chrono = "^0.4"
+once_cell = "^1.13"
 
 [badges.maintenance]
 status = "passively-maintained"
 
 [profile.release]
 strip = true
-opt-level = 3 # 3 is fastest binary; use "s" for smallest
+opt-level = 3
 lto = true
-
-[dependencies]
-anyhow = "^1.0"
-chrono = "^0.4"
-once_cell = "^1.13"

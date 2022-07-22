@@ -3,19 +3,22 @@
 
 #[cfg(test)]
 mod tests {
-    use uxf::test_utils::{opt_value_to_str, value_to_str};
     use uxf::value::Value;
 
     #[test]
     fn t_single_value() {
-        let n = None;
-        assert_eq!(opt_value_to_str(n), "?");
-        let b = Some(Value::Bool(true));
-        assert_eq!(opt_value_to_str(b), "yes");
+        let n = Value::Null;
+        assert_eq!(n.to_string(), "?");
+        assert_eq!(n.typename(), "null");
+        let b = Value::Bool(true);
+        assert_eq!(b.to_string(), "yes");
+        assert_eq!(b.typename(), "bool");
         let b = Value::Bool(false);
-        assert_eq!(value_to_str(b), "no");
+        assert_eq!(b.to_string(), "no");
+        assert_eq!(b.typename(), "bool");
         let i = Value::Int(987123);
-        assert_eq!(value_to_str(i), "987123");
+        assert_eq!(i.to_string(), "987123");
+        assert_eq!(i.typename(), "int");
         // TODO lots more tests
     }
 }

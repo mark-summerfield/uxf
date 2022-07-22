@@ -5,13 +5,24 @@ use crate::util::{check_ktype, check_name};
 use crate::value::{Key, Value};
 use anyhow::Result;
 use std::collections::HashMap;
+use std::fmt;
+
+// TODO ktype() vtype() comment()
+// TODO len() is_empty()
+// TODO get() get_mut() get_key_value() entry()
+// TODO insert() remove() clear()
+// TODO keys() values()
+// TODO typecheck()
+// TODO impl Iter
+// TODO impl Display
+// TODO docs for every fn
 
 #[derive(Clone, Debug)]
 pub struct Map {
     ktype: String,
     vtype: String,
     comment: String,
-    items: HashMap<Key, Option<Value>>,
+    items: HashMap<Key, Value>,
 }
 
 impl Map {
@@ -39,5 +50,15 @@ impl Default for Map {
             comment: "".to_string(),
             items: HashMap::new(),
         }
+    }
+}
+
+impl fmt::Display for Map {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(
+            f,
+            "Map ktype:{} vtype:{} comment:{} items:{:?}",
+            self.ktype, self.vtype, self.comment, self.items
+        )
     }
 }

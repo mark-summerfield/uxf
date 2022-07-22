@@ -4,7 +4,15 @@
 use crate::util::check_name;
 use crate::value::{Row, Value};
 use anyhow::Result;
+use std::fmt;
 use std::ops::{Index, IndexMut};
+
+// TODO impl Iter
+// TODO impl Display
+// TODO truncate() clear()
+// TODO typecheck()
+// TODO docs for every fn
+// TODO tests
 
 #[derive(Clone, Debug)]
 pub struct List {
@@ -41,15 +49,36 @@ impl List {
         self.values.is_empty()
     }
 
-    pub fn get(&self, row: usize) -> Option<&Value> {
-        self.values[row].as_ref()
+    /// Returns `Some(&Value)` if `index` is in bounds; otherwise `None`.
+    pub fn get(&self, index: usize) -> Option<&Value> {
+        if index < self.values.len() {
+            Some(&self.values[index])
+        } else {
+            None
+        }
     }
 
-    pub fn get_mut(&mut self, row: usize) -> &mut Option<Value> {
-        &mut self.values[row]
+    /// Returns `mut Some(&Value)` if `index` is in bounds;
+    /// otherwise `None`.
+    pub fn get_mut(&mut self, index: usize) -> Option<&mut Value> {
+        if index < self.values.len() {
+            Some(&mut self.values[index])
+        } else {
+            None
+        }
     }
 
-    pub fn push(&mut self, value: Option<Value>) {
+    /// Returns `&Value` if `index` is in bounds; otherwise panics.
+    pub fn get_unchecked(&self, index: usize) -> &Value {
+        &self.values[index]
+    }
+
+    /// Returns `mut &Value` if `index` is in bounds; otherwise panics
+    pub fn get_unchecked_mut(&mut self, index: usize) -> &mut Value {
+        &mut self.values[index]
+    }
+
+    pub fn push(&mut self, value: Value) {
         self.values.push(value);
     }
 }
@@ -65,15 +94,27 @@ impl Default for List {
 }
 
 impl Index<usize> for List {
-    type Output = Option<Value>;
+    type Output = Value;
 
-    fn index(&self, row: usize) -> &Self::Output {
-        &self.values[row]
+    /// Returns `&Value` if `index` is in bounds; otherwise panics.
+    fn index(&self, index: usize) -> &Self::Output {
+        &self.values[index]
     }
 }
 
 impl IndexMut<usize> for List {
-    fn index_mut(&mut self, row: usize) -> &mut Self::Output {
-        &mut self.values[row]
+    /// Returns `&mut Value` if `index` is in bounds; otherwise panics.
+    fn index_mut(&mut self, index: usize) -> &mut Self::Output {
+        &mut self.values[index]
+    }
+}
+
+impl fmt::Display for List {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(
+            f,
+            "List vtype:{} comment:{} values:{:?}",
+            self.vtype, self.comment, self.values
+        )
     }
 }

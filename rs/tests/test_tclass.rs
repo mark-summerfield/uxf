@@ -29,13 +29,15 @@ mod tests {
         assert_eq!(fields[6], f6);
         let mut rec = a.record_of_nulls().unwrap();
         assert_eq!(rec.len(), asize);
-        rec[0] = Some(Value::Bool(true));
-        rec[1] = Some(Value::Int(-17));
-        rec[2] = Some(Value::Str("Test data".to_string()));
+        rec[0] = Value::Bool(true);
+        rec[1] = Value::Int(-17);
+        rec[2] = Value::Str("Test data".to_string());
         assert_eq!(rec.len(), asize);
-        assert_eq!(rec[0].as_ref().unwrap().as_bool().unwrap(), true);
-        assert_eq!(rec[1].as_ref().unwrap().as_int().unwrap(), -17);
-        assert_eq!(rec[2].as_ref().unwrap().as_str().unwrap(), "Test data");
+        assert_eq!(rec[0].as_bool().unwrap(), true);
+        assert_eq!(rec[1].as_int().unwrap(), -17);
+        assert_eq!(rec[2].as_str().unwrap(), "Test data");
+        assert!(rec[3].is_null());
+        assert!(rec[4].is_null());
         let bsize = 5;
         let b = TClass::new("BType", valid_fields()[..bsize].to_vec(), "")
             .unwrap();

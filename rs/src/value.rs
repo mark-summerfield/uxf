@@ -1,16 +1,23 @@
 // Copyright © 2022 Mark Summerfield. All rights reserved.
 // License: GPLv3
 
+use crate::constants::*;
 use crate::list::List;
 use crate::map::Map;
 use crate::table::Table;
 use anyhow::{bail, Result};
 use chrono::prelude::*;
+use std::fmt;
 
-pub type Row = Vec<Option<Value>>;
+// TODO impl Display for to_string()
+// TODO docs for every fn
+// TODO tests
+
+pub type Row = Vec<Value>;
 
 #[derive(Clone, Debug)]
 pub enum Value {
+    Null,
     Bool(bool),
     Bytes(Vec<u8>),
     Date(NaiveDate),
@@ -24,6 +31,94 @@ pub enum Value {
 }
 
 impl Value {
+    pub fn is_null(&self) -> bool {
+        if let Value::Null = self {
+            true
+        } else {
+            false
+        }
+    }
+
+    pub fn is_bool(&self) -> bool {
+        if let Value::Bool(_) = self {
+            true
+        } else {
+            false
+        }
+    }
+
+    pub fn is_bytes(&self) -> bool {
+        if let Value::Bytes(_) = self {
+            true
+        } else {
+            false
+        }
+    }
+
+    pub fn is_date(&self) -> bool {
+        if let Value::Date(_) = self {
+            true
+        } else {
+            false
+        }
+    }
+
+    pub fn is_datetime(&self) -> bool {
+        if let Value::DateTime(_) = self {
+            true
+        } else {
+            false
+        }
+    }
+
+    pub fn is_int(&self) -> bool {
+        if let Value::Int(_) = self {
+            true
+        } else {
+            false
+        }
+    }
+
+    pub fn is_list(&self) -> bool {
+        if let Value::List(_) = self {
+            true
+        } else {
+            false
+        }
+    }
+
+    pub fn is_map(&self) -> bool {
+        if let Value::Map(_) = self {
+            true
+        } else {
+            false
+        }
+    }
+
+    pub fn is_real(&self) -> bool {
+        if let Value::Real(_) = self {
+            true
+        } else {
+            false
+        }
+    }
+
+    pub fn is_str(&self) -> bool {
+        if let Value::Str(_) = self {
+            true
+        } else {
+            false
+        }
+    }
+
+    pub fn is_table(&self) -> bool {
+        if let Value::Table(_) = self {
+            true
+        } else {
+            false
+        }
+    }
+
     pub fn as_bool(&self) -> Result<bool> {
         if let Value::Bool(value) = self {
             Ok(*value)
@@ -102,6 +197,46 @@ impl Value {
         } else {
             bail!("non-table Value")
         }
+    }
+
+    pub fn typename(&self) -> &'static str {
+        match self {
+            Value::Null => VALUE_NAME_NULL,
+            Value::Bool(_) => VTYPE_NAME_BOOL,
+            Value::Bytes(_) => VTYPE_NAME_BYTES,
+            Value::Date(_) => VTYPE_NAME_DATE,
+            Value::DateTime(_) => VTYPE_NAME_DATETIME,
+            Value::Int(_) => VTYPE_NAME_INT,
+            Value::List(_) => VTYPE_NAME_LIST,
+            Value::Map(_) => VTYPE_NAME_MAP,
+            Value::Real(_) => VTYPE_NAME_REAL,
+            Value::Str(_) => VTYPE_NAME_STR,
+            Value::Table(_) => VTYPE_NAME_TABLE,
+        }
+    }
+}
+
+impl fmt::Display for Value {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(
+            f,
+            "{}",
+            match self {
+                Value::Null => "?".to_string(),
+                Value::Bool(true) => "yes".to_string(),
+                Value::Bool(false) => "no".to_string(),
+                Value::Bytes(b) => format!("{:?}", b), // TODO?
+                Value::Date(d) => d.format(ISO8601_DATE).to_string(),
+                Value::DateTime(dt) =>
+                    dt.format(ISO8601_DATETIME).to_string(),
+                Value::Int(i) => i.to_string(),
+                Value::List(lst) => lst.to_string(),
+                Value::Map(m) => m.to_string(),
+                Value::Real(r) => r.to_string(),
+                Value::Str(s) => s.to_string(),
+                Value::Table(t) => t.to_string(),
+            }
+        )
     }
 }
 

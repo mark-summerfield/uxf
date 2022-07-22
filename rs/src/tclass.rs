@@ -4,7 +4,7 @@
 use crate::event::fatal;
 use crate::field::{check_fields, Field};
 use crate::util;
-use crate::value::Row;
+use crate::value::{Row, Value};
 use anyhow::Result;
 use std::fmt::Write as _;
 use std::{cmp::Ordering, fmt};
@@ -49,7 +49,7 @@ impl TClass {
         Ok(TClass {
             ttype: ttype.to_string(),
             fields: vec![],
-            comment: comment.to_string()
+            comment: comment.to_string(),
         })
     }
 
@@ -84,7 +84,7 @@ impl TClass {
     }
 
     /// Returns a record with `TClass.len()` (i.e., `fields.len()`) fields,
-    /// each holding an `Option<Value>` whose value is `None`.
+    /// each holding a `Value::Null`.
     /// This is a helper for adding new rows to ``Table``s.
     pub fn record_of_nulls(&self) -> Result<Row> {
         if self.is_fieldless() {
@@ -95,7 +95,7 @@ impl TClass {
             )?;
         }
         let mut record = Row::new();
-        record.resize(self.len(), None);
+        record.resize(self.len(), Value::Null);
         Ok(record)
     }
 }
@@ -164,7 +164,7 @@ impl TClassBuilder {
         TClassBuilder {
             ttype: ttype.to_string(),
             fields: vec![],
-            comment: comment.to_string()
+            comment: comment.to_string(),
         }
     }
 
