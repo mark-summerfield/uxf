@@ -22,4 +22,3 @@ mod tests {
         // TODO lots more tests
     }
 }
-}
