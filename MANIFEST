@@ -1,5 +1,3 @@
-# TODO rs
-
 rs/src/lib.rs # add docs at the end
 rs/src/value.rs # docs + tests
 rs/src/list.rs # TODO
