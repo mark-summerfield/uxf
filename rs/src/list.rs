@@ -50,12 +50,22 @@ impl List {
         self.values.get(index)
     }
 
+    /// Returns `Some(&mut Value)` if `index` is in bounds; otherwise
+    /// `None`.
+    pub fn get_mut(&mut self, index: usize) -> Option<&mut Value> {
+        self.values.get_mut(index)
+    }
+
     /// Returns `&Value` if `index` is in bounds; otherwise panics.
+    /// Usage: `let v = lst.get_unchecked(index);`
+    /// It is more convenient to use: `let v = lst[index];`
     pub fn get_unchecked(&self, index: usize) -> &Value {
         &self.values[index]
     }
 
-    /// Returns `mut &Value` if `index` is in bounds; otherwise panics
+    /// Returns `mut &Value` if `index` is in bounds; otherwise panics.
+    /// Usage: `*lst.get_unchecked_mut(index) = v;`
+    /// It is more convenient to use: `lst[index] = v;`
     pub fn get_unchecked_mut(&mut self, index: usize) -> &mut Value {
         &mut self.values[index]
     }
