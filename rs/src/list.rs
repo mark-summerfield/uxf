@@ -47,21 +47,13 @@ impl List {
 
     /// Returns `Some(&Value)` if `index` is in bounds; otherwise `None`.
     pub fn get(&self, index: usize) -> Option<&Value> {
-        if index < self.values.len() {
-            Some(&self.values[index])
-        } else {
-            None
-        }
+        self.values.get(index)
     }
 
     /// Returns `mut Some(&Value)` if `index` is in bounds;
     /// otherwise `None`.
     pub fn get_mut(&mut self, index: usize) -> Option<&mut Value> {
-        if index < self.values.len() {
-            Some(&mut self.values[index])
-        } else {
-            None
-        }
+        self.values.get_mut(index)
     }
 
     /// Returns `&Value` if `index` is in bounds; otherwise panics.
