@@ -9,7 +9,6 @@ use anyhow::{bail, Result};
 use chrono::prelude::*;
 use std::fmt;
 
-// TODO impl Display for to_string()
 // TODO docs for every fn
 // TODO tests
 
@@ -32,91 +31,47 @@ pub enum Value {
 
 impl Value {
     pub fn is_null(&self) -> bool {
-        if let Value::Null = self {
-            true
-        } else {
-            false
-        }
+        matches!(self, Value::Null)
     }
 
     pub fn is_bool(&self) -> bool {
-        if let Value::Bool(_) = self {
-            true
-        } else {
-            false
-        }
+        matches!(self, Value::Bool(_))
     }
 
     pub fn is_bytes(&self) -> bool {
-        if let Value::Bytes(_) = self {
-            true
-        } else {
-            false
-        }
+        matches!(self, Value::Bytes(_))
     }
 
     pub fn is_date(&self) -> bool {
-        if let Value::Date(_) = self {
-            true
-        } else {
-            false
-        }
+        matches!(self, Value::Date(_))
     }
 
     pub fn is_datetime(&self) -> bool {
-        if let Value::DateTime(_) = self {
-            true
-        } else {
-            false
-        }
+        matches!(self, Value::DateTime(_))
     }
 
     pub fn is_int(&self) -> bool {
-        if let Value::Int(_) = self {
-            true
-        } else {
-            false
-        }
+        matches!(self, Value::Int(_))
     }
 
     pub fn is_list(&self) -> bool {
-        if let Value::List(_) = self {
-            true
-        } else {
-            false
-        }
+        matches!(self, Value::List(_))
     }
 
     pub fn is_map(&self) -> bool {
-        if let Value::Map(_) = self {
-            true
-        } else {
-            false
-        }
+        matches!(self, Value::Map(_))
     }
 
     pub fn is_real(&self) -> bool {
-        if let Value::Real(_) = self {
-            true
-        } else {
-            false
-        }
+        matches!(self, Value::Real(_))
     }
 
     pub fn is_str(&self) -> bool {
-        if let Value::Str(_) = self {
-            true
-        } else {
-            false
-        }
+        matches!(self, Value::Str(_))
     }
 
     pub fn is_table(&self) -> bool {
-        if let Value::Table(_) = self {
-            true
-        } else {
-            false
-        }
+        matches!(self, Value::Table(_))
     }
 
     pub fn as_bool(&self) -> Result<bool> {
@@ -199,6 +154,7 @@ impl Value {
         }
     }
 
+    // Can't be vtype() because VALUE_NAME_NULL "null" is not a valid vtype
     pub fn typename(&self) -> &'static str {
         match self {
             Value::Null => VALUE_NAME_NULL,
