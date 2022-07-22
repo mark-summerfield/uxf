@@ -17,7 +17,7 @@ Overview](https://github.com/mark-summerfield/uxf/blob/main/README.md).)
 
 ## Introduction
 
-**This is a WIP which may or may not succeed! Not yet suitable for use.**
+**This is a WIP which may or may not succeed! Not _yet_ usable!**
 
 
 ## Rust UXF Types
@@ -52,6 +52,8 @@ Provides a definition of a field (`name` and `vtype`) for use in
 
 ## Changes
 
+- 0.2.0 Now use `Value::Null` rather than `Option<Value>` since this better
+  represents UXF data.
 - 0.1.0 Started.
 
 ---

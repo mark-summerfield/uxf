@@ -7,10 +7,6 @@ use anyhow::Result;
 use std::fmt;
 use std::ops::{Index, IndexMut};
 
-// TODO impl Iter
-// TODO impl Display
-// TODO truncate() clear()
-// TODO typecheck()
 // TODO docs for every fn
 // TODO tests
 
@@ -80,6 +76,22 @@ impl List {
 
     pub fn push(&mut self, value: Value) {
         self.values.push(value);
+    }
+
+    pub fn truncate(&mut self, size: usize) {
+        self.values.truncate(size);
+    }
+
+    pub fn clear(&mut self) {
+        self.values.clear();
+    }
+
+    pub fn iter(&self) -> std::slice::Iter<Value> {
+        self.values.iter()
+    }
+
+    pub fn iter_mut(&mut self) -> std::slice::IterMut<Value> {
+        self.values.iter_mut()
     }
 }
 

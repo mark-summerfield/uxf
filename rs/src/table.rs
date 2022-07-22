@@ -9,7 +9,6 @@ use std::fmt;
 // TODO len() is_empty()
 // TODO get() get_mut()
 // TODO truncate() clear()
-// TODO typecheck()
 // TODO impl Iter
 // TODO impl Display
 // TODO docs for every fn

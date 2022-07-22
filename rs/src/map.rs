@@ -12,7 +12,6 @@ use std::fmt;
 // TODO get() get_mut() get_key_value() entry()
 // TODO insert() remove() clear()
 // TODO keys() values()
-// TODO typecheck()
 // TODO impl Iter
 // TODO impl Display
 // TODO docs for every fn
