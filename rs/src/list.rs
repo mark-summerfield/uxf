@@ -8,7 +8,6 @@ use std::fmt;
 use std::ops::{Index, IndexMut};
 
 // TODO docs for every fn
-// TODO tests
 
 #[derive(Clone, Debug)]
 pub struct List {
@@ -56,18 +55,14 @@ impl List {
         self.values.get_mut(index)
     }
 
-    /// Returns `&Value` if `index` is in bounds; otherwise panics.
-    /// Usage: `let v = lst.get_unchecked(index);`
-    /// It is more convenient to use: `let v = lst[index];`
-    pub fn get_unchecked(&self, index: usize) -> &Value {
-        &self.values[index]
+    /// Returns `&values` to make the entire immutable Vec API available.
+    pub fn inner(&self) -> &Row {
+        &self.values
     }
 
-    /// Returns `mut &Value` if `index` is in bounds; otherwise panics.
-    /// Usage: `*lst.get_unchecked_mut(index) = v;`
-    /// It is more convenient to use: `lst[index] = v;`
-    pub fn get_unchecked_mut(&mut self, index: usize) -> &mut Value {
-        &mut self.values[index]
+    /// Returns `&mut values` to make the entire mutable Vec API available.
+    pub fn inner_mut(&mut self) -> &mut Row {
+        &mut self.values
     }
 
     pub fn push(&mut self, value: Value) {

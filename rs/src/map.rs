@@ -9,12 +9,13 @@ use std::fmt;
 
 // TODO ktype() vtype() comment()
 // TODO len() is_empty()
-// TODO get() get_mut() get_key_value() entry()
+// TODO get() get_mut() v = [] [] = v
 // TODO insert() remove() clear()
-// TODO keys() values()
+// TODO inner() inner_mut()
 // TODO impl Iter
 // TODO impl Display
 // TODO docs for every fn
+// TODO tests
 
 #[derive(Clone, Debug)]
 pub struct Map {

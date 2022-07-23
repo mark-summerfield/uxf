@@ -1,6 +1,6 @@
 rs/src/lib.rs # add docs at the end
 rs/src/value.rs # docs + tests
-rs/src/list.rs # TODO
+rs/src/list.rs # TODO docs + complete test_list.rs
 rs/src/map.rs # TODO
 rs/src/table.rs # TODO
 rs/src/tclass.rs
