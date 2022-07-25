@@ -1,7 +1,7 @@
 // Copyright © 2022 Mark Summerfield. All rights reserved.
 // License: GPLv3
 
-use crate::util::{check_ktype, check_type_name};
+use crate::util::{check_ktype, check_vtype};
 use crate::value::{Key, Value};
 use anyhow::Result;
 use std::collections::HashMap;
@@ -31,7 +31,7 @@ impl Map {
             check_ktype(ktype)?;
         }
         if !vtype.is_empty() {
-            check_type_name(vtype)?;
+            check_vtype(vtype)?;
         }
         Ok(Map {
             ktype: ktype.to_string(),

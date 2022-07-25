@@ -1,11 +1,8 @@
 // Copyright © 2022 Mark Summerfield. All rights reserved.
 // License: GPLv3
 
-// To access the Event details from a Result::Err
-//
-// if let Some(err) = err.downcast_ref::<Event>() {
-//     println!("kind={} code={} message={}", err.code, err.letter(), etc
-// }
+// To access the Event details from a Result::Err see test_list.rs's
+// t_list_err() test.
 
 use anyhow::{bail, Result};
 use std::fmt;
@@ -26,13 +23,13 @@ pub fn on_event(event: &Event) -> Result<()> {
 
 #[derive(Clone, Debug)]
 pub struct Event {
-    kind: EventKind,
-    code: i16,
-    message: String,
-    filename: String,
-    lino: u32,
-    verbose: bool,
-    prefix: String,
+    pub kind: EventKind,
+    pub code: i16,
+    pub message: String,
+    pub filename: String,
+    pub lino: u32,
+    pub verbose: bool,
+    pub prefix: String,
 }
 
 impl Event {

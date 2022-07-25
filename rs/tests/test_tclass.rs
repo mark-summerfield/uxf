@@ -75,30 +75,17 @@ mod tests {
     #[test]
     fn t_tclass_display() {
         let fields = valid_fields();
-        let tclass = TClass::new("General", fields, "first test").unwrap();
+        let tclass = TClass::new("General", fields, "test <1>").unwrap();
         assert_eq!(
             tclass.to_string(),
-            "TClass::new(\"General\", vec![Field::new(\"CID\", \"int\"), \
-            Field::new(\"title\", \"str\"), \
-            Field::new(\"selected\", \"bool\"), \
-            Field::new(\"when\", \"date\"), \
-            Field::new(\"size\", \"real\"), \
-            Field::new(\"timestamp\", \"datetime\"), \
-            Field::new(\"Kind\", \"\"), \
-            Field::new(\"Filename\", \"\"), \
-            Field::new(\"Categories\", \"Categories\"), \
-            Field::new(\"Extra\", \"Point\")], \"first test\")"
+            "=#<test &lt;1&gt;> General CID:int title:str selected:bool \
+            when:date size:real timestamp:datetime Kind Filename \
+            Categories:Categories Extra:Point"
         );
         let tclass = TClass::new_fieldless("StateReady", "enum").unwrap();
-        assert_eq!(
-            tclass.to_string(),
-            "TClass::new_fieldless(\"StateReady\", \"enum\")"
-        );
+        assert_eq!(tclass.to_string(), "=#<enum> StateReady");
         let tclass = TClass::new_fieldless("StateWait", "").unwrap();
-        assert_eq!(
-            tclass.to_string(),
-            "TClass::new_fieldless(\"StateWait\", \"\")"
-        );
+        assert_eq!(tclass.to_string(), "=StateWait");
     }
 
     #[test]

@@ -3,7 +3,7 @@
 
 use crate::event::fatal;
 use crate::field::{check_fields, Field};
-use crate::util;
+use crate::util::{check_ttype, escape};
 use crate::value::{Row, Value};
 use anyhow::Result;
 use std::fmt::Write as _;
@@ -32,7 +32,7 @@ impl TClass {
         fields: Vec<Field>,
         comment: &str,
     ) -> Result<Self> {
-        util::check_name(ttype)?;
+        check_ttype(ttype)?;
         check_fields(&fields)?;
         Ok(TClass {
             ttype: ttype.to_string(),
@@ -45,7 +45,7 @@ impl TClass {
     /// `commment` _or_ returns an Err if the `name` is invalid.
     /// `TClass` instances are immutable.
     pub fn new_fieldless(ttype: &str, comment: &str) -> Result<Self> {
-        util::check_name(ttype)?;
+        check_ttype(ttype)?;
         Ok(TClass {
             ttype: ttype.to_string(),
             fields: vec![],
@@ -129,24 +129,19 @@ impl PartialEq for TClass {
 }
 
 impl fmt::Display for TClass {
+    /// Provides a .to_string() that returns a valid UXF fragment
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        let mut s = String::from("TClass::");
-        if self.is_fieldless() {
-            s.push_str("new_fieldless(");
-            let _ = write!(s, "{:?}, ", self.ttype);
-        } else {
-            s.push_str("new(");
-            let _ = write!(s, "{:?}, vec![", self.ttype);
-            let mut sep = "";
-            for field in &self.fields {
-                s.push_str(sep);
-                s.push_str(&field.to_string());
-                sep = ", ";
-            }
-            s.push_str("], ");
+        let mut s = String::from("=");
+        if !self.comment().is_empty() {
+            let _ = write!(s, "#<{}> ", escape(self.comment()));
         }
-        let _ = write!(s, "{:?}", self.comment);
-        s.push(')');
+        s.push_str(&self.ttype);
+        if !self.is_fieldless() {
+            for field in &self.fields {
+                s.push(' ');
+                s.push_str(&field.to_string());
+            }
+        }
         write!(f, "{}", s)
     }
 }

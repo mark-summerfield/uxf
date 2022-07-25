@@ -2,7 +2,6 @@
 // License: GPLv3
 
 /*!
-
 uxf is a library that supports the UXF format. UXF is a plain text human
 readable optionally typed storage format. UXF may serve as a convenient
 alternative to csv, ini, json, sqlite, toml, xml, or yaml.
@@ -11,7 +10,7 @@ TODO
 
 Comments, ktypes, vtypes, are all strings. If a ktype or vtype is empty this
 means that any valid ktype or vtype respectively is acceptable.
-For TClasses the ttype is also a string; but this may not be empty.
+For TClasses the ttype is also a string, and this may not be empty.
 
 */
 

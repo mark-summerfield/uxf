@@ -3,6 +3,7 @@
 
 #[cfg(test)]
 mod tests {
+    use uxf::event::{Event, EventKind};
     use uxf::list::List;
     use uxf::util::isclose64;
     use uxf::value::{Row, Value};
@@ -14,26 +15,36 @@ mod tests {
         assert!(lst.comment().is_empty());
         assert!(lst.is_empty());
         assert_eq!(lst.len(), 0);
+        assert_eq!(lst.to_string(), "[]");
         for value in valid_row() {
             lst.push(value);
         }
+        assert_eq!(
+            lst.to_string(),
+            "[yes -919 ? <elephant &lt;ears&gt;> 0.0000173]"
+        );
         lst.push(Value::Null);
         lst.push(Value::Bool(false));
         lst.push(Value::Int(7831));
         lst.push(Value::Null);
         lst.push(Value::Str("giraffe neck".to_string()));
         lst.push(Value::Real(-2.11e4));
+        assert_eq!(
+            lst.to_string(),
+            "[yes -919 ? <elephant &lt;ears&gt;> 0.0000173 ? no 7831 ? \
+        <giraffe neck> -21100.0]"
+        );
         assert!(!lst.is_empty());
         assert_eq!(lst.len(), 11);
         assert_eq!(lst[0].as_bool().unwrap(), true);
         assert_eq!(lst[1].as_int().unwrap(), -919);
         assert!(lst[2].is_null());
-        assert_eq!(lst[3].as_str().unwrap(), "elephant ears");
+        assert_eq!(lst[3].as_str().unwrap(), "elephant <ears>");
         assert!(isclose64(lst[4].as_real().unwrap(), 1.73e-5));
         assert_eq!(lst[0].as_bool().unwrap(), true);
         assert_eq!(lst[1].as_int().unwrap(), -919);
         assert!(lst[2].is_null());
-        assert_eq!(lst[3].as_str().unwrap(), "elephant ears");
+        assert_eq!(lst[3].as_str().unwrap(), "elephant <ears>");
         assert!(isclose64(lst[4].as_real().unwrap(), 1.73e-5));
         lst[0] = Value::Int(7070);
         assert_eq!(lst[0].as_int().unwrap(), 7070);
@@ -44,8 +55,8 @@ mod tests {
         assert!(lst[2].is_null());
         lst.push(Value::Null);
         let i = lst.len() - 1;
-        lst[i] = Value::Str("dog tail".to_string());
-        assert_eq!(lst[i].as_str().unwrap(), "dog tail");
+        lst[i] = Value::Str("dog & tail".to_string());
+        assert_eq!(lst[i].as_str().unwrap(), "dog & tail");
         lst.push(Value::Null);
         let i = lst.len() - 1;
         assert!(lst[i].is_null());
@@ -53,6 +64,11 @@ mod tests {
         assert!(isclose64(lst[i].as_real().unwrap(), -9.4));
         lst[i] = Value::Int(4);
         assert_eq!(lst[i].as_int().unwrap(), 4);
+        assert_eq!(
+            lst.to_string(),
+            "[7070 ? ? <elephant &lt;ears&gt;> 0.0000173 ? no 7831 ? \
+        <giraffe neck> -21100.0 <dog &amp; tail> 4]"
+        );
     }
 
     #[test]
@@ -62,6 +78,7 @@ mod tests {
         lst.push(Value::Int(5));
         lst.push(Value::Int(17));
         lst.push(Value::Null);
+        assert_eq!(lst.to_string(), "[#<Test of int> int ? 5 17 ?]");
         assert_eq!(lst.len(), 4);
         assert!(!lst.is_empty());
         assert!(lst[0].is_null());
@@ -92,16 +109,23 @@ mod tests {
         lst[2] = Value::Int(917);
         lst.push(Value::Int(8888));
         assert_eq!(lst.len(), 5);
+        assert_eq!(
+            lst.to_string(),
+            "[#<Test of int> int 100 -55 917 400 8888]"
+        );
         lst.truncate(3);
+        assert_eq!(lst.to_string(), "[#<Test of int> int 100 -55 917]");
         assert_eq!(lst.len(), 3);
         lst.clear();
         assert_eq!(lst.len(), 0);
         assert!(lst.is_empty());
+        assert_eq!(lst.to_string(), "[#<Test of int> int]");
     }
 
     #[test]
     fn t_list3() {
-        let mut lst = List::new("int", "Test of int").unwrap();
+        let mut lst = List::new("int", "").unwrap();
+        assert_eq!(lst.to_string(), "[int]");
         {
             let values = lst.inner_mut();
             values.push(Value::Null);
@@ -137,6 +161,7 @@ mod tests {
             values.push(Value::Int(8888));
             assert_eq!(values.len(), 5);
         }
+        assert_eq!(lst.to_string(), "[int 100 -55 917 400 8888]");
         assert_eq!(lst.len(), 5);
         for (index, value) in
             [(0, 100), (1, -55), (2, 917), (3, 400), (4, 8888)]
@@ -153,13 +178,110 @@ mod tests {
         }
         assert_eq!(lst.len(), 0);
         assert!(lst.is_empty());
+        assert_eq!(lst.to_string(), "[int]");
+    }
+
+    #[test]
+    fn t_list_comment() {
+        let mut lst = List::new("", "A <comment> &tc.").unwrap();
+        assert_eq!(lst.to_string(), "[#<A &lt;comment&gt; &amp;tc.>]");
+        lst.push(Value::Null);
+        assert_eq!(lst.to_string(), "[#<A &lt;comment&gt; &amp;tc.> ?]");
+        lst.push(Value::Null);
+        assert_eq!(lst.to_string(), "[#<A &lt;comment&gt; &amp;tc.> ? ?]");
+    }
+
+    #[test]
+    fn t_list_nested() {
+        let mut lst = List::default(); // always succeeds
+        assert_eq!(lst.to_string(), "[]");
+        assert_eq!(lst.len(), 0);
+        assert!(lst.is_empty());
+        assert!(lst.vtype().is_empty());
+        assert!(lst.comment().is_empty());
+        lst.push(Value::Null); // 0
+        lst.push(Value::Null); // 1
+        lst.push(Value::Null); // 2
+        assert_eq!(lst.to_string(), "[? ? ?]");
+        lst.push(Value::List(List::default())); // 3
+        assert_eq!(lst.to_string(), "[? ? ? []]");
+        if let Ok(sublist) = lst[0].as_list() {
+            assert_eq!(sublist.len(), 0);
+            assert!(sublist.is_empty());
+        }
+        assert_eq!(lst.len(), 4);
+        assert!(!lst.is_empty());
+        lst.push(Value::Int(998877)); // 4
+        assert_eq!(lst.to_string(), "[? ? ? [] 998877]");
+        if let Ok(sublist) = lst[3].as_list_mut() {
+            sublist.push(Value::Str("this & that".to_string()));
+            sublist.push(Value::Str("is <bold> &tc.!".to_string()));
+        }
+        if let Ok(sublist) = lst[3].as_list() {
+            assert_eq!(sublist.len(), 2);
+            assert!(!sublist.is_empty());
+        }
+        assert_eq!(lst.to_string(),
+        "[? ? ? [<this &amp; that> <is &lt;bold&gt; &amp;tc.!>] 998877]");
+        if let Ok(sublist) = lst[3].as_list_mut() {
+            sublist.push(Value::List(List::new("real",
+                                               "<Totals>").unwrap()));
+            if let Ok(subsublist) = sublist[2].as_list_mut() {
+                subsublist.push(Value::Real(7.9));
+                subsublist.push(Value::Real(1e2));
+                subsublist.push(Value::Real(-19.357));
+            }
+        }
+        assert_eq!(lst.to_string(),
+        "[? ? ? [<this &amp; that> <is &lt;bold&gt; &amp;tc.!> \
+        [#<&lt;Totals&gt;> real 7.9 100.0 -19.357]] 998877]");
     }
 
     #[test]
     fn t_list_err() {
         assert!(List::new("$1", "").is_err());
-        // TODO a few more err tests, checking specific codes & to show
-        // downcast_ref in practice
+        let lst = List::new("-x", "");
+        assert!(lst.is_err());
+        if let Some(event) = lst.unwrap_err().downcast_ref::<Event>() {
+            assert_eq!(event.prefix, "uxf");
+            assert_eq!(event.kind, EventKind::Fatal);
+            assert_eq!(event.code, 300);
+            assert_eq!(event.filename, "-");
+            assert_eq!(event.lino, 0);
+            assert_eq!(
+                event.message,
+                "names must start with a letter or underscore, got -x"
+            );
+        }
+        let lst = List::new(&"y".repeat(61), "");
+        assert!(lst.is_err());
+        if let Some(event) = lst.unwrap_err().downcast_ref::<Event>() {
+            assert_eq!(event.prefix, "uxf");
+            assert_eq!(event.kind, EventKind::Fatal);
+            assert_eq!(event.code, 306);
+            assert_eq!(event.filename, "-");
+            assert_eq!(event.lino, 0);
+            assert_eq!(
+                event.message,
+                "names may be at most 60 characters long, got \
+                yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy\
+                yyyyyyyyyyyyyyy (61 characters)",
+            );
+        }
+        let lst = List::new("alpha_b=", "");
+        assert!(lst.is_err());
+        if let Some(event) = lst.unwrap_err().downcast_ref::<Event>() {
+            assert_eq!(event.prefix, "uxf");
+            assert_eq!(event.kind, EventKind::Fatal);
+            assert_eq!(event.code, 310);
+            assert_eq!(event.filename, "-");
+            assert_eq!(event.lino, 0);
+            assert_eq!(
+                event.message,
+                "names may only contain letters, digits, or \
+                underscores, got alpha_b=",
+            );
+        }
     }
 
     fn valid_row() -> Row {
@@ -167,7 +289,7 @@ mod tests {
         row.push(Value::Bool(true));
         row.push(Value::Int(-919));
         row.push(Value::Null);
-        row.push(Value::Str("elephant ears".to_string()));
+        row.push(Value::Str("elephant <ears>".to_string()));
         row.push(Value::Real(1.73e-5));
         row
     }

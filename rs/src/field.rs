@@ -2,7 +2,7 @@
 // License: GPLv3
 
 use crate::event::fatal;
-use crate::util;
+use crate::util::{check_fieldname, check_vtype};
 use anyhow::Result;
 use std::{cmp::Ordering, collections::HashSet, fmt};
 
@@ -13,10 +13,10 @@ use std::{cmp::Ordering, collections::HashSet, fmt};
 /// let fields = uxf::field::make_fields(&[("Data", ""), ("Date", "date"),
 ///         ("Level", "real"), ("name", "str")]).unwrap();
 /// assert_eq!(fields.len(), 4);
-/// assert_eq!(format!("{}", fields[0]), "Field::new(\"Data\", \"\")");
-/// assert_eq!(format!("{}", fields[1]), "Field::new(\"Date\", \"date\")");
-/// assert_eq!(format!("{}", fields[2]), "Field::new(\"Level\", \"real\")");
-/// assert_eq!(format!("{}", fields[3]), "Field::new(\"name\", \"str\")");
+/// assert_eq!(format!("{}", fields[0]), "Data");
+/// assert_eq!(format!("{}", fields[1]), "Date:date");
+/// assert_eq!(format!("{}", fields[2]), "Level:real");
+/// assert_eq!(format!("{}", fields[3]), "name:str");
 /// ```
 pub fn make_fields(
     name_vtype_pairs: &[(&str, &str)],
@@ -29,6 +29,7 @@ pub fn make_fields(
     Ok(fields)
 }
 
+/// Returns `Ok(())` if there are no duplicate fields; otherwise `Err`.
 pub(crate) fn check_fields(fields: &Vec<Field>) -> Result<()> {
     let mut seen = HashSet::<&str>::new();
     for field in fields {
@@ -65,11 +66,11 @@ impl Field {
     /// A `vtype` of "" signifies `None`, i.e., that this field will accept
     /// an vtype
     pub fn new(name: &str, vtype: &str) -> Result<Self> {
-        util::check_name(name)?;
+        check_fieldname(name)?;
         let vtype = if vtype.is_empty() {
             None
         } else {
-            util::check_type_name(vtype)?;
+            check_vtype(vtype)?;
             Some(vtype.to_string())
         };
         Ok(Field { name: name.to_string(), vtype })
@@ -118,12 +119,13 @@ impl PartialEq for Field {
 }
 
 impl fmt::Display for Field {
+    /// Provides a .to_string() that returns a valid UXF fragment
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         match &self.vtype {
             Some(vtype) => {
-                write!(f, "Field::new({:?}, {:?})", self.name, vtype)
+                write!(f, "{}:{}", self.name, vtype)
             }
-            None => write!(f, "Field::new({:?}, \"\")", self.name),
+            None => write!(f, "{}", self.name),
         }
     }
 }

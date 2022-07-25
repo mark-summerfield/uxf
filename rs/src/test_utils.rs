@@ -10,8 +10,9 @@ pub fn check_error_code(error: &str, code: i32, name: &str) {
             assert_eq!(
                 error,
                 format!(
-                    "uxf:F304:-:0:names cannot be the same \
-                               as built-in type names or constants, got {}",
+                    "uxf:F304:-:0:table names (ttypes) and fieldnames \
+                    cannot be the same as built-in type names or \
+                    constants, got {}",
                     name
                 )
             );
