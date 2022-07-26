@@ -798,12 +798,17 @@ class Map(collections.UserDict):
         .ktype may only be bytes, date, datetime, int, str — or None meaning
         any valid ktype
         .vtype may hold a UXF type name ('int', 'str', …) — or None meaning
-        any valid vtype'''
+        any valid vtype
+        A Map whose ktype is None _must_ have a vtype of None.
+        '''
         super().__init__(d)
         if ktype is not None:
             _check_ktype(ktype)
         self._ktype = ktype
         if vtype is not None:
+            if ktype is None:
+                _raise_error(
+                    299, 'a map may only have a vtype if it has a ktype')
             _check_type_name(vtype)
         self._vtype = vtype
         self._comment = comment

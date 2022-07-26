@@ -34,6 +34,39 @@ impl Value {
         matches!(self, Value::Null)
     }
 
+    /// Returns `true` if this is a scalar (single-valued);
+    /// otherwise returns `false`.
+    pub fn is_scalar(&self) -> bool {
+        matches!(
+            self,
+            Value::Bool(_)
+                | Value::Bytes(_)
+                | Value::Date(_)
+                | Value::DateTime(_)
+                | Value::Int(_)
+                | Value::Real(_)
+                | Value::Str(_)
+        )
+    }
+
+    /// Returns `true` if this is a collection (a List, Map, or Table);
+    /// otherwise returns `false`.
+    pub fn is_collection(&self) -> bool {
+        matches!(self, Value::List(_) | Value::Map(_) | Value::Table(_))
+    }
+
+    /// Returns `true` if this can be used as a Map key (i.e., Bytes, Date,
+    /// Int, or Str); otherwise returns `false`.
+    pub fn is_ktype(&self) -> bool {
+        matches!(
+            self,
+            Value::Bytes(_)
+                | Value::Date(_)
+                | Value::Int(_)
+                | Value::Str(_)
+        )
+    }
+
     /// Returns `true` if `Value::Bool`; otherwise returns `false`.
     pub fn is_bool(&self) -> bool {
         matches!(self, Value::Bool(_))
@@ -232,14 +265,7 @@ impl fmt::Display for Value {
                 Value::Null => "?".to_string(),
                 Value::Bool(true) => "yes".to_string(),
                 Value::Bool(false) => "no".to_string(),
-                Value::Bytes(b) => {
-                    let mut s = String::from("(:");
-                    for x in b {
-                        let _ = write!(s, "{:02X}", x);
-                    }
-                    s.push_str(":)");
-                    s
-                }
+                Value::Bytes(b) => bytes_to_uxf(b),
                 Value::Date(d) => d.format(ISO8601_DATE).to_string(),
                 Value::DateTime(dt) =>
                     dt.format(ISO8601_DATETIME).to_string(),
@@ -261,16 +287,6 @@ impl fmt::Display for Value {
     }
 }
 
-impl From<Scalar> for Value {
-    fn from(scalar: Scalar) -> Self {
-        match scalar {
-            Scalar::Bool(b) => Value::Bool(b),
-            Scalar::DateTime(dt) => Value::DateTime(dt),
-            Scalar::Real(r) => Value::Real(r),
-        }
-    }
-}
-
 impl From<Key> for Value {
     fn from(key: Key) -> Self {
         match key {
@@ -282,24 +298,7 @@ impl From<Key> for Value {
     }
 }
 
-impl From<Collection> for Value {
-    fn from(collection: Collection) -> Self {
-        match collection {
-            Collection::List(lst) => Value::List(lst),
-            Collection::Map(m) => Value::Map(m),
-            Collection::Table(t) => Value::Table(t),
-        }
-    }
-}
-
-#[derive(Debug)]
-pub enum Scalar {
-    Bool(bool),
-    DateTime(NaiveDateTime),
-    Real(f64),
-}
-
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, Eq, Hash, Ord, PartialOrd, PartialEq)]
 pub enum Key {
     Bytes(Vec<u8>),
     Date(NaiveDate),
@@ -307,9 +306,86 @@ pub enum Key {
     Str(String),
 }
 
-#[derive(Debug)]
-pub enum Collection {
-    List(List),
-    Map(Map),
-    Table(Table),
+impl Key {
+    /// Returns `true` if `Key::Bytes`; otherwise returns `false`.
+    pub fn is_bytes(&self) -> bool {
+        matches!(self, Key::Bytes(_))
+    }
+
+    /// Returns `true` if `Key::Date`; otherwise returns `false`.
+    pub fn is_date(&self) -> bool {
+        matches!(self, Key::Date(_))
+    }
+
+    /// Returns `true` if `Key::Int`; otherwise returns `false`.
+    pub fn is_int(&self) -> bool {
+        matches!(self, Key::Int(_))
+    }
+
+    /// Returns `true` if `Key::Str`; otherwise returns `false`.
+    pub fn is_str(&self) -> bool {
+        matches!(self, Key::Str(_))
+    }
+
+    /// Returns `Ok(&Vec<u8>)` if `Value::Bytes`; otherwise returns `Err`.
+    pub fn as_bytes(&self) -> Result<&Vec<u8>> {
+        if let Key::Bytes(value) = self {
+            Ok(value)
+        } else {
+            bail!("non-bytes Key")
+        }
+    }
+
+    /// Returns `Ok(NaiveDate)` if `Value::Date`; otherwise returns `Err`.
+    pub fn as_date(&self) -> Result<NaiveDate> {
+        if let Key::Date(value) = self {
+            Ok(*value)
+        } else {
+            bail!("non-date Key")
+        }
+    }
+
+    /// Returns `Ok(i64)` if `Key::Int`; otherwise returns `Err`.
+    pub fn as_int(&self) -> Result<i64> {
+        if let Key::Int(value) = self {
+            Ok(*value)
+        } else {
+            bail!("non-int Key")
+        }
+    }
+
+    /// Returns `Ok(&str)` if `Key::Str`; otherwise returns `Err`.
+    pub fn as_str(&self) -> Result<&str> {
+        if let Key::Str(value) = self {
+            Ok(value)
+        } else {
+            bail!("non-str Key")
+        }
+    }
+}
+
+// NOTE: *must* match impl fmt::Display for Value
+impl fmt::Display for Key {
+    /// Provides a .to_string() that returns a valid UXF fragment
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(
+            f,
+            "{}",
+            match self {
+                Key::Bytes(b) => bytes_to_uxf(b),
+                Key::Date(d) => d.format(ISO8601_DATE).to_string(),
+                Key::Int(i) => i.to_string(),
+                Key::Str(s) => format!("<{}>", escape(s)),
+            }
+        )
+    }
+}
+
+fn bytes_to_uxf(b: &[u8]) -> String {
+    let mut s = String::from("(:");
+    for x in b {
+        let _ = write!(s, "{:02X}", x);
+    }
+    s.push_str(":)");
+    s
 }

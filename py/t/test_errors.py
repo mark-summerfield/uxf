@@ -288,8 +288,16 @@ def main():
 
     try:
         total += 1
+        e = 299
+        uxf.Map(vtype='str')
+        fail(f'test_errors • #{e} FAIL', regression)
+    except uxf.Error as err:
+        ok += got_error(e, err, regression)
+
+    try:
+        total += 1
         e = 300
-        _ = uxf.Map(vtype='$')
+        _ = uxf.Map(ktype='int', vtype='$')
         fail(f'test_errors • #{e} FAIL', regression)
     except uxf.Error as err:
         ok += got_error(e, err, regression)

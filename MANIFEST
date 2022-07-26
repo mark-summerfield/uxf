@@ -1,7 +1,7 @@
 rs/src/lib.rs # add docs at the end
 rs/src/value.rs
 rs/src/list.rs
-rs/src/map.rs # TODO
+rs/src/map.rs
 rs/src/table.rs # TODO
 rs/src/tclass.rs
 rs/src/field.rs
@@ -13,7 +13,7 @@ rs/src/output.rs # TODO
 rs/src/test_utils.rs
 rs/tests/test_value.rs # TODO
 rs/tests/test_list.rs
-rs/tests/test_map.rs # TODO
+rs/tests/test_map.rs # TODO ################
 rs/tests/test_table.rs # TODO
 rs/tests/test_tclass.rs
 rs/tests/test_field.rs

@@ -21,6 +21,7 @@ impl List {
     /// the `vtype` should be a built-in UXF type (e.g., `int`, `str`,
     /// `date`, etc), or a `ttype`.
     /// The `vtype` and `comment` are immutable after construction.
+    /// The List does _not_ enforce the `vtype` if it is specified.
     pub fn new(vtype: &str, comment: &str) -> Result<Self> {
         if !vtype.is_empty() {
             check_vtype(vtype)?;
@@ -63,16 +64,6 @@ impl List {
         self.values.get_mut(index)
     }
 
-    /// Returns `&values` to make the entire immutable Vec API available.
-    pub fn inner(&self) -> &Row {
-        &self.values
-    }
-
-    /// Returns `&mut values` to make the entire mutable Vec API available.
-    pub fn inner_mut(&mut self) -> &mut Row {
-        &mut self.values
-    }
-
     /// Appends the given `Value` to the end of the list.
     pub fn push(&mut self, value: Value) {
         self.values.push(value);
@@ -96,6 +87,16 @@ impl List {
     /// Returns an iterator of the list's values as mutables.
     pub fn iter_mut(&mut self) -> std::slice::IterMut<Value> {
         self.values.iter_mut()
+    }
+
+    /// Returns `&values` to make the entire immutable Vec API available.
+    pub fn inner(&self) -> &Row {
+        &self.values
+    }
+
+    /// Returns `&mut values` to make the entire mutable Vec API available.
+    pub fn inner_mut(&mut self) -> &mut Row {
+        &mut self.values
     }
 }
 
