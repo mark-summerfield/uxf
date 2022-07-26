@@ -120,11 +120,65 @@ mod tests {
         lst.push(Value::Real(-3.21));
         lst.push(Value::Int(22));
         m.insert(Key::Int(23), Value::List(lst));
-        assert_eq!(m.to_string(),
-        "{int str -4 ? 19 5.0 23 [real 8.0 0.7 ? -3.21 22] \
-        97 <&amp;closed&amp;> 917 <&lt;open&gt;>}");
+        assert_eq!(
+            m.to_string(),
+            "{int str -4 ? 19 5.0 23 [real 8.0 0.7 ? -3.21 22] \
+        97 <&amp;closed&amp;> 917 <&lt;open&gt;>}"
+        );
     }
 
-    // TODO inner() inner_mut() get() get_mut() remove() clear()
-    // nested maps & lists
+    #[test]
+    fn t_map_get_etc() {
+        let mut m = Map::default();
+        assert_eq!(m.to_string(), "{}");
+        m.insert(Key::Int(4), Value::Null);
+        assert!(m.get(&Key::Int(8)).is_none());
+        for (key, value) in [(8, "eight"), (7, "seven"), (6, "six")] {
+            m.insert(Key::Int(key), Value::Str(value.to_string()));
+        }
+        assert!(m.get(&Key::Int(5)).is_none());
+        m.insert(Key::Int(5), Value::Str("five".to_string()));
+        assert!(m.get(&Key::Int(9)).is_none());
+        m.insert(Key::Int(9), Value::Null);
+        assert_eq!(
+            m.to_string(),
+            "{4 ? 5 <five> 6 <six> 7 <seven> 8 <eight> 9 ?}"
+        );
+        let k8 = Key::Int(8);
+        assert_eq!(m.get(&k8).unwrap().as_str().unwrap(), "eight");
+        if let Some(v) = m.get_mut(&k8) {
+            *v = Value::Str("VIII".to_string());
+        }
+        assert_eq!(m.get(&k8).unwrap().as_str().unwrap(), "VIII");
+        assert!(m.get(&Key::Int(-9)).is_none());
+        assert_eq!(
+            m.to_string(),
+            "{4 ? 5 <five> 6 <six> 7 <seven> 8 <VIII> 9 ?}"
+        );
+        let v = m.remove(&Key::Int(4));
+        assert!(v.unwrap().is_null());
+        assert_eq!(
+            m.to_string(),
+            "{5 <five> 6 <six> 7 <seven> 8 <VIII> 9 ?}"
+        );
+        let v = m.remove(&Key::Int(7));
+        assert_eq!(v.unwrap().as_str().unwrap(), "seven");
+        assert_eq!(m.to_string(), "{5 <five> 6 <six> 8 <VIII> 9 ?}");
+        assert_eq!(m.len(), 4);
+        assert!(!m.is_empty());
+        m.clear();
+        assert_eq!(m.len(), 0);
+        assert!(m.is_empty());
+        assert_eq!(m.to_string(), "{}");
+    }
+
+    #[test]
+    fn t_map_inner() {
+        // TODO inner() inner_mut()
+    }
+
+    #[test]
+    fn t_map_nested() {
+        // TODO nested maps & lists
+    }
 }
