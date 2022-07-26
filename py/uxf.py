@@ -19,7 +19,7 @@ from xml.sax.saxutils import escape, unescape
 import editabletuple
 
 
-__version__ = '2.0.2' # uxf module version
+__version__ = '2.0.3' # uxf module version
 VERSION = 1.0 # UXF file format version
 
 UTF8 = 'utf-8'
