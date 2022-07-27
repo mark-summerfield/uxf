@@ -4,6 +4,7 @@
 #[cfg(test)]
 mod tests {
     use chrono::prelude::*;
+    use std::collections::HashMap;
     use uxf::key::Key;
     use uxf::list::List;
     use uxf::map::Map;
@@ -93,14 +94,8 @@ mod tests {
         assert_eq!(m.to_string(), "{#<int keys> int 1 -1 3 -3 5 ?}");
         let mut m = Map::new("int", "date", "int x date").unwrap();
         assert_eq!(m.to_string(), "{#<int x date> int date}");
-        m.insert(
-            5.into(),
-            NaiveDate::from_ymd(2022, 7, 16).into(),
-        );
-        m.insert(
-            3.into(),
-            NaiveDate::from_ymd(2023, 5, 30).into(),
-        );
+        m.insert(5.into(), NaiveDate::from_ymd(2022, 7, 16).into());
+        m.insert(3.into(), NaiveDate::from_ymd(2023, 5, 30).into());
         m.insert(1.into(), NaiveDate::from_ymd(2024, 8, 1).into());
         assert_eq!(m.to_string(),
         "{#<int x date> int date 1 2024-08-01 3 2023-05-30 5 2022-07-16}");
@@ -175,11 +170,92 @@ mod tests {
 
     #[test]
     fn t_map_inner() {
-        // TODO inner() inner_mut()
+        let mut m = Map::default();
+        assert_eq!(m.to_string(), "{}");
+        {
+            let items = m.inner_mut();
+            for (n, s) in [(1, "I"), (5, "V"), (10, "X"), (50, "L")] {
+                items.insert(n.into(), s.into());
+            }
+        }
+        assert_eq!(m.to_string(), "{1 <I> 5 <V> 10 <X> 50 <L>}");
+        {
+            let mut counts = HashMap::new();
+            let items = m.inner();
+            for key in items.keys() {
+                let counter = counts.entry(key).or_insert(0);
+                *counter += 1;
+            }
+            assert_eq!(counts.len(), items.len());
+            for value in counts.values() {
+                assert_eq!(*value, 1);
+            }
+        }
     }
 
     #[test]
     fn t_map_nested() {
-        // TODO nested maps & lists
+        let mut m = Map::new("str", "", "").unwrap();
+        m.insert("alpha".into(), List::new("int", "").unwrap().into());
+        assert_eq!(m.to_string(), "{str <alpha> [int]}");
+        if let Some(value) = m.get_mut(&"alpha".into()) {
+            if let Ok(lst) = value.as_list_mut() {
+                lst.push(391.into());
+                lst.push(9870.into());
+                lst.push((-16).into());
+            }
+        }
+        assert_eq!(m.to_string(), "{str <alpha> [int 391 9870 -16]}");
+        m.insert("bravo".into(), Map::default().into());
+        assert_eq!(
+            m.to_string(),
+            "{str <alpha> [int 391 9870 -16] <bravo> {}}"
+        );
+        if let Some(value) = m.get_mut(&"bravo".into()) {
+            if let Ok(bm) = value.as_map_mut() {
+                bm.insert(1.into(), "one".into());
+                bm.insert(10.into(), "ten".into());
+                bm.insert("charlie".into(), List::default().into());
+                bm.insert("delta".into(), Map::default().into());
+            }
+        }
+        assert_eq!(
+            m.to_string(),
+            "{str <alpha> [int 391 9870 -16] <bravo> {1 <one> 10 <ten> \
+        <charlie> [] <delta> {}}}"
+        );
+        if let Some(value) = m.get_mut(&"bravo".into()) {
+            if let Ok(bm) = value.as_map_mut() {
+                if let Some(charlie) = bm.get_mut(&"charlie".into()) {
+                    if let Ok(lst) = charlie.as_list_mut() {
+                        lst.push("I".into());
+                        lst.push("V".into());
+                        lst.push("X".into());
+                    }
+                }
+            }
+        }
+        assert_eq!(
+            m.to_string(),
+            "{str <alpha> [int 391 9870 -16] <bravo> {1 <one> 10 <ten> \
+        <charlie> [<I> <V> <X>] <delta> {}}}"
+        );
+        if let Some(value) = m.get_mut(&"bravo".into()) {
+            if let Ok(bm) = value.as_map_mut() {
+                if let Some(delta) = bm.get_mut(&"delta".into()) {
+                    if let Ok(dm) = delta.as_map_mut() {
+                        dm.insert("L".into(), 50.into());
+                        dm.insert("C".into(), 100.into());
+                        dm.insert("D".into(), 500.into());
+                        dm.insert("M".into(), 1000.into());
+                    }
+                }
+            }
+        }
+        assert_eq!(
+            m.to_string(),
+            "{str <alpha> [int 391 9870 -16] <bravo> {1 <one> 10 <ten> \
+        <charlie> [<I> <V> <X>] <delta> {<C> 100 <D> 500 <L> 50 <M> 1000}}}"
+        );
     }
 }
