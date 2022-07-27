@@ -25,7 +25,7 @@ pub mod table;
 pub mod tclass;
 pub mod test_utils;
 pub mod util;
+pub mod uxf;
 pub mod value;
 
-pub use crate::value::Value;
-// pub use crate::parser::parser; // etc
+pub use crate::uxf::Uxf;

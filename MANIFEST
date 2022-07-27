@@ -6,6 +6,7 @@ rs/src/map.rs
 rs/src/table.rs
 rs/src/tclass.rs
 rs/src/field.rs
+rs/src/uxf.rs # TODO
 rs/src/util.rs
 rs/src/event.rs
 rs/src/constants.rs
@@ -18,6 +19,7 @@ rs/tests/test_map.rs
 rs/tests/test_table.rs # TODO ####################
 rs/tests/test_tclass.rs
 rs/tests/test_field.rs
+rs/tests/test_uxf.rs
 rs/Cargo.toml
 rs/README.md
 # TODO port tlm to use rust uxf

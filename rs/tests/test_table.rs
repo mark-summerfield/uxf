@@ -14,6 +14,11 @@ mod tests {
         assert_eq!(tclass.to_string(), "=#<enum> ReadyState");
         assert_eq!(tclass.comment().to_string(), "enum");
         assert_eq!(tclass.len(), 0);
+        let t = Table::new_fieldless("WaitState", "enum").unwrap();
+        assert_eq!(t.tclass().to_string(), "=WaitState");
+        assert_eq!(t.to_string(), "(#<enum> WaitState)");
+        assert_eq!(t.comment().to_string(), "enum");
+        assert_eq!(t.len(), 0);
         let t = Table::new(tclass, "");
         assert_eq!(t.to_string(), "(ReadyState)");
         assert_eq!(t.len(), 0);

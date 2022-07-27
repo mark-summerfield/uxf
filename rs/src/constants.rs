@@ -1,6 +1,8 @@
 // Copyright © 2022 Mark Summerfield. All rights reserved.
 // License: GPLv3
 
+pub static UXF_VERSION: &str = "1.0";
+
 pub const MAX_IDENTIFIER_LEN: usize = 60;
 
 pub static ISO8601_DATE: &str = "%Y-%m-%d";

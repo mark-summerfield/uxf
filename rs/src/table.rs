@@ -24,6 +24,18 @@ impl Table {
         Table { tclass, comment: comment.to_string(), records: vec![] }
     }
 
+    /// Returns a new Table with a fieldless`TClass` (with the given
+    /// `ttype` and and no `TClass` comment), and the given `comment`
+    /// and no records or `Err` if the `ttype` is invalid.
+    /// The `TClass` and `comment` are immutable after construction.
+    pub fn new_fieldless(ttype: &str, comment: &str) -> Result<Self> {
+        Ok(Table {
+            tclass: TClass::new_fieldless(ttype, "")?,
+            comment: comment.to_string(),
+            records: vec![],
+        })
+    }
+
     /// Returns the `TClass`.
     pub fn tclass(&self) -> &TClass {
         &self.tclass
