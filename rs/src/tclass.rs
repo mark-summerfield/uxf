@@ -4,7 +4,7 @@
 use crate::event::fatal;
 use crate::field::{check_fields, Field};
 use crate::util::{check_ttype, escape};
-use crate::value::{Row, Value};
+use crate::value::{Record, Value};
 use anyhow::Result;
 use std::fmt::Write as _;
 use std::{cmp::Ordering, fmt};
@@ -86,7 +86,7 @@ impl TClass {
     /// Returns a record with `TClass.len()` (i.e., `fields.len()`) fields,
     /// each holding a `Value::Null`.
     /// This is a helper for adding new rows to ``Table``s.
-    pub fn record_of_nulls(&self) -> Result<Row> {
+    pub fn record_of_nulls(&self) -> Result<Record> {
         if self.is_fieldless() {
             fatal(
                 732,
@@ -94,7 +94,7 @@ impl TClass {
                        fieldless table's tclass",
             )?;
         }
-        let mut record = Row::new();
+        let mut record = Record::new();
         record.resize(self.len(), Value::Null);
         Ok(record)
     }

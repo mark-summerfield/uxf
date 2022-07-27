@@ -6,7 +6,7 @@ mod tests {
     use uxf::event::{Event, EventKind};
     use uxf::list::List;
     use uxf::util::isclose64;
-    use uxf::value::{Row, Value};
+    use uxf::value::{Value, Values};
 
     #[test]
     fn t_list1() {
@@ -231,9 +231,11 @@ mod tests {
                 subsublist.push((-19.357).into());
             }
         }
-        assert_eq!(lst.to_string(),
-        "[? ? ? [<this &amp; that> <is &lt;bold&gt; &amp;tc.!> \
-        [#<&lt;Totals&gt;> real 7.9 100.0 -19.357]] 998877]");
+        assert_eq!(
+            lst.to_string(),
+            "[? ? ? [<this &amp; that> <is &lt;bold&gt; &amp;tc.!> \
+        [#<&lt;Totals&gt;> real 7.9 100.0 -19.357]] 998877]"
+        );
     }
 
     #[test]
@@ -289,18 +291,21 @@ mod tests {
         for s in ["one", "two", "<three>", "four & five", "six", "seven"] {
             lst.push(s.into());
         }
-        assert_eq!(lst.to_string(), "[str <one> <two> <&lt;three&gt;> \
-                   <four &amp; five> <six> <seven>]");
+        assert_eq!(
+            lst.to_string(),
+            "[str <one> <two> <&lt;three&gt;> \
+                   <four &amp; five> <six> <seven>]"
+        );
     }
 
-    fn valid_row() -> Row {
-        let mut row = Row::new();
+    fn valid_row() -> Values {
+        let mut values = Values::new();
         // Normally we'd use .into() for all except Null, but just to show
-        row.push(Value::Bool(true));
-        row.push(Value::Int(-919));
-        row.push(Value::Null);
-        row.push(Value::from("elephant <ears>"));
-        row.push(Value::Real(1.73e-5));
-        row
+        values.push(Value::Bool(true));
+        values.push(Value::Int(-919));
+        values.push(Value::Null);
+        values.push(Value::from("elephant <ears>"));
+        values.push(Value::Real(1.73e-5));
+        values
     }
 }

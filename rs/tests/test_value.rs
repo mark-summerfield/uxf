@@ -10,13 +10,13 @@ mod tests {
         let n = Value::Null;
         assert_eq!(n.to_string(), "?");
         assert_eq!(n.typename(), "null");
-        let b = Value::Bool(true);
+        let b: Value = true.into();
         assert_eq!(b.to_string(), "yes");
         assert_eq!(b.typename(), "bool");
         let b = Value::Bool(false);
         assert_eq!(b.to_string(), "no");
         assert_eq!(b.typename(), "bool");
-        let i = Value::Int(987123);
+        let i: Value = 987123.into();
         assert_eq!(i.to_string(), "987123");
         assert_eq!(i.typename(), "int");
         let b = Value::from(false);
@@ -25,6 +25,5 @@ mod tests {
         let i = Value::from(987123);
         assert_eq!(i.to_string(), "987123");
         assert_eq!(i.typename(), "int");
-        // TODO lots more tests
     }
 }

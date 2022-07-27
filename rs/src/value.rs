@@ -12,7 +12,8 @@ use chrono::prelude::*;
 use std::fmt;
 use std::fmt::Write as _;
 
-pub type Row = Vec<Value>;
+pub type Values = Vec<Value>; // For Lists
+pub type Record = Values; // For Tables
 
 #[derive(Clone, Debug)]
 pub enum Value {

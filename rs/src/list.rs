@@ -2,7 +2,7 @@
 // License: GPLv3
 
 use crate::util::{check_vtype, escape};
-use crate::value::{Row, Value};
+use crate::value::{Value, Values};
 use anyhow::Result;
 use std::fmt;
 use std::ops::{Index, IndexMut};
@@ -11,7 +11,7 @@ use std::ops::{Index, IndexMut};
 pub struct List {
     vtype: String,
     comment: String,
-    values: Row,
+    values: Values,
 }
 
 impl List {
@@ -29,7 +29,7 @@ impl List {
         Ok(List {
             vtype: vtype.to_string(),
             comment: comment.to_string(),
-            values: Row::new(),
+            values: Values::new(),
         })
     }
 
@@ -90,12 +90,12 @@ impl List {
     }
 
     /// Returns `&values` to make the entire immutable Vec API available.
-    pub fn inner(&self) -> &Row {
+    pub fn inner(&self) -> &Values {
         &self.values
     }
 
     /// Returns `&mut values` to make the entire mutable Vec API available.
-    pub fn inner_mut(&mut self) -> &mut Row {
+    pub fn inner_mut(&mut self) -> &mut Values {
         &mut self.values
     }
 }
@@ -107,7 +107,7 @@ impl Default for List {
         List {
             vtype: "".to_string(),
             comment: "".to_string(),
-            values: Row::new(),
+            values: Values::new(),
         }
     }
 }
