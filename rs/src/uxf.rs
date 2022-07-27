@@ -17,6 +17,7 @@ pub struct Uxf {
     tclass_for_ttype: HashMap<String, TClass>, // ttype x TClass
     // NOTE imports must be output in original insertion-order
     import_index_for_ttype: HashMap<String, usize>, // imports index
+    // NOTE import must not be duplicated
     imports: Vec<String>,                           // import text
 }
 
@@ -39,16 +40,18 @@ impl Uxf {
 }
 
 impl fmt::Display for Uxf {
-    /// Provides a .to_string() that returns a valid UXF fragment
+    /// Provides a .to_string() that returns the text of a valid UXF file
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        const NL: &str = "\n";
         let mut parts = vec![format!("uxf {}", UXF_VERSION)];
         if !self.custom().is_empty() {
             parts.push(" ".to_string());
             parts.push(self.custom().to_string());
         }
-        parts.push("\n".to_string());
+        parts.push(NL.to_string());
         if !self.comment().is_empty() {
-            parts.push(format!("#<{}> ", escape(self.comment())));
+            parts.push(format!("#<{}>", escape(self.comment())));
+            parts.push(NL.to_string());
         }
         for import in self.imports.iter() {
             parts.push(format!("!{}\n", import));
@@ -59,11 +62,11 @@ impl fmt::Display for Uxf {
         for tclass in tclasses.iter() {
             if !self.import_index_for_ttype.contains_key(tclass.ttype()) {
                 parts.push(tclass.to_string());
-                parts.push("\n".to_string());
+                parts.push(NL.to_string());
             }
         }
         parts.push(Value::from(self.value.clone()).to_string());
-        parts.push("\n".to_string());
+        parts.push(NL.to_string());
         write!(f, "{}", parts.join(""))
     }
 }
