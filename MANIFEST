@@ -1,5 +1,6 @@
 rs/src/lib.rs # add docs at the end
 rs/src/value.rs
+rs/src/key.rs
 rs/src/list.rs
 rs/src/map.rs
 rs/src/table.rs # TODO

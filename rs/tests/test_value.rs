@@ -19,6 +19,12 @@ mod tests {
         let i = Value::Int(987123);
         assert_eq!(i.to_string(), "987123");
         assert_eq!(i.typename(), "int");
+        let b = Value::from(false);
+        assert_eq!(b.to_string(), "no");
+        assert_eq!(b.typename(), "bool");
+        let i = Value::from(987123);
+        assert_eq!(i.to_string(), "987123");
+        assert_eq!(i.typename(), "int");
         // TODO lots more tests
     }
 }

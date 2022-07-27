@@ -2,6 +2,7 @@
 // License: GPLv3
 
 use crate::constants::*;
+use crate::key::Key;
 use crate::list::List;
 use crate::map::Map;
 use crate::table::Table;
@@ -287,6 +288,72 @@ impl fmt::Display for Value {
     }
 }
 
+impl From<bool> for Value {
+    fn from(b: bool) -> Self {
+        Value::Bool(b)
+    }
+}
+
+impl From<Vec<u8>> for Value {
+    fn from(b: Vec<u8>) -> Self {
+        Value::Bytes(b)
+    }
+}
+
+impl From<NaiveDate> for Value {
+    fn from(d: NaiveDate) -> Self {
+        Value::Date(d)
+    }
+}
+
+impl From<NaiveDateTime> for Value {
+    fn from(dt: NaiveDateTime) -> Self {
+        Value::DateTime(dt)
+    }
+}
+
+impl From<i64> for Value {
+    fn from(i: i64) -> Self {
+        Value::Int(i)
+    }
+}
+
+impl From<List> for Value {
+    fn from(lst: List) -> Self {
+        Value::List(lst)
+    }
+}
+
+impl From<Map> for Value {
+    fn from(m: Map) -> Self {
+        Value::Map(m)
+    }
+}
+
+impl From<f64> for Value {
+    fn from(f: f64) -> Self {
+        Value::Real(f)
+    }
+}
+
+impl From<&str> for Value {
+    fn from(s: &str) -> Self {
+        Value::Str(s.to_string())
+    }
+}
+
+impl From<String> for Value {
+    fn from(s: String) -> Self {
+        Value::Str(s)
+    }
+}
+
+impl From<Table> for Value {
+    fn from(t: Table) -> Self {
+        Value::Table(t)
+    }
+}
+
 impl From<Key> for Value {
     fn from(key: Key) -> Self {
         match key {
@@ -298,90 +365,7 @@ impl From<Key> for Value {
     }
 }
 
-#[derive(Clone, Debug, Eq, Hash, Ord, PartialOrd, PartialEq)]
-pub enum Key {
-    Bytes(Vec<u8>),
-    Date(NaiveDate),
-    Int(i64),
-    Str(String),
-}
-
-impl Key {
-    /// Returns `true` if `Key::Bytes`; otherwise returns `false`.
-    pub fn is_bytes(&self) -> bool {
-        matches!(self, Key::Bytes(_))
-    }
-
-    /// Returns `true` if `Key::Date`; otherwise returns `false`.
-    pub fn is_date(&self) -> bool {
-        matches!(self, Key::Date(_))
-    }
-
-    /// Returns `true` if `Key::Int`; otherwise returns `false`.
-    pub fn is_int(&self) -> bool {
-        matches!(self, Key::Int(_))
-    }
-
-    /// Returns `true` if `Key::Str`; otherwise returns `false`.
-    pub fn is_str(&self) -> bool {
-        matches!(self, Key::Str(_))
-    }
-
-    /// Returns `Ok(&Vec<u8>)` if `Value::Bytes`; otherwise returns `Err`.
-    pub fn as_bytes(&self) -> Result<&Vec<u8>> {
-        if let Key::Bytes(value) = self {
-            Ok(value)
-        } else {
-            bail!("non-bytes Key")
-        }
-    }
-
-    /// Returns `Ok(NaiveDate)` if `Value::Date`; otherwise returns `Err`.
-    pub fn as_date(&self) -> Result<NaiveDate> {
-        if let Key::Date(value) = self {
-            Ok(*value)
-        } else {
-            bail!("non-date Key")
-        }
-    }
-
-    /// Returns `Ok(i64)` if `Key::Int`; otherwise returns `Err`.
-    pub fn as_int(&self) -> Result<i64> {
-        if let Key::Int(value) = self {
-            Ok(*value)
-        } else {
-            bail!("non-int Key")
-        }
-    }
-
-    /// Returns `Ok(&str)` if `Key::Str`; otherwise returns `Err`.
-    pub fn as_str(&self) -> Result<&str> {
-        if let Key::Str(value) = self {
-            Ok(value)
-        } else {
-            bail!("non-str Key")
-        }
-    }
-}
-
-// NOTE: *must* match impl fmt::Display for Value
-impl fmt::Display for Key {
-    /// Provides a .to_string() that returns a valid UXF fragment
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(
-            f,
-            "{}",
-            match self {
-                Key::Bytes(b) => bytes_to_uxf(b),
-                Key::Date(d) => d.format(ISO8601_DATE).to_string(),
-                Key::Int(i) => i.to_string(),
-                Key::Str(s) => format!("<{}>", escape(s)),
-            }
-        )
-    }
-}
-
-fn bytes_to_uxf(b: &[u8]) -> String {
+pub(crate) fn bytes_to_uxf(b: &[u8]) -> String {
     let mut s = String::from("(:");
     for x in b {
         let _ = write!(s, "{:02X}", x);

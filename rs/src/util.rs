@@ -21,7 +21,6 @@ pub fn isclose64(a: f64, b: f64) -> bool {
     (a..=(a + f64::EPSILON)).contains(&b)
 }
 
-
 /// Returns `Ok(())` if `ktype` is a valid ktype; otherwise `Err`.
 pub(crate) fn check_ktype(ktype: &str) -> Result<()> {
     if KTYPES.contains(&ktype) {

@@ -24,11 +24,11 @@ mod tests {
             "[yes -919 ? <elephant &lt;ears&gt;> 0.0000173]"
         );
         lst.push(Value::Null);
-        lst.push(Value::Bool(false));
-        lst.push(Value::Int(7831));
+        lst.push(false.into());
+        lst.push(7831.into());
         lst.push(Value::Null);
-        lst.push(Value::Str("giraffe neck".to_string()));
-        lst.push(Value::Real(-2.11e4));
+        lst.push("giraffe neck".into());
+        lst.push((-2.11e4).into());
         assert_eq!(
             lst.to_string(),
             "[yes -919 ? <elephant &lt;ears&gt;> 0.0000173 ? no 7831 ? \
@@ -46,23 +46,23 @@ mod tests {
         assert!(lst[2].is_null());
         assert_eq!(lst[3].as_str().unwrap(), "elephant <ears>");
         assert!(isclose64(lst[4].as_real().unwrap(), 1.73e-5));
-        lst[0] = Value::Int(7070);
+        lst[0] = 7070.into();
         assert_eq!(lst[0].as_int().unwrap(), 7070);
-        lst[1] = Value::Bool(false);
+        lst[1] = false.into();
         assert_eq!(lst[1].as_bool().unwrap(), false);
         lst[1] = Value::Null;
         assert!(lst[1].is_null());
         assert!(lst[2].is_null());
         lst.push(Value::Null);
         let i = lst.len() - 1;
-        lst[i] = Value::Str("dog & tail".to_string());
+        lst[i] = "dog & tail".into();
         assert_eq!(lst[i].as_str().unwrap(), "dog & tail");
         lst.push(Value::Null);
         let i = lst.len() - 1;
         assert!(lst[i].is_null());
-        lst[i] = Value::Real(-9.4);
+        lst[i] = (-9.4).into();
         assert!(isclose64(lst[i].as_real().unwrap(), -9.4));
-        lst[i] = Value::Int(4);
+        lst[i] = 4.into();
         assert_eq!(lst[i].as_int().unwrap(), 4);
         assert_eq!(
             lst.to_string(),
@@ -75,8 +75,8 @@ mod tests {
     fn t_list2() {
         let mut lst = List::new("int", "Test of int").unwrap();
         lst.push(Value::Null);
-        lst.push(Value::Int(5));
-        lst.push(Value::Int(17));
+        lst.push(5.into());
+        lst.push(17.into());
         lst.push(Value::Null);
         assert_eq!(lst.to_string(), "[#<Test of int> int ? 5 17 ?]");
         assert_eq!(lst.len(), 4);
@@ -100,14 +100,14 @@ mod tests {
         assert!(lst[3].is_null());
         for (i, value) in lst.iter_mut().enumerate() {
             if value.is_null() {
-                *value = Value::Int(100 * (i as i64 + 1));
+                *value = (100 * (i as i64 + 1)).into();
             }
         }
         assert_eq!(lst[0].as_int().unwrap(), 100);
         assert_eq!(lst[3].as_int().unwrap(), 400);
         lst[1] = Value::Int(-11 * lst[1].as_int().unwrap());
-        lst[2] = Value::Int(917);
-        lst.push(Value::Int(8888));
+        lst[2] = 917.into();
+        lst.push(8888.into());
         assert_eq!(lst.len(), 5);
         assert_eq!(
             lst.to_string(),
@@ -129,8 +129,8 @@ mod tests {
         {
             let values = lst.inner_mut();
             values.push(Value::Null);
-            values.push(Value::Int(5));
-            values.push(Value::Int(17));
+            values.push(5.into());
+            values.push(17.into());
             values.push(Value::Null);
             assert_eq!(values.len(), 4);
             assert!(!values.is_empty());
@@ -151,14 +151,14 @@ mod tests {
             assert!(values[3].is_null());
             for (i, value) in values.iter_mut().enumerate() {
                 if value.is_null() {
-                    *value = Value::Int(100 * (i as i64 + 1));
+                    *value = (100 * (i as i64 + 1)).into();
                 }
             }
             assert_eq!(values[0].as_int().unwrap(), 100);
             assert_eq!(values[3].as_int().unwrap(), 400);
-            values[1] = Value::Int(-11 * values[1].as_int().unwrap());
-            values[2] = Value::Int(917);
-            values.push(Value::Int(8888));
+            values[1] = (-11 * values[1].as_int().unwrap()).into();
+            values[2] = 917.into();
+            values.push(8888.into());
             assert_eq!(values.len(), 5);
         }
         assert_eq!(lst.to_string(), "[int 100 -55 917 400 8888]");
@@ -203,7 +203,7 @@ mod tests {
         lst.push(Value::Null); // 1
         lst.push(Value::Null); // 2
         assert_eq!(lst.to_string(), "[? ? ?]");
-        lst.push(Value::List(List::default())); // 3
+        lst.push(List::default().into()); // 3
         assert_eq!(lst.to_string(), "[? ? ? []]");
         if let Ok(sublist) = lst[0].as_list() {
             assert_eq!(sublist.len(), 0);
@@ -211,11 +211,11 @@ mod tests {
         }
         assert_eq!(lst.len(), 4);
         assert!(!lst.is_empty());
-        lst.push(Value::Int(998877)); // 4
+        lst.push(998877.into()); // 4
         assert_eq!(lst.to_string(), "[? ? ? [] 998877]");
         if let Ok(sublist) = lst[3].as_list_mut() {
-            sublist.push(Value::Str("this & that".to_string()));
-            sublist.push(Value::Str("is <bold> &tc.!".to_string()));
+            sublist.push("this & that".into());
+            sublist.push("is <bold> &tc.!".into());
         }
         if let Ok(sublist) = lst[3].as_list() {
             assert_eq!(sublist.len(), 2);
@@ -224,12 +224,11 @@ mod tests {
         assert_eq!(lst.to_string(),
         "[? ? ? [<this &amp; that> <is &lt;bold&gt; &amp;tc.!>] 998877]");
         if let Ok(sublist) = lst[3].as_list_mut() {
-            sublist.push(Value::List(List::new("real",
-                                               "<Totals>").unwrap()));
+            sublist.push(List::new("real", "<Totals>").unwrap().into());
             if let Ok(subsublist) = sublist[2].as_list_mut() {
-                subsublist.push(Value::Real(7.9));
-                subsublist.push(Value::Real(1e2));
-                subsublist.push(Value::Real(-19.357));
+                subsublist.push((7.9).into());
+                subsublist.push((1e2).into());
+                subsublist.push((-19.357).into());
             }
         }
         assert_eq!(lst.to_string(),
@@ -284,12 +283,23 @@ mod tests {
         }
     }
 
+    #[test]
+    fn t_list_str() {
+        let mut lst = List::new("str", "").unwrap();
+        for s in ["one", "two", "<three>", "four & five", "six", "seven"] {
+            lst.push(s.into());
+        }
+        assert_eq!(lst.to_string(), "[str <one> <two> <&lt;three&gt;> \
+                   <four &amp; five> <six> <seven>]");
+    }
+
     fn valid_row() -> Row {
         let mut row = Row::new();
+        // Normally we'd use .into() for all except Null, but just to show
         row.push(Value::Bool(true));
         row.push(Value::Int(-919));
         row.push(Value::Null);
-        row.push(Value::Str("elephant <ears>".to_string()));
+        row.push(Value::from("elephant <ears>"));
         row.push(Value::Real(1.73e-5));
         row
     }

@@ -2,8 +2,9 @@
 // License: GPLv3
 
 use crate::event::fatal;
+use crate::key::Key;
 use crate::util::{check_ktype, check_vtype, escape};
-use crate::value::{Key, Value};
+use crate::value::Value;
 use anyhow::Result;
 use std::collections::HashMap;
 use std::fmt;
