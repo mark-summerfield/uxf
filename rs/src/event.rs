@@ -7,6 +7,8 @@
 use anyhow::{bail, Result};
 use std::fmt;
 
+pub type OnEventFn = fn(&Event) -> Result<()>;
+
 pub fn fatal(code: i16, message: &str) -> Result<()> {
     bail!(Event::new(EventKind::Fatal, code, message))
 }

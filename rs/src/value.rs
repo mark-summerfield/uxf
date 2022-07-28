@@ -366,23 +366,6 @@ impl From<Key> for Value {
     }
 }
 
-#[derive(Clone, Debug)]
-pub enum Collection {
-    List(List),
-    Map(Map),
-    Table(Table),
-}
-
-impl From<Collection> for Value {
-    fn from(collection: Collection) -> Self {
-        match collection {
-            Collection::List(lst) => Value::List(lst),
-            Collection::Map(m) => Value::Map(m),
-            Collection::Table(t) => Value::Table(t),
-        }
-    }
-}
-
 pub(crate) fn bytes_to_uxf(b: &[u8]) -> String {
     let mut s = String::from("(:");
     for x in b {
