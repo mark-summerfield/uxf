@@ -68,6 +68,22 @@ impl Uxf {
     }
 }
 
+impl Default for Uxf {
+    /// Returns a new empty Uxf that uses the default `event::on_event()`
+    /// event handler.
+    fn default() -> Self {
+        Uxf {
+            custom: "".to_string(),
+            comment: "".to_string(),
+            value: Value::List(List::default()),
+            tclass_for_ttype: HashMap::new(),
+            import_index_for_ttype: HashMap::new(),
+            imports: vec![],
+            on_event: event::on_event,
+        }
+    }
+}
+
 impl fmt::Debug for Uxf {
     fn fmt<'a>(&'a self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         f.debug_struct("Uxf")
