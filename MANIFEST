@@ -22,6 +22,7 @@ rs/tests/test_field.rs
 rs/tests/test_uxf.rs
 rs/Cargo.toml
 rs/README.md
+# TODO add optional serde support (to_string(); from_string())
 # TODO port tlm to use rust uxf
 # IDEA: noncopy nonowned versions: UxfBuf ValueBuf ... FieldBuf
 

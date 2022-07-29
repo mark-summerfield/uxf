@@ -2,11 +2,12 @@
 // License: GPLv3
 
 use crate::constants::*;
-use crate::event::{self, OnEventFn};
+use crate::event::{self, Event, EventKind, OnEventFn};
 use crate::list::List;
 use crate::tclass::TClass;
 use crate::util::escape;
 use crate::value::Value;
+use anyhow::Result;
 use std::{collections::HashMap, fmt};
 
 pub struct Uxf {
@@ -33,11 +34,7 @@ impl Uxf {
             tclass_for_ttype: HashMap::new(),
             import_index_for_ttype: HashMap::new(),
             imports: vec![],
-            on_event: if let Some(on_event) = on_event {
-                on_event // user's
-            } else {
-                event::on_event // default
-            },
+            on_event: on_event.unwrap_or_else(|| Box::new(event::on_event)),
         }
     }
 
@@ -61,10 +58,37 @@ impl Uxf {
         self.comment = comment.to_string();
     }
 
-    /// The collection value. This is immutable and defaults to an empty
-    /// List. Normally populated by a load function.
+    /// The collection value. This defaults to an empty List.
     pub fn value(&self) -> &Value {
         &self.value
+    }
+
+    /// Sets the collection value which must be a List, Map, or Table.
+    pub fn set_value(&mut self, value: Value) -> Result<()> {
+        if !value.is_collection() {
+            (self.on_event)(&Event::new(
+                EventKind::Fatal,
+                100,
+                &format!(
+                    "Uxf value must be a List, Map, or Table, got {}",
+                    value.typename()
+                ),
+            ))?;
+            return Ok(()); // in case user on_event doesn't bail!
+        }
+        self.import_index_for_ttype.clear();
+        self.imports.clear();
+        self.tclass_for_ttype.clear();
+        value.visit(&|v: &Value| {
+            // TODO
+            if v.is_table() {
+                let tclass = v.as_table().unwrap().tclass().clone();
+                let ttype = tclass.ttype().to_string();
+                // self.tclass_for_ttype.insert(ttype, tclass);
+            }
+        });
+        self.value = value;
+        Ok(())
     }
 }
 
@@ -79,7 +103,7 @@ impl Default for Uxf {
             tclass_for_ttype: HashMap::new(),
             import_index_for_ttype: HashMap::new(),
             imports: vec![],
-            on_event: event::on_event,
+            on_event: Box::new(event::on_event),
         }
     }
 }

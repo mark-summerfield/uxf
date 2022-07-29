@@ -11,14 +11,17 @@ mod tests {
     fn t_uxf_strings() {
         /*
         let mut events = Vec::<Event>::new();
-        fn on_error(event: &Event) -> Result<()> {
-            events.push(event.clone());
-            Ok(())
-        }
-        events.clear();
-        let mut uxo = Uxf::new("custom 1", "comment 1", Some(on_error));
+        let mut uxo = Uxf::new(
+            "custom 1",
+            "comment 1",
+            Some(Box::new(|event| {
+                events.push(event.clone());
+                Ok(())
+            })),
+        );
         */
         let mut uxo = Uxf::new("custom 1", "comment 1", None);
+
         assert_eq!(
             format!("{:?}", uxo),
             "Uxf { custom: \"custom 1\", comment: \"comment 1\", value: \
@@ -41,7 +44,7 @@ mod tests {
             "uxf 1.0 Dummy format\n#<New text>\n[]\n"
         );
         /*
-        assert!(events.is_empty());
+        assert!(&events.is_empty());
         */
         // TODO
     }
