@@ -7,9 +7,10 @@ mod tests {
     use uxf::event::Event;
     use uxf::Uxf;
 
+    // TODO
+    /*
     #[test]
-    fn t_uxf_strings() {
-        /*
+    fn t_uxf_on_error() {
         let mut events = Vec::<Event>::new();
         let mut uxo = Uxf::new(
             "custom 1",
@@ -19,9 +20,22 @@ mod tests {
                 Ok(())
             })),
         );
-        */
-        let mut uxo = Uxf::new("custom 1", "comment 1", None);
+        ...
+        assert!(&events.is_empty());
+    }
+    */
 
+    #[test]
+    fn t_uxf_strings() {
+        let mut uxo = Uxf::default();
+        assert_eq!(uxo.to_string(), "uxf 1.0\n[]\n");
+        uxo.set_custom("Geo 1.0.0");
+        uxo.set_comment("A Geographical format");
+        assert_eq!(
+            uxo.to_string(),
+            "uxf 1.0 Geo 1.0.0\n#<A Geographical format>\n[]\n"
+        );
+        let mut uxo = Uxf::new("custom 1", "comment 1", None);
         assert_eq!(
             format!("{:?}", uxo),
             "Uxf { custom: \"custom 1\", comment: \"comment 1\", value: \
@@ -43,9 +57,6 @@ mod tests {
             uxo.to_string(),
             "uxf 1.0 Dummy format\n#<New text>\n[]\n"
         );
-        /*
-        assert!(&events.is_empty());
-        */
         // TODO
     }
 }

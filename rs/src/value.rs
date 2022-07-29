@@ -14,8 +14,7 @@ use std::fmt::Write as _;
 
 pub type Values = Vec<Value>; // For Lists
 pub type Record = Values; // For Tables
-//pub type Visitor = Box<dyn Fn(&Value)>;
-pub type Visitor = dyn Fn(&Value);
+pub type Visitor = Box<dyn Fn(&Value) + 'static>;
 
 #[derive(Clone, Debug)]
 pub enum Value {
@@ -261,7 +260,8 @@ impl Value {
     /// Iterates over this value and if it is a collection over every
     /// contained value, calling visit() for each value
     pub fn visit(&self, visitor: &Visitor) {
-        visitor(self);
+        let v1 = visitor.clone();
+        (v1)(self);
         match self {
             Value::Null
             | Value::Bool(_)
@@ -273,19 +273,24 @@ impl Value {
             | Value::Str(_) => (), // already visited
             Value::List(lst) => {
                 for value in lst.iter() {
-                    value.visit(visitor);
+                    let v1 = visitor.clone();
+                    value.visit(v1);
                 }
             }
             Value::Map(m) => {
                 for (key, value) in m.iter() {
-                    Value::from(key.clone()).visit(visitor);
-                    value.visit(visitor);
+                    let key_value = Value::from(key.clone());
+                    let v1 = visitor.clone();
+                    let v2 = visitor.clone();
+                    key_value.visit(v1);
+                    value.visit(v2);
                 }
             }
             Value::Table(t) => {
                 for record in t.iter() {
                     for value in record.iter() {
-                        value.visit(visitor);
+                        let v1 = visitor.clone();
+                        value.visit(v1);
                     }
                 }
             }

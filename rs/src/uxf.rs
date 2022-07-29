@@ -79,16 +79,21 @@ impl Uxf {
         self.import_index_for_ttype.clear();
         self.imports.clear();
         self.tclass_for_ttype.clear();
-        value.visit(&|v: &Value| {
-            // TODO
-            if v.is_table() {
-                let tclass = v.as_table().unwrap().tclass().clone();
-                let ttype = tclass.ttype().to_string();
-                // self.tclass_for_ttype.insert(ttype, tclass);
-            }
-        });
         self.value = value;
+        // TODO
+        /*
+        self.value
+            .visit(&Box::new(|value: &Value| self.update_tclasses(value)));
+        */
         Ok(())
+    }
+
+    fn update_tclasses(&mut self, value: &Value) {
+        if let Ok(table) = value.as_table() {
+            let tclass = table.tclass().clone();
+            let ttype = tclass.ttype().to_string();
+            self.tclass_for_ttype.insert(ttype, tclass);
+        }
     }
 }
 
