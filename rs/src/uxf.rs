@@ -64,6 +64,7 @@ impl Uxf {
     }
 
     /// Sets the collection value which must be a List, Map, or Table.
+    /// Normally the Uxf is populated using from_str().
     pub fn set_value(&mut self, value: Value) -> Result<()> {
         if !value.is_collection() {
             (self.on_event)(&Event::new(
@@ -79,19 +80,16 @@ impl Uxf {
         self.import_index_for_ttype.clear();
         self.imports.clear();
         self.tclass_for_ttype.clear();
+        for tclass in value.tclasses() {
+            self.tclass_for_ttype
+                .insert(tclass.ttype().to_string(), tclass);
+        }
         self.value = value;
-        // TODO
-        //self.value.visit(|value| self.update_tclasses(value));
         Ok(())
     }
 
-    fn update_tclasses(&mut self, value: &Value) {
-        if let Ok(table) = value.as_table() {
-            let tclass = table.tclass().clone();
-            let ttype = tclass.ttype().to_string();
-            self.tclass_for_ttype.insert(ttype, tclass);
-        }
-    }
+    // TODO parser/loader:
+    // pub fn from_str(&mut self, uxt: &str) -> Result<()>
 }
 
 impl Default for Uxf {

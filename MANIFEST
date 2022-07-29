@@ -6,22 +6,20 @@ rs/src/map.rs
 rs/src/table.rs
 rs/src/tclass.rs
 rs/src/field.rs
-rs/src/uxf.rs # TODO #1 need interior mutability? or maybe
-# Value::tclasses() -> Vec<&TClass> (& which itself might use visit --
-# or not) & which Uxf can then call?
+rs/src/uxf.rs # TODO
 rs/src/util.rs
 rs/src/event.rs
 rs/src/constants.rs
-rs/src/parser.rs # TODO #3
-rs/src/output.rs # TODO #4
+rs/src/parser.rs # TODO
+rs/src/output.rs # TODO
 rs/src/test_utils.rs
-rs/tests/test_value.rs
+rs/tests/test_value.rs # TODO ################ visit()
 rs/tests/test_list.rs
 rs/tests/test_map.rs
-rs/tests/test_table.rs # TODO #0
+rs/tests/test_table.rs # TODO #################### nested & err
 rs/tests/test_tclass.rs
 rs/tests/test_field.rs
-rs/tests/test_uxf.rs # TODO #2
+rs/tests/test_uxf.rs # TODO ############################### custom on_event
 rs/Cargo.toml
 rs/README.md
 # TODO add optional serde support

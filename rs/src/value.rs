@@ -6,6 +6,7 @@ use crate::key::Key;
 use crate::list::List;
 use crate::map::Map;
 use crate::table::Table;
+use crate::tclass::TClass;
 use crate::util::escape;
 use anyhow::{bail, Result};
 use chrono::prelude::*;
@@ -281,8 +282,44 @@ impl Value {
                     }
                 }
             }
-            _ => () // already visited at the top
+            _ => (), // already visited at the top
         }
+    }
+
+    pub fn tclasses(&self) -> Vec<TClass> {
+        self.add_tclasses(self, &Vec::<TClass>::new())
+    }
+
+    fn add_tclasses(
+        &self,
+        value: &Value,
+        tclasses: &[TClass],
+    ) -> Vec<TClass> {
+        let mut tclasses = tclasses.to_owned();
+        match value {
+            Value::List(lst) => {
+                for value in lst.iter() {
+                    tclasses.extend(self.add_tclasses(value, &tclasses));
+                }
+            }
+            Value::Map(m) => {
+                for value in m.inner().values() {
+                    // keys can't be tables
+                    tclasses.extend(self.add_tclasses(value, &tclasses));
+                }
+            }
+            Value::Table(t) => {
+                tclasses.push(t.tclass().clone());
+                for record in t.iter() {
+                    for value in record.iter() {
+                        tclasses
+                            .extend(self.add_tclasses(value, &tclasses));
+                    }
+                }
+            }
+            _ => (), // not a table
+        }
+        tclasses
     }
 }
 

@@ -26,4 +26,9 @@ mod tests {
         assert_eq!(i.to_string(), "987123");
         assert_eq!(i.typename(), "int");
     }
+
+    #[test]
+    fn t_visit() {
+        // TODO
+    }
 }
