@@ -14,7 +14,7 @@ use std::fmt::Write as _;
 
 pub type Values = Vec<Value>; // For Lists
 pub type Record = Values; // For Tables
-pub type Visitor = Box<dyn Fn(&Value) + 'static>;
+pub type Visitor = Box<dyn Fn(&Value)>;
 
 #[derive(Clone, Debug)]
 pub enum Value {
@@ -258,7 +258,7 @@ impl Value {
     }
 
     /// Iterates over this value and if it is a collection over every
-    /// contained value, calling visit() for each value
+    /// contained value, calling visitor() for each value.
     pub fn visit(&self, visitor: &Visitor) {
         (visitor)(self);
         match self {

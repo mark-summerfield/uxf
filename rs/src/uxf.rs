@@ -81,10 +81,7 @@ impl Uxf {
         self.tclass_for_ttype.clear();
         self.value = value;
         // TODO
-        /*
-        self.value
-            .visit(&Box::new(|value: &Value| self.update_tclasses(value)));
-        */
+        //self.value.visit(|value| self.update_tclasses(value));
         Ok(())
     }
 
