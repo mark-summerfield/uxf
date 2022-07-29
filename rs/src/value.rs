@@ -260,40 +260,28 @@ impl Value {
     /// Iterates over this value and if it is a collection over every
     /// contained value, calling visit() for each value
     pub fn visit(&self, visitor: &Visitor) {
-        let v1 = visitor.clone();
-        (v1)(self);
+        (visitor)(self);
         match self {
-            Value::Null
-            | Value::Bool(_)
-            | Value::Bytes(_)
-            | Value::Date(_)
-            | Value::DateTime(_)
-            | Value::Int(_)
-            | Value::Real(_)
-            | Value::Str(_) => (), // already visited
             Value::List(lst) => {
                 for value in lst.iter() {
-                    let v1 = visitor.clone();
-                    value.visit(v1);
+                    value.visit(visitor);
                 }
             }
             Value::Map(m) => {
                 for (key, value) in m.iter() {
                     let key_value = Value::from(key.clone());
-                    let v1 = visitor.clone();
-                    let v2 = visitor.clone();
-                    key_value.visit(v1);
-                    value.visit(v2);
+                    key_value.visit(visitor);
+                    value.visit(visitor);
                 }
             }
             Value::Table(t) => {
                 for record in t.iter() {
                     for value in record.iter() {
-                        let v1 = visitor.clone();
-                        value.visit(v1);
+                        value.visit(visitor);
                     }
                 }
             }
+            _ => () // already visited at the top
         }
     }
 }
