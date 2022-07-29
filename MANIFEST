@@ -6,7 +6,9 @@ rs/src/map.rs
 rs/src/table.rs
 rs/src/tclass.rs
 rs/src/field.rs
-rs/src/uxf.rs # TODO #1 need interior mutability?
+rs/src/uxf.rs # TODO #1 need interior mutability? or maybe
+# Value::tclasses() -> Vec<&TClass> (& which itself might use visit --
+# or not) & which Uxf can then call?
 rs/src/util.rs
 rs/src/event.rs
 rs/src/constants.rs
