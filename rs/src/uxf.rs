@@ -50,7 +50,7 @@ impl Uxf {
             tclass_for_ttype: HashMap::new(),
             import_index_for_ttype: HashMap::new(),
             imports: vec![],
-            on_event: on_event,
+            on_event,
         }
     }
 

@@ -10,12 +10,12 @@ use crate::tclass::TClass;
 use crate::util::escape;
 use anyhow::{bail, Result};
 use chrono::prelude::*;
-use std::fmt;
 use std::fmt::Write as _;
+use std::{cell::RefCell, fmt, rc::Rc};
 
 pub type Values = Vec<Value>; // For Lists
 pub type Record = Values; // For Tables
-pub type Visitor = Box<dyn Fn(&Value)>;
+pub type Visitor = Rc<dyn Fn(&Value)>;
 
 #[derive(Clone, Debug)]
 pub enum Value {
@@ -259,26 +259,27 @@ impl Value {
     }
 
     /// Iterates over this value and if it is a collection over every
-    /// contained value, calling visitor() for each value.
-    pub fn visit(&self, visitor: &Visitor) {
-        (visitor)(self);
+    /// contained value, recursively, calling visitor() once for every
+    /// value.
+    pub fn visit(&self, visitor: Visitor) {
+        (Rc::clone(&visitor))(self);
         match self {
             Value::List(lst) => {
                 for value in lst.iter() {
-                    value.visit(visitor);
+                    value.visit(Rc::clone(&visitor));
                 }
             }
             Value::Map(m) => {
                 for (key, value) in m.iter() {
                     let key_value = Value::from(key.clone());
-                    key_value.visit(visitor);
-                    value.visit(visitor);
+                    key_value.visit(Rc::clone(&visitor));
+                    value.visit(Rc::clone(&visitor));
                 }
             }
             Value::Table(t) => {
                 for record in t.iter() {
                     for value in record.iter() {
-                        value.visit(visitor);
+                        value.visit(Rc::clone(&visitor));
                     }
                 }
             }
@@ -286,40 +287,20 @@ impl Value {
         }
     }
 
+    /// Returns a (possibly empty) vec of all the TClasses in this value and
+    /// of any values it contains (iterating recursively using `visit()`).
     pub fn tclasses(&self) -> Vec<TClass> {
-        self.add_tclasses(self, &Vec::<TClass>::new())
-    }
-
-    fn add_tclasses(
-        &self,
-        value: &Value,
-        tclasses: &[TClass],
-    ) -> Vec<TClass> {
-        let mut tclasses = tclasses.to_owned();
-        match value {
-            Value::List(lst) => {
-                for value in lst.iter() {
-                    tclasses.extend(self.add_tclasses(value, &tclasses));
+        let tclasses = Rc::new(RefCell::new(Vec::<TClass>::new()));
+        self.visit({
+            let tclasses = Rc::clone(&tclasses);
+            Rc::new(move |value: &Value| {
+                if let Ok(table) = value.as_table() {
+                    let mut tclasses = tclasses.borrow_mut();
+                    tclasses.push(table.tclass().clone());
                 }
-            }
-            Value::Map(m) => {
-                for value in m.inner().values() {
-                    // keys can't be tables
-                    tclasses.extend(self.add_tclasses(value, &tclasses));
-                }
-            }
-            Value::Table(t) => {
-                tclasses.push(t.tclass().clone());
-                for record in t.iter() {
-                    for value in record.iter() {
-                        tclasses
-                            .extend(self.add_tclasses(value, &tclasses));
-                    }
-                }
-            }
-            _ => (), // not a table
-        }
-        tclasses
+            })
+        });
+        tclasses.take()
     }
 }
 
