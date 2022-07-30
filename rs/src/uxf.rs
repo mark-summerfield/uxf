@@ -21,7 +21,9 @@ pub struct Uxf {
 }
 
 impl Uxf {
-    // TODO doc
+    /// Returns a `Uxf` with the given `custom` and `comment` strings using
+    /// the default `event::on_event()` event handler if `on_event` is
+    /// `None` or the given event handler, and containing an empty list.
     pub fn new(
         custom: &str,
         comment: &str,
@@ -35,6 +37,20 @@ impl Uxf {
             import_index_for_ttype: HashMap::new(),
             imports: vec![],
             on_event: on_event.unwrap_or_else(|| Box::new(event::on_event)),
+        }
+    }
+
+    /// Returns a `Uxf` with empty `custom` and `comment` strings,
+    /// the given event handler, and containing an empty list.
+    pub fn new_on_event(on_event: OnEventFn) -> Self {
+        Uxf {
+            custom: "".to_string(),
+            comment: "".to_string(),
+            value: Value::List(List::default()),
+            tclass_for_ttype: HashMap::new(),
+            import_index_for_ttype: HashMap::new(),
+            imports: vec![],
+            on_event: on_event,
         }
     }
 
@@ -93,8 +109,8 @@ impl Uxf {
 }
 
 impl Default for Uxf {
-    /// Returns a new empty Uxf that uses the default `event::on_event()`
-    /// event handler.
+    /// Returns a new `Uxf` that uses the default `event::on_event()`
+    /// event handler. and contains an empty list
     fn default() -> Self {
         Uxf {
             custom: "".to_string(),

@@ -96,7 +96,7 @@ mod tests {
     }
 
     #[test]
-    fn t_uxf_on_event() {
+    fn t_uxf_on_event1() {
         // using custom on_event() handler that accumulates events
         let events = Rc::new(RefCell::new(Vec::<Event>::new()));
         assert!(&events.borrow().is_empty());
@@ -112,6 +112,53 @@ mod tests {
                 }
             })),
         );
+        assert_eq!(uxo.to_string(), "uxf 1.0 MyUXF\n#<No comment>\n[]\n");
+        let mut m = Map::default();
+        m.insert(1.into(), "one".into());
+        m.insert(2.into(), "two".into());
+        assert_eq!(m.to_string(), "{1 <one> 2 <two>}");
+        assert!(uxo.set_value(m.into()).is_ok());
+        assert_eq!(
+            uxo.to_string(),
+            "uxf 1.0 MyUXF\n#<No comment>\n{1 <one> 2 <two>}\n"
+        );
+        assert!(&events.borrow().is_empty());
+        assert_eq!(*&events.borrow().len(), 0);
+        assert!(uxo.set_value(1.into()).is_ok());
+        assert!(!&events.borrow().is_empty());
+        assert_eq!(*&events.borrow().len(), 1);
+        let event = &events.borrow()[0].clone();
+        assert_fatal(
+            &event,
+            100,
+            "Uxf value must be a List, Map, or Table, got int",
+        );
+        assert!(uxo.set_value("x".into()).is_ok());
+        assert_eq!(*&events.borrow().len(), 2);
+        let event = &events.borrow()[1].clone();
+        assert_fatal(
+            &event,
+            100,
+            "Uxf value must be a List, Map, or Table, got str",
+        );
+    }
+
+    #[test]
+    fn t_uxf_on_event2() {
+        // using custom on_event() handler that accumulates events
+        let events = Rc::new(RefCell::new(Vec::<Event>::new()));
+        assert!(&events.borrow().is_empty());
+        let mut uxo = Uxf::new_on_event(Box::new({
+            let events = Rc::clone(&events);
+            move |event| {
+                let mut events = events.borrow_mut();
+                events.push(event.clone());
+                Ok(())
+            }
+        }));
+        assert_eq!(uxo.to_string(), "uxf 1.0\n[]\n");
+        uxo.set_custom("MyUXF");
+        uxo.set_comment("No comment");
         assert_eq!(uxo.to_string(), "uxf 1.0 MyUXF\n#<No comment>\n[]\n");
         let mut m = Map::default();
         m.insert(1.into(), "one".into());
