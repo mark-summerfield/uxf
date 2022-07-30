@@ -2,6 +2,28 @@
 // License: GPLv3
 
 use crate::constants::*;
+use crate::event::{Event, EventKind};
+
+pub fn assert_fatal(event: &Event, code: i16, message: &str) {
+    assert_event(event, "uxf", EventKind::Fatal, code, "-", 0, message);
+}
+
+pub fn assert_event(
+    event: &Event,
+    prefix: &str,
+    kind: EventKind,
+    code: i16,
+    filename: &str,
+    lino: u32,
+    message: &str,
+) {
+    assert_eq!(event.prefix, prefix);
+    assert_eq!(event.kind, kind);
+    assert_eq!(event.code, code);
+    assert_eq!(event.filename, filename);
+    assert_eq!(event.lino, lino);
+    assert_eq!(event.message, message);
+}
 
 pub fn check_error_code(error: &str, code: i32, name: &str) {
     match code {

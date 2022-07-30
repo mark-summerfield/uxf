@@ -19,7 +19,7 @@ rs/tests/test_map.rs
 rs/tests/test_table.rs # TODO #################### nested & err
 rs/tests/test_tclass.rs
 rs/tests/test_field.rs
-rs/tests/test_uxf.rs # TODO ############################### custom on_event
+rs/tests/test_uxf.rs # TODO more
 rs/Cargo.toml
 rs/README.md
 # TODO add optional serde support
