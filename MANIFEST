@@ -6,24 +6,23 @@ rs/src/map.rs
 rs/src/table.rs
 rs/src/tclass.rs
 rs/src/field.rs
-rs/src/uxf.rs # TODO
+rs/src/uxf.rs # TODO (3) parse_options(); (4) to_string_options()
 rs/src/format.rs
 rs/src/util.rs
 rs/src/event.rs
 rs/src/constants.rs
-rs/src/parser.rs # TODO
-rs/src/output.rs # TODO
+rs/src/parser.rs # TODO see (3) above
+rs/src/output.rs # TODO see (4) above
 rs/src/test_utils.rs
-rs/tests/test_value.rs # TODO ####################### visit()
+rs/tests/test_value.rs # TODO (1) visit()
 rs/tests/test_list.rs
 rs/tests/test_map.rs
-rs/tests/test_table.rs # TODO #################### nested & err
+rs/tests/test_table.rs # TODO (2) nested & err
 rs/tests/test_tclass.rs
 rs/tests/test_field.rs
 rs/tests/test_uxf.rs # TODO more
 rs/Cargo.toml
 rs/README.md
-# TODO add optional serde support
 # TODO port tlm to use rust uxf
 # IDEA: noncopy nonowned versions: UxfBuf ValueBuf ... FieldBuf
 

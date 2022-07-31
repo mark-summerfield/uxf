@@ -5,9 +5,9 @@
 // t_list_err() test.
 
 use anyhow::{bail, Result};
-use std::fmt;
+use std::{rc::Rc, fmt};
 
-pub type OnEventFn = Box<dyn Fn(&Event) -> Result<()>>;
+pub type OnEventFn = Rc<dyn Fn(&Event) -> Result<()>>;
 
 pub fn fatal(code: i16, message: &str) -> Result<()> {
     bail!(Event::new(EventKind::Fatal, code, message))

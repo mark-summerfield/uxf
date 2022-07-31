@@ -6,7 +6,6 @@
 use crate::constants::*;
 use crate::util::escape;
 use crate::value::bytes_to_uxf;
-use anyhow::{bail, Result};
 use chrono::prelude::*;
 use std::fmt;
 
@@ -39,39 +38,41 @@ impl Key {
         matches!(self, Key::Str(_))
     }
 
-    /// Returns `Ok(&Vec<u8>)` if `Value::Bytes`; otherwise returns `Err`.
-    pub fn as_bytes(&self) -> Result<&Vec<u8>> {
+    /// Returns `Some(&Vec<u8>)` if `Value::Bytes`; otherwise returns
+    /// `None`.
+    pub fn as_bytes(&self) -> Option<&Vec<u8>> {
         if let Key::Bytes(value) = self {
-            Ok(value)
+            Some(value)
         } else {
-            bail!("non-bytes Key")
+            None
         }
     }
 
-    /// Returns `Ok(NaiveDate)` if `Value::Date`; otherwise returns `Err`.
-    pub fn as_date(&self) -> Result<NaiveDate> {
+    /// Returns `Some(NaiveDate)` if `Value::Date`; otherwise returns
+    /// `None`.
+    pub fn as_date(&self) -> Option<NaiveDate> {
         if let Key::Date(value) = self {
-            Ok(*value)
+            Some(*value)
         } else {
-            bail!("non-date Key")
+            None
         }
     }
 
-    /// Returns `Ok(i64)` if `Key::Int`; otherwise returns `Err`.
-    pub fn as_int(&self) -> Result<i64> {
+    /// Returns `Some(i64)` if `Key::Int`; otherwise returns `None`.
+    pub fn as_int(&self) -> Option<i64> {
         if let Key::Int(value) = self {
-            Ok(*value)
+            Some(*value)
         } else {
-            bail!("non-int Key")
+            None
         }
     }
 
-    /// Returns `Ok(&str)` if `Key::Str`; otherwise returns `Err`.
-    pub fn as_str(&self) -> Result<&str> {
+    /// Returns `Some(&str)` if `Key::Str`; otherwise returns `None`.
+    pub fn as_str(&self) -> Option<&str> {
         if let Key::Str(value) = self {
-            Ok(value)
+            Some(value)
         } else {
-            bail!("non-str Key")
+            None
         }
     }
 }

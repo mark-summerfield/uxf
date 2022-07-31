@@ -103,7 +103,7 @@ mod tests {
         let mut uxo = Uxf::new(
             "MyUXF",
             "No comment",
-            Some(Box::new({
+            Some(Rc::new({
                 let events = Rc::clone(&events);
                 move |event| {
                     let mut events = events.borrow_mut();
@@ -148,7 +148,7 @@ mod tests {
         // using custom on_event() handler that accumulates events
         let events = Rc::new(RefCell::new(Vec::<Event>::new()));
         assert!(&events.borrow().is_empty());
-        let mut uxo = Uxf::new_on_event(Box::new({
+        let mut uxo = Uxf::new_on_event(Rc::new({
             let events = Rc::clone(&events);
             move |event| {
                 let mut events = events.borrow_mut();

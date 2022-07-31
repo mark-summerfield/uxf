@@ -263,7 +263,9 @@ impl Value {
 
     /// Iterates over this value and if it is a collection over every
     /// contained value, recursively, calling visitor() once for every
-    /// value.
+    /// value. List values and Table rows (and values within rows) are
+    /// visited in order; Map items are visited in key order, key, then
+    /// value, key, then value, etc.
     pub fn visit(&self, visitor: Visitor) {
         (Rc::clone(&visitor))(self);
         match self {
@@ -273,10 +275,12 @@ impl Value {
                 }
             }
             Value::Map(m) => {
-                for (key, value) in m.iter() {
+                let mut keys: Vec<&Key> = m.inner().keys().collect();
+                keys.sort_unstable();
+                for key in keys {
                     let key_value = Value::from(key.clone());
                     key_value.visit(Rc::clone(&visitor));
-                    value.visit(Rc::clone(&visitor));
+                    m.get(key).unwrap().visit(Rc::clone(&visitor));
                 }
             }
             Value::Table(t) => {

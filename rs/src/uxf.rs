@@ -9,7 +9,7 @@ use crate::tclass::TClass;
 use crate::util::escape;
 use crate::value::Value;
 use anyhow::{bail, Result};
-use std::{collections::HashMap, fmt};
+use std::{collections::HashMap, fmt, rc::Rc};
 
 pub struct Uxf {
     custom: String,
@@ -37,7 +37,7 @@ impl Uxf {
             tclass_for_ttype: HashMap::new(),
             import_index_for_ttype: HashMap::new(),
             imports: vec![],
-            on_event: on_event.unwrap_or_else(|| Box::new(event::on_event)),
+            on_event: on_event.unwrap_or_else(|| Rc::new(event::on_event)),
         }
     }
 
@@ -105,14 +105,25 @@ impl Uxf {
         Ok(())
     }
 
+    /// Returns the text of a valid UXF file using the default human
+    /// readable `Format` options and using the default `on_event` event
+    /// handler.
+    /// Use `to_string()` for compact output if human readability isn't
+    /// needed.
+    /// This is a convenience wrapper for
+    /// `to_string_options(&Format::default(), None)`
+    pub fn to_str(&self) -> Result<()> {
+        self.to_string_options(&Format::default(), None)
+    }
+
     /// Returns the text of a valid UXF file using the given `Format`
     /// options (or use `Format::default()` for the human readable defaults)
     /// and using the default `on_event` event handler.
     /// Use `to_string()` for compact output if human readability isn't
     /// needed.
+    /// This is a convenience wrapper for `to_string_options(&format, None)`
     pub fn to_string_format(&self, format: &Format) -> Result<()> {
-        // TODO writer (in addition to Display/to_string()
-        bail!("TODO: to_string_options") // TODO
+        self.to_string_options(format, None)
     }
 
     /// Returns the text of a valid UXF file using the given `Format`
@@ -142,7 +153,7 @@ impl Default for Uxf {
             tclass_for_ttype: HashMap::new(),
             import_index_for_ttype: HashMap::new(),
             imports: vec![],
-            on_event: Box::new(event::on_event),
+            on_event: Rc::new(event::on_event),
         }
     }
 }
@@ -198,14 +209,10 @@ impl fmt::Display for Uxf {
 /// the file's text is read.
 /// Then in either case the UXF text is parsed into a `Uxf` object if
 /// possible, using the default `on_event` event handler.
+/// This is just a convenience wrapper for
+/// `parse_options(uxt_or_filename, false, false, None)`
 pub fn parse(uxt_or_filename: &str) -> Result<Uxf> {
-    let uxt = if !uxt_or_filename.contains('\n') {
-        read_file(uxt_or_filename)?
-    } else {
-        uxt_or_filename
-    };
-    // TODO parser/reader:
-    bail!("TODO: parse") // TODO
+    parse_options(uxt_or_filename, false, false, None)
 }
 
 /// If `uxt_or_filename`' contains '\n` it is taken to be a UXF file
@@ -223,8 +230,9 @@ pub fn parse_options(
     replace_imports: bool,
     on_event: Option<OnEventFn>,
 ) -> Result<Uxf> {
+    let on_event = on_event.unwrap_or_else(|| Rc::new(event::on_event));
     let uxt = if !uxt_or_filename.contains('\n') {
-        read_file(uxt_or_filename)?
+        read_file(uxt_or_filename, Rc::clone(&on_event))?
     } else {
         uxt_or_filename
     };
@@ -232,7 +240,7 @@ pub fn parse_options(
     bail!("TODO: from_str_options") // TODO
 }
 
-fn read_file(filename: &str) -> Result<&str> {
+fn read_file(filename: &str, on_event: OnEventFn) -> Result<&str> {
     if filename.ends_with(".gz") {
         // TODO
     } else {
