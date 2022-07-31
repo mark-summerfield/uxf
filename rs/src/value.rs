@@ -8,7 +8,6 @@ use crate::map::Map;
 use crate::table::Table;
 use crate::tclass::TClass;
 use crate::util::escape;
-use anyhow::{bail, Result};
 use chrono::prelude::*;
 use std::fmt::Write as _;
 use std::{cell::RefCell, fmt, rc::Rc};
@@ -121,121 +120,125 @@ impl Value {
         matches!(self, Value::Table(_))
     }
 
-    /// Returns `Ok(bool)` if `Value::Bool`; otherwise returns `Err`.
-    pub fn as_bool(&self) -> Result<bool> {
+    /// Returns `Some(bool)` if `Value::Bool`; otherwise returns `None`.
+    pub fn as_bool(&self) -> Option<bool> {
         if let Value::Bool(value) = self {
-            Ok(*value)
+            Some(*value)
         } else {
-            bail!("non-bool Value")
+            None
         }
     }
 
-    /// Returns `Ok(&Vec<u8>)` if `Value::Bytes`; otherwise returns `Err`.
-    pub fn as_bytes(&self) -> Result<&Vec<u8>> {
+    /// Returns `Some(&Vec<u8>)` if `Value::Bytes`; otherwise returns
+    /// None`.
+    pub fn as_bytes(&self) -> Option<&Vec<u8>> {
         if let Value::Bytes(value) = self {
-            Ok(value)
+            Some(value)
         } else {
-            bail!("non-bytes Value")
+            None
         }
     }
 
-    /// Returns `Ok(NaiveDate)` if `Value::Date`; otherwise returns `Err`.
-    pub fn as_date(&self) -> Result<NaiveDate> {
+    /// Returns `Some(NaiveDate)` if `Value::Date`; otherwise returns
+    /// `None`.
+    pub fn as_date(&self) -> Option<NaiveDate> {
         if let Value::Date(value) = self {
-            Ok(*value)
+            Some(*value)
         } else {
-            bail!("non-date Value")
+            None
         }
     }
 
-    /// Returns `Ok(NaiveDateTime)` if `Value::DateTime`; otherwise returns
-    /// `Err`.
-    pub fn as_datetime(&self) -> Result<NaiveDateTime> {
+    /// Returns `Some(NaiveDateTime)` if `Value::DateTime`; otherwise
+    /// returns `None`.
+    pub fn as_datetime(&self) -> Option<NaiveDateTime> {
         if let Value::DateTime(value) = self {
-            Ok(*value)
+            Some(*value)
         } else {
-            bail!("non-datetime Value")
+            None
         }
     }
 
-    /// Returns `Ok(i64)` if `Value::Int`; otherwise returns `Err`.
-    pub fn as_int(&self) -> Result<i64> {
+    /// Returns `Some(i64)` if `Value::Int`; otherwise returns `None`.
+    pub fn as_int(&self) -> Option<i64> {
         if let Value::Int(value) = self {
-            Ok(*value)
+            Some(*value)
         } else {
-            bail!("non-int Value")
+            None
         }
     }
 
-    /// Returns `Ok(&List)` if `Value::List`; otherwise returns `Err`.
-    pub fn as_list(&self) -> Result<&List> {
+    /// Returns `Some(&List)` if `Value::List`; otherwise returns `None`.
+    pub fn as_list(&self) -> Option<&List> {
         if let Value::List(value) = self {
-            Ok(value)
+            Some(value)
         } else {
-            bail!("non-list Value")
+            None
         }
     }
 
-    /// Returns `Ok(&mut List)` if `Value::List`; otherwise returns `Err`.
-    pub fn as_list_mut(&mut self) -> Result<&mut List> {
+    /// Returns `Some(&mut List)` if `Value::List`; otherwise returns
+    /// `None`.
+    pub fn as_list_mut(&mut self) -> Option<&mut List> {
         if let Value::List(value) = self {
-            Ok(value)
+            Some(value)
         } else {
-            bail!("non-list Value")
+            None
         }
     }
 
-    /// Returns `Ok(&Map)` if `Value::Map`; otherwise returns `Err`.
-    pub fn as_map(&self) -> Result<&Map> {
+    /// Returns `Some(&Map)` if `Value::Map`; otherwise returns `None`.
+    pub fn as_map(&self) -> Option<&Map> {
         if let Value::Map(value) = self {
-            Ok(value)
+            Some(value)
         } else {
-            bail!("non-map Value")
+            None
         }
     }
 
-    /// Returns `Ok(&mut Map)` if `Value::Map`; otherwise returns `Err`.
-    pub fn as_map_mut(&mut self) -> Result<&mut Map> {
+    /// Returns `Some(&mut Map)` if `Value::Map`; otherwise returns `None`.
+    pub fn as_map_mut(&mut self) -> Option<&mut Map> {
         if let Value::Map(value) = self {
-            Ok(value)
+            Some(value)
         } else {
-            bail!("non-map Value")
+            None
         }
     }
 
-    /// Returns `Ok(f64)` if `Value::Real`; otherwise returns `Err`.
-    pub fn as_real(&self) -> Result<f64> {
+    /// Returns `Some(f64)` if `Value::Real`; otherwise returns `None`.
+    pub fn as_real(&self) -> Option<f64> {
         if let Value::Real(value) = self {
-            Ok(*value)
+            Some(*value)
         } else {
-            bail!("non-real Value")
+            None
         }
     }
 
-    /// Returns `Ok(&str)` if `Value::Str`; otherwise returns `Err`.
-    pub fn as_str(&self) -> Result<&str> {
+    /// Returns `Some(&str)` if `Value::Str`; otherwise returns `None`.
+    pub fn as_str(&self) -> Option<&str> {
         if let Value::Str(value) = self {
-            Ok(value)
+            Some(value)
         } else {
-            bail!("non-str Value")
+            None
         }
     }
 
-    /// Returns `Ok(&Table)` if `Value::Table`; otherwise returns `Err`.
-    pub fn as_table(&self) -> Result<&Table> {
+    /// Returns `Some(&Table)` if `Value::Table`; otherwise returns `None`.
+    pub fn as_table(&self) -> Option<&Table> {
         if let Value::Table(value) = self {
-            Ok(value)
+            Some(value)
         } else {
-            bail!("non-table Value")
+            None
         }
     }
 
-    /// Returns `Ok(&mut Table)` if `Value::Table`; otherwise returns `Err`.
-    pub fn as_table_mut(&mut self) -> Result<&mut Table> {
+    /// Returns `Some(&mut Table)` if `Value::Table`; otherwise returns
+    /// `None`.
+    pub fn as_table_mut(&mut self) -> Option<&mut Table> {
         if let Value::Table(value) = self {
-            Ok(value)
+            Some(value)
         } else {
-            bail!("non-table Value")
+            None
         }
     }
 
@@ -294,7 +297,7 @@ impl Value {
         self.visit({
             let tclasses = Rc::clone(&tclasses);
             Rc::new(move |value: &Value| {
-                if let Ok(table) = value.as_table() {
+                if let Some(table) = value.as_table() {
                     let mut tclasses = tclasses.borrow_mut();
                     tclasses.push(table.tclass().clone());
                 }

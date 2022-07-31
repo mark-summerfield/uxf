@@ -3,6 +3,7 @@
 
 use crate::constants::*;
 use crate::event::{self, Event, EventKind, OnEventFn};
+use crate::format::Format;
 use crate::list::List;
 use crate::tclass::TClass;
 use crate::util::escape;
@@ -104,8 +105,30 @@ impl Uxf {
         Ok(())
     }
 
-    // TODO parser/loader:
-    // pub fn from_str(&mut self, uxt: &str) -> Result<()>
+    /// Returns the text of a valid UXF file using the given `Format`
+    /// options (or use `Format::default()` for the human readable defaults)
+    /// and using the default `on_event` event handler.
+    /// Use `to_string()` for compact output if human readability isn't
+    /// needed.
+    pub fn to_string_format(&self, format: &Format) -> Result<()> {
+        // TODO writer (in addition to Display/to_string()
+        bail!("TODO: to_string_options") // TODO
+    }
+
+    /// Returns the text of a valid UXF file using the given `Format`
+    /// options (or use `Format::default()` for the human readable defaults)
+    /// and using the given `on_event` event handler (or the default
+    /// handler if `None`).
+    /// Use `to_string()` for compact output if neither human readability
+    /// nor custom event handling is needed.
+    pub fn to_string_options(
+        &self,
+        format: &Format,
+        on_event: Option<OnEventFn>,
+    ) -> Result<()> {
+        // TODO writer (in addition to Display/to_string()
+        bail!("TODO: to_string_options") // TODO
+    }
 }
 
 impl Default for Uxf {
@@ -135,7 +158,9 @@ impl fmt::Debug for Uxf {
 }
 
 impl fmt::Display for Uxf {
-    /// Provides a .to_string() that returns the text of a valid UXF file
+    /// Provides a .to_string() that returns the text of a valid UXF file.
+    /// Use `to_string_options(&Format, Option<OnEventFn>)` to control
+    /// output formatting and event handling.
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         const NL: &str = "\n";
         let mut parts = vec![format!("uxf {}", UXF_VERSION)];
@@ -165,4 +190,53 @@ impl fmt::Display for Uxf {
         parts.push(NL.to_string());
         write!(f, "{}", parts.join(""))
     }
+}
+
+/// If `uxt_or_filename`' contains '\n` it is taken to be a UXF file
+/// in a string; otherwise it is taken to be the name of file (which
+/// may be gzipped if the filename ends `.gz`). In the latter case,
+/// the file's text is read.
+/// Then in either case the UXF text is parsed into a `Uxf` object if
+/// possible, using the default `on_event` event handler.
+pub fn parse(uxt_or_filename: &str) -> Result<Uxf> {
+    let uxt = if !uxt_or_filename.contains('\n') {
+        read_file(uxt_or_filename)?
+    } else {
+        uxt_or_filename
+    };
+    // TODO parser/reader:
+    bail!("TODO: parse") // TODO
+}
+
+/// If `uxt_or_filename`' contains '\n` it is taken to be a UXF file
+/// in a string; otherwise it is taken to be the name of file (which
+/// may be gzipped if the filename ends `.gz`). In the latter case,
+/// the file's text is read.
+/// Then in either case the UXF text is parsed into a `Uxf` object if
+/// possible, dropping unused _ttypes_ if `drop_unused` is `true` and
+/// replacing imports with the _ttypes_ they import if
+/// `replace_imports` is `true` and using the given `filename` for
+/// events (use `""` or `"-"`for `stdin`) and using `on_event` event
+/// handler (or the default handler if `None`).
+pub fn parse_options(
+    &mut self,
+    uxt_or_filename: &str,
+    drop_unused: bool,
+    replace_imports: bool,
+    on_event: Option<OnEventFn>,
+) -> Result<Uxf> {
+    let uxt = if !uxt_or_filename.contains('\n') {
+        read_file(uxt_or_filename)?
+    } else {
+        uxt_or_filename
+    };
+    // TODO parser/reader:
+    bail!("TODO: from_str_options") // TODO
+}
+
+fn read_file(filename: &str) -> Result<String> {
+    if filename.ends_with(".gz") {
+    } else {
+    }
+    Ok("uxf 1.0\n[]\n".to_string())
 }

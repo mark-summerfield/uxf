@@ -74,7 +74,7 @@ def _validate_format(name, value): # If invalid we return the valid default
 
 Format = editabletuple.editableobject(
     'Format', 'indent', 'wrap_width', 'realdp', 'max_short_len',
-    defaults=('  ', 96, None, 10, 32), validator=_validate_format,
+    defaults=('  ', 96, None, 32), validator=_validate_format,
     doc='''Specifies various aspects of how a UXF file is dumped to file or
 to a string.
 `indent` defaults to 2 spaces and may be an empty string or up to 32 spaces
