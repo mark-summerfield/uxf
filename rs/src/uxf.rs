@@ -9,6 +9,7 @@ use crate::tclass::TClass;
 use crate::util::escape;
 use crate::value::Value;
 use anyhow::{bail, Result};
+use bitflags::bitflags;
 use std::{collections::HashMap, fmt, rc::Rc};
 
 pub struct Uxf {
@@ -140,6 +141,38 @@ impl Uxf {
         // TODO writer (in addition to Display/to_string()
         bail!("TODO: to_string_options") // TODO
     }
+
+    /// Returns `true` if this `Uxf` and the `other` `Uxf` have the same
+    /// values (and for any contained lists or tables, in the same order),
+    /// with the same imports and _ttypes_.
+    /// This is a convenience method for
+    /// `is_equivalent(other, CompareFlags::EQUAL)`.
+    pub fn is_equal(&self, other: &Uxf) -> bool {
+        self.is_equivalent(other, &CompareFlags::EQUAL)
+    }
+
+    /// Returns `true` if this `Uxf` and the `other` `Uxf` have the same
+    /// values (and for any contained lists or tables, in the same order),
+    /// and with the same imports and _ttypes_ if `flags` is `EQUAL`.
+    /// Set `flags` to `EQUIVALENT` if comment differences don't matter and
+    /// if imports and _ttype_ definitions don't matter except that both
+    /// define or import and use the same _ttypes_.
+    /// See also `is_equal()`.
+    pub fn is_equivalent(&self, other: &Uxf, flags: &CompareFlags) -> bool {
+        // TODO compare
+        false
+    }
+}
+
+bitflags! {
+    pub struct CompareFlags: u8 {
+        const EQUAL = 0b000;
+        const IGNORE_COMMENTS = 0b001;
+        const IGNORE_UNUSED_TTYPES = 0b010;
+        const IGNORE_IMPORTS = 0b100;
+        const EQUIVALENT = Self::IGNORE_COMMENTS.bits |
+            Self::IGNORE_UNUSED_TTYPES.bits | Self::IGNORE_IMPORTS.bits;
+    }
 }
 
 impl Default for Uxf {
@@ -210,9 +243,9 @@ impl fmt::Display for Uxf {
 /// Then in either case the UXF text is parsed into a `Uxf` object if
 /// possible, using the default `on_event` event handler.
 /// This is just a convenience wrapper for
-/// `parse_options(uxt_or_filename, false, false, None)`
+/// `parse_options(uxt_or_filename, &ParseFlags::AS_IS, None)`
 pub fn parse(uxt_or_filename: &str) -> Result<Uxf> {
-    parse_options(uxt_or_filename, false, false, None)
+    parse_options(uxt_or_filename, &ParseFlags::AS_IS, None)
 }
 
 /// If `uxt_or_filename`' contains '\n` it is taken to be a UXF file
@@ -220,14 +253,13 @@ pub fn parse(uxt_or_filename: &str) -> Result<Uxf> {
 /// may be gzipped if the filename ends `.gz`). In the latter case,
 /// the file's text is read.
 /// Then in either case the UXF text is parsed into a `Uxf` object if
-/// possible, dropping unused _ttypes_ if `drop_unused` is `true` and
-/// replacing imports with the _ttypes_ they import if
-/// `replace_imports` is `true` and using the given `on_event` event
-/// handler (or the default handler if `None`).
+/// possible, dropping unused _ttypes_ if `flags` is `DROP_UNUSED_TTYPES` or
+/// `AS_STANDALONE` and replacing imports with the _ttypes_ they import if
+/// `flags` is `REPLACE_IMPORTS` or `AS_STANDALONE` and using the given
+/// `on_event` event handler (or the default handler if `None`).
 pub fn parse_options(
     uxt_or_filename: &str,
-    drop_unused: bool,
-    replace_imports: bool,
+    flags: &ParseFlags,
     on_event: Option<OnEventFn>,
 ) -> Result<Uxf> {
     let on_event = on_event.unwrap_or_else(|| Rc::new(event::on_event));
@@ -238,6 +270,16 @@ pub fn parse_options(
     };
     // TODO parser/reader:
     bail!("TODO: from_str_options") // TODO
+}
+
+bitflags! {
+    pub struct ParseFlags: u8 {
+        const AS_IS = 0b00;
+        const DROP_UNUSED_TTYPES = 0b01;
+        const REPLACE_IMPORTS = 0b10;
+        const AS_STANDALONE = Self::DROP_UNUSED_TTYPES.bits |
+            Self::REPLACE_IMPORTS.bits;
+    }
 }
 
 fn read_file(filename: &str, on_event: OnEventFn) -> Result<&str> {
