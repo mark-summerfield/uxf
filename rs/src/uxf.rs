@@ -8,7 +8,7 @@ use crate::list::List;
 use crate::tclass::TClass;
 use crate::util::escape;
 use crate::value::Value;
-use anyhow::Result;
+use anyhow::{bail, Result};
 use std::{collections::HashMap, fmt};
 
 pub struct Uxf {
@@ -215,11 +215,9 @@ pub fn parse(uxt_or_filename: &str) -> Result<Uxf> {
 /// Then in either case the UXF text is parsed into a `Uxf` object if
 /// possible, dropping unused _ttypes_ if `drop_unused` is `true` and
 /// replacing imports with the _ttypes_ they import if
-/// `replace_imports` is `true` and using the given `filename` for
-/// events (use `""` or `"-"`for `stdin`) and using `on_event` event
+/// `replace_imports` is `true` and using the given `on_event` event
 /// handler (or the default handler if `None`).
 pub fn parse_options(
-    &mut self,
     uxt_or_filename: &str,
     drop_unused: bool,
     replace_imports: bool,
@@ -234,9 +232,11 @@ pub fn parse_options(
     bail!("TODO: from_str_options") // TODO
 }
 
-fn read_file(filename: &str) -> Result<String> {
+fn read_file(filename: &str) -> Result<&str> {
     if filename.ends_with(".gz") {
+        // TODO
     } else {
+        // TODO
     }
-    Ok("uxf 1.0\n[]\n".to_string())
+    Ok("uxf 1.0\n[]\n")
 }
