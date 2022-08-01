@@ -154,12 +154,12 @@ impl Uxf {
 
     /// Returns `true` if this `Uxf` and the `other` `Uxf` have the same
     /// values (and for any contained lists or tables, in the same order),
-    /// and with the same imports and _ttypes_ if `flags` is `EQUAL`.
-    /// Set `flags` to `EQUIVALENT` if comment differences don't matter and
-    /// if imports and _ttype_ definitions don't matter except that both
+    /// and with the same imports and _ttypes_ if `compare` is `EQUAL`.
+    /// Set `compare` to `EQUIVALENT` if comment differences don't matter
+    /// and if imports and _ttype_ definitions don't matter except that both
     /// define or import and use the same _ttypes_.
     /// See also `is_equal()`.
-    pub fn is_equivalent(&self, other: &Uxf, flags: Compare) -> bool {
+    pub fn is_equivalent(&self, other: &Uxf, compare: Compare) -> bool {
         // TODO compare
         false
     }
@@ -244,9 +244,9 @@ impl fmt::Display for Uxf {
 /// Then in either case the UXF text is parsed into a `Uxf` object if
 /// possible, using the default `on_event` event handler.
 /// This is just a convenience wrapper for
-/// `parse_options(uxt_or_filename, ParseFlags::AS_IS, None)`
+/// `parse_options(uxt_or_filename, ParseOptions::AS_IS, None)`
 pub fn parse(uxt_or_filename: &str) -> Result<Uxf> {
-    parse_options(uxt_or_filename, ParseFlags::AS_IS, None)
+    parse_options(uxt_or_filename, ParseOptions::AS_IS, None)
 }
 
 /// If `uxt_or_filename`' contains '\n` it is taken to be a UXF file
@@ -254,13 +254,13 @@ pub fn parse(uxt_or_filename: &str) -> Result<Uxf> {
 /// may be gzipped if the filename ends `.gz`). In the latter case,
 /// the file's text is read.
 /// Then in either case the UXF text is parsed into a `Uxf` object if
-/// possible, dropping unused _ttypes_ if `flags` is `DROP_UNUSED_TTYPES` or
-/// `AS_STANDALONE` and replacing imports with the _ttypes_ they import if
-/// `flags` is `REPLACE_IMPORTS` or `AS_STANDALONE` and using the given
+/// possible, dropping unused _ttypes_ if `options` is `DROP_UNUSED_TTYPES`
+/// or `AS_STANDALONE` and replacing imports with the _ttypes_ they import
+/// if `options` is `REPLACE_IMPORTS` or `AS_STANDALONE` and using the given
 /// `on_event` event handler (or the default handler if `None`).
 pub fn parse_options(
     uxt_or_filename: &str,
-    flags: ParseFlags,
+    options: ParseOptions,
     on_event: Option<OnEventFn>,
 ) -> Result<Uxf> {
     let on_event = on_event.unwrap_or_else(|| Rc::new(event::on_event));
@@ -274,7 +274,7 @@ pub fn parse_options(
 }
 
 bitflags! {
-    pub struct ParseFlags: u8 {
+    pub struct ParseOptions: u8 {
         const AS_IS = 0b00;
         const DROP_UNUSED_TTYPES = 0b01;
         const REPLACE_IMPORTS = 0b10;
