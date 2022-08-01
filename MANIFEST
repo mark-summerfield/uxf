@@ -6,13 +6,13 @@ rs/src/map.rs
 rs/src/table.rs
 rs/src/tclass.rs
 rs/src/field.rs
-rs/src/uxf.rs # TODO (3) parse_options(); (4) to_string_options() (5) equal*
+rs/src/uxf.rs # TODO (3) equal* (4) parse_options() (5) to_string_options()
 rs/src/format.rs
 rs/src/util.rs
 rs/src/event.rs
 rs/src/constants.rs
-rs/src/parser.rs # TODO see (3) above
-rs/src/output.rs # TODO see (4) above
+rs/src/parser.rs # TODO see (4) above
+rs/src/output.rs # TODO see (5) above
 rs/src/test_utils.rs
 rs/tests/test_value.rs # TODO (1) visit()
 rs/tests/test_list.rs
