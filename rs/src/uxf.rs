@@ -12,6 +12,7 @@ use anyhow::{bail, Result};
 use bitflags::bitflags;
 use std::{collections::HashMap, fmt, rc::Rc};
 
+#[derive(Clone)]
 pub struct Uxf {
     custom: String,
     comment: String,
