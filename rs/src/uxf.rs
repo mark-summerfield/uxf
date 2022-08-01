@@ -146,9 +146,9 @@ impl Uxf {
     /// values (and for any contained lists or tables, in the same order),
     /// with the same imports and _ttypes_.
     /// This is a convenience method for
-    /// `is_equivalent(other, CompareFlags::EQUAL)`.
+    /// `is_equivalent(other, Compare::EQUAL)`.
     pub fn is_equal(&self, other: &Uxf) -> bool {
-        self.is_equivalent(other, &CompareFlags::EQUAL)
+        self.is_equivalent(other, Compare::EQUAL)
     }
 
     /// Returns `true` if this `Uxf` and the `other` `Uxf` have the same
@@ -158,14 +158,14 @@ impl Uxf {
     /// if imports and _ttype_ definitions don't matter except that both
     /// define or import and use the same _ttypes_.
     /// See also `is_equal()`.
-    pub fn is_equivalent(&self, other: &Uxf, flags: &CompareFlags) -> bool {
+    pub fn is_equivalent(&self, other: &Uxf, flags: Compare) -> bool {
         // TODO compare
         false
     }
 }
 
 bitflags! {
-    pub struct CompareFlags: u8 {
+    pub struct Compare: u8 {
         const EQUAL = 0b000;
         const IGNORE_COMMENTS = 0b001;
         const IGNORE_UNUSED_TTYPES = 0b010;
@@ -243,9 +243,9 @@ impl fmt::Display for Uxf {
 /// Then in either case the UXF text is parsed into a `Uxf` object if
 /// possible, using the default `on_event` event handler.
 /// This is just a convenience wrapper for
-/// `parse_options(uxt_or_filename, &ParseFlags::AS_IS, None)`
+/// `parse_options(uxt_or_filename, ParseFlags::AS_IS, None)`
 pub fn parse(uxt_or_filename: &str) -> Result<Uxf> {
-    parse_options(uxt_or_filename, &ParseFlags::AS_IS, None)
+    parse_options(uxt_or_filename, ParseFlags::AS_IS, None)
 }
 
 /// If `uxt_or_filename`' contains '\n` it is taken to be a UXF file
@@ -259,7 +259,7 @@ pub fn parse(uxt_or_filename: &str) -> Result<Uxf> {
 /// `on_event` event handler (or the default handler if `None`).
 pub fn parse_options(
     uxt_or_filename: &str,
-    flags: &ParseFlags,
+    flags: ParseFlags,
     on_event: Option<OnEventFn>,
 ) -> Result<Uxf> {
     let on_event = on_event.unwrap_or_else(|| Rc::new(event::on_event));
