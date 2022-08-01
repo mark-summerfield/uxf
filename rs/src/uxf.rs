@@ -142,6 +142,7 @@ impl Uxf {
         bail!("TODO: to_string_options") // TODO
     }
 
+    // TODO change to impl Eq
     /// Returns `true` if this `Uxf` and the `other` `Uxf` have the same
     /// values (and for any contained lists or tables, in the same order),
     /// with the same imports and _ttypes_.
