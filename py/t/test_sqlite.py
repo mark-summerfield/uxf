@@ -50,7 +50,7 @@ def check(total, ok, name, regression):
         os.remove(filename)
     if isinstance(uxo1.value, uxf.Table):
         uxo1.value = [uxo1.value]
-    # Our test SQLite converters can't handle Uxf custom strings or field
+    # Our simple SQLite converters can't handle Uxf custom strings or field
     # types. (All this could be done of course.)
     uxo1.custom = None
     tclasses = {}
@@ -59,16 +59,21 @@ def check(total, ok, name, regression):
         tclass = uxf.TClass(ttype, fields=fields, comment=tclass.comment)
         tclasses[ttype] = tclass
     uxo1.tclasses = tclasses
+    # NOTE I don't really know why normalizing is necessary.
+    # The only difference dumps() shows is in the comments & these are all
+    # correctly ignored.
+    uxo1 = uxf.loads(uxo1.dumps()) # normalize
     uxfconvert._uxf_to_sqlite(filename, uxo1.value)
     uxo2 = uxfconvert._sqlite_to_uxf(filename)
+    uxo2 = uxf.loads(uxo2.dumps()) # normalize
     total += 1
     if uxo1.is_equivalent(uxo2, uxf.Compare.EQUIVALENT):
         ok += 1
         if not regression:
             print(f'test_sqlite • {name} OK')
-    elif not regression:
-        print(f'test_sqlite • {name} FAIL')
-        uxo1.dump('/tmp/1.uxf');uxo2.dump('/tmp/2.uxf');raise SystemExit
+    else:
+        if not regression:
+            print(f'test_sqlite • {name} FAIL')
     with contextlib.suppress(FileNotFoundError):
         os.remove(filename)
     return total, ok

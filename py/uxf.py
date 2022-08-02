@@ -895,15 +895,10 @@ def _is_equivalent_value(avalue, bvalue, compare):
     avalue = _maybe_to_uxf_collection(avalue)
     bvalue = _maybe_to_uxf_collection(bvalue)
     if _is_uxf_collection(avalue) and _is_uxf_collection(bvalue):
-        #print(1, type(avalue), type(bvalue))#TODO
-        if not avalue.is_equivalent(bvalue, compare):
-            return False
+        return avalue.is_equivalent(bvalue, compare)
     elif isinstance(avalue, float) and isinstance(bvalue, float):
-        if not math.isclose(avalue, bvalue):
-            return False
-    #if avalue!=bvalue: print(3, type(avalue), type(bvalue))#, f'{avalue!r} != {bvalue!r}')#TODO
+        return math.isclose(avalue, bvalue)
     return avalue == bvalue
-
 
 
 def _maybe_to_uxf_collection(value):
