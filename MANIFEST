@@ -1,3 +1,4 @@
+# TODO document py == and is_equivalent() & pypi
 rs/src/lib.rs # add docs at the end
 rs/src/value.rs
 rs/src/key.rs
