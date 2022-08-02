@@ -50,6 +50,15 @@ def check(total, ok, name, regression):
         os.remove(filename)
     if isinstance(uxo1.value, uxf.Table):
         uxo1.value = [uxo1.value]
+    # Our test SQLite converters can't handle Uxf custom strings or field
+    # types. (All this could be done of course.)
+    uxo1.custom = None
+    tclasses = {}
+    for ttype, tclass in uxo1.tclasses.items():
+        fields = [field.name for field in tclass.fields]
+        tclass = uxf.TClass(ttype, fields=fields, comment=tclass.comment)
+        tclasses[ttype] = tclass
+    uxo1.tclasses = tclasses
     uxfconvert._uxf_to_sqlite(filename, uxo1.value)
     uxo2 = uxfconvert._sqlite_to_uxf(filename)
     total += 1
@@ -57,8 +66,9 @@ def check(total, ok, name, regression):
         ok += 1
         if not regression:
             print(f'test_sqlite • {name} OK')
-    else:
+    elif not regression:
         print(f'test_sqlite • {name} FAIL')
+        uxo1.dump('/tmp/1.uxf');uxo2.dump('/tmp/2.uxf');raise SystemExit
     with contextlib.suppress(FileNotFoundError):
         os.remove(filename)
     return total, ok

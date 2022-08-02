@@ -894,18 +894,14 @@ class List(collections.UserList):
 def _is_equivalent_value(avalue, bvalue, compare):
     avalue = _maybe_to_uxf_collection(avalue)
     bvalue = _maybe_to_uxf_collection(bvalue)
-    if _is_uxf_collection(avalue):
-        if _is_uxf_collection(bvalue):
-            if not avalue.is_equivalent(bvalue, compare):
-                return False
-        else:
-            return False # collection vs scalar
-    elif isinstance(avalue, float):
-        if isinstance(bvalue, float):
-            if not math.isclose(avalue, bvalue):
-                return False
-        else:
-            return False # float vs non-float
+    if _is_uxf_collection(avalue) and _is_uxf_collection(bvalue):
+        #print(1, type(avalue), type(bvalue))#TODO
+        if not avalue.is_equivalent(bvalue, compare):
+            return False
+    elif isinstance(avalue, float) and isinstance(bvalue, float):
+        if not math.isclose(avalue, bvalue):
+            return False
+    #if avalue!=bvalue: print(3, type(avalue), type(bvalue))#, f'{avalue!r} != {bvalue!r}')#TODO
     return avalue == bvalue
 
 
@@ -1540,9 +1536,10 @@ class Table:
             return False
         if len(self.records) != len(other.records):
             return False
-        for avalue, bvalue in zip(self.records, other.records):
-            if not _is_equivalent_value(avalue, bvalue, compare):
-                return False
+        for arecord, brecord in zip(self.records, other.records):
+            for avalue, bvalue in zip(arecord, brecord):
+                if not _is_equivalent_value(avalue, bvalue, compare):
+                    return False
         return True
 
 
@@ -1558,9 +1555,10 @@ class Table:
             return False
         if len(self.records) != len(other.records):
             return False
-        for avalue, bvalue in zip(self.records, other.records):
-            if not _is_equivalent_value(avalue, bvalue, Compare.EXACT):
-                return False
+        for arecord, brecord in zip(self.records, other.records):
+            for avalue, bvalue in zip(arecord, brecord):
+                if not _is_equivalent_value(avalue, bvalue, Compare.EXACT):
+                    return False
         return True
 
 
