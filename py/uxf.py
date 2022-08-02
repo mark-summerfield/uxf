@@ -10,6 +10,7 @@ import enum
 import functools
 import gzip
 import io
+import math
 import os
 import pathlib
 import sys
@@ -18,8 +19,7 @@ from xml.sax.saxutils import escape, unescape
 
 import editabletuple
 
-
-__version__ = '2.0.3' # uxf module version
+__version__ = '2.1.0' # uxf module version
 VERSION = 1.0 # UXF file format version
 
 UTF8 = 'utf-8'
@@ -42,6 +42,15 @@ class Event(enum.Enum):
     REPAIR = enum.auto()
     ERROR = enum.auto()
     FATAL = enum.auto()
+
+
+@enum.unique
+class Compare(enum.Flag):
+    EXACT = 0
+    IGNORE_COMMENTS = enum.auto()
+    IGNORE_UNUSED_TTYPES = enum.auto()
+    IGNORE_IMPORTS = enum.auto()
+    EQUIVALENT = (IGNORE_COMMENTS | IGNORE_UNUSED_TTYPES | IGNORE_IMPORTS)
 
 
 def on_event(event: Event, code: int, message: str, *, filename='-',
@@ -204,8 +213,57 @@ class Uxf:
             replace_imports=replace_imports)
         self.value = value
         self.custom = custom
-        self.tclasses = tclasses
+        self._tclasses = tclasses
+        self.imports = imports
         self.comment = comment
+
+
+    def is_equivalent(self, other, compare=Compare.EXACT):
+        '''Returns True if this Uxf is equivalent to the other Uxf;
+        otherwise returns False.
+        Use == or != for exact comparisons.
+        Use this to ignore differences in comments Compare.IGNORE_COMMENTS,
+        or to ignore differences in imports (e.g., if one has a ttype
+        defined and the other the same ttype imported)
+        Compare.IGNORE_IMPORTS, or to ignore differences in unused ttypes,
+        (e.g., if one defines ir imports a ttype that isn't used and the
+        other doesn't) Compare.IGNORE_UNUSED_TTYPES. To ignore any two of
+        these differences combine with | and to ignore all of them use
+        Compare.EQUIVALENT.
+        '''
+        if not isinstance(other, self.__class__):
+            return False
+        if self.custom != other.custom:
+            return False
+        if (Compare.IGNORE_COMMENTS not in compare and
+                self.comment != other.comment):
+            return False
+        if (Compare.IGNORE_IMPORTS not in compare and
+                self.imports != other.imports):
+            return False
+        if (Compare.IGNORE_UNUSED_TTYPES not in compare and
+                self.tclasses != other.tclasses):
+            # This means that we only compare actually used ttypes when
+            # comparing any tables.
+            return False
+        return self.value.is_equivalent(other.value, compare)
+
+
+    def __eq__(self, other):
+        '''Returns True if this Uxf is the same as the other Uxf; otherwise
+        returns False.
+        See also is_equivalent()'''
+        if not isinstance(other, self.__class__):
+            return False
+        if self.custom != other.custom:
+            return False
+        if self.comment != other.comment:
+            return False
+        if self.imports != other.imports:
+            return False
+        if self.tclasses != other.tclasses:
+            return False
+        return self.value == other.value # These are Lists, Maps, or Tables
 
 
 def load(filename_or_filelike, *, on_event=on_event, drop_unused=False,
@@ -781,12 +839,84 @@ class List(collections.UserList):
 
     @property
     def vtype(self):
+        if self._vtype == '':
+            self._vtype = None
         return self._vtype
 
 
     @property
     def comment(self):
+        if self._comment == '':
+            self._comment = None
         return self._comment
+
+
+    def is_equivalent(self, other, compare=Compare.EXACT):
+        '''Returns True if this List is equivalent to the other List;
+        otherwise returns False.
+        Use == or != for exact comparisons.
+        Use this to ignore differences in comments Compare.IGNORE_COMMENTS
+        or Compare.EQUIVALENT.
+        '''
+        if not isinstance(other, self.__class__):
+            return False
+        if self.vtype != other.vtype:
+            return False
+        if (Compare.IGNORE_COMMENTS not in compare and
+                self.comment != other.comment):
+            return False
+        if len(self.data) != len(other.data):
+            return False
+        for avalue, bvalue in zip(self.data, other.data):
+            if not _is_equivalent_value(avalue, bvalue, compare):
+                return False
+        return True
+
+
+    def __eq__(self, other):
+        '''Returns True if this List is the same as the other List;
+        otherwise returns False.
+        See also is_equivalent()'''
+        if not isinstance(other, self.__class__):
+            return False
+        if self.vtype != other.vtype:
+            return False
+        if self.comment != other.comment:
+            return False
+        if len(self.data) != len(other.data):
+            return False
+        for avalue, bvalue in zip(self.data, other.data):
+            if not _is_equivalent_value(avalue, bvalue, Compare.EXACT):
+                return False
+        return True
+
+
+def _is_equivalent_value(avalue, bvalue, compare):
+    avalue = _maybe_to_uxf_collection(avalue)
+    bvalue = _maybe_to_uxf_collection(bvalue)
+    if _is_uxf_collection(avalue):
+        if _is_uxf_collection(bvalue):
+            if not avalue.is_equivalent(bvalue, compare):
+                return False
+        else:
+            return False # collection vs scalar
+    elif isinstance(avalue, float):
+        if isinstance(bvalue, float):
+            if not math.isclose(avalue, bvalue):
+                return False
+        else:
+            return False # float vs non-float
+    return avalue == bvalue
+
+
+
+def _maybe_to_uxf_collection(value):
+    if isinstance(value, dict):
+        return Map(value)
+    elif isinstance(value, (set, frozenset, tuple, collections.deque,
+                            list)):
+        return List(value)
+    return value
 
 
 class Map(collections.UserDict):
@@ -817,16 +947,22 @@ class Map(collections.UserDict):
 
     @property
     def ktype(self):
+        if self._ktype == '':
+            self._ktype = None
         return self._ktype
 
 
     @property
     def vtype(self):
+        if self._vtype == '':
+            self._vtype = None
         return self._vtype
 
 
     @property
     def comment(self):
+        if self._comment == '':
+            self._comment = None
         return self._comment
 
 
@@ -855,6 +991,58 @@ class Map(collections.UserDict):
     @property
     def _next_is_key(self):
         return self._pending_key is _MISSING
+
+
+    def is_equivalent(self, other, compare=Compare.EXACT):
+        '''Returns True if this Map is equivalent to the other Map;
+        otherwise returns False.
+        Use == or != for exact comparisons.
+        Use this to ignore differences in comments Compare.IGNORE_COMMENTS
+        or Compare.EQUIVALENT.
+        '''
+        if not isinstance(other, self.__class__):
+            return False
+        if self.ktype != other.ktype:
+            return False
+        if self.vtype != other.vtype:
+            return False
+        if (Compare.IGNORE_COMMENTS not in compare and
+                self.comment != other.comment):
+            return False
+        if len(self.data) != len(other.data):
+            return False
+        for ((akey, avalue), (bkey, bvalue)) in zip(
+                sorted(self.data.items(), key=lambda x: str(x[0])),
+                sorted(other.data.items(), key=lambda x: str(x[0]))):
+            if akey != bkey:
+                return False
+            if not _is_equivalent_value(avalue, bvalue, compare):
+                return False
+        return True
+
+
+    def __eq__(self, other):
+        '''Returns True if this Map is the same as the other Map; otherwise
+        returns False.
+        See also is_equivalent()'''
+        if not isinstance(other, self.__class__):
+            return False
+        if self.ktype != other.ktype:
+            return False
+        if self.vtype != other.vtype:
+            return False
+        if self.comment != other.comment:
+            return False
+        if len(self.data) != len(other.data):
+            return False
+        for ((akey, avalue), (bkey, bvalue)) in zip(
+                sorted(self.data.items(), key=lambda x: str(x[0])),
+                sorted(other.data.items(), key=lambda x: str(x[0]))):
+            if akey != bkey:
+                return False
+            if not _is_equivalent_value(avalue, bvalue, Compare.EXACT):
+                return False
+        return True
 
 
 def _check_ktype(ktype, callback=None):
@@ -950,6 +1138,8 @@ class TClass:
 
     @property
     def comment(self):
+        if self._comment == '':
+            self._comment = None
         return self._comment
 
     @property
@@ -962,19 +1152,25 @@ class TClass:
         return not bool(self.fields)
 
 
+    def is_equivalent(self, other, compare=Compare.EXACT):
+        if not isinstance(other, self.__class__):
+            return False
+        if self.ttype != other.ttype:
+            return False
+        if (Compare.IGNORE_COMMENTS not in compare and
+                self.comment != other.comment):
+            return False
+        return self.fields == other.fields
+
+
     def __eq__(self, other):
         if not isinstance(other, self.__class__):
             return False
-        uttype = self.ttype.upper()
-        uother = other.ttype.upper()
-        if uttype != uother:
+        if self.ttype != other.ttype:
             return False
-        if len(self.fields) != len(other.fields):
+        if self.comment != other.comment:
             return False
-        for f1, f2 in zip(self.fields, other.fields):
-            if f1 != f2:
-                return False
-        return True
+        return self.fields == other.fields
 
 
     def __lt__(self, other): # case-insensitive when possible
@@ -1017,6 +1213,8 @@ class TClassBuilder:
 
     @property
     def comment(self):
+        if self._comment == '':
+            self._comment = None
         return self._comment
 
 
@@ -1065,10 +1263,12 @@ class Field:
 
     @property
     def vtype(self):
+        if self._vtype == '':
+            self._vtype = None
         return self._vtype
 
 
-    def __eq__(self, other): # for testing
+    def __eq__(self, other):
         return self.name == other.name and self.vtype == other.vtype
 
 
@@ -1147,6 +1347,8 @@ class Table:
 
     @property
     def comment(self):
+        if self._comment == '':
+            self._comment = None
         return self._comment
 
 
@@ -1320,6 +1522,46 @@ class Table:
 
     def __len__(self):
         return len(self.records)
+
+
+    def is_equivalent(self, other, compare=Compare.EXACT):
+        '''Returns True if this Table is equivalent to the other Table;
+        otherwise returns False.
+        Use == or != for exact comparisons.
+        Use this to ignore differences in comments Compare.IGNORE_COMMENTS
+        or Compare.EQUIVALENT.
+        '''
+        if not isinstance(other, self.__class__):
+            return False
+        if self.tclass != other.tclass:
+            return False
+        if (Compare.IGNORE_COMMENTS not in compare and
+                self.comment != other.comment):
+            return False
+        if len(self.records) != len(other.records):
+            return False
+        for avalue, bvalue in zip(self.records, other.records):
+            if not _is_equivalent_value(avalue, bvalue, compare):
+                return False
+        return True
+
+
+    def __eq__(self, other):
+        '''Returns True if this Table is the same as the other Table;
+        otherwise returns False.
+        See also is_equivalent()'''
+        if not isinstance(other, self.__class__):
+            return False
+        if self.comment != other.comment:
+            return False
+        if self.tclass != other.tclass:
+            return False
+        if len(self.records) != len(other.records):
+            return False
+        for avalue, bvalue in zip(self.records, other.records):
+            if not _is_equivalent_value(avalue, bvalue, Compare.EXACT):
+                return False
+        return True
 
 
     def __str__(self):

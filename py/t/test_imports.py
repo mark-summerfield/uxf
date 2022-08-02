@@ -9,8 +9,6 @@ try:
     PATH = os.path.abspath(os.path.dirname(__file__))
     sys.path.append(os.path.abspath(os.path.join(PATH, '../')))
     import uxf
-    sys.path.append(os.path.abspath(os.path.join(PATH, '../eg/')))
-    import eq
     os.chdir(os.path.join(PATH, '../../testdata')) # move to test data
 finally:
     pass
@@ -43,7 +41,7 @@ def main():
         uxo2 = uxf.load('t63r.uxf', on_event=on_event)
         ok += 1
         total += 1
-        if eq.eq(uxo1, uxo2):
+        if uxo1 == uxo2:
             ok += 1
     except uxf.Error as err:
         if not regression:
@@ -116,7 +114,7 @@ def main():
         total += 1
         uxo1 = uxf.load('t72.uxi', on_event=on_event)
         uxo2 = uxf.load('expected/t72l.uxf', on_event=on_event)
-        if eq.eq(uxo1, uxo2):
+        if uxo1 == uxo2:
             ok += 1
     except uxf.Error as err:
         print(f'unexpected error: {err}')
@@ -125,7 +123,7 @@ def main():
         total += 1
         uxo1 = uxf.load('t72.uxi', on_event=on_event, replace_imports=True)
         uxo2 = uxf.load('expected/t72r.uxf', on_event=on_event)
-        if eq.eq(uxo1, uxo2):
+        if uxo1 == uxo2:
             ok += 1
     except uxf.Error as err:
         print(f'unexpected error: {err}')
@@ -134,7 +132,7 @@ def main():
         total += 1
         uxo1 = uxf.load('t72.uxi', on_event=on_event, drop_unused=True)
         uxo2 = uxf.load('expected/t72d.uxf', on_event=on_event)
-        if eq.eq(uxo1, uxo2):
+        if uxo1 == uxo2:
             ok += 1
     except uxf.Error as err:
         print(f'unexpected error: {err}')
@@ -144,7 +142,7 @@ def main():
         uxo1 = uxf.load('t72.uxi', on_event=on_event, drop_unused=True,
                         replace_imports=True)
         uxo2 = uxf.load('expected/t72d.uxf', on_event=on_event)
-        if eq.eq(uxo1, uxo2):
+        if uxo1 == uxo2:
             ok += 1
     except uxf.Error as err:
         print(f'unexpected error: {err}')
@@ -192,7 +190,7 @@ def test(total, ok, actual_uxo, expected_uxo, expected_imports, filename,
         elif not regression:
             print(f'{filename} ttype {attype} != {ettype}')
         total += 1
-        if eq.eq(atclass, etclass, ignore_comments=True):
+        if atclass.is_equivalent(etclass, uxf.Compare.IGNORE_COMMENTS):
             ok += 1
         elif not regression:
             print(f'{filename} ttype {atclass} != {etclass}')

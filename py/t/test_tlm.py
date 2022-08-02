@@ -11,7 +11,6 @@ try:
     sys.path.append(os.path.abspath(os.path.join(PATH, '../')))
     import uxf
     sys.path.append(os.path.abspath(os.path.join(PATH, '../eg/')))
-    import eq
     import Tlm
     os.chdir(os.path.join(PATH, '../../testdata')) # move to test data
 finally:
@@ -49,7 +48,7 @@ def main():
     ok += 1
 
     total += 1
-    if eq.eq(uxo1, uxo2):
+    if uxo1 == uxo2:
         ok += 1
     elif not regression:
         print('unequal')

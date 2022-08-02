@@ -73,21 +73,21 @@ def test(total, ok, regression, n, filename1, filename2, *, different,
         ok += 1
     elif not regression:
         print(f'{n}.1 filecmp.cmp() • FAIL files compared unexpectedly the '
-              'same')
+              f'same: {filename1} vs {filename2}')
 
     total += 1
     if compare1.compare(filename1, filename2, on_event=on_event) == equal:
         ok += 1
     elif not regression:
         print(f'{n}.2 uxfcompare.compare() • FAIL files compared '
-              'unexpectedly unequal')
+              f'unexpectedly unequal: {filename1} vs {filename2}')
 
     total += 1
     if compare2.compare(filename1, filename2, on_event=on_event) == equal:
         ok += 1
     elif not regression:
         print(f'{n}.3 compare.compare() • FAIL files compared '
-              'unexpectedly unequal')
+              f'unexpectedly unequal: {filename1} vs {filename2}')
 
     total += 1
     if compare1.compare(filename1, filename2, equivalent=True,
@@ -95,14 +95,14 @@ def test(total, ok, regression, n, filename1, filename2, *, different,
         ok += 1
     elif not regression:
         print(f'{n}.4 uxfcompare.compare() • FAIL files compared '
-              'unexpectedly nonequivalent')
+              f'unexpectedly nonequivalent: {filename1} vs {filename2}')
     total += 1
     if compare2.compare(filename1, filename2, equivalent=True,
                         on_event=on_event) == equivalent:
         ok += 1
     elif not regression:
         print(f'{n}.5 compare.compare() • FAIL files compared '
-              'unexpectedly nonequivalent')
+              f'unexpectedly nonequivalent: {filename1} vs {filename2}')
 
     return total, ok
 

@@ -10,8 +10,6 @@ try:
     PATH = os.path.abspath(os.path.dirname(__file__))
     sys.path.append(os.path.abspath(os.path.join(PATH, '../')))
     import uxf
-    sys.path.append(os.path.abspath(os.path.join(PATH, '../eg/')))
-    import eq
     MERGE_EXE = os.path.abspath(os.path.join(PATH, '../eg/merge.py'))
     os.chdir(os.path.join(PATH, '../../testdata')) # move to test data
 finally:
@@ -29,7 +27,7 @@ def main():
            't15.uxf', 't16.uxf', 't19.uxf', 't47.uxf', 't63.uxf']
     total += 2
     done = check(cmd, regression, filename,
-                 "uxf.py:t63.uxf:14:#422:unused ttype: 'dob'")
+                 "uxf:W422:t63.uxf:14:unused ttype: 'dob'")
     if done:
         ok += 1
         ok += compare(filename, regression)
@@ -39,7 +37,7 @@ def main():
            't16.uxf', 't19.uxf', 't47.uxf', 't63.uxf']
     total += 2
     done = check(cmd, regression, filename,
-                 "uxf.py:t63.uxf:14:#422:unused ttype: 'dob'")
+                 "uxf:W422:t63.uxf:14:unused ttype: 'dob'")
     if done:
         ok += 1
         ok += compare(filename, regression)
@@ -89,7 +87,7 @@ def compare(filename, regression):
             print(f'compare • FAIL {name!r}: {err}')
         return 0
     try:
-        if eq.eq(actual_uxo, expected_uxo):
+        if actual_uxo == expected_uxo:
             return 1
         if not regression:
             print(f'compare • FAIL actual != expected {filename!r}')

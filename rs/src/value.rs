@@ -7,7 +7,8 @@ use crate::list::List;
 use crate::map::Map;
 use crate::table::Table;
 use crate::tclass::TClass;
-use crate::util::escape;
+use crate::util::{escape, isclose64};
+use crate::uxf::Compare;
 use chrono::prelude::*;
 use std::fmt::Write as _;
 use std::{cell::RefCell, fmt, rc::Rc};
@@ -309,6 +310,36 @@ impl Value {
         });
         tclasses.take()
     }
+
+    /// Returns `true` if this `Value` and the `other` `Value` are the same
+    /// (or contain the same maps, lists, or tables, in the same order),
+    /// Set `compare` to `EQUIVALENT` or `IGNORE_COMMENTS` if comment
+    /// differences don't matter.
+    /// See also `==` and `Uxf::is_equivalent()`.
+    pub fn is_equivalent(&self, other: &Value, compare: Compare) -> bool {
+        if self.is_collection() && other.is_collection() {
+            if let Some(alst) = self.as_list() {
+                if let Some(blst) = other.as_list() {
+                    return alst.is_equivalent(blst, compare);
+                } else {
+                    return false;
+                }
+            } else if let Some(am) = self.as_map() {
+                if let Some(bm) = other.as_map() {
+                    return am.is_equivalent(bm, compare);
+                } else {
+                    return false;
+                }
+            } else if let Some(at) = self.as_table() {
+                if let Some(bt) = other.as_table() {
+                    return at.is_equivalent(bt, compare);
+                } else {
+                    return false;
+                }
+            }
+        }
+        self == other
+    }
 }
 
 impl fmt::Display for Value {
@@ -419,6 +450,86 @@ impl From<Key> for Value {
         }
     }
 }
+
+impl PartialEq for Value {
+    fn eq(&self, other: &Self) -> bool {
+        match self {
+            Value::Null => other.is_null(),
+            Value::Bool(b) => {
+                if let Some(other) = other.as_bool() {
+                    *b == other
+                } else {
+                    false
+                }
+            }
+            Value::Bytes(b) => {
+                if let Some(other) = other.as_bytes() {
+                    b == other
+                } else {
+                    false
+                }
+            }
+            Value::Date(d) => {
+                if let Some(other) = other.as_date() {
+                    *d == other
+                } else {
+                    false
+                }
+            }
+            Value::DateTime(dt) => {
+                if let Some(other) = other.as_datetime() {
+                    *dt == other
+                } else {
+                    false
+                }
+            }
+            Value::Int(i) => {
+                if let Some(other) = other.as_int() {
+                    *i == other
+                } else {
+                    false
+                }
+            }
+            Value::Str(s) => {
+                if let Some(other) = other.as_str() {
+                    s == other
+                } else {
+                    false
+                }
+            }
+            Value::Real(r) => {
+                if let Some(other) = other.as_real() {
+                    isclose64(*r, other)
+                } else {
+                    false
+                }
+            }
+            Value::List(lst) => {
+                if let Some(other) = other.as_list() {
+                    lst == other
+                } else {
+                    false
+                }
+            }
+            Value::Map(m) => {
+                if let Some(other) = other.as_map() {
+                    m == other
+                } else {
+                    false
+                }
+            }
+            Value::Table(t) => {
+                if let Some(other) = other.as_table() {
+                    t == other
+                } else {
+                    false
+                }
+            }
+        }
+    }
+}
+
+impl Eq for Value {}
 
 pub(crate) fn bytes_to_uxf(b: &[u8]) -> String {
     let mut s = String::from("(:");

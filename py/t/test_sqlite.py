@@ -23,8 +23,6 @@ try:
     sys.path.append(os.path.abspath(os.path.join(PATH, '../')))
     import uxf
     import uxfconvert
-    sys.path.append(os.path.abspath(os.path.join(PATH, '../eg/')))
-    import eq
     os.chdir(os.path.join(PATH, '../../testdata')) # move to test data
 finally:
     pass
@@ -55,8 +53,7 @@ def check(total, ok, name, regression):
     uxfconvert._uxf_to_sqlite(filename, uxo1.value)
     uxo2 = uxfconvert._sqlite_to_uxf(filename)
     total += 1
-    if eq.eq(uxo1, uxo2, ignore_custom=True, ignore_comments=True,
-             ignore_types=True):
+    if uxo1.is_equivalent(uxo2, uxf.Compare.EQUIVALENT):
         ok += 1
         if not regression:
             print(f'test_sqlite • {name} OK')

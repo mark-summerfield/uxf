@@ -9,8 +9,6 @@ For another example of this file's merge() function see include.py.
 import os
 import sys
 
-import eq
-
 try:
     import uxf
 except ImportError: # needed for development
@@ -110,7 +108,8 @@ def _merge_tclasses(uxo, new_uxo, filename):
     for ttype, tclass in new_uxo.tclasses.items():
         if ttype not in uxo.tclasses:
             uxo.tclasses[ttype] = tclass
-        elif eq.eq(uxo.tclasses[ttype], tclass, ignore_comments=True):
+        elif uxo.tclasses[ttype].is_equivalent(
+                tclass, uxf.Compare.IGNORE_COMMENTS):
             pass # same so safe to ignore
         else:
             raise uxf.Error(f'cannot merge {filename} due to conflicting '

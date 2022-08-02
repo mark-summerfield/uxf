@@ -2,6 +2,7 @@
 // License: GPLv3
 
 use crate::util::{check_vtype, escape};
+use crate::uxf::Compare;
 use crate::value::{Value, Values};
 use anyhow::Result;
 use std::fmt;
@@ -98,6 +99,19 @@ impl List {
     pub fn inner_mut(&mut self) -> &mut Values {
         &mut self.values
     }
+
+    /// Returns `true` if this `List` and the `other` `List` are the same.
+    /// Set `compare` to `EQUIVALENT` or `IGNORE_COMMENTS` if comment
+    /// differences don't matter.
+    /// See also `==` and `Uxf::is_equivalent()`.
+    pub fn is_equivalent(&self, other: &List, compare: Compare) -> bool {
+        if !compare.contains(Compare::IGNORE_COMMENTS)
+            && self.comment != other.comment
+        {
+            return false;
+        }
+        self == other
+    }
 }
 
 impl Default for List {
@@ -127,6 +141,29 @@ impl IndexMut<usize> for List {
         &mut self.values[index]
     }
 }
+
+impl PartialEq for List {
+    fn eq(&self, other: &Self) -> bool {
+        if self.vtype != other.vtype {
+            return false;
+        }
+        if self.comment != other.comment {
+            return false;
+        }
+        if self.values.len() != other.values.len() {
+            return false;
+        }
+        for (avalue, bvalue) in self.values.iter().zip(other.values.iter())
+        {
+            if avalue != bvalue {
+                return false;
+            }
+        }
+        true
+    }
+}
+
+impl Eq for List {}
 
 impl fmt::Display for List {
     /// Provides a .to_string() that returns a valid UXF fragment

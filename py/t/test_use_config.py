@@ -16,8 +16,8 @@ import tempfile
 
 try:
     PATH = os.path.abspath(os.path.dirname(__file__))
-    sys.path.append(PATH + '/../eg')
-    import eq
+    sys.path.append(os.path.abspath(os.path.join(PATH, '../')))
+    import uxf
     old = '/home/mark/bin/sudoku.pyw'
     new = os.path.join(tempfile.gettempdir(), 't/sudoku.py')
     if os.path.isfile(old) and random.choice((0, 1)):
@@ -80,7 +80,8 @@ def main():
         print('fail #4')
 
     total += 1
-    if not eq.eq(config1._uxo, config2._uxo, ignore_comments=True):
+    if not config1._uxo.is_equivalent(config2._uxo,
+                                      uxf.Compare.IGNORE_COMMENTS):
         ok += 1
     elif not regression:
         print('fail #5')
@@ -90,7 +91,8 @@ def main():
 
     config3 = Config(edited_file) # edited but edited back to original
     total += 1
-    if eq.eq(config2._uxo, config3._uxo, ignore_comments=True):
+    if config2._uxo.is_equivalent(config3._uxo,
+                                  uxf.Compare.IGNORE_COMMENTS):
         ok += 1
     elif not regression:
         print('fail #6')
@@ -101,7 +103,8 @@ def main():
     config3.symbols = Symbols.DECIMAL
     config3.width = 540
     total += 1
-    if eq.eq(config1._uxo, config3._uxo, ignore_comments=True):
+    if config1._uxo.is_equivalent(config3._uxo,
+                                  uxf.Compare.IGNORE_COMMENTS):
         ok += 1
     elif not regression:
         print('fail #7')

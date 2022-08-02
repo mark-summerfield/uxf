@@ -6,8 +6,6 @@ import functools
 import os
 import sys
 
-import eq
-
 try:
     import uxf
 except ImportError: # needed for development
@@ -31,7 +29,11 @@ def main():
                                      prefix='compare')
         eq = compare(filename1, filename2, equivalent=equivalent,
                      on_event=on_event)
-        print(f'{filename1} {"==" if eq else "!="} {filename2}')
+        if eq:
+            eq = '=~' if equivalent else '=='
+        else:
+            eq = '!~' if equivalent else '!='
+        print(f'{filename1} {eq} {filename2}')
     else:
         raise SystemExit(
             'usage: compare.py [-e|--equiv[alent]] file1.uxf file2.uxf')
@@ -58,7 +60,9 @@ def compare(filename1: str, filename2: str, *, equivalent=False,
     except uxf.Error as err:
         print(f'compare.py failed on {filename2}: {err}')
         return False
-    return eq.eq(uxo1, uxo2)
+    if equivalent:
+        return uxo1.is_equivalent(uxo2, uxf.Compare.EQUIVALENT)
+    return uxo1 == uxo2
 
 
 if __name__ == '__main__':

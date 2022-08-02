@@ -14,8 +14,6 @@ try:
     PATH = os.path.abspath(os.path.dirname(__file__))
     sys.path.append(os.path.abspath(os.path.join(PATH, '../')))
     import uxf
-    sys.path.append(os.path.abspath(os.path.join(PATH, '../eg/')))
-    import eq
     sys.path.append(os.path.abspath(os.path.join(PATH, '../t/')))
     import gen
     os.chdir(os.path.join(PATH, '../../testdata')) # move to testdata
@@ -68,7 +66,7 @@ def main():
     for i in range(scale):
         uxo1 = uxf.loads(uxt1s[i], **d)
         uxo2 = uxf.loads(uxt2s[i], **d)
-        if eq.eq(uxo1, uxo2):
+        if uxo1 == uxo2:
             ok += 1
 
     if ok == scale:

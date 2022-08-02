@@ -143,32 +143,42 @@ impl Uxf {
         bail!("TODO: to_string_options") // TODO
     }
 
-    // TODO change to impl Eq
     /// Returns `true` if this `Uxf` and the `other` `Uxf` have the same
     /// values (and for any contained lists or tables, in the same order),
-    /// with the same imports and _ttypes_.
-    /// This is a convenience method for
-    /// `is_equivalent(other, Compare::EQUAL)`.
-    pub fn is_equal(&self, other: &Uxf) -> bool {
-        self.is_equivalent(other, Compare::EQUAL)
-    }
-
-    /// Returns `true` if this `Uxf` and the `other` `Uxf` have the same
-    /// values (and for any contained lists or tables, in the same order),
-    /// and with the same imports and _ttypes_ if `compare` is `EQUAL`.
+    /// and with the same imports and _ttypes_ if `compare` is `default()`
+    /// (although in such cases simply use `==` or `!=`).
     /// Set `compare` to `EQUIVALENT` if comment differences don't matter
     /// and if imports and _ttype_ definitions don't matter except that both
     /// define or import and use the same _ttypes_.
-    /// See also `is_equal()`.
+    /// See also `==`.
     pub fn is_equivalent(&self, other: &Uxf, compare: Compare) -> bool {
-        // TODO compare
-        false
+        if self.custom != other.custom {
+            return false;
+        }
+        if !compare.contains(Compare::IGNORE_COMMENTS)
+            && self.comment != other.comment
+        {
+            return false;
+        }
+        if !compare.contains(Compare::IGNORE_IMPORTS)
+            && self.imports != other.imports
+        {
+            return false;
+        }
+        if !compare.contains(Compare::IGNORE_UNUSED_TTYPES)
+            && self.tclass_for_ttype != other.tclass_for_ttype
+        {
+            // This means that we only compare actually used ttypes when
+            // comparing any tables.
+            return false;
+        }
+        self.value.is_equivalent(&other.value, compare)
     }
 }
 
 bitflags! {
+    #[derive(Default)]
     pub struct Compare: u8 {
-        const EQUAL = 0b000;
         const IGNORE_COMMENTS = 0b001;
         const IGNORE_UNUSED_TTYPES = 0b010;
         const IGNORE_IMPORTS = 0b100;
@@ -192,6 +202,30 @@ impl Default for Uxf {
         }
     }
 }
+
+impl PartialEq for Uxf {
+    /// Returns `true` if this `Uxf` and the `other` `Uxf` have the same
+    /// values (and for any contained lists or tables, in the same order),
+    /// with the same imports and the same _ttypes_.
+    /// See also `is_equivalent()`.
+    fn eq(&self, other: &Self) -> bool {
+        if self.custom != other.custom {
+            return false;
+        }
+        if self.comment != other.comment {
+            return false;
+        }
+        if self.imports != other.imports {
+            return false;
+        }
+        if self.tclass_for_ttype != other.tclass_for_ttype {
+            return false;
+        }
+        self.value == other.value
+    }
+}
+
+impl Eq for Uxf {}
 
 impl fmt::Debug for Uxf {
     fn fmt<'a>(&'a self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
@@ -245,9 +279,9 @@ impl fmt::Display for Uxf {
 /// Then in either case the UXF text is parsed into a `Uxf` object if
 /// possible, using the default `on_event` event handler.
 /// This is just a convenience wrapper for
-/// `parse_options(uxt_or_filename, ParseOptions::AS_IS, None)`
+/// `parse_options(uxt_or_filename, ParseOptions::default(), None)`
 pub fn parse(uxt_or_filename: &str) -> Result<Uxf> {
-    parse_options(uxt_or_filename, ParseOptions::AS_IS, None)
+    parse_options(uxt_or_filename, ParseOptions::default(), None)
 }
 
 /// If `uxt_or_filename`' contains '\n` it is taken to be a UXF file
@@ -275,8 +309,8 @@ pub fn parse_options(
 }
 
 bitflags! {
+    #[derive(Default)]
     pub struct ParseOptions: u8 {
-        const AS_IS = 0b00;
         const DROP_UNUSED_TTYPES = 0b01;
         const REPLACE_IMPORTS = 0b10;
         const AS_STANDALONE = Self::DROP_UNUSED_TTYPES.bits |

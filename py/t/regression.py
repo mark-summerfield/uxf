@@ -20,8 +20,6 @@ try:
     PATH = os.path.abspath(os.path.dirname(__file__))
     sys.path.append(os.path.abspath(os.path.join(PATH, '../')))
     import uxf
-    sys.path.append(os.path.abspath(os.path.join(PATH, '../eg/')))
-    import eq
     UXF_EXE = os.path.join(PATH, '../uxf.py')
     UXFCONVERT_EXE = os.path.join(PATH, '../uxfconvert.py')
     SLIDES1 = os.path.join(PATH, '../eg/slides1.py')
@@ -155,7 +153,7 @@ def test_uxf_loads_dumps(uxffiles, total, ok, *, verbose, max_total):
                 temp_uxo.loads(uxt, on_event=on_event)
                 uxo = temp_uxo
         except uxf.Error as err:
-            print(f'loads()/dumps() • {name} FAIL: {err}')
+            print(f'loads()/dumps() • {name} FAIL #1: {err}')
         if random.choice((0, 1)):
             new_uxt = uxo.dumps(on_event=on_event)
         else:
@@ -163,19 +161,19 @@ def test_uxf_loads_dumps(uxffiles, total, ok, *, verbose, max_total):
         try:
             new_uxo = uxf.loads(new_uxt, on_event=on_event)
         except uxf.Error as err:
-            print(f'{name} • FAIL (loads()/dumps()): {err}')
+            print(f'{name} • FAIL (loads()/dumps()) #2: {err}')
             continue
         try:
-            if eq.eq(uxo, new_uxo):
+            if uxo == new_uxo:
                 ok += 1
                 if verbose:
                     print(f'loads()/dumps() • {name} OK')
                 elif not ok % 10:
                     print('.', end='', flush=True)
             else:
-                print(f'{name} • FAIL (loads()/dumps())')
+                print(f'{name} • FAIL #3 (loads()/dumps())')
         except uxf.Error as err:
-            print(f'{name} • FAIL (loads()/dumps()): {err}')
+            print(f'{name} • FAIL (loads()/dumps()) #4: {err}')
     return total, ok
 
 
@@ -196,7 +194,7 @@ def test_uxf_equal(uxffiles, total, ok, *, verbose, max_total):
         try:
             uxo1 = uxf.loads(uxt, on_event=on_event)
         except uxf.Error as err:
-            print(f'eq() 1 • {name} FAIL: {err}')
+            print(f'== 1 • {name} FAIL: {err}')
         expected = f'expected/{name}'
         try:
             with open(expected, 'rt', encoding='utf-8') as file:
@@ -207,16 +205,16 @@ def test_uxf_equal(uxffiles, total, ok, *, verbose, max_total):
         try:
             uxo2 = uxf.loads(uxt, on_event=on_event)
         except uxf.Error as err:
-            print(f'eq() 2 • {expected} FAIL: {err}')
+            print(f'== 2 • {expected} FAIL: {err}')
         try:
-            if eq.eq(uxo1, uxo2):
+            if uxo1 == uxo2:
                 ok += 1
                 if verbose:
-                    print(f'eq() • {name} OK')
+                    print(f'== • {name} OK')
                 elif not ok % 10:
                     print('.', end='', flush=True)
             else:
-                print(f'{name} • FAIL (eq())')
+                print(f'{name} • FAIL (==)')
         except uxf.Error as err:
             print(f'{name} • FAIL (loads()/dumps()): {err}')
     return total, ok

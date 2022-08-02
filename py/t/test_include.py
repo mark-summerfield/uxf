@@ -10,8 +10,6 @@ try:
     PATH = os.path.abspath(os.path.dirname(__file__))
     sys.path.append(os.path.abspath(os.path.join(PATH, '../')))
     import uxf
-    sys.path.append(os.path.abspath(os.path.join(PATH, '../eg/')))
-    import eq
     INCLUDE_EXE = os.path.abspath(os.path.join(PATH, '../eg/include.py'))
     os.chdir(os.path.join(PATH, '../../testdata')) # move to test data
 finally:
@@ -27,8 +25,7 @@ def main():
     total += 1
     filename = 'i68inc.uxf.gz'
     cmd = [INCLUDE_EXE, 'i68.uxi', f'actual/{filename}']
-    ok += check(cmd, regression,
-                "uxf.py:t63.uxf:14:#422:unused ttype: 'dob'")
+    ok += check(cmd, regression, "uxf:W422:t63.uxf:14:unused ttype: 'dob'")
     total += 1
     ok += compare(filename, regression)
 
@@ -59,7 +56,7 @@ def compare(filename, regression):
     try:
         actual_uxo = uxf.load(f'actual/{filename}', on_event=on_event)
         expected_uxo = uxf.load(f'expected/{filename}', on_event=on_event)
-        if eq.eq(actual_uxo, expected_uxo):
+        if actual_uxo == expected_uxo:
             return 1
         if not regression:
             print(f'compare • FAIL actual != expected {filename!r}')

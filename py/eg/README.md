@@ -7,7 +7,6 @@
     - [slides1.py](#slides1-py)
     - [slides2.py](#slides2-py)
 - [compare.py](#compare-py)
-- [eq.py](#eq-py)
 - [Config.py](#config-py)
 - [t/ Files](#t--files)
     - [gen.py](#gen-py)
@@ -85,14 +84,8 @@ This example uses `Uxf.load()` and then manually iterates over the returned
 ## compare.py
 
 This example can be used stand-alone or as an import. It is used to compare
-two UXF files for equality (or for equivalence) using the `py/eg/eq.py`
-module. (See also `py/uxfcompare.py`.)
-
-## eq.py
-
-This module provides a single function `eq(a, b)` which compares two UXF
-values (i.e., two `Uxf` objects, or two ``List``s, ``Map``s, ``Table``'s or
-UXF scalars (``int``s, ``str``s, etc). (See also `py/uxfcompare.py`.)
+two UXF files for equality (or for equivalence).
+(See also `py/uxfcompare.py`.)
 
 ## Config.py
 

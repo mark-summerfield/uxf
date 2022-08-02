@@ -4,6 +4,7 @@
 use crate::event::fatal;
 use crate::tclass::TClass;
 use crate::util::escape;
+use crate::uxf::Compare;
 use crate::value::Record;
 use anyhow::Result;
 use std::fmt;
@@ -134,6 +135,19 @@ impl Table {
     pub fn inner_mut(&mut self) -> &mut Vec<Record> {
         &mut self.records
     }
+
+    /// Returns `true` if this `Table` and the `other` `Table` are the same.
+    /// Set `compare` to `EQUIVALENT` or `IGNORE_COMMENTS` if comment
+    /// differences don't matter.
+    /// See also `==` and `Uxf::is_equivalent()`.
+    pub fn is_equivalent(&self, other: &Table, compare: Compare) -> bool {
+        if !compare.contains(Compare::IGNORE_COMMENTS)
+            && self.comment != other.comment
+        {
+            return false;
+        }
+        self == other
+    }
 }
 
 impl Index<usize> for Table {
@@ -151,6 +165,32 @@ impl IndexMut<usize> for Table {
         &mut self.records[index]
     }
 }
+
+impl PartialEq for Table {
+    fn eq(&self, other: &Self) -> bool {
+        if self.tclass != other.tclass {
+            return false;
+        }
+        if self.comment != other.comment {
+            return false;
+        }
+        if self.records.len() != other.records.len() {
+            return false;
+        }
+        for (arecord, brecord) in
+            self.records.iter().zip(other.records.iter())
+        {
+            for (avalue, bvalue) in arecord.iter().zip(brecord.iter()) {
+                if avalue != bvalue {
+                    return false;
+                }
+            }
+        }
+        true
+    }
+}
+
+impl Eq for Table {}
 
 impl fmt::Display for Table {
     /// Provides a .to_string() that returns a valid UXF fragment

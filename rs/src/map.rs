@@ -4,6 +4,7 @@
 use crate::event::fatal;
 use crate::key::Key;
 use crate::util::{check_ktype, check_vtype, escape};
+use crate::uxf::Compare;
 use crate::value::Value;
 use anyhow::Result;
 use std::collections::HashMap;
@@ -127,6 +128,19 @@ impl Map {
     pub fn inner_mut(&mut self) -> &mut HashMap<Key, Value> {
         &mut self.items
     }
+
+    /// Returns `true` if this `Map` and the `other` `Map` are the same.
+    /// Set `compare` to `EQUIVALENT` or `IGNORE_COMMENTS` if comment
+    /// differences don't matter.
+    /// See also `==` and `Uxf::is_equivalent()`.
+    pub fn is_equivalent(&self, other: &Map, compare: Compare) -> bool {
+        if !compare.contains(Compare::IGNORE_COMMENTS)
+            && self.comment != other.comment
+        {
+            return false;
+        }
+        self == other
+    }
 }
 
 impl Default for Map {
@@ -142,6 +156,40 @@ impl Default for Map {
         }
     }
 }
+
+impl PartialEq for Map {
+    fn eq(&self, other: &Self) -> bool {
+        if self.ktype != other.ktype {
+            return false;
+        }
+        if self.vtype != other.vtype {
+            return false;
+        }
+        if self.comment != other.comment {
+            return false;
+        }
+        if self.items.len() != other.items.len() {
+            return false;
+        }
+        let mut akeys: Vec<&Key> = self.items.keys().collect();
+        akeys.sort_unstable();
+        let mut bkeys: Vec<&Key> = other.items.keys().collect();
+        bkeys.sort_unstable();
+        for (akey, bkey) in akeys.iter().zip(bkeys.iter()) {
+            if akey != bkey {
+                return false;
+            }
+            let avalue = self.items.get(akey);
+            let bvalue = other.items.get(akey);
+            if avalue != bvalue {
+                return false;
+            }
+        }
+        true
+    }
+}
+
+impl Eq for Map {}
 
 impl fmt::Display for Map {
     /// Provides a .to_string() that returns a valid UXF fragment
