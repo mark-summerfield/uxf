@@ -51,6 +51,8 @@ class Compare(enum.Flag):
     IGNORE_UNUSED_TTYPES = enum.auto()
     IGNORE_IMPORTS = enum.auto()
     EQUIVALENT = (IGNORE_COMMENTS | IGNORE_UNUSED_TTYPES | IGNORE_IMPORTS)
+    IGNORE_KVTYPES = enum.auto()
+    UNTYPED_EQUIVALENT = EQUIVALENT | IGNORE_KVTYPES
 
 
 def on_event(event: Event, code: int, message: str, *, filename='-',
@@ -132,6 +134,7 @@ class Uxf:
 
     @tclasses.setter
     def tclasses(self, tclasses):
+        self.tclasses.clear()
         for ttype, tclass in tclasses.items():
             if not ttype:
                 self.on_event(Event.FATAL, 694,
@@ -853,7 +856,8 @@ class List(collections.UserList):
         '''
         if not isinstance(other, self.__class__):
             return False
-        if self.vtype != other.vtype:
+        if (Compare.IGNORE_KVTYPES not in compare and
+                self.vtype != other.vtype):
             return False
         if (Compare.IGNORE_COMMENTS not in compare and
                 self.comment != other.comment):
@@ -986,9 +990,11 @@ class Map(collections.UserDict):
         '''
         if not isinstance(other, self.__class__):
             return False
-        if self.ktype != other.ktype:
+        if (Compare.IGNORE_KVTYPES not in compare and
+                self.ktype != other.ktype):
             return False
-        if self.vtype != other.vtype:
+        if (Compare.IGNORE_KVTYPES not in compare and
+                self.vtype != other.vtype):
             return False
         if (Compare.IGNORE_COMMENTS not in compare and
                 self.comment != other.comment):
@@ -1144,7 +1150,14 @@ class TClass:
         if (Compare.IGNORE_COMMENTS not in compare and
                 self.comment != other.comment):
             return False
-        return self.fields == other.fields
+        if Compare.IGNORE_KVTYPES not in compare:
+            return self.fields == other.fields
+        if len(self.fields) != len(other.fields):
+            return False
+        for afield, bfield in zip(self.fields, other.fields):
+            if afield.name != bfield.name: # ignore vtype
+                return False
+        return True
 
 
     def __eq__(self, other):
@@ -1523,7 +1536,7 @@ class Table:
         '''
         if not isinstance(other, self.__class__):
             return False
-        if self.tclass != other.tclass:
+        if not self.tclass.is_equivalent(other.tclass, compare):
             return False
         if (Compare.IGNORE_COMMENTS not in compare and
                 self.comment != other.comment):
