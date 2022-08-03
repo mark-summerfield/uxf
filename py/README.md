@@ -274,7 +274,7 @@ function.
 **`.is_equivalent(other: Uxf, compare=Compare.EXACT) -> bool`**
 
 Method primarily used for regression testing. The [List](#list-class),
-[Map](#map-class), [TClass](#tclass-class), and [Table](#table-class)
+[Map](#map-class), [Table](#table-class), and [TClass](#tclass-class)
 classes all provide this method.
 
 There are seven comparison flags although normally only `Compare.EQUIVALENT`
