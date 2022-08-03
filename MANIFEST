@@ -1,3 +1,6 @@
+# TODO Tlm.py & test_tlm.py wrongly relied on maps being insertion
+# ordered; so change to TLM 2.0 format (once invented)
+# TODO backport rs visit() to py & get rid of visit.py
 rs/src/lib.rs # add docs at the end
 rs/src/value.rs
 rs/src/key.rs
@@ -23,7 +26,6 @@ rs/tests/test_field.rs
 rs/tests/test_uxf.rs # TODO more, incl. == and is_equivalent()
 rs/Cargo.toml
 rs/README.md
-# TODO backport rs visit() to py & get rid of visit.py
 # TODO port tlm to use rust uxf
 # IDEA: noncopy nonowned versions: UxfBuf ValueBuf ... FieldBuf
 
@@ -49,7 +51,6 @@ py/t/test_tlm.py
 py/t/gen.py
 py/t/benchmark.py
 py/eg/README.md
-py/eg/eq.py
 py/eg/visit.py
 py/eg/slides1.py
 py/eg/slides2.py

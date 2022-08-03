@@ -3,15 +3,15 @@ uxf 1.0 MyApp 1.2.0 Config
 {#<Notes on this configuration file format> str map
   <General>
     {#<Miscellaneous settings> str
-      <shapename> <Hexagon>
-      <zoom> 150
-      <showtoolbar> no
       <Files>
         {str
           <current> <test1.uxf>
           <recent> [#<From most to least recent> str </tmp/test2.uxf> <C:\Users\mark\test3.uxf>
             ?]
         }
+      <shapename> <Hexagon>
+      <showtoolbar> no
+      <zoom> 150
     }
   <Windows>
     (#<Window dimensions and scales> Geometry

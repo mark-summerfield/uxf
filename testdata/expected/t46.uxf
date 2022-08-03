@@ -8,26 +8,21 @@ uxf 1.0 TLM Config
 {
   <General>
     {
-      <empty map 0> {}
-      <saved> 2022-03-21
       <autosave> yes
-      <historysize> -35
-      <volume> 0.7
+      <empty map 0> {}
       <empty map 1> {}
+      <empty map 2> {}
       <files>
         (Files
           <current> </home/mark/app/rs/tlm/PlaylistsTest.tlm>
           <recent1> </home/mark/app/rs/tlm/PlaylistsTest.tlm>
           <recent2> </home/mark/data/playlists-all.tlm>
         )
-      <empty map 2> {}
+      <historysize> -35
+      <saved> 2022-03-21
+      <volume> 0.7
     }
-  <Window>
-    {
-      <pos> [383 124]
-      <size> [590 536]
-      <scale> 1.1
-    }
+  <Magic> (:1F8B:)
   <More Tests>
     [#<A list of name value pairs; normally would be a map> 
       <empty table 0>
@@ -40,15 +35,13 @@ uxf 1.0 TLM Config
       ) <red> (RGB 255 0 0) <semi-transparent blue> (RGBA 0 0 255 80) <empty table 2>
       (RGBA)
     ]
-  <Magic> (:1F8B:)
   <Nested Map>
     {
-      <empty list 0> []
       <Classical> [5 yes]
+      <empty list 0> []
       <empty list 1> []
-      <Modern Instrumental> [4 no]
-      <New Acquistions> [1 no]
       <empty list 2> []
+      <Modern Instrumental> [4 no]
       <Nested List of Lists>
         [
           [] [5 <Classical> yes]
@@ -56,16 +49,6 @@ uxf 1.0 TLM Config
           [] [1 <New Acquistions> no]
           []
         ]
-      <Nested Table>
-        (Categories
-          5 <Classical> yes
-          4 <Modern Instrumental> no
-          1 <New Acquistions> no
-          2 <Pop> no
-          3 <Punk> no
-          7 <Uncategorized> no
-          6 <Unpopular Pop> no
-        )
       <Nested List of Tables>
         [
           (Categories)
@@ -96,5 +79,22 @@ uxf 1.0 TLM Config
           )
           (Playlists)
         ]
+      <Nested Table>
+        (Categories
+          5 <Classical> yes
+          4 <Modern Instrumental> no
+          1 <New Acquistions> no
+          2 <Pop> no
+          3 <Punk> no
+          7 <Uncategorized> no
+          6 <Unpopular Pop> no
+        )
+      <New Acquistions> [1 no]
+    }
+  <Window>
+    {
+      <pos> [383 124]
+      <scale> 1.1
+      <size> [590 536]
     }
 }

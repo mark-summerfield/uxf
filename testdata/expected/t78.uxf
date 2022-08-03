@@ -4,42 +4,42 @@ uxf 1.0 Map comparison test
 =#<0-255 per component> rgb red:int green:int blue:int
 =#<0-255 per component> rgba red:int green:int blue:int alpha:int
 {
-  <Window>
+  <General>
     {
-      <scale> 1.1
-      <pos> [383 124]
-      <size> [590 536]
+      <autosave> yes
+      <files>
+        {
+          <current> </home/mark/app/rs/tlm/PlaylistsTest.tlm>
+          <recent1> </home/mark/app/rs/tlm/PlaylistsTest.tlm>
+          <recent2> </home/mark/data/playlists-all.tlm>
+        }
+      <historysize> -35
+      <saved> 2022-03-21
+      <volume> 0.7
     }
+  <Magic> (:1F8B:)
   <More Tests>
     {
-      <red> (rgb 255 0 0)
       <many>
         (IPv4
           172 16 254 1
           192 0 2 235
           127 0 0 1
         )
-      <semi-transparent blue> (rgba 0 0 255 80)
       <one> (IPv4 141 179 19 9)
+      <red> (rgb 255 0 0)
+      <semi-transparent blue> (rgba 0 0 255 80)
     }
-  <Magic> (:1F8B:)
   <Nested Map>
     {
+      <Classical> [5 yes]
       <Modern Instrumental> [4 no]
       <New Acquistions> [1 no]
-      <Classical> [5 yes]
     }
-  <General>
+  <Window>
     {
-      <volume> 0.7
-      <files>
-        {
-          <recent2> </home/mark/data/playlists-all.tlm>
-          <current> </home/mark/app/rs/tlm/PlaylistsTest.tlm>
-          <recent1> </home/mark/app/rs/tlm/PlaylistsTest.tlm>
-        }
-      <historysize> -35
-      <saved> 2022-03-21
-      <autosave> yes
+      <pos> [383 124]
+      <scale> 1.1
+      <size> [590 536]
     }
 }

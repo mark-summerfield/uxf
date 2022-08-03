@@ -4,14 +4,14 @@ uxf 1.0 MyApp 1.2.0 Config
 {#<Notes on this configuration file format> str map
   <General>
     {#<Miscellaneous settings> str
-      <shapename> <Hexagon>
-      <zoom> 150
-      <showtoolbar> no
       <Files>
         {str
           <current> <test1.uxf>
           <recent> [#<From most to least recent> str </tmp/test2.uxf> <C:\Users\mark\test3.uxf>]
         }
+      <shapename> <Hexagon>
+      <showtoolbar> no
+      <zoom> 150
     }
   <Windows>
     {#<Window dimensions and scales> 
@@ -21,12 +21,12 @@ uxf 1.0 MyApp 1.2.0 Config
           28 42
           57 98
         )
+      <scale> [1.1 1.0 0.5]
       <size>
         (size
           592 636
           140 81
           89 22
         )
-      <scale> [1.1 1.0 0.5]
     }
 }

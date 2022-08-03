@@ -770,6 +770,10 @@ or
 
 ## Changes
 
+- 2.1.1 Although Maps are unordered, the library now always outputs them in
+  a predictable order.
+- 2.1.0 added `is_equivalent()` and support for `==` (and `!=`) for Lists,
+  Maps, Tables, and TClasses.
 - 2.0.1 `on_event()` now supports keyword argument `prefix`.
 - 2.0.0 API changes
   - `on_error()` has been replaced by `on_event()` with a different API.

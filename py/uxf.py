@@ -19,7 +19,7 @@ from xml.sax.saxutils import escape, unescape
 
 import editabletuple
 
-__version__ = '2.1.0' # uxf module version
+__version__ = '2.1.1' # uxf module version
 VERSION = 1.0 # UXF file format version
 
 UTF8 = 'utf-8'
@@ -1021,8 +1021,8 @@ class Map(collections.UserDict):
         if len(self.data) != len(other.data):
             return False
         for ((akey, avalue), (bkey, bvalue)) in zip(
-                sorted(self.data.items(), key=lambda x: str(x[0])),
-                sorted(other.data.items(), key=lambda x: str(x[0]))):
+                sorted(self.data.items(), key=_by_key),
+                sorted(other.data.items(), key=_by_key)):
             if akey != bkey:
                 return False
             if not _is_equivalent_value(avalue, bvalue, compare):
@@ -1045,8 +1045,8 @@ class Map(collections.UserDict):
         if len(self.data) != len(other.data):
             return False
         for ((akey, avalue), (bkey, bvalue)) in zip(
-                sorted(self.data.items(), key=lambda x: str(x[0])),
-                sorted(other.data.items(), key=lambda x: str(x[0]))):
+                sorted(self.data.items(), key=_by_key),
+                sorted(other.data.items(), key=_by_key)):
             if akey != bkey:
                 return False
             if not _is_equivalent_value(avalue, bvalue, Compare.EXACT):
@@ -2320,7 +2320,7 @@ class _Writer:
 
 
     def _write_short_map(self, sep, item):
-        for key, value in item.items():
+        for key, value in sorted(item.items(), key=_by_key):
             if sep:
                 self._write_one(sep)
             self.write_scalar(key)
@@ -2330,7 +2330,7 @@ class _Writer:
 
 
     def _write_map(self, item):
-        for key, value in item.items():
+        for key, value in sorted(item.items(), key=_by_key):
             self._write_pre_item_nl('')
             self.write_scalar(key)
             scalar = is_scalar(value)
@@ -2568,6 +2568,19 @@ def _full_filename(filename, path='.'):
     if os.path.isabs(filename):
         return filename
     return os.path.abspath(os.path.join(path, filename))
+
+
+def _by_key(item):
+    key = item[0]
+    if isinstance(key, int):
+        return f'!{key:019}'
+    if isinstance(key, datetime.datetime):
+        return f'#{key}T00:00:00'
+    if isinstance(key, datetime.date):
+        return f'${key}'
+    if isinstance(key, (bytes, bytearray)):
+        return f'%{key.decode("latin1", errors="replace")}'
+    return f'&{key.casefold()}'
 
 
 class _AlreadyImported(Exception):

@@ -5,23 +5,12 @@ uxf 1.0
 {
   <Classical> [5 yes]
   <Modern Instrumental> [4 no]
-  <New Acquistions> [1 no]
   <Nested List of Lists>
     [
       [5 <Classical> yes]
       [4 <Modern Instrumental> no]
       [1 <New Acquistions> no]
     ]
-  <Nested Table>
-    (Categories
-      5 <Classical> yes
-      4 <Modern Instrumental> no
-      1 <New Acquistions> no
-      2 <Pop> no
-      3 <Punk> no
-      7 <Uncategorized> no
-      6 <Unpopular Pop> no
-    )
   <Nested List of Tables>
     [
       (Categories
@@ -48,4 +37,15 @@ uxf 1.0
         9 <Dire Straits> 2 no
       )
     ]
+  <Nested Table>
+    (Categories
+      5 <Classical> yes
+      4 <Modern Instrumental> no
+      1 <New Acquistions> no
+      2 <Pop> no
+      3 <Punk> no
+      7 <Uncategorized> no
+      6 <Unpopular Pop> no
+    )
+  <New Acquistions> [1 no]
 }}

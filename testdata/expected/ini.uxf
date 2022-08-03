@@ -1,13 +1,13 @@
 uxf 1.0 ini.ini
 {
-  <general> {<mode> <words> <highlight-transparency> 80 <maxdirdepth> 1000}
-  <appearance> {<accuracy> 100 <square-size> 10 <new-renderer> no}
-  <colors> {<change-bar> <#F00> <exclusion-line> <#A42929> <highlight> <#FF0> <delete> <#F00>
+  <appearance> {<accuracy> 100 <new-renderer> no <square-size> 10}
+  <colors> {<change-bar> <#F00> <delete> <#F00> <exclusion-line> <#A42929> <highlight> <#FF0>
     <insert> <#0FF> <replace> <#F0F>}
   <corners> {<bottom-left> <0,0> <bottom-right> <0,0> <top-left> <0,0> <top-right> <0,0>}
+  <general> {<highlight-transparency> 80 <maxdirdepth> 1000 <mode> <words>}
   <margins> {<bottom> 0 <left> 0 <right> 0 <top> 0}
-  <report> {<compact> no <decimals> 2 <format> <> <output> <both> <path> <> <scale> 100
-    <path-in-title> yes <show-field-content> no}
+  <report> {<compact> no <decimals> 2 <format> <> <output> <both> <path> <> <path-in-title> yes
+    <scale> 100 <show-field-content> no}
   <text> {<algorithm> <standard> <bar> yes <column-tolerance> 108 <ignore-hyphens> no
     <line-tolerance> 10 <normalize-hyphens> yes <normalize-ligatures> no}
 }

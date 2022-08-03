@@ -8,23 +8,18 @@ uxf 1.0 TLM Config
 {
   <General>
     {
-      <saved> 2022-03-21
       <autosave> yes
-      <historysize> -35
-      <volume> 0.7
       <files>
         (Files
           <current> </home/mark/app/rs/tlm/PlaylistsTest.tlm>
           <recent1> </home/mark/app/rs/tlm/PlaylistsTest.tlm>
           <recent2> </home/mark/data/playlists-all.tlm>
         )
+      <historysize> -35
+      <saved> 2022-03-21
+      <volume> 0.7
     }
-  <Window>
-    {
-      <pos> [383 124]
-      <size> [590 536]
-      <scale> 1.1
-    }
+  <Magic> (:1F8B:)
   <More Tests>
     [#<A list of name value pairs; normally would be a map> 
       <one> (IPv4 141 179 19 9) <many>
@@ -34,28 +29,16 @@ uxf 1.0 TLM Config
         127 0 0 1
       ) <red> (rgb 255 0 0) <semi-transparent blue> (rgba 0 0 255 80)
     ]
-  <Magic> (:1F8B:)
   <Nested Map>
     {
       <Classical> [5 yes]
       <Modern Instrumental> [4 no]
-      <New Acquistions> [1 no]
       <Nested List of Lists>
         [
           [5 <Classical> yes]
           [4 <Modern Instrumental> no]
           [1 <New Acquistions> no]
         ]
-      <Nested Table>
-        (Categories
-          5 <Classical> yes
-          4 <Modern Instrumental> no
-          1 <New Acquistions> no
-          2 <Pop> no
-          3 <Punk> no
-          7 <Uncategorized> no
-          6 <Unpopular Pop> no
-        )
       <Nested List of Tables>
         [
           (Categories
@@ -82,5 +65,22 @@ uxf 1.0 TLM Config
             9 <Dire Straits> 2 no
           )
         ]
+      <Nested Table>
+        (Categories
+          5 <Classical> yes
+          4 <Modern Instrumental> no
+          1 <New Acquistions> no
+          2 <Pop> no
+          3 <Punk> no
+          7 <Uncategorized> no
+          6 <Unpopular Pop> no
+        )
+      <New Acquistions> [1 no]
+    }
+  <Window>
+    {
+      <pos> [383 124]
+      <scale> 1.1
+      <size> [590 536]
     }
 }

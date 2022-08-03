@@ -1,21 +1,21 @@
 uxf 1.0
 =p x:int y:int
 {str p
+  <four> (#<ok2> p -7 -6)
   <one>
     (#<ok> p
       1 2
       -3 4
       5 6
     )
-  <two>
-    (#<bad> p
-      7 -8
-      9 10
-    )
   <three>
     (#<worse> p
       11 -12
       -1 13
     )
-  <four> (#<ok2> p -7 -6)
+  <two>
+    (#<bad> p
+      7 -8
+      9 10
+    )
 }

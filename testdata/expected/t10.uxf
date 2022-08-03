@@ -5,40 +5,28 @@ uxf 1.0 TLM Config
 {
   <General>
     {
-      <saved> 2022-03-21
       <autosave> yes
-      <historysize> -35
-      <volume> 0.7
       <files>
         (Files
           <current> </home/mark/app/rs/tlm/PlaylistsTest.tlm>
           <recent1> </home/mark/app/rs/tlm/PlaylistsTest.tlm>
           <recent2> </home/mark/data/playlists-all.tlm>
         )
+      <historysize> -35
+      <saved> 2022-03-21
+      <volume> 0.7
     }
-  <Window> {<x> 383 <y> 124 <width> 590 <height> 536 <scale> 1.1}
   <Magic> (:1F8B:)
   <Nested Map>
     {
       <Classical> [5 yes]
       <Modern Instrumental> [4 no]
-      <New Acquistions> [1 no]
       <Nested List of Lists>
         [
           [5 <Classical> yes]
           [4 <Modern Instrumental> no]
           [1 <New Acquistions> no]
         ]
-      <Nested Table>
-        (Categories
-          5 <Classical> yes
-          4 <Modern Instrumental> no
-          1 <New Acquistions> no
-          2 <Pop> no
-          3 <Punk> no
-          7 <Uncategorized> no
-          6 <Unpopular Pop> no
-        )
       <Nested List of Tables>
         [
           (Categories
@@ -65,5 +53,17 @@ uxf 1.0 TLM Config
             9 <Dire Straits> 2 no
           )
         ]
+      <Nested Table>
+        (Categories
+          5 <Classical> yes
+          4 <Modern Instrumental> no
+          1 <New Acquistions> no
+          2 <Pop> no
+          3 <Punk> no
+          7 <Uncategorized> no
+          6 <Unpopular Pop> no
+        )
+      <New Acquistions> [1 no]
     }
+  <Window> {<height> 536 <scale> 1.1 <width> 590 <x> 383 <y> 124}
 }

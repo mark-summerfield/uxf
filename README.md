@@ -88,7 +88,8 @@ type, or `?` (null).
 
 Lists and tables preserve the order in which values are appended. So the
 first value is at index/row 0, the second at index/row 1, etc. Maps are
-unordered.
+unordered. (However, many libraries output Maps in a predictable order to
+aid testing.)
 
 A `table` starts with a _ttype_. Next comes the table's values. The number
 of values in any given row is equal to the number of field names in the

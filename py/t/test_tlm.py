@@ -2,7 +2,6 @@
 # Copyright © 2022 Mark Summerfield. All rights reserved.
 # License: GPLv3
 
-import gzip
 import os
 import sys
 
@@ -51,16 +50,14 @@ def main():
     if uxo1 == uxo2:
         ok += 1
     elif not regression:
-        print('unequal')
+        print('unequal #1')
 
     total += 1
-    with gzip.open('expected/tlm-eg.uxx.gz', 'rt',
-                   encoding='utf-8') as file:
-        uxt3 = file.read().rstrip()
-    if uxo1.dumps().rstrip() == uxt3:
+    uxo3 = uxf.load('expected/tlm-eg.uxx.gz')
+    if uxo1 == uxo3:
         ok += 1
     elif not regression:
-        print('unequal text formats')
+        print('unequal #2')
 
     print(f'total={total} ok={ok}')
 
