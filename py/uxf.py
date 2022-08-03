@@ -160,14 +160,7 @@ class Uxf:
     @value.setter
     def value(self, value):
         '''Replaces all the Uxf's data with the given collection.'''
-        if value is None:
-            value = List()
-        elif isinstance(value, list):
-            value = List(value)
-        elif isinstance(value, dict):
-            value = Map(value)
-        elif isinstance(value, (set, frozenset, tuple, collections.deque)):
-            value = List()
+        value = List() if value is None else _maybe_to_uxf_collection(value)
         if not _is_uxf_collection(value):
             self.on_event(
                 Event.FATAL, 100, 'Uxf value must be a list, List, dict, '
@@ -1261,6 +1254,12 @@ class Field:
 
     def __eq__(self, other):
         return self.name == other.name and self.vtype == other.vtype
+
+
+    def __lt__(self, other):
+        if self.name != other.name:
+            return self.name < other.name
+        return self.vtype < other.vtype
 
 
     def __repr__(self):

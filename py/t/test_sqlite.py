@@ -52,7 +52,7 @@ def check(total, ok, name, regression):
         uxo1.value = [uxo1.value]
     # Our simple SQLite converters can't handle Uxf custom strings or field
     # types. (All this could be done of course.)
-    uxo1.custom = None
+    uxo1.custom = ''
     tclasses = {}
     for ttype, tclass in uxo1.tclasses.items():
         fields = [field.name for field in tclass.fields]
@@ -62,10 +62,10 @@ def check(total, ok, name, regression):
     # NOTE I don't really know why normalizing is necessary.
     # The only difference dumps() shows is in the comments & these are all
     # correctly ignored.
-    uxo1 = uxf.loads(uxo1.dumps()) # normalize
+    #uxo1 = uxf.loads(uxo1.dumps()) # normalize
     uxfconvert._uxf_to_sqlite(filename, uxo1.value)
     uxo2 = uxfconvert._sqlite_to_uxf(filename)
-    uxo2 = uxf.loads(uxo2.dumps()) # normalize
+    #uxo2 = uxf.loads(uxo2.dumps()) # normalize
     total += 1
     if uxo1.is_equivalent(uxo2, uxf.Compare.EQUIVALENT):
         ok += 1
@@ -74,9 +74,38 @@ def check(total, ok, name, regression):
     else:
         if not regression:
             print(f'test_sqlite • {name} FAIL')
+            #debug(1, uxo1);debug(2, uxo2); raise SystemExit
     with contextlib.suppress(FileNotFoundError):
         os.remove(filename)
     return total, ok
+
+
+def debug(i, uxo):
+    with open(f'/tmp/{i}.txt', 'wt', encoding='utf-8') as file:
+        file.write(f'custom={uxo.custom!r}\n')
+        file.write(f'comment={uxo.comment!r}\n')
+        for ttype, tclass in sorted(uxo.tclasses.items()):
+            file.write(f'TClass={ttype!r} comment={tclass.comment!r}\n')
+            for field in sorted(tclass.fields):
+                file.write(f'  Field({field.name!r}, {field.vtype!r})\n')
+        debug_value(file, 0, uxo.value)
+        print('wrote', file.name)
+
+
+def debug_value(file, i, value):
+    if uxf.is_scalar(value):
+        file.write(f'#{i}:{type(value)}={value!r}\n')
+    elif isinstance(value, uxf.List):
+        file.write(f'#{i}:{type(value)} vtype={value.vtype!r} '
+                   f'comment={value.comment!r}\n')
+        for j, item in enumerate(value):
+            debug_value(file, f'{i}[{j}]', item)
+    elif isinstance(value, uxf.Table):
+        file.write(f'#{i}:{type(value)} ttype={value.ttype!r} '
+                   f'comment={value.comment!r}\n')
+        for j, record in enumerate(value):
+            for k, field in enumerate(record):
+                debug_value(file, f'{i}[{j}][{k}]', field)
 
 
 if __name__ == '__main__':
