@@ -270,12 +270,36 @@ Convenience method that wraps the module-level [dump()](#dump-def) function.
 Convenience method that wraps the module-level [dumps()](#dumps-def)
 function.
 
+<a name="Uxf.is_equivalent-def"></a>
+**`.is_equivalent(other: Uxf, compare=Compare.EXACT) -> bool`**
+
+Method primarily used for regression testing. The [List](#list-class),
+[Map](#map-class), [TClass](#tclass-class), and [Table](#table-class)
+classes all provide this method.
+
+There are seven comparison flags although normally only `Compare.EQUIVALENT`
+is used:
+
+- ``EXACT`` use `==` or `!=` instead;
+- ``IGNORE_COMMENTS`` ignore differences in comments
+- ``IGNORE_UNUSED_TTYPES`` ignore unused ttypes
+- ``IGNORE_IMPORTS`` ignore whether ttypes are imported or defined
+- ``EQUIVALENT`` this is the _or_ of the three ignores above
+- ``IGNORE_KVTYPES`` ignore ktypes, vtypes, and field vtypes (rarely
+  appropriate)
+- ``UNTYPED_EQUIVALENT`` this is the _or_ of all the ignores above (rarely
+  appropriate)
+
+For exact equality use `==` or `!=`.
+
 <a name="list-class"></a>
 #### List
 
 A class used to represent a UXF list. It is a `collections.UserList`
 subclass which holds its list in the `.data` attribute and that also has
 `.comment` and `.vtype` attributes.
+
+Also provides ``is_equivalent()`` and support for `==` and `!=`.
 
 ##### Constructor
 
@@ -301,9 +325,11 @@ properties are immutable after construction.
 Note that although Python ``dict``s are insertion-ordered, UXF ``Map``s are
 unordered. This means that while this Python UXF library will always load
 and dump ``Map`` items in the same order, other UXF libraries may not. (The
-`py/uxfcompare.py` utility and the `py/eg/compare.py` example both correctly
-compare two UXF files regardless of `Map` key order; useful for comparing
-two UXFs with different texts and useful for regression testing.)
+`py/uxfcompare.py` utility correctly compares two UXF files regardless of
+`Map` key order; useful for comparing two UXFs with different texts and
+useful for regression testing.)
+
+Also provides ``is_equivalent()`` and support for `==` and `!=`.
 
 ##### Constructor
 
@@ -324,6 +350,8 @@ _vtypes_.
 #### Table
 
 A class used to store UXF Tables.
+
+Also provides ``is_equivalent()`` and support for `==` and `!=`.
 
 ##### Constructor
 
@@ -461,6 +489,8 @@ Returns the table's `row`-th record as a `RecordClass`
 This class is used to store a [Table](#table-class)'s _ttype_ (i.e., its
 name) and fields.
 
+Also provides ``is_equivalent()`` and support for `==` and `!=`.
+
 ##### Constructor
 
 **`TClass(ttype, fields=None, *, comment=None)`**
@@ -491,6 +521,8 @@ Immutable after construction.
 
 This class is used to store a [TClass](#tclass-class)'s fields, i.e., the
 fields for a [Table](#table-class).
+
+Also provides support for `==` and `!=`.
 
 ##### Constructor
 
@@ -649,6 +681,16 @@ To make all errors fatal and use your own prefix (rather than the default of
     def on_event(*args, **kwargs):
         kwargs['prefix'] = 'myapp'
         raise uxf.Error(uxf.event_text(*args, **kwargs))
+
+There are four kinds of events:
+
+- `Event.REPAIR` a fix was applied, e.g., an int was converted to a float, a
+  string containing a date was converted to a date, etc.;
+- `Event.WARNING` problem can't be automatically fixed but can be coped
+  with;
+- `Event.ERROR` problem can't be automatically fixed and means UXF may be
+  invalid;
+- `Event.FATAL` unrecoverable problem.
         
 For further examples of custom `on_event()` functions, see
 `t/test_errors.py`, `t/test_imports.py` `t/test_include.py`,

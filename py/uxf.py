@@ -38,14 +38,33 @@ _MISSING = object()
 
 @enum.unique
 class Event(enum.Enum):
-    WARNING = enum.auto()
+    '''
+    - REPAIR a fix was applied, e.g., an int was converted to a float, a
+      string containing a date was converted to a date, etc.;
+    - WARNING problem can't be automatically fixed but can be coped with;
+    - ERROR problem can't be automatically fixed and means UXF may be
+      invalid;
+    - FATAL unrecoverable problem.
+    '''
     REPAIR = enum.auto()
+    WARNING = enum.auto()
     ERROR = enum.auto()
     FATAL = enum.auto()
 
 
 @enum.unique
 class Compare(enum.Flag):
+    '''
+    - EXACT use == or != instead;
+    - IGNORE_COMMENTS ignore differences in comments
+    - IGNORE_UNUSED_TTYPES ignore unused ttypes
+    - IGNORE_IMPORTS ignore whether ttypes are imported or defined
+    - EQUIVALENT this is the _or_ of the three ignores above
+    - IGNORE_KVTYPES ignore ktypes, vtypes, and field vtypes (rarely
+      appropriate)
+    - UNTYPED_EQUIVALENT this is the _or_ of all the ignores above (rarely
+      appropriate)
+    '''
     EXACT = 0
     IGNORE_COMMENTS = enum.auto()
     IGNORE_UNUSED_TTYPES = enum.auto()
@@ -1143,6 +1162,13 @@ class TClass:
 
 
     def is_equivalent(self, other, compare=Compare.EXACT):
+        '''Returns True if this TClass is equivalent to the other TClass;
+        otherwise returns False.
+        Use == or != for exact comparisons.
+        Use this to ignore differences in comments Compare.IGNORE_COMMENTS,
+        or differences in field vtypes Compare.IGNORE_KVTYPES, or both
+        Compare.UNTYPED_EQUIVALENT
+        '''
         if not isinstance(other, self.__class__):
             return False
         if self.ttype != other.ttype:
@@ -1161,6 +1187,9 @@ class TClass:
 
 
     def __eq__(self, other):
+        '''Returns True if this TClass is the same as the other TClass;
+        otherwise returns False.
+        See also is_equivalent()'''
         if not isinstance(other, self.__class__):
             return False
         if self.ttype != other.ttype:

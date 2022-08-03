@@ -1,4 +1,3 @@
-# TODO document py == and is_equivalent() & pypi
 rs/src/lib.rs # add docs at the end
 rs/src/value.rs
 rs/src/key.rs
@@ -50,7 +49,6 @@ py/t/test_tlm.py
 py/t/gen.py
 py/t/benchmark.py
 py/eg/README.md
-py/eg/compare.py
 py/eg/eq.py
 py/eg/visit.py
 py/eg/slides1.py

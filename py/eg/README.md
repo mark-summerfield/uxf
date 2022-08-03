@@ -6,7 +6,6 @@
 - [Slides](#slides)
     - [slides1.py](#slides1-py)
     - [slides2.py](#slides2-py)
-- [compare.py](#compare-py)
 - [Config.py](#config-py)
 - [t/ Files](#t--files)
     - [gen.py](#gen-py)
@@ -80,12 +79,6 @@ produce HTML output.
 
 This example uses `Uxf.load()` and then manually iterates over the returned
 `Uxf` object's value to produce HTML output.
-
-## compare.py
-
-This example can be used stand-alone or as an import. It is used to compare
-two UXF files for equality (or for equivalence).
-(See also `py/uxfcompare.py`.)
 
 ## Config.py
 
