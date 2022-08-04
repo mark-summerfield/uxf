@@ -2571,7 +2571,7 @@ def _full_filename(filename, path='.'):
 
 
 def _by_key(item):
-    # Order is: bytes, dates, datetimes, ints, strs
+    # Order is: bytes, dates, datetimes, ints, case-insensitive strs
     key = item[0]
     if isinstance(key, (bytes, bytearray)):
         return f'\t{key.decode("latin1", errors="replace")}'
