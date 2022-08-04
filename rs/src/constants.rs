@@ -7,8 +7,6 @@ pub const MAX_IDENTIFIER_LEN: usize = 60;
 
 pub static ISO8601_DATE: &str = "%Y-%m-%d";
 pub static ISO8601_DATETIME: &str = "%Y-%m-%dT%H:%M:%S";
-pub static SORT_KEY_ISO8601_DATE: &str = "\n%Y-%m-%d";
-pub static SORT_KEY_ISO8601_DATETIME: &str = "\x0B%Y-%m-%dT%H:%M:%S";
 
 pub static VALUE_NAME_NULL: &str = "null";
 pub static VTYPE_NAME_BOOL: &str = "bool";

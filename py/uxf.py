@@ -2574,14 +2574,14 @@ def _by_key(item):
     # Order is: bytes, dates, datetimes, ints, strs
     key = item[0]
     if isinstance(key, (bytes, bytearray)):
-        return f'\t{key.hex()}'
-    if isinstance(key, datetime.date):
-        return f'\n{key}'
-    if isinstance(key, datetime.datetime):
-        return f'\v{key}'
+        return (1, key)
+    if isinstance(key, datetime.datetime): # must compare before date
+        return (3, key) # want datetimes _after_ dates
+    if isinstance(key, datetime.date): # a date is also a datetime; not v.v.
+        return (2, key)
     if isinstance(key, int):
-        return f'\f{key:+021}' # max len of 64-bit int is 20 (plus sign)
-    return f'\r{key}'
+        return (4, key)
+    return (5, key)
 
 
 class _AlreadyImported(Exception):
