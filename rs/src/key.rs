@@ -13,6 +13,7 @@ use std::fmt;
 pub enum Key {
     Bytes(Vec<u8>),
     Date(NaiveDate),
+    DateTime(NaiveDateTime),
     Int(i64),
     Str(String),
 }
@@ -26,6 +27,11 @@ impl Key {
     /// Returns `true` if `Key::Date`; otherwise returns `false`.
     pub fn is_date(&self) -> bool {
         matches!(self, Key::Date(_))
+    }
+
+    /// Returns `true` if `Key::DateTime`; otherwise returns `false`.
+    pub fn is_datetime(&self) -> bool {
+        matches!(self, Key::DateTime(_))
     }
 
     /// Returns `true` if `Key::Int`; otherwise returns `false`.
@@ -52,6 +58,16 @@ impl Key {
     /// `None`.
     pub fn as_date(&self) -> Option<NaiveDate> {
         if let Key::Date(value) = self {
+            Some(*value)
+        } else {
+            None
+        }
+    }
+
+    /// Returns `Some(NaiveDateTime)` if `Value::DateTime`; otherwise
+    /// returns `None`.
+    pub fn as_datetime(&self) -> Option<NaiveDateTime> {
+        if let Key::DateTime(value) = self {
             Some(*value)
         } else {
             None
@@ -117,6 +133,7 @@ impl fmt::Display for Key {
             match self {
                 Key::Bytes(b) => bytes_to_uxf(b),
                 Key::Date(d) => d.format(ISO8601_DATE).to_string(),
+                Key::DateTime(d) => d.format(ISO8601_DATETIME).to_string(),
                 Key::Int(i) => i.to_string(),
                 Key::Str(s) => format!("<{}>", escape(s)),
             }

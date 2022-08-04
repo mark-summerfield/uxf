@@ -276,9 +276,7 @@ impl Value {
                 }
             }
             Value::Map(m) => {
-                let mut keys: Vec<&Key> = m.inner().keys().collect();
-                keys.sort_unstable();
-                for key in keys {
+                for key in m.sorted_keys() {
                     let key_value = Value::from(key.clone());
                     key_value.visit(Rc::clone(&visitor));
                     m.get(key).unwrap().visit(Rc::clone(&visitor));
@@ -445,6 +443,7 @@ impl From<Key> for Value {
         match key {
             Key::Bytes(b) => Value::Bytes(b),
             Key::Date(d) => Value::Date(d),
+            Key::DateTime(d) => Value::DateTime(d),
             Key::Int(i) => Value::Int(i),
             Key::Str(s) => Value::Str(s),
         }
@@ -530,6 +529,7 @@ impl PartialEq for Value {
 }
 
 impl Eq for Value {}
+
 
 pub(crate) fn bytes_to_uxf(b: &[u8]) -> String {
     let mut s = String::from("(:");

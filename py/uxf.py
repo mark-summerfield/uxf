@@ -2571,17 +2571,17 @@ def _full_filename(filename, path='.'):
 
 
 def _by_key(item):
-    # Order is: bytes, dates, datetimes, ints, case-insensitive strs
+    # Order is: bytes, dates, datetimes, ints, strs
     key = item[0]
     if isinstance(key, (bytes, bytearray)):
-        return f'\t{key.decode("latin1", errors="replace")}'
+        return f'\t{key.hex()}'
     if isinstance(key, datetime.date):
         return f'\n{key}'
     if isinstance(key, datetime.datetime):
         return f'\v{key}'
     if isinstance(key, int):
         return f'\f{key:+021}' # max len of 64-bit int is 20 (plus sign)
-    return f'\r{key.lower()}'
+    return f'\r{key}'
 
 
 class _AlreadyImported(Exception):

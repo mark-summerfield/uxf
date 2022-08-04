@@ -102,8 +102,8 @@ impl TClass {
 
 impl Ord for TClass {
     fn cmp(&self, other: &Self) -> Ordering {
-        let attype = self.ttype.to_uppercase();
-        let bttype = other.ttype.to_uppercase();
+        let attype = self.ttype.to_lowercase();
+        let bttype = other.ttype.to_lowercase();
         if attype != bttype {
             // prefer case-insensitive ordering
             attype.cmp(&bttype)

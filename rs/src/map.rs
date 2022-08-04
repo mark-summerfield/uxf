@@ -106,6 +106,12 @@ impl Map {
         self.items.clear();
     }
 
+    pub fn sorted_keys(&self) -> Vec<&Key> {
+        let mut keys: Vec<&Key> = self.items.keys().collect();
+        keys.sort_unstable();
+        keys
+    }
+
     /// Returns an iterator of the map's items as immutables.
     pub fn iter(&self) -> std::collections::hash_map::Iter<Key, Value> {
         self.items.iter()
@@ -171,10 +177,8 @@ impl PartialEq for Map {
         if self.items.len() != other.items.len() {
             return false;
         }
-        let mut akeys: Vec<&Key> = self.items.keys().collect();
-        akeys.sort_unstable();
-        let mut bkeys: Vec<&Key> = other.items.keys().collect();
-        bkeys.sort_unstable();
+        let akeys = self.sorted_keys();
+        let bkeys = other.sorted_keys();
         for (akey, bkey) in akeys.iter().zip(bkeys.iter()) {
             if akey != bkey {
                 return false;
@@ -218,9 +222,7 @@ impl fmt::Display for Map {
             parts.push(" ".to_string());
         }
         let mut sep = "";
-        let mut keys: Vec<&Key> = self.items.keys().collect();
-        keys.sort_unstable();
-        for key in keys {
+        for key in self.sorted_keys() {
             parts.push(sep.to_string());
             parts.push(key.to_string());
             parts.push(" ".to_string());
