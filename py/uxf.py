@@ -2580,7 +2580,7 @@ def _by_key(item):
     if isinstance(key, datetime.datetime):
         return f'\v{key}'
     if isinstance(key, int):
-        return f'\f{key:020}' # max len of 64-bit int
+        return f'\f{key:+021}' # max len of 64-bit int is 20 (plus sign)
     return f'\r{key.lower()}'
 
 
