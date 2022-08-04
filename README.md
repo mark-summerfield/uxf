@@ -19,7 +19,8 @@ UXF-based formats are very easy to adapt to future requirements
     - [Built-in Types](#built-in-types)
     - [Custom Types](#custom-types)
 - [Examples](#examples)
-- [Libraries](#libraries) ([Python](py/README.md))
+- [Libraries](#libraries) [[Python](py/README.md)]
+    - [Implementation Notes](#implementation-notes)
 - [Imports](#imports)
 - [BNF](#bnf)
 - [Supplementary](#supplementary)
@@ -584,6 +585,19 @@ _Implementations in additional languages are planned._
 |**Library**|**Language**|**Notes**                    |
 |-----------|------------|-----------------------------|
 |uxf        | Python 3   | See the [Python UXF library](py/README.md).|
+
+### Implementation Notes
+
+UXF ``Map``s are unordered, i.e., make no guarantee as to their order. If a
+library implementer chooses to make their `Map` representation ordered
+(e.g., to simplify regression testing), they are free to do so, since this
+doesn't break any guarantees. However, if a `Map` is to be ordered it is
+recommended that the ordering be: ``bytes``, ``date``s, ``datetime``s,
+``int``s, ``str``s (case-sensitively). For example, a `Map` item with a
+`date` key will always follow all items with ``bytes`` keys and precede all
+items with `datetime` keys. Similarly all items with `datetime` keys will
+precede all items with `int` keys, and all items with `int` keys will
+precede all items with `str` keys.
 
 ## Imports
 
