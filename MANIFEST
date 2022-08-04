@@ -1,3 +1,5 @@
+# TODO rs: Map::sorted_keys() -> Vec<&Key> using uxf.py's _by_key algo.
+# Use this instead of sorting the keys outside of the map
 # TODO Tlm.py & test_tlm.py wrongly relied on maps being insertion
 # ordered; so change to TLM 2.0 format (once invented)
 # TODO backport rs visit() to py & get rid of visit.py
