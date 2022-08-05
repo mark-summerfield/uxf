@@ -1,0 +1,15 @@
+uxf 1.0 Slides 0.1.0
+#<This is a simple example of an application-specific use of UXF.
+See slides[12].py for examples of converting this format to HTML.>
+= Slide title body
+= #<title> h1 content
+= #<subtitle> h2 content
+= #<bullet item> B content
+= #<para> p content
+= #<image> img content image:bytes
+= #<monospace inline> m content
+= #<monospace block> pre content
+= #<italic> i content
+= url content link
+= #<newline with no content> nl
+[]

@@ -1,9 +1,9 @@
 uxf 1.0
-!http://www.qtrac.eu/ttype-eg.uxf
+!http://localhost:5558/ttype-eg.uxf
 !ttype-test.uxi
 !t63.uxt
 !ttype-test.uxi
-!http://www.qtrac.eu/ttype-eg.uxf
+!http://localhost:5558/ttype-eg.uxf
 !t63.uxt
 =point3d x:int y:int z:int
 =dob dob:date

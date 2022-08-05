@@ -64,6 +64,7 @@ README.md
 misc/epd2uxf.py
 misc/md2html.sh
 misc/stats.py
+misc/test_server.py
 
 uxf.vim
 

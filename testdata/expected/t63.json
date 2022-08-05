@@ -1,6 +1,6 @@
 {
   "UXF^imports": [
-    "http://www.qtrac.eu/ttype-eg.uxf",
+    "http://localhost:5558/ttype-eg.uxf",
     "ttype-test.uxi",
     "complex",
     "fraction",

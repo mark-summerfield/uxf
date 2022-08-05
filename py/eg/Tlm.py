@@ -214,11 +214,10 @@ class Model:
         stack = uxo.value # root is List
         self._write_tree_uxf(stack, self.tree, t_track, t_group)
         # TODO add history as last item in root
-        print(uxo.dumps())
-        #opener = (gzip.open if self._filename.upper().endswith('.GZ') else
-        #          open)
-        #with opener(self._filename, 'wt', encoding='utf-8') as file:
-        #    file.write(uxo.dumps())
+        opener = (gzip.open if self._filename.upper().endswith('.GZ') else
+                  open)
+        with opener(self._filename, 'wt', encoding='utf-8') as file:
+            file.write(uxo.dumps())
 
 
     def _write_tree_uxf(self, stack, tree, t_track, t_group):
@@ -240,6 +239,7 @@ class Model:
                 track.append((kid.filename, kid.secs))
 
 
+    # TODO DELETE
     def _save_as_uxf1(self):
         uxo = uxf.Uxf({}, custom='TLM 1.1')
         stack = [uxo.value] # root is Map
@@ -251,6 +251,7 @@ class Model:
             file.write(uxo.dumps())
 
 
+    # TODO DELETE
     def _write_tree_uxf1(self, stack, tree):
         parent = stack[-1]
         for kid in tree.kids:

@@ -1,5 +1,5 @@
 uxf 1.0
-!http://www.qtrac.eu/ttype-eg.uxf
+!http://localhost:5558/ttype-eg.uxf
 !ttype-test.uxi
 !i66.uxi
 =point3d x:int y:int z:int

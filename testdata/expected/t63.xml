@@ -1,7 +1,7 @@
 <?xml version="1.0" ?>
 <uxf version="1.0">
   <imports>
-    <import filename="http://www.qtrac.eu/ttype-eg.uxf"/>
+    <import filename="http://localhost:5558/ttype-eg.uxf"/>
     <import filename="ttype-test.uxi"/>
     <import filename="complex"/>
     <import filename="fraction"/>
