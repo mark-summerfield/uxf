@@ -1,5 +1,7 @@
-# TODO Tlm.py & test_tlm.py wrongly relied on maps being insertion
-# ordered; so change to TLM 2.0 format (once invented)
+# TODO Tlm.py 
+# - complete _save_as_uxf() (history)
+# - delete old _save_as_uxf1() & _write_tree_uxf1()
+# - rewrite _load_uxf() & _populate_tree_from_uxo()
 # TODO backport rs visit() to py & get rid of visit.py
 rs/src/lib.rs # add docs at the end
 rs/src/value.rs

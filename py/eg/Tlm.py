@@ -148,6 +148,7 @@ class Model:
             raise Error(f'error:{lino}: failed to read track: {err}')
 
 
+    # TODO rewrite for TLM 1.2 format
     def _load_uxf(self):
         try:
             uxo = uxf.load(self._filename)
@@ -163,6 +164,7 @@ class Model:
             return False
 
 
+    # TODO rewrite for TLM 1.2 format
     def _populate_tree_from_uxo(self, stack, group, kids):
         parent = stack[-1]
         group = Group(group)
