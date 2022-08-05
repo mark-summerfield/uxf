@@ -88,7 +88,8 @@ class Model:
 
     def _load_tlm(self):
         with open(self._filename, 'rb') as file:
-            opener = open if file.read(4) == TLM_MAGIC else gzip.open
+            opener = (open if file.read(5) == TLM_MAGIC.encode() else
+                      gzip.open)
         self.clear()
         stack = [self.tree]
         prev_indent = 0
@@ -205,9 +206,44 @@ class Model:
 
 
     def _save_as_uxf(self):
+        t_track = uxf.TClass('Track', (uxf.Field('filename', 'str'),
+                                       uxf.Field('secs', 'real')))
+        t_group = uxf.TClass('Group', (uxf.Field('name', 'str'),
+                                       uxf.Field('items')))
+        uxo = uxf.Uxf(custom='TLM 1.2')
+        stack = uxo.value # root is List
+        self._write_tree_uxf(stack, self.tree, t_track, t_group)
+        # TODO add history as last item in root
+        print(uxo.dumps())
+        #opener = (gzip.open if self._filename.upper().endswith('.GZ') else
+        #          open)
+        #with opener(self._filename, 'wt', encoding='utf-8') as file:
+        #    file.write(uxo.dumps())
+
+
+    def _write_tree_uxf(self, stack, tree, t_track, t_group):
+        parent = stack[-1] if stack else stack
+        track = None
+        for kid in tree.kids:
+            if isinstance(kid, Group):
+                track = None
+                group = uxf.Table(t_group)
+                group.append((kid.name, []))
+                parent.append(group)
+                stack.append(group.last.items)
+                self._write_tree_uxf(stack, kid, t_track, t_group)
+                stack.pop()
+            else:
+                if track is None:
+                    track = uxf.Table(t_track)
+                    parent.append(track)
+                track.append((kid.filename, kid.secs))
+
+
+    def _save_as_uxf1(self):
         uxo = uxf.Uxf({}, custom='TLM 1.1')
         stack = [uxo.value] # root is Map
-        self._write_tree_uxf(stack, self.tree)
+        self._write_tree_uxf1(stack, self.tree)
         uxo.value[UXF_HISTORY] = self.history
         opener = (gzip.open if self._filename.upper().endswith('.GZ') else
                   open)
@@ -215,7 +251,7 @@ class Model:
             file.write(uxo.dumps())
 
 
-    def _write_tree_uxf(self, stack, tree):
+    def _write_tree_uxf1(self, stack, tree):
         parent = stack[-1]
         for kid in tree.kids:
             if isinstance(kid, Group):
