@@ -154,20 +154,14 @@ class Model:
             uxo = uxf.load(self._filename)
             stack = [self.tree]
             for table in uxo.value: # uxo.value is a List of tables
-                if hasattr(table, 'ttype'):
-                    if table.ttype == 'Group':
-                        self._populate_tree_from_uxo(stack, table)
-                    elif table.ttype == 'History':
-                        for value in table:
-                            for name in value:
-                                self.history.append(name)
-                    else:
-                        raise uxf.Error(
-                            f'expected Group or History, got {table}')
-                else:
-                    raise uxf.Error(f'expected table, got {table}')
+                if table.ttype == 'Group':
+                    self._populate_tree_from_uxo(stack, table)
+                elif table.ttype == 'History':
+                    for value in table:
+                        for name in value:
+                            self.history.append(name)
             return True
-        except uxf.Error:
+        except uxf.Error: # May get AttributeError etc.
             return False
 
 
