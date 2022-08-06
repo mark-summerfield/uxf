@@ -19,6 +19,7 @@ import enum
 import gzip
 import os
 import pathlib
+import random
 import sys
 
 try:
@@ -80,6 +81,7 @@ class Model:
 
 
     def load(self, filename=None):
+        self.clear()
         if filename is not None:
             self._filename = filename
         if not self._load_uxf():
@@ -90,7 +92,6 @@ class Model:
         with open(self._filename, 'rb') as file:
             opener = (open if file.read(5) == TLM_MAGIC.encode() else
                       gzip.open)
-        self.clear()
         stack = [self.tree]
         prev_indent = 0
         state = _State.WANT_MAGIC
@@ -148,34 +149,41 @@ class Model:
             raise Error(f'error:{lino}: failed to read track: {err}')
 
 
-    # TODO rewrite for TLM 1.2 format
     def _load_uxf(self):
         try:
             uxo = uxf.load(self._filename)
             stack = [self.tree]
-            for group, kids in uxo.value.items():
-                if group == UXF_HISTORY:
-                    for history in kids:
-                        self.history.append(history)
+            for table in uxo.value: # uxo.value is a List of tables
+                if hasattr(table, 'ttype'):
+                    if table.ttype == 'Group':
+                        self._populate_tree_from_uxo(stack, table)
+                    elif table.ttype == 'History':
+                        for value in table:
+                            for name in value:
+                                self.history.append(name)
+                    else:
+                        raise uxf.Error(
+                            f'expected Group or History, got {table}')
                 else:
-                    self._populate_tree_from_uxo(stack, group, kids)
+                    raise uxf.Error(f'expected table, got {table}')
             return True
         except uxf.Error:
             return False
 
 
-    # TODO rewrite for TLM 1.2 format
-    def _populate_tree_from_uxo(self, stack, group, kids):
+    def _populate_tree_from_uxo(self, stack, table):
         parent = stack[-1]
-        group = Group(group)
-        parent.append(group)
-        for name, value in kids.items():
-            if isinstance(value, (dict, uxf.Map)):
-                stack.append(group)
-                self._populate_tree_from_uxo(stack, name, value)
-                stack.pop()
-            else:
-                group.append(Track(name, value))
+        for value in table:
+            group = Group(value.name)
+            parent.append(group)
+            stack.append(group)
+            for table in value.items:
+                if table.ttype == 'Group':
+                    self._populate_tree_from_uxo(stack, table)
+                else:
+                    for filename, secs in table:
+                        group.append(Track(filename, secs))
+            stack.pop()
 
 
     def save(self, *, filename=None, compress=True):
@@ -208,18 +216,40 @@ class Model:
 
 
     def _save_as_uxf(self):
-        t_track = uxf.TClass('Track', (uxf.Field('filename', 'str'),
-                                       uxf.Field('secs', 'real')))
-        t_group = uxf.TClass('Group', (uxf.Field('name', 'str'),
-                                       uxf.Field('items')))
-        uxo = uxf.Uxf(custom='TLM 1.2')
+        uxo, t_track, t_group, t_history = self._get_uxo_and_tclasses()
         stack = uxo.value # root is List
         self._write_tree_uxf(stack, self.tree, t_track, t_group)
-        # TODO add history as last item in root
+        history = uxf.Table(t_history)
+        for value in self.history:
+            history.append((value,))
+        uxo.value.append(history)
         opener = (gzip.open if self._filename.upper().endswith('.GZ') else
                   open)
         with opener(self._filename, 'wt', encoding='utf-8') as file:
             file.write(uxo.dumps())
+
+
+    def _get_uxo_and_tclasses(self):
+        if random.choice((0, 1)): # To show we can do it either way
+            t_track = uxf.TClass('Track', (uxf.Field('filename', 'str'),
+                                           uxf.Field('secs', 'real')))
+            t_group = uxf.TClass('Group', (uxf.Field('name', 'str'),
+                                           uxf.Field('items', 'list')))
+            t_history = uxf.TClass('History', (uxf.Field('name', 'str'),))
+            tclasses = {tclass.ttype: tclass for tclass in (
+                        t_track, t_group, t_history)}
+            uxo = uxf.Uxf(custom='TLM 1.2', tclasses=tclasses)
+        else:
+            uxo = uxf.loads('''uxf 1.0 TLM 1.2
+=Group name:str items:list
+=History name:str
+=Track filename:str secs:real
+[]
+''', on_event=lambda *_, **__: None)
+            t_track = uxo.tclasses['Track']
+            t_group = uxo.tclasses['Group']
+            t_history = uxo.tclasses['History']
+        return uxo, t_track, t_group, t_history
 
 
     def _write_tree_uxf(self, stack, tree, t_track, t_group):
@@ -239,31 +269,6 @@ class Model:
                     track = uxf.Table(t_track)
                     parent.append(track)
                 track.append((kid.filename, kid.secs))
-
-
-    # TODO DELETE
-    def _save_as_uxf1(self):
-        uxo = uxf.Uxf({}, custom='TLM 1.1')
-        stack = [uxo.value] # root is Map
-        self._write_tree_uxf1(stack, self.tree)
-        uxo.value[UXF_HISTORY] = self.history
-        opener = (gzip.open if self._filename.upper().endswith('.GZ') else
-                  open)
-        with opener(self._filename, 'wt', encoding='utf-8') as file:
-            file.write(uxo.dumps())
-
-
-    # TODO DELETE
-    def _write_tree_uxf1(self, stack, tree):
-        parent = stack[-1]
-        for kid in tree.kids:
-            if isinstance(kid, Group):
-                child = parent[kid.name] = {}
-                stack.append(child)
-                self._write_tree_uxf(stack, kid)
-                stack.pop()
-            else:
-                parent[kid.filename] = kid.secs
 
 
     def paths(self):

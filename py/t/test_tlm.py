@@ -2,6 +2,7 @@
 # Copyright © 2022 Mark Summerfield. All rights reserved.
 # License: GPLv3
 
+import gzip
 import os
 import sys
 
@@ -20,21 +21,25 @@ def main():
     regression = False
     if len(sys.argv) > 1 and sys.argv[1] in {'-r', '--regression'}:
         regression = True
-    total = ok = 0
+    total, ok = test(1, 0, 0, regression) 
+    total, ok = test(2, total, ok, regression) 
+    print(f'total={total} ok={ok}')
 
+
+def test(n, total, ok, regression):
     total += 1
-    expected = 'tlm-eg.uxx.gz'
+    expected = f'tlm-eg{n}.uxx.gz'
     tlm1 = Tlm.Model(expected)
     ok += 1
 
     total += 1
-    actual_tlm = 'actual/1.tlm'
+    actual_tlm = f'actual/{n}.tlm'
     tlm1.save(filename=actual_tlm)
     ok += 1
 
     total += 1
     tlm2 = Tlm.Model(actual_tlm)
-    actual_uxf = 'actual/1.uxf.gz'
+    actual_uxf = f'actual/{n}.uxf.gz'
     tlm2.save(filename=actual_uxf)
     ok += 1
 
@@ -53,13 +58,22 @@ def main():
         print('unequal #1')
 
     total += 1
-    uxo3 = uxf.load('expected/tlm-eg.uxx.gz')
+    uxo3 = uxf.load(f'expected/tlm-eg{n}.uxx.gz')
     if uxo1 == uxo3:
         ok += 1
     elif not regression:
         print('unequal #2')
 
-    print(f'total={total} ok={ok}')
+    total += 1
+    with gzip.open(f'expected/tlm-eg{n}.uxx.gz', 'rt',
+                   encoding='utf-8') as file:
+        uxt4 = file.read().rstrip()
+    if uxo1.dumps().rstrip() == uxt4:
+        ok += 1
+    elif not regression:
+        print('unequal text #3')
+
+    return total, ok
 
 
 if __name__ == '__main__':
