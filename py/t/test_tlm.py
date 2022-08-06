@@ -21,8 +21,8 @@ def main():
     regression = False
     if len(sys.argv) > 1 and sys.argv[1] in {'-r', '--regression'}:
         regression = True
-    total, ok = test(1, 0, 0, regression) 
-    total, ok = test(2, total, ok, regression) 
+    total, ok = test(1, 0, 0, regression)
+    total, ok = test(2, total, ok, regression)
     print(f'total={total} ok={ok}')
 
 
