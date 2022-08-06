@@ -7,10 +7,6 @@ An example of using UXF as both a "native" file format and as an exchange
 format for importing and exporting. The main class, Tlm holds a track list
 and a list of history strings. The Tlm can load and save in its own TLM
 format, and also seamlessly, UXF format.
-
-Loading needs ~60 lines for TLM and ~23 lines for UXF.
-This is because the uxf module does most of the parsing.
-Saving needs ~18 lines for TLM and for UXF.
 '''
 
 import collections
