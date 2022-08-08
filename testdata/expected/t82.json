@@ -1,0 +1,147 @@
+{
+  "UXF^ttypes": [
+    {
+      "UXF^ttype": {
+        "name": "Feature",
+        "fields": {
+          "geometry": null,
+          "properties": "map"
+        }
+      }
+    },
+    {
+      "UXF^ttype": {
+        "name": "LineString",
+        "fields": {
+          "x": "real",
+          "y": "real"
+        }
+      }
+    },
+    {
+      "UXF^ttype": {
+        "name": "Point",
+        "fields": {
+          "x": "real",
+          "y": "real"
+        }
+      }
+    },
+    {
+      "UXF^ttype": {
+        "name": "Polygon",
+        "fields": {
+          "x": "real",
+          "y": "real"
+        }
+      }
+    }
+  ],
+  "UXF^data": {
+    "UXF^table": {
+      "name": "Feature",
+      "comment": null,
+      "fields": {
+        "geometry": null,
+        "properties": "map"
+      },
+      "records": [
+        [
+          {
+            "UXF^table": {
+              "name": "Point",
+              "comment": null,
+              "fields": {
+                "x": "real",
+                "y": "real"
+              },
+              "records": [
+                [
+                  102.0,
+                  0.5
+                ]
+              ]
+            }
+          },
+          {
+            "prop0": "value0"
+          }
+        ],
+        [
+          {
+            "UXF^table": {
+              "name": "LineString",
+              "comment": null,
+              "fields": {
+                "x": "real",
+                "y": "real"
+              },
+              "records": [
+                [
+                  102.0,
+                  0.0
+                ],
+                [
+                  103.0,
+                  1.0
+                ],
+                [
+                  104.0,
+                  0.0
+                ],
+                [
+                  105.0,
+                  1.0
+                ]
+              ]
+            }
+          },
+          {
+            "prop0": "value0",
+            "prop1": 0.0
+          }
+        ],
+        [
+          {
+            "UXF^table": {
+              "name": "Polygon",
+              "comment": null,
+              "fields": {
+                "x": "real",
+                "y": "real"
+              },
+              "records": [
+                [
+                  100.0,
+                  0.0
+                ],
+                [
+                  101.0,
+                  0.0
+                ],
+                [
+                  101.0,
+                  1.0
+                ],
+                [
+                  100.0,
+                  1.0
+                ],
+                [
+                  100.0,
+                  0.0
+                ]
+              ]
+            }
+          },
+          {
+            "prop0": "value0",
+            "prop1": {
+              "this": "that"
+            }
+          }
+        ]
+      ]
+    }
+  }
+}

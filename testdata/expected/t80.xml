@@ -1,0 +1,49 @@
+<?xml version="1.0" ?>
+<uxf version="1.0" comment="last modified 1 April 2001 by John Doe">
+  <map>
+    <key>
+      <str>owner</str>
+    </key>
+    <value>
+      <map>
+        <key>
+          <str>name</str>
+        </key>
+        <value>
+          <str>John Doe</str>
+        </value>
+        <key>
+          <str>organization</str>
+        </key>
+        <value>
+          <str>Acme Widgets Inc.</str>
+        </value>
+      </map>
+    </value>
+    <key>
+      <str>database</str>
+    </key>
+    <value>
+      <map comment="use IP address in case network name resolution is not working">
+        <key>
+          <str>server</str>
+        </key>
+        <value>
+          <str>192.0.2.62</str>
+        </value>
+        <key>
+          <str>port</str>
+        </key>
+        <value>
+          <int v="143"/>
+        </value>
+        <key>
+          <str>file</str>
+        </key>
+        <value>
+          <str>payroll.dat</str>
+        </value>
+      </map>
+    </value>
+  </map>
+</uxf>

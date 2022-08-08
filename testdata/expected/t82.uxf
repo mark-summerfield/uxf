@@ -1,0 +1,27 @@
+uxf 1.0
+=Feature geometry properties:map
+=LineString x:real y:real
+=Point x:real y:real
+=Polygon x:real y:real
+(Feature
+  (Point 102.0 0.5)
+  {<prop0> <value0>}
+  (LineString
+    102.0 0.0
+    103.0 1.0
+    104.0 0.0
+    105.0 1.0
+  )
+  {<prop0> <value0> <prop1> 0.0}
+  (Polygon
+    100.0 0.0
+    101.0 0.0
+    101.0 1.0
+    100.0 1.0
+    100.0 0.0
+  )
+  {
+    <prop0> <value0>
+    <prop1> {<this> <that>}
+  }
+)

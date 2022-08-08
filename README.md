@@ -1,8 +1,12 @@
 # UXF Overview
 
 Uniform eXchange Format (UXF) is a plain text human readable optionally
-typed storage format. UXF may serve as a convenient alternative to csv, ini,
-json, sqlite, toml, xml, or yaml.
+typed storage format. UXF is designed to make life easier for software
+developers and data designers. It directly competes with csv, ini, json,
+toml, and yaml formats. One key advantage of UXF is that it supports custom
+(i.e., user-defined) types. This can result in more compact, more readable,
+and easier to parse data. And in some contexts it may prove to be a
+convenient alternative to sqlite or xml.
 
 UXF is an open standard. The UXF software linked from this page is all free
 open source software.
@@ -19,6 +23,11 @@ UXF-based formats are very easy to adapt to future requirements
     - [Built-in Types](#built-in-types)
     - [Custom Types](#custom-types)
 - [Examples](#examples)
+    - [CSV](#csv)
+    - [INI](#ini)
+    - [JSON](#json)
+    - [TOML](#toml)
+    - [Database](#database)
 - [Libraries](#libraries) [[Python](py/README.md)]
     - [Implementation Notes](#implementation-notes)
 - [Imports](#imports)
@@ -196,7 +205,7 @@ the data is a single _empty_ Pair table.
 And here is a UXF with a single Pair table that contains two nested Pair
 tables, the second of which itself contains a nested pair.
 
-### CSV to UXF
+### CSV
 
 Although widely used, the CSV format is not standardized and has a number of
 problems. UXF is a standardized alternative that can distinguish fieldnames
@@ -204,14 +213,14 @@ from data rows, can handle multiline text (including text with commas and
 quotes) without formality, and can store one—or more—tables in a single UXF
 file.
 
-#### CSV
+#### CSV Example
 
     Date,Price,Quantity,ID,Description
     "2022-09-21",3.99,2,"CH1-A2","Chisels (pair), 1in & 1¼in"
     "2022-10-02",4.49,1,"HV2-K9","Hammer, 2lb"
     "2022-10-02",5.89,1,"SX4-D1","Eversure Sealant, 13-floz"
 
-#### UXF equivalents
+#### UXF Equivalents
 
 The most obvious translation would be to a `list` of ``list``s:
 
@@ -290,13 +299,61 @@ indicate _any_ valid table type.
 
 Just for completeness, here's an example of an empty price list table.
 
-### INI to UXF
+### INI
 
 Windows `.ini` format (and Unix's often similar `.conf` format) are commonly
 used but unstandardized formats. UXF can be used as a more reliable and
 easier to use alternative.
 
-#### INI
+#### Wikipedia INI Example
+
+Here is a `.ini` example from Wikipedia:
+
+    ; last modified 1 April 2001 by John Doe
+    [owner]
+    name = John Doe
+    organization = Acme Widgets Inc.
+
+    [database]
+    ; use IP address in case network name resolution is not working
+    server = 192.0.2.62     
+    port = 143
+    file = "payroll.dat"
+
+And here is a simple UXF alternative:
+
+    uxf 1.0
+    #<last modified 1 April 2001 by John Doe>
+    {
+     <owner> {<name> <John Doe> <organization> <Acme Widgets Inc.>}
+     <database>
+        {#<use IP address in case network name resolution is not working>
+         <server> <192.0.2.62>
+         <port> 143
+         <file> <payroll.dat>
+        }
+    }
+
+Here we've just used nested maps to structure the data. UXF only supports
+comments at the start of a file (after the header) and at the start of a
+list, map, or table (before any data).
+
+As it stands, this example doesn't appear to add much to the `.ini` version.
+Here's a version with types and tables.
+
+    uxf 1.0
+    #<last modified 1 April 2001 by John Doe>
+    =Owner name:str organization:str
+    =#<use IP address in case network name resolution is not working>
+      Database server:str port:int file:str
+    [
+     (Owner <John Doe> <Acme Widgets Inc.>)
+     (Database <192.0.2.62> 143 <payroll.dat>)
+    ]
+
+In the following subsubsections we'll see a much more complex example.
+
+#### INI Example
 
     shapename = Hexagon
     zoom = 150
@@ -324,12 +381,12 @@ easier to use alternative.
     recent1=/tmp/test2.uxf
     recent2=C:\Users\mark\test3.uxf
 
-#### UXF equivalents
+#### UXF Equivalents
 
 This first equivalent is a simplistic conversion that we'll improve in
 stages.
 
-    uxf 1.0 MyApp 1.2.0 Config
+    uxf 1.0 MyApp 1.0.0 Config
     =Files Kind Filename
     {
       <General> {
@@ -379,7 +436,7 @@ of two untyped fields.
 Of course, we can nest as deep as we like and mix ``list``s and ``map``s.
 For example, here's an alternative:
 
-    uxf 1.0 MyApp 1.2.0 Config
+    uxf 1.0 MyApp 1.1.0 Config
     =pos x:int y:int
     =size width:int height:int
     {
@@ -420,6 +477,9 @@ placed at the start of a list before the optional _vtype_ or the first
 value, or at the start of a map before the optional _ktype_ or the first
 key, or at the start of a table before the _ttype_ name.
 
+This version probably provides the best balance between human readability
+and programming convenience. But it is possible to go further.
+
     uxf 1.0 MyApp 1.2.0 Config
     =pos x:int y:int
     =size width:int height:int
@@ -449,7 +509,11 @@ Since “pos” and “size” are tables they can have as many rows as we like,
 this case three (since each row has two fields based on each table's
 _ttype_).
 
-    uxf 1.0 MyApp 1.2.0 Config
+Programatically, this is easy to handle and has the virtue of compactness.
+But its human readability seems a bit less than the previous more verbose
+version.
+
+    uxf 1.0 MyApp 1.3.0 Config
     =#<Window dimensions> Geometry x:int y:int width:int height:int scale:real
     {#<Notes on this configuration file format> str map
       <General> {#<Miscellaneous settings> str
@@ -471,7 +535,146 @@ type and laid it out for human readability. We could, of course, have just
 written it as `(Geometry 615 252 592 636 1.1 28 42 140 81 1.0 57 98 89 22
 0.5)`.
 
-### Database to UXF
+This is even more compact, again at the expense of human readability.
+
+The UXF format supports simple add-hoc lists and maps, all the way to types
+and tables—leaving the software developer or data designer free to strike
+exactly the balance they want.
+
+## JSON
+
+JSON is a widely used format, but unlike UXF it lacks user-defined types.
+Here's an example of GeoJSON data from Wikipedia:
+
+    {
+    "type": "FeatureCollection",
+    "features": [
+        {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [102.0, 0.5]
+        },
+        "properties": {
+            "prop0": "value0"
+        }
+        },
+        {
+        "type": "Feature",
+        "geometry": {
+            "type": "LineString",
+            "coordinates": [
+            [102.0, 0.0], [103.0, 1.0], [104.0, 0.0], [105.0, 1.0]
+            ]
+        },
+        "properties": {
+            "prop0": "value0",
+            "prop1": 0.0
+        }
+        },
+        {
+        "type": "Feature",
+        "geometry": {
+            "type": "Polygon",
+            "coordinates": [
+            [
+                [100.0, 0.0], [101.0, 0.0], [101.0, 1.0],
+                [100.0, 1.0], [100.0, 0.0]
+            ]
+            ]
+        },
+        "properties": {
+            "prop0": "value0",
+            "prop1": { "this": "that" }
+        }
+        }
+    ]
+    }
+
+And here's a possible UXF alternative:
+
+    uxf 1.0
+    =Feature geometry properties:map
+    =LineString x:real y:real
+    =Point x:real y:real
+    =Polygon x:real y:real
+    (Feature
+        (Point 102.0 0.5) {<prop0> <value0>}
+        (LineString 102.0 0.0 103.0 1.0 104.0 0.0 105.0 1.0)
+            {<prop0> <value0> <prop1> 0.0}
+        (Polygon 100.0 0.0 101.0 0.0 101.0 1.0 100.0 1.0 100.0 0.0)
+            {<prop0> <value0> <prop1> {<this> <that>}}
+    )
+
+We don't need a FeatureCollection because UXF tables can accept zero or more
+values, so a Feature table is sufficient.
+
+## TOML
+
+Here is a TOML example from the TOML website and Wikipedia:
+
+    # This is a TOML document.
+
+    title = "TOML Example"
+
+    [owner]
+    name = "Tom Preston-Werner"
+    dob = 1979-05-27T07:32:00-08:00 # First class dates
+
+    [database]
+    server = "192.168.1.1"
+    ports = [ 8000, 8001, 8002 ]
+    connection_max = 5000
+    enabled = true
+
+    [servers]
+
+        # Indentation (tabs and/or spaces) is allowed but not required
+        [servers.alpha]
+        ip = "10.0.0.1"
+        dc = "eqdc10"
+
+        [servers.beta]
+        ip = "10.0.0.2"
+        dc = "eqdc10"
+
+    [clients]
+    data = [ ["gamma", "delta"], [1, 2] ]
+
+    # Line breaks are OK when inside arrays
+    hosts = [
+    "alpha",
+    "omega"
+    ]
+
+And here's a possible UXF alternative:
+
+    uxf 1.0
+    #<UXF version of TOML Example>
+    =DateTime base:datetime offset:str
+    =Owner name:str dob:DateTime
+    =Database server:str ports:list connection_max:int enabled:bool
+    =Server name:str ip:str dc:str
+    =Clients a b
+    =Hosts name:str
+    [
+      (Owner <Tom Preston-Werner> (DateTime 1979-05-27T07:32:00 <-08:00>))
+      (Database <192.168.1.1> [8000 8001 8002] 5000 yes)
+      (Server <alpha> <10.0.0.1> <eqdc10>
+              <beta> <10.0.0.2> <eqdc10>)
+      (Clients <gamma> <delta> 1 2)
+      (Hosts
+        <alpha>
+        <omega>)
+    ]
+
+Unlike TOML, UXF doesn't natively support timezones, so we've created a
+DateTime _ttype_ which has a base datetime and a timezone offset. For
+Clients the data will come in pairs because we've specified two fields.
+Although written compactly, we could have newlines wherever whitespace is
+required—or optional.
+
+### Database
 
 Database files aren't normally human readable and usually require
 specialized tools to read and modify their contents. Yet many databases are

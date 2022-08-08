@@ -1,0 +1,180 @@
+{
+  "UXF^comment": "UXF version of TOML Example",
+  "UXF^ttypes": [
+    {
+      "UXF^ttype": {
+        "name": "Clients",
+        "fields": {
+          "a": null,
+          "b": null
+        }
+      }
+    },
+    {
+      "UXF^ttype": {
+        "name": "Database",
+        "fields": {
+          "server": "str",
+          "ports": "list",
+          "connection_max": "int",
+          "enabled": "bool"
+        }
+      }
+    },
+    {
+      "UXF^ttype": {
+        "name": "DateTime",
+        "fields": {
+          "base": "datetime",
+          "offset": "str"
+        }
+      }
+    },
+    {
+      "UXF^ttype": {
+        "name": "Hosts",
+        "fields": {
+          "name": "str"
+        }
+      }
+    },
+    {
+      "UXF^ttype": {
+        "name": "Owner",
+        "fields": {
+          "name": "str",
+          "dob": "DateTime"
+        }
+      }
+    },
+    {
+      "UXF^ttype": {
+        "name": "Server",
+        "fields": {
+          "name": "str",
+          "ip": "str",
+          "dc": "str"
+        }
+      }
+    }
+  ],
+  "UXF^data": [
+    {
+      "UXF^table": {
+        "name": "Owner",
+        "comment": null,
+        "fields": {
+          "name": "str",
+          "dob": "DateTime"
+        },
+        "records": [
+          [
+            "Tom Preston-Werner",
+            {
+              "UXF^table": {
+                "name": "DateTime",
+                "comment": null,
+                "fields": {
+                  "base": "datetime",
+                  "offset": "str"
+                },
+                "records": [
+                  [
+                    {
+                      "UXF^datetime": "1979-05-27T07:32:00"
+                    },
+                    "-08:00"
+                  ]
+                ]
+              }
+            }
+          ]
+        ]
+      }
+    },
+    {
+      "UXF^table": {
+        "name": "Database",
+        "comment": null,
+        "fields": {
+          "server": "str",
+          "ports": "list",
+          "connection_max": "int",
+          "enabled": "bool"
+        },
+        "records": [
+          [
+            "192.168.1.1",
+            [
+              8000,
+              8001,
+              8002
+            ],
+            5000,
+            true
+          ]
+        ]
+      }
+    },
+    {
+      "UXF^table": {
+        "name": "Server",
+        "comment": null,
+        "fields": {
+          "name": "str",
+          "ip": "str",
+          "dc": "str"
+        },
+        "records": [
+          [
+            "alpha",
+            "10.0.0.1",
+            "eqdc10"
+          ],
+          [
+            "beta",
+            "10.0.0.2",
+            "eqdc10"
+          ]
+        ]
+      }
+    },
+    {
+      "UXF^table": {
+        "name": "Clients",
+        "comment": null,
+        "fields": {
+          "a": null,
+          "b": null
+        },
+        "records": [
+          [
+            "gamma",
+            "delta"
+          ],
+          [
+            1,
+            2
+          ]
+        ]
+      }
+    },
+    {
+      "UXF^table": {
+        "name": "Hosts",
+        "comment": null,
+        "fields": {
+          "name": "str"
+        },
+        "records": [
+          [
+            "alpha"
+          ],
+          [
+            "omega"
+          ]
+        ]
+      }
+    }
+  ]
+}

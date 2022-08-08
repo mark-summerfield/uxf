@@ -1,0 +1,61 @@
+{
+  "UXF^comment": "last modified 1 April 2001 by John Doe",
+  "UXF^ttypes": [
+    {
+      "UXF^ttype": {
+        "name": "Database",
+        "fields": {
+          "server": "str",
+          "port": "int",
+          "file": "str"
+        },
+        "comment": "use IP address in case network name resolution is not working"
+      }
+    },
+    {
+      "UXF^ttype": {
+        "name": "Owner",
+        "fields": {
+          "name": "str",
+          "organization": "str"
+        }
+      }
+    }
+  ],
+  "UXF^data": [
+    {
+      "UXF^table": {
+        "name": "Owner",
+        "comment": null,
+        "fields": {
+          "name": "str",
+          "organization": "str"
+        },
+        "records": [
+          [
+            "John Doe",
+            "Acme Widgets Inc."
+          ]
+        ]
+      }
+    },
+    {
+      "UXF^table": {
+        "name": "Database",
+        "comment": null,
+        "fields": {
+          "server": "str",
+          "port": "int",
+          "file": "str"
+        },
+        "records": [
+          [
+            "192.0.2.62",
+            143,
+            "payroll.dat"
+          ]
+        ]
+      }
+    }
+  ]
+}

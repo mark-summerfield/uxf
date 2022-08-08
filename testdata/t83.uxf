@@ -1,0 +1,18 @@
+uxf 1.0
+#<UXF version of TOML Example>
+=DateTime base:datetime offset:str
+=Owner name:str dob:DateTime
+=Database server:str ports:list connection_max:int enabled:bool
+=Server name:str ip:str dc:str
+=Clients a b
+=Hosts name:str
+[
+  (Owner <Tom Preston-Werner> (DateTime 1979-05-27T07:32:00 <-08:00>))
+  (Database <192.168.1.1> [8000 8001 8002] 5000 yes)
+  (Server <alpha> <10.0.0.1> <eqdc10>
+          <beta> <10.0.0.2> <eqdc10>)
+  (Clients <gamma> <delta> 1 2)
+  (Hosts
+    <alpha>
+    <omega>)
+]

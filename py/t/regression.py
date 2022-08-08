@@ -43,6 +43,7 @@ finally:
 
 def main():
     print(f'testing uxf.py {uxf.__version__} (UXF {uxf.VERSION})')
+    check_server()
     max_total, verbose = get_config()
     cleanup()
     t = time.monotonic()
@@ -93,6 +94,13 @@ def main():
         cleanup()
     else:
         print(f': {ok:,}/{total:,} • FAIL ({t:.3f} sec)')
+
+
+def check_server():
+    reply = subprocess.run(['nc', '-vz', 'localhost', '5558'],
+                           capture_output=True)
+    if reply.returncode != 0:
+        raise SystemExit('run: misc/test_server.py &')
 
 
 def get_config():

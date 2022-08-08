@@ -1,27 +1,16 @@
 # Python UXF Library Examples
 
-- [Tlm.py](#tlm-py)
 - [include.py](#include-py)
 - [merge.py](#merge-py)
 - [Slides](#slides)
     - [slides1.py](#slides1-py)
     - [slides2.py](#slides2-py)
+- [Tlm.py](#tlm-py)
 - [Config.py](#config-py)
 - [t/ Files](#t--files)
     - [gen.py](#gen-py)
     - [benchmark.py](#benchmark-py)
 
-
-## Tlm.py
-
-This example shows UXF being used as both a “native” format and an exchange
-format for importing and exporting. The main class, `Tlm` holds a track list
-and a list of history strings. The `Tlm` can load and save in its own TLM
-format, and also seamlessly, a TLM UXF format.
-
-Code-wise, loading needs ~60 lines for TLM and ~23 lines for TLM UXF. This
-is because the uxf module does most of the parsing. Saving needs ~18 lines
-for TLM and for TLM UXF.
 
 ## include.py
 
@@ -80,20 +69,37 @@ produce HTML output.
 This example uses `Uxf.load()` and then manually iterates over the returned
 `Uxf` object's value to produce HTML output.
 
+## Tlm.py
+
+This example shows UXF being used as both a “native” format and an exchange
+format for importing and exporting. The main class, `Tlm` holds a track list
+and a list of history strings. The `Tlm` can load and save in its own TLM
+format, and also seamlessly, a TLM UXF format.
+
+TLM UXF format is quite complex. It consists of a list which contains Group,
+Track, or History tables. Each Group table consists of a name and a list.
+This list contains Group or Track tables. (So you can have Groups within
+Groups etc.) A Track table's records are filenames and seconds durations. A
+History table is just a list of Group names and a track name.
+
 ## Config.py
 
 This example shows a practical use case of saving and loading application
 configuration data, preserving comments, providing defaults, and validating.
 
-The UXF file format used here is very short but also quite complex. It
-includes an enumeration with two valid values, and three other custom
-_ttypes_. The data is held in a `map` with `str` keys, with one value being
-an `int`, another a `list` of ``table``s, and another a `map` with `str`
-keys and values.
+The UXF file format used here is very short but also the most complex of the
+examples. It includes an enumeration with two valid values, and three other
+custom _ttypes_. The data is held in a `map` with `str` keys, with one value
+being an `int`, another a `list` of ``table``s, and another a `map` with
+`str` keys and values.
 
 The `Config` class hides the complexity to present a very simple
 property-based API. (Of course there's no free lunch—the API's simplicity is
 won at the cost of the `Config` class itself being quite large.)
+
+Of course the same data could be expressed more simply as, say, nested maps:
+it is for the software developer or data designer to choose the balance
+between format complexity, human readability, and programming convenience.
 
 ## t/ Files
 

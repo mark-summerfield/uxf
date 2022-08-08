@@ -1,0 +1,86 @@
+<?xml version="1.0" ?>
+<uxf version="1.0" comment="UXF version of TOML Example">
+  <ttypes>
+    <ttype name="Clients">
+      <field name="a"/>
+      <field name="b"/>
+    </ttype>
+    <ttype name="Database">
+      <field name="server" vtype="str"/>
+      <field name="ports" vtype="list"/>
+      <field name="connection_max" vtype="int"/>
+      <field name="enabled" vtype="bool"/>
+    </ttype>
+    <ttype name="DateTime">
+      <field name="base" vtype="datetime"/>
+      <field name="offset" vtype="str"/>
+    </ttype>
+    <ttype name="Hosts">
+      <field name="name" vtype="str"/>
+    </ttype>
+    <ttype name="Owner">
+      <field name="name" vtype="str"/>
+      <field name="dob" vtype="DateTime"/>
+    </ttype>
+    <ttype name="Server">
+      <field name="name" vtype="str"/>
+      <field name="ip" vtype="str"/>
+      <field name="dc" vtype="str"/>
+    </ttype>
+  </ttypes>
+  <list>
+    <table name="Owner">
+      <row>
+        <str>Tom Preston-Werner</str>
+        <table name="DateTime">
+          <row>
+            <datetime v="1979-05-27T07:32:00"/>
+            <str>-08:00</str>
+          </row>
+        </table>
+      </row>
+    </table>
+    <table name="Database">
+      <row>
+        <str>192.168.1.1</str>
+        <list>
+          <int v="8000"/>
+          <int v="8001"/>
+          <int v="8002"/>
+        </list>
+        <int v="5000"/>
+        <yes/>
+      </row>
+    </table>
+    <table name="Server">
+      <row>
+        <str>alpha</str>
+        <str>10.0.0.1</str>
+        <str>eqdc10</str>
+      </row>
+      <row>
+        <str>beta</str>
+        <str>10.0.0.2</str>
+        <str>eqdc10</str>
+      </row>
+    </table>
+    <table name="Clients">
+      <row>
+        <str>gamma</str>
+        <str>delta</str>
+      </row>
+      <row>
+        <int v="1"/>
+        <int v="2"/>
+      </row>
+    </table>
+    <table name="Hosts">
+      <row>
+        <str>alpha</str>
+      </row>
+      <row>
+        <str>omega</str>
+      </row>
+    </table>
+  </list>
+</uxf>

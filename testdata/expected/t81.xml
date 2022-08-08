@@ -1,0 +1,29 @@
+<?xml version="1.0" ?>
+<uxf version="1.0" comment="last modified 1 April 2001 by John Doe">
+  <ttypes>
+    <ttype name="Database" comment="use IP address in case network name resolution is not working">
+      <field name="server" vtype="str"/>
+      <field name="port" vtype="int"/>
+      <field name="file" vtype="str"/>
+    </ttype>
+    <ttype name="Owner">
+      <field name="name" vtype="str"/>
+      <field name="organization" vtype="str"/>
+    </ttype>
+  </ttypes>
+  <list>
+    <table name="Owner">
+      <row>
+        <str>John Doe</str>
+        <str>Acme Widgets Inc.</str>
+      </row>
+    </table>
+    <table name="Database">
+      <row>
+        <str>192.0.2.62</str>
+        <int v="143"/>
+        <str>payroll.dat</str>
+      </row>
+    </table>
+  </list>
+</uxf>
