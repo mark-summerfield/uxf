@@ -15,7 +15,6 @@ import sys
 import tempfile
 import time
 
-
 try:
     PATH = os.path.abspath(os.path.dirname(__file__))
     sys.path.append(os.path.abspath(os.path.join(PATH, '../')))
@@ -94,13 +93,6 @@ def main():
         cleanup()
     else:
         print(f': {ok:,}/{total:,} • FAIL ({t:.3f} sec)')
-
-
-def check_server():
-    reply = subprocess.run(['nc', '-vz', 'localhost', '5558'],
-                           capture_output=True)
-    if reply.returncode != 0:
-        raise SystemExit('run: misc/test_server.py &')
 
 
 def get_config():
@@ -497,6 +489,14 @@ def prep_cmd(cmd):
     if sys.platform.startswith('win'):
         cmd = ['py.bat'] + cmd
     return cmd
+
+
+def check_server():
+    reply = subprocess.run(['nc', '-vz', 'localhost', '5558'],
+                           stdout=subprocess.DEVNULL,
+                           stderr=subprocess.DEVNULL)
+    if reply.returncode != 0:
+        raise SystemExit('run: ./misc/test_server.py &')
 
 
 if __name__ == '__main__':

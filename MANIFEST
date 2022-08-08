@@ -1,4 +1,9 @@
-# TODO backport rs visit() to py & get rid of visit.py
+# TODO
+# - create slides3.py using Uxf.visit()
+# - add to regression.py's test_slides()
+# - get rid of visit.py & slides1.py
+# - update py/eg/README.md
+# - pypi release
 rs/src/lib.rs # add docs at the end
 rs/src/value.rs
 rs/src/key.rs
@@ -103,6 +108,6 @@ st.sh
 # - Money type (twelth type), e.g., MONEY ::= '$' REAL; use, say
 #   =Money currency:str amount; or, =USD amount, or similar, (where
 #   amount could be str or int or real)
-# - datetimes with timezones; use, say =DateTime dt:datetime tz:str
+# - datetimes with timezones; use, say =DateTime when:datetime tz:str
 
 # vim: syn=yaml

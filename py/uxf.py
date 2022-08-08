@@ -116,6 +116,28 @@ decimal place are needed to represent the given `real` (i.e., Python
 `max_short_len` defaults to 32 and must be 24<=60''')
 
 
+@enum.unique
+class Visit(enum.Enum):
+    UXF_BEGIN = enum.auto()
+    UXF_END = enum.auto()
+    LIST_BEGIN = enum.auto()
+    LIST_END = enum.auto()
+    MAP_BEGIN = enum.auto()
+    MAP_KEY = enum.auto()
+    MAP_END = enum.auto()
+    TABLE_BEGIN = enum.auto()
+    TABLE_END = enum.auto()
+    RECORD_BEGIN = enum.auto()
+    RECORD_END = enum.auto()
+    VALUE = enum.auto()
+
+
+UxfVisit = collections.namedtuple('UxfVisit', 'custom comment tclasses')
+ListVisit = collections.namedtuple('ListVisit', 'comment vtype')
+MapVisit = collections.namedtuple('MapVisit', 'comment ktype vtype')
+TableVisit = collections.namedtuple('TableVisit', 'comment ttype tclass')
+
+
 class Uxf:
 
     def __init__(self, value=None, *, custom='', tclasses=None,
@@ -128,7 +150,8 @@ class Uxf:
         TClasses and the value.
         on_event is used instead of raise to give users more control'''
         self.on_event = on_event
-        self.value = value
+        self.value = (value if value is None else
+                      _maybe_to_uxf_collection(value))
         self.custom = custom
         self.comment = comment
         self._tclasses = {} # tclasses key=ttype value=TClass
@@ -189,6 +212,17 @@ class Uxf:
                 f'Map, or Table, got {value.__class__.__name__}')
             return # in case user on_event doesn't raise
         self._value = value
+
+
+    def visit(self, visitor):
+        '''This method iterates over every value in self.value (recursively)
+        and calls visitor(Visit, value) where Visit is an enum, and value is
+        either a *Visit namedtuple (at the start of a collection) or a
+        value.'''
+        visitor(Visit.UXF_BEGIN, UxfVisit(self.custom, self.comment,
+                                          self.tclasses))
+        self.value.visit(visitor) # self.value is a UXF collection
+        visitor(Visit.UXF_END, None)
 
 
     def dump(self, filename_or_filelike, *, on_event=on_event,
@@ -866,6 +900,20 @@ class List(collections.UserList):
         return self._comment
 
 
+    def visit(self, visitor):
+        '''This method iterates over every value in self.data (recursively)
+        and calls visitor(Visit, value) where Visit is an enum, and value is
+        either a *Visit namedtuple (at the start of a collection) or a
+        value.'''
+        visitor(Visit.LIST_BEGIN, ListVisit(self.comment, self.vtype))
+        for value in self.data:
+            if _is_uxf_collection(value):
+                value.visit(visitor)
+            else:
+                visitor(Visit.VALUE, value)
+        visitor(Visit.LIST_END, None)
+
+
     def is_equivalent(self, other, compare=Compare.EXACT):
         '''Returns True if this List is equivalent to the other List;
         otherwise returns False.
@@ -998,6 +1046,22 @@ class Map(collections.UserDict):
     @property
     def _next_is_key(self):
         return self._pending_key is _MISSING
+
+
+    def visit(self, visitor):
+        '''This method iterates over every value in self.data (recursively)
+        and calls visitor(Visit, value) where Visit is an enum, and value is
+        either a *Visit namedtuple (at the start of a collection) or a
+        value.'''
+        visitor(Visit.MAP_BEGIN, MapVisit(self.comment, self.ktype,
+                                          self.vtype))
+        for key, value in self.data.items():
+            visitor(Visit.MAP_KEY, key) # keys are never collections
+            if _is_uxf_collection(value):
+                value.visit(visitor)
+            else:
+                visitor(Visit.VALUE, value)
+        visitor(Visit.MAP_END, None)
 
 
     def is_equivalent(self, other, compare=Compare.EXACT):
@@ -1554,6 +1618,24 @@ class Table:
 
     def __len__(self):
         return len(self.records)
+
+
+    def visit(self, visitor):
+        '''This method iterates over every value in self.records
+        (recursively) and calls visitor(Visit, value) where Visit is an
+        enum, and value is either a *Visit namedtuple (at the start of a
+        collection) or a value.'''
+        visitor(Visit.TABLE_BEGIN, TableVisit(self.comment, self.ttype,
+                                              self.tclass))
+        for record in self.records:
+            visitor(Visit.RECORD_BEGIN, None)
+            for value in record:
+                if _is_uxf_collection(value):
+                    value.visit(visitor)
+                else:
+                    visitor(Visit.VALUE, value)
+            visitor(Visit.RECORD_END, None)
+        visitor(Visit.TABLE_END, self.ttype)
 
 
     def is_equivalent(self, other, compare=Compare.EXACT):
