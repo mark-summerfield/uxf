@@ -98,8 +98,10 @@ type, or `?` (null).
 
 Lists and tables preserve the order in which values are appended. So the
 first value is at index/row 0, the second at index/row 1, etc. Maps are
-unordered. (However, many libraries output Maps in a predictable order to
-aid testing.)
+ordered by key. In particular when two keys are of different types they are
+ordered `bytes` `<` `date` `<` `datetime` `<` `int` `<` `str`, and when two
+keys have the same types they are ordered using `<` except for ``str``s
+which use case-insensitive `<`.
 
 A `table` starts with a _ttype_. Next comes the table's values. The number
 of values in any given row is equal to the number of field names in the
@@ -789,19 +791,6 @@ _Implementations in additional languages are planned._
 |-----------|------------|-----------------------------|
 |uxf        | Python 3   | See the [Python UXF library](py/README.md).|
 
-### Implementation Notes
-
-UXF ``Map``s are unordered, i.e., make no guarantee as to their order. If a
-library implementer chooses to make their `Map` representation ordered
-(e.g., to simplify regression testing), they are free to do so, since this
-doesn't break any guarantees. However, if a `Map` is to be ordered it is
-recommended that the ordering be: ``bytes``, ``date``s, ``datetime``s,
-``int``s, ``str``s (case-sensitively). For example, a `Map` item with a
-`date` key will always follow all items with ``bytes`` keys and precede all
-items with `datetime` keys. Similarly all items with `datetime` keys will
-precede all items with `int` keys, and all items with `int` keys will
-precede all items with `str` keys.
-
 ## Imports
 
 UXF files are normally completely self-contained. However, in some cases it
@@ -939,9 +928,12 @@ Note that for any given table each field name must be unique.
 
 If a list value, map key, or table value's type is specified, then the UXF
 processor is expected to be able to check for (and if requested and
-possible, correct) any mistyped values. UXF readers and writers are expected
-to preserve map items in the original reading order (first to last, i.e.,
-in insertion order).
+possible, correct) any mistyped values. UXF writers are expected output
+collections—``list`` values and  ``table`` records (and values within
+records) in order. Similarly `map` items should be output in map key order:
+when two keys are of different types they are ordered `bytes` `<` `date` `<`
+`datetime` `<` `int` `<` `str`, and when two keys have the same types they
+are ordered using `<` except for ``str``s which use case-insensitive `<`.
 
 For ``datetime``'s, only 1-second resolution is supported and no timezones.
 If microsecond resolution or timezones are required, consider using custom

@@ -1,6 +1,3 @@
-# TODO (0) test_map.rs t_map_ordering(): add a second test to ensure
-# case-insensitive works & that the full bytes < date < datetime < int < str
-# works.
 # TODO (1)
 # - create slides3.py using Uxf.visit()
 # - add to regression.py's test_slides()
@@ -78,8 +75,9 @@ st.sh
 
 # TODO port tlm to use rust uxf
 # NOTE IDEAS:
-# - commit to map ordering?
-#	bytes < date < datetime < int < str (case-insensitive)
+# - create geo.uxi based on GeoJSON and if successful create:
+#   uxfgeo.py <infile.{json,geojson,uxf,uxg}>
+#	      <outfile.{json,geojson,uxf,uxg}>
 # - uxfdiff.py
 # - uxfedit (GUI) applications
 # - rs: noncopy nonowned versions: UxfBuf ValueBuf ... FieldBuf

@@ -110,7 +110,7 @@ impl Map {
     /// It is recommended to always iterate using these keys.
     pub fn sorted_keys(&self) -> Vec<&Key> {
         let mut keys: Vec<&Key> = self.items.keys().collect();
-        keys.sort();
+        keys.sort_unstable();
         keys
     }
 

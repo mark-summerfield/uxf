@@ -99,9 +99,21 @@ impl From<Vec<u8>> for Key {
     }
 }
 
+impl From<&[u8]> for Key {
+    fn from(b: &[u8]) -> Self {
+        Key::Bytes(b.to_vec())
+    }
+}
+
 impl From<NaiveDate> for Key {
     fn from(d: NaiveDate) -> Self {
         Key::Date(d)
+    }
+}
+
+impl From<NaiveDateTime> for Key {
+    fn from(d: NaiveDateTime) -> Self {
+        Key::DateTime(d)
     }
 }
 

@@ -278,8 +278,44 @@ mod tests {
                 items.insert(s.into(), n.into());
             }
         }
+        assert_eq!(
+            m.to_string(),
+            "{1 <I> 5 <V> 10 <X> 50 <L> 100 <C> 500 <D> 1000 <M> \
+          <C> 100 <D> 500 <I> 1 <L> 50 <M> 1000 <V> 5 <X> 10}"
+        );
+        m.clear();
+        {
+            let items = m.inner_mut();
+            for (a, b) in [("Zone", 3), ("zed", 2), ("art", 0), ("Cane", 1)]
+            {
+                items.insert(a.into(), b.into());
+            }
+            for (a, b) in [
+                (NaiveDate::from_ymd(2022, 10, 22).and_hms(1, 0, 0), 2),
+                (NaiveDate::from_ymd(2022, 10, 22).and_hms(0, 2, 2), 1),
+                (NaiveDate::from_ymd(2022, 10, 22).and_hms(0, 1, 2), 0),
+            ] {
+                items.insert(a.into(), b.into());
+            }
+            for (a, b) in [(20, 3), (15, 2), (-7, 0), (0, 1), (381, 4)] {
+                items.insert(a.into(), b.into());
+            }
+            for (a, b) in [
+                (NaiveDate::from_ymd(2024, 1, 17), 2),
+                (NaiveDate::from_ymd(1999, 11, 8), 1),
+                (NaiveDate::from_ymd(1901, 12, 24), 0),
+            ] {
+                items.insert(a.into(), b.into());
+            }
+            for (a, b) in [("mn", 3), ("DE", 1), ("ab", 2), ("Cd", 0)] {
+                items.insert(a.as_bytes().into(), b.into());
+            }
+        }
         assert_eq!(m.to_string(),
-        "{1 <I> 5 <V> 10 <X> 50 <L> 100 <C> 500 <D> 1000 <M> \
-          <C> 100 <D> 500 <I> 1 <L> 50 <M> 1000 <V> 5 <X> 10}");
+        "{(:4364:) 0 (:4445:) 1 (:6162:) 2 (:6D6E:) 3 \
+        1901-12-24 0 1999-11-08 1 2024-01-17 2 \
+        2022-10-22T00:01:02 0 2022-10-22T00:02:02 1 2022-10-22T01:00:00 2 \
+        -7 0 0 1 15 2 20 3 381 4 \
+        <art> 0 <Cane> 1 <zed> 2 <Zone> 3}");
     }
 }
