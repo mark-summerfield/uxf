@@ -15,7 +15,23 @@ use std::{cell::RefCell, fmt, rc::Rc};
 
 pub type Values = Vec<Value>; // For Lists
 pub type Record = Values; // For Tables
-pub type Visitor = Rc<dyn Fn(&Value)>;
+pub type Visitor = Rc<dyn Fn(Visit, &Value)>;
+
+#[derive(Clone, Debug)]
+pub enum Visit {
+    UxfBegin,
+    UxfEnd,
+    ListBegin,
+    ListEnd,
+    MapBegin,
+    MapKey,
+    MapEnd,
+    TableBegin,
+    RecordBegin,
+    RecordEnd,
+    TableEnd,
+    Value,
+}
 
 #[derive(Clone, Debug)]
 pub enum Value {
@@ -268,28 +284,36 @@ impl Value {
     /// visited in order; Map items are visited in key order, key, then
     /// value, key, then value, etc.
     pub fn visit(&self, visitor: Visitor) {
-        (Rc::clone(&visitor))(self);
         match self {
             Value::List(lst) => {
+                (Rc::clone(&visitor))(Visit::ListBegin, self);
                 for value in lst.iter() {
                     value.visit(Rc::clone(&visitor));
                 }
+                (Rc::clone(&visitor))(Visit::ListEnd, &Value::Null);
             }
             Value::Map(m) => {
+                (Rc::clone(&visitor))(Visit::MapBegin, self);
                 for key in m.sorted_keys() {
+                    // A key is never a collection
                     let key_value = Value::from(key.clone());
-                    key_value.visit(Rc::clone(&visitor));
+                    (Rc::clone(&visitor))(Visit::MapKey, &key_value);
                     m.get(key).unwrap().visit(Rc::clone(&visitor));
                 }
+                (Rc::clone(&visitor))(Visit::MapEnd, &Value::Null);
             }
             Value::Table(t) => {
+                (Rc::clone(&visitor))(Visit::TableBegin, self);
                 for record in t.iter() {
+                    (Rc::clone(&visitor))(Visit::RecordBegin, &Value::Null);
                     for value in record.iter() {
                         value.visit(Rc::clone(&visitor));
                     }
+                    (Rc::clone(&visitor))(Visit::RecordEnd, &Value::Null);
                 }
+                (Rc::clone(&visitor))(Visit::TableEnd, &Value::Null);
             }
-            _ => (), // already visited at the top
+            _ => (Rc::clone(&visitor))(Visit::Value, self),
         }
     }
 
@@ -299,7 +323,7 @@ impl Value {
         let tclasses = Rc::new(RefCell::new(Vec::<TClass>::new()));
         self.visit({
             let tclasses = Rc::clone(&tclasses);
-            Rc::new(move |value: &Value| {
+            Rc::new(move |_: Visit, value: &Value| {
                 if let Some(table) = value.as_table() {
                     let mut tclasses = tclasses.borrow_mut();
                     tclasses.push(table.tclass().clone());
@@ -529,7 +553,6 @@ impl PartialEq for Value {
 }
 
 impl Eq for Value {}
-
 
 pub(crate) fn bytes_to_uxf(b: &[u8]) -> String {
     let mut s = String::from("(:");

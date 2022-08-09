@@ -17,24 +17,6 @@
     <value>
       <map comment="Miscellaneous settings">
         <key>
-          <str>shapename</str>
-        </key>
-        <value>
-          <str>Hexagon</str>
-        </value>
-        <key>
-          <str>zoom</str>
-        </key>
-        <value>
-          <int v="150"/>
-        </value>
-        <key>
-          <str>showtoolbar</str>
-        </key>
-        <value>
-          <no/>
-        </value>
-        <key>
           <str>Files</str>
         </key>
         <value>
@@ -56,6 +38,24 @@
             </value>
           </map>
         </value>
+        <key>
+          <str>shapename</str>
+        </key>
+        <value>
+          <str>Hexagon</str>
+        </value>
+        <key>
+          <str>showtoolbar</str>
+        </key>
+        <value>
+          <no/>
+        </value>
+        <key>
+          <str>zoom</str>
+        </key>
+        <value>
+          <int v="150"/>
+        </value>
       </map>
     </value>
     <key>
@@ -75,6 +75,12 @@
           </table>
         </value>
         <key>
+          <str>scale</str>
+        </key>
+        <value>
+          <real v="1.1"/>
+        </value>
+        <key>
           <str>size</str>
         </key>
         <value>
@@ -84,12 +90,6 @@
               <int v="636"/>
             </row>
           </table>
-        </value>
-        <key>
-          <str>scale</str>
-        </key>
-        <value>
-          <real v="1.1"/>
         </value>
       </map>
     </value>
@@ -110,6 +110,12 @@
           </table>
         </value>
         <key>
+          <str>scale</str>
+        </key>
+        <value>
+          <real v="1.0"/>
+        </value>
+        <key>
           <str>size</str>
         </key>
         <value>
@@ -119,12 +125,6 @@
               <int v="81"/>
             </row>
           </table>
-        </value>
-        <key>
-          <str>scale</str>
-        </key>
-        <value>
-          <real v="1.0"/>
         </value>
       </map>
     </value>
@@ -145,6 +145,12 @@
           </table>
         </value>
         <key>
+          <str>scale</str>
+        </key>
+        <value>
+          <real v="0.5"/>
+        </value>
+        <key>
           <str>size</str>
         </key>
         <value>
@@ -154,12 +160,6 @@
               <int v="22"/>
             </row>
           </table>
-        </value>
-        <key>
-          <str>scale</str>
-        </key>
-        <value>
-          <real v="0.5"/>
         </value>
       </map>
     </value>

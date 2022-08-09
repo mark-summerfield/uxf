@@ -19,28 +19,10 @@ before evertthing else.">
     <value>
       <map>
         <key>
-          <str>saved</str>
-        </key>
-        <value>
-          <date v="2022-03-21"/>
-        </value>
-        <key>
           <str>autosave</str>
         </key>
         <value>
           <yes/>
-        </value>
-        <key>
-          <str>historysize</str>
-        </key>
-        <value>
-          <int v="-35"/>
-        </value>
-        <key>
-          <str>volume</str>
-        </key>
-        <value>
-          <real v="0.7"/>
         </value>
         <key>
           <str>files</str>
@@ -61,42 +43,23 @@ before evertthing else.">
             </row>
           </table>
         </value>
-      </map>
-    </value>
-    <key>
-      <str>Window</str>
-    </key>
-    <value>
-      <map>
         <key>
-          <str>x</str>
+          <str>historysize</str>
         </key>
         <value>
-          <int v="383"/>
+          <int v="-35"/>
         </value>
         <key>
-          <str>y</str>
+          <str>saved</str>
         </key>
         <value>
-          <int v="124"/>
+          <date v="2022-03-21"/>
         </value>
         <key>
-          <str>width</str>
+          <str>volume</str>
         </key>
         <value>
-          <int v="590"/>
-        </value>
-        <key>
-          <str>height</str>
-        </key>
-        <value>
-          <int v="536"/>
-        </value>
-        <key>
-          <str>scale</str>
-        </key>
-        <value>
-          <real v="1.1"/>
+          <real v="0.7"/>
         </value>
       </map>
     </value>
@@ -126,15 +89,6 @@ before evertthing else.">
         <value>
           <list>
             <int v="4"/>
-            <no/>
-          </list>
-        </value>
-        <key>
-          <str>New Acquistions</str>
-        </key>
-        <value>
-          <list>
-            <int v="1"/>
             <no/>
           </list>
         </value>
@@ -201,6 +155,52 @@ before evertthing else.">
               <no/>
             </row>
           </table>
+        </value>
+        <key>
+          <str>New Acquistions</str>
+        </key>
+        <value>
+          <list>
+            <int v="1"/>
+            <no/>
+          </list>
+        </value>
+      </map>
+    </value>
+    <key>
+      <str>Window</str>
+    </key>
+    <value>
+      <map>
+        <key>
+          <str>height</str>
+        </key>
+        <value>
+          <int v="536"/>
+        </value>
+        <key>
+          <str>scale</str>
+        </key>
+        <value>
+          <real v="1.1"/>
+        </value>
+        <key>
+          <str>width</str>
+        </key>
+        <value>
+          <int v="590"/>
+        </value>
+        <key>
+          <str>x</str>
+        </key>
+        <value>
+          <int v="383"/>
+        </value>
+        <key>
+          <str>y</str>
+        </key>
+        <value>
+          <int v="124"/>
         </value>
       </map>
     </value>

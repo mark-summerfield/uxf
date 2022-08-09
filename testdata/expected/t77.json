@@ -39,50 +39,22 @@
   ],
   "UXF^data": {
     "General": {
-      "saved": {
-        "UXF^date": "2022-03-21"
-      },
       "autosave": true,
-      "historysize": -35,
-      "volume": 0.7,
       "files": {
         "current": "/home/mark/app/rs/tlm/PlaylistsTest.tlm",
         "recent1": "/home/mark/app/rs/tlm/PlaylistsTest.tlm",
         "recent2": "/home/mark/data/playlists-all.tlm"
-      }
+      },
+      "historysize": -35,
+      "saved": {
+        "UXF^date": "2022-03-21"
+      },
+      "volume": 0.7
     },
-    "Window": {
-      "pos": [
-        383,
-        124
-      ],
-      "size": [
-        590,
-        536
-      ],
-      "scale": 1.1
+    "Magic": {
+      "UXF^bytes": "1F8B"
     },
     "More Tests": {
-      "one": {
-        "UXF^table": {
-          "name": "IPv4",
-          "comment": null,
-          "fields": {
-            "A": "int",
-            "B": "int",
-            "C": "int",
-            "D": "int"
-          },
-          "records": [
-            [
-              141,
-              179,
-              19,
-              9
-            ]
-          ]
-        }
-      },
       "many": {
         "UXF^table": {
           "name": "IPv4",
@@ -111,6 +83,26 @@
               0,
               0,
               1
+            ]
+          ]
+        }
+      },
+      "one": {
+        "UXF^table": {
+          "name": "IPv4",
+          "comment": null,
+          "fields": {
+            "A": "int",
+            "B": "int",
+            "C": "int",
+            "D": "int"
+          },
+          "records": [
+            [
+              141,
+              179,
+              19,
+              9
             ]
           ]
         }
@@ -154,9 +146,6 @@
         }
       }
     },
-    "Magic": {
-      "UXF^bytes": "1F8B"
-    },
     "Nested Map": {
       "Classical": [
         5,
@@ -169,6 +158,17 @@
       "New Acquistions": [
         1,
         false
+      ]
+    },
+    "Window": {
+      "pos": [
+        383,
+        124
+      ],
+      "scale": 1.1,
+      "size": [
+        590,
+        536
       ]
     }
   }

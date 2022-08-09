@@ -16,24 +16,6 @@
     <value>
       <map ktype="str" comment="Miscellaneous settings">
         <key>
-          <str>shapename</str>
-        </key>
-        <value>
-          <str>Hexagon</str>
-        </value>
-        <key>
-          <str>zoom</str>
-        </key>
-        <value>
-          <int v="150"/>
-        </value>
-        <key>
-          <str>showtoolbar</str>
-        </key>
-        <value>
-          <no/>
-        </value>
-        <key>
           <str>Files</str>
         </key>
         <value>
@@ -55,6 +37,24 @@
               </list>
             </value>
           </map>
+        </value>
+        <key>
+          <str>shapename</str>
+        </key>
+        <value>
+          <str>Hexagon</str>
+        </value>
+        <key>
+          <str>showtoolbar</str>
+        </key>
+        <value>
+          <no/>
+        </value>
+        <key>
+          <str>zoom</str>
+        </key>
+        <value>
+          <int v="150"/>
         </value>
       </map>
     </value>

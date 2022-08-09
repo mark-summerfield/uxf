@@ -1,21 +1,21 @@
 {
   "UXF^comment": "last modified 1 April 2001 by John Doe",
   "UXF^data": {
-    "owner": {
-      "name": "John Doe",
-      "organization": "Acme Widgets Inc."
-    },
     "database": {
       "UXF^map": {
         "comment": "use IP address in case network name resolution is not working",
         "ktype": null,
         "vtype": null,
         "map": {
-          "server": "192.0.2.62",
+          "file": "payroll.dat",
           "port": 143,
-          "file": "payroll.dat"
+          "server": "192.0.2.62"
         }
       }
+    },
+    "owner": {
+      "name": "John Doe",
+      "organization": "Acme Widgets Inc."
     }
   }
 }

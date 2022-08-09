@@ -41,28 +41,10 @@
     <value>
       <map>
         <key>
-          <str>saved</str>
-        </key>
-        <value>
-          <date v="2022-03-21"/>
-        </value>
-        <key>
           <str>autosave</str>
         </key>
         <value>
           <yes/>
-        </value>
-        <key>
-          <str>historysize</str>
-        </key>
-        <value>
-          <int v="-35"/>
-        </value>
-        <key>
-          <str>volume</str>
-        </key>
-        <value>
-          <real v="0.7"/>
         </value>
         <key>
           <str>files</str>
@@ -83,38 +65,31 @@
             </row>
           </table>
         </value>
+        <key>
+          <str>historysize</str>
+        </key>
+        <value>
+          <int v="-35"/>
+        </value>
+        <key>
+          <str>saved</str>
+        </key>
+        <value>
+          <date v="2022-03-21"/>
+        </value>
+        <key>
+          <str>volume</str>
+        </key>
+        <value>
+          <real v="0.7"/>
+        </value>
       </map>
     </value>
     <key>
-      <str>Window</str>
+      <str>Magic</str>
     </key>
     <value>
-      <map>
-        <key>
-          <str>pos</str>
-        </key>
-        <value>
-          <list>
-            <int v="383"/>
-            <int v="124"/>
-          </list>
-        </value>
-        <key>
-          <str>size</str>
-        </key>
-        <value>
-          <list>
-            <int v="590"/>
-            <int v="536"/>
-          </list>
-        </value>
-        <key>
-          <str>scale</str>
-        </key>
-        <value>
-          <real v="1.1"/>
-        </value>
-      </map>
+      <bytes>1F8B</bytes>
     </value>
     <key>
       <str>More Tests</str>
@@ -171,12 +146,6 @@
       </list>
     </value>
     <key>
-      <str>Magic</str>
-    </key>
-    <value>
-      <bytes>1F8B</bytes>
-    </value>
-    <key>
       <str>Nested Map</str>
     </key>
     <value>
@@ -196,15 +165,6 @@
         <value>
           <list>
             <int v="4"/>
-            <no/>
-          </list>
-        </value>
-        <key>
-          <str>New Acquistions</str>
-        </key>
-        <value>
-          <list>
-            <int v="1"/>
             <no/>
           </list>
         </value>
@@ -229,48 +189,6 @@
               <no/>
             </list>
           </list>
-        </value>
-        <key>
-          <str>Nested Table</str>
-        </key>
-        <value>
-          <table name="Categories">
-            <row>
-              <int v="5"/>
-              <str>Classical</str>
-              <yes/>
-            </row>
-            <row>
-              <int v="4"/>
-              <str>Modern Instrumental</str>
-              <no/>
-            </row>
-            <row>
-              <int v="1"/>
-              <str>New Acquistions</str>
-              <no/>
-            </row>
-            <row>
-              <int v="2"/>
-              <str>Pop</str>
-              <no/>
-            </row>
-            <row>
-              <int v="3"/>
-              <str>Punk</str>
-              <no/>
-            </row>
-            <row>
-              <int v="7"/>
-              <str>Uncategorized</str>
-              <no/>
-            </row>
-            <row>
-              <int v="6"/>
-              <str>Unpopular Pop</str>
-              <no/>
-            </row>
-          </table>
         </value>
         <key>
           <str>Nested List of Tables</str>
@@ -388,6 +306,88 @@
                 <no/>
               </row>
             </table>
+          </list>
+        </value>
+        <key>
+          <str>Nested Table</str>
+        </key>
+        <value>
+          <table name="Categories">
+            <row>
+              <int v="5"/>
+              <str>Classical</str>
+              <yes/>
+            </row>
+            <row>
+              <int v="4"/>
+              <str>Modern Instrumental</str>
+              <no/>
+            </row>
+            <row>
+              <int v="1"/>
+              <str>New Acquistions</str>
+              <no/>
+            </row>
+            <row>
+              <int v="2"/>
+              <str>Pop</str>
+              <no/>
+            </row>
+            <row>
+              <int v="3"/>
+              <str>Punk</str>
+              <no/>
+            </row>
+            <row>
+              <int v="7"/>
+              <str>Uncategorized</str>
+              <no/>
+            </row>
+            <row>
+              <int v="6"/>
+              <str>Unpopular Pop</str>
+              <no/>
+            </row>
+          </table>
+        </value>
+        <key>
+          <str>New Acquistions</str>
+        </key>
+        <value>
+          <list>
+            <int v="1"/>
+            <no/>
+          </list>
+        </value>
+      </map>
+    </value>
+    <key>
+      <str>Window</str>
+    </key>
+    <value>
+      <map>
+        <key>
+          <str>pos</str>
+        </key>
+        <value>
+          <list>
+            <int v="383"/>
+            <int v="124"/>
+          </list>
+        </value>
+        <key>
+          <str>scale</str>
+        </key>
+        <value>
+          <real v="1.1"/>
+        </value>
+        <key>
+          <str>size</str>
+        </key>
+        <value>
+          <list>
+            <int v="590"/>
+            <int v="536"/>
           </list>
         </value>
       </map>

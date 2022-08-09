@@ -8,142 +8,6 @@
   </ttypes>
   <map>
     <key>
-      <str>General</str>
-    </key>
-    <value>
-      <map>
-        <key>
-          <str>shapename</str>
-        </key>
-        <value>
-          <str>Hexagon</str>
-        </value>
-        <key>
-          <str>zoom</str>
-        </key>
-        <value>
-          <int v="150"/>
-        </value>
-        <key>
-          <str>showtoolbar</str>
-        </key>
-        <value>
-          <no/>
-        </value>
-      </map>
-    </value>
-    <key>
-      <str>Window1</str>
-    </key>
-    <value>
-      <map>
-        <key>
-          <str>x</str>
-        </key>
-        <value>
-          <int v="615"/>
-        </value>
-        <key>
-          <str>y</str>
-        </key>
-        <value>
-          <int v="252"/>
-        </value>
-        <key>
-          <str>width</str>
-        </key>
-        <value>
-          <int v="592"/>
-        </value>
-        <key>
-          <str>height</str>
-        </key>
-        <value>
-          <int v="636"/>
-        </value>
-        <key>
-          <str>scale</str>
-        </key>
-        <value>
-          <real v="1.1"/>
-        </value>
-      </map>
-    </value>
-    <key>
-      <str>Window2</str>
-    </key>
-    <value>
-      <map>
-        <key>
-          <str>x</str>
-        </key>
-        <value>
-          <int v="28"/>
-        </value>
-        <key>
-          <str>y</str>
-        </key>
-        <value>
-          <int v="42"/>
-        </value>
-        <key>
-          <str>width</str>
-        </key>
-        <value>
-          <int v="140"/>
-        </value>
-        <key>
-          <str>height</str>
-        </key>
-        <value>
-          <int v="81"/>
-        </value>
-        <key>
-          <str>scale</str>
-        </key>
-        <value>
-          <real v="1.0"/>
-        </value>
-      </map>
-    </value>
-    <key>
-      <str>Window3</str>
-    </key>
-    <value>
-      <map>
-        <key>
-          <str>x</str>
-        </key>
-        <value>
-          <int v="57"/>
-        </value>
-        <key>
-          <str>y</str>
-        </key>
-        <value>
-          <int v="98"/>
-        </value>
-        <key>
-          <str>width</str>
-        </key>
-        <value>
-          <int v="89"/>
-        </value>
-        <key>
-          <str>height</str>
-        </key>
-        <value>
-          <int v="22"/>
-        </value>
-        <key>
-          <str>scale</str>
-        </key>
-        <value>
-          <real v="0.5"/>
-        </value>
-      </map>
-    </value>
-    <key>
       <str>Files</str>
     </key>
     <value>
@@ -161,6 +25,142 @@
           <str>C:\Users\mark\test3.uxf</str>
         </row>
       </table>
+    </value>
+    <key>
+      <str>General</str>
+    </key>
+    <value>
+      <map>
+        <key>
+          <str>shapename</str>
+        </key>
+        <value>
+          <str>Hexagon</str>
+        </value>
+        <key>
+          <str>showtoolbar</str>
+        </key>
+        <value>
+          <no/>
+        </value>
+        <key>
+          <str>zoom</str>
+        </key>
+        <value>
+          <int v="150"/>
+        </value>
+      </map>
+    </value>
+    <key>
+      <str>Window1</str>
+    </key>
+    <value>
+      <map>
+        <key>
+          <str>height</str>
+        </key>
+        <value>
+          <int v="636"/>
+        </value>
+        <key>
+          <str>scale</str>
+        </key>
+        <value>
+          <real v="1.1"/>
+        </value>
+        <key>
+          <str>width</str>
+        </key>
+        <value>
+          <int v="592"/>
+        </value>
+        <key>
+          <str>x</str>
+        </key>
+        <value>
+          <int v="615"/>
+        </value>
+        <key>
+          <str>y</str>
+        </key>
+        <value>
+          <int v="252"/>
+        </value>
+      </map>
+    </value>
+    <key>
+      <str>Window2</str>
+    </key>
+    <value>
+      <map>
+        <key>
+          <str>height</str>
+        </key>
+        <value>
+          <int v="81"/>
+        </value>
+        <key>
+          <str>scale</str>
+        </key>
+        <value>
+          <real v="1.0"/>
+        </value>
+        <key>
+          <str>width</str>
+        </key>
+        <value>
+          <int v="140"/>
+        </value>
+        <key>
+          <str>x</str>
+        </key>
+        <value>
+          <int v="28"/>
+        </value>
+        <key>
+          <str>y</str>
+        </key>
+        <value>
+          <int v="42"/>
+        </value>
+      </map>
+    </value>
+    <key>
+      <str>Window3</str>
+    </key>
+    <value>
+      <map>
+        <key>
+          <str>height</str>
+        </key>
+        <value>
+          <int v="22"/>
+        </value>
+        <key>
+          <str>scale</str>
+        </key>
+        <value>
+          <real v="0.5"/>
+        </value>
+        <key>
+          <str>width</str>
+        </key>
+        <value>
+          <int v="89"/>
+        </value>
+        <key>
+          <str>x</str>
+        </key>
+        <value>
+          <int v="57"/>
+        </value>
+        <key>
+          <str>y</str>
+        </key>
+        <value>
+          <int v="98"/>
+        </value>
+      </map>
     </value>
   </map>
 </uxf>

@@ -45,28 +45,10 @@
     <value>
       <map comment="Map comment #1">
         <key>
-          <str>saved</str>
-        </key>
-        <value>
-          <date v="2022-03-21"/>
-        </value>
-        <key>
           <str>autosave</str>
         </key>
         <value>
           <yes/>
-        </value>
-        <key>
-          <str>historysize</str>
-        </key>
-        <value>
-          <int v="-35"/>
-        </value>
-        <key>
-          <str>volume</str>
-        </key>
-        <value>
-          <real v="0.7"/>
         </value>
         <key>
           <str>files</str>
@@ -87,44 +69,33 @@
             </row>
           </table>
         </value>
+        <key>
+          <str>historysize</str>
+        </key>
+        <value>
+          <int v="-35"/>
+        </value>
+        <key>
+          <str>saved</str>
+        </key>
+        <value>
+          <date v="2022-03-21"/>
+        </value>
+        <key>
+          <str>volume</str>
+        </key>
+        <value>
+          <real v="0.7"/>
+        </value>
       </map>
     </value>
     <key>
-      <str>Window</str>
+      <str>Key for a long string</str>
     </key>
     <value>
-      <map>
-        <key>
-          <str>x</str>
-        </key>
-        <value>
-          <int v="383"/>
-        </value>
-        <key>
-          <str>y</str>
-        </key>
-        <value>
-          <int v="124"/>
-        </value>
-        <key>
-          <str>width</str>
-        </key>
-        <value>
-          <int v="590"/>
-        </value>
-        <key>
-          <str>height</str>
-        </key>
-        <value>
-          <int v="536"/>
-        </value>
-        <key>
-          <str>scale</str>
-        </key>
-        <value>
-          <real v="1.1"/>
-        </value>
-      </map>
+      <str><![CDATA[This string occupies
+multiple lines which we want to be able to round-trip
+even in UXF ↔ XML conversions.]]></str>
     </value>
     <key>
       <str>Magic</str>
@@ -152,15 +123,6 @@
         <value>
           <list comment="List comment #5">
             <int v="4"/>
-            <no/>
-          </list>
-        </value>
-        <key>
-          <str>New Acquistions</str>
-        </key>
-        <value>
-          <list>
-            <int v="1"/>
             <no/>
           </list>
         </value>
@@ -228,15 +190,53 @@
             </row>
           </table>
         </value>
+        <key>
+          <str>New Acquistions</str>
+        </key>
+        <value>
+          <list>
+            <int v="1"/>
+            <no/>
+          </list>
+        </value>
       </map>
     </value>
     <key>
-      <str>Key for a long string</str>
+      <str>Window</str>
     </key>
     <value>
-      <str><![CDATA[This string occupies
-multiple lines which we want to be able to round-trip
-even in UXF ↔ XML conversions.]]></str>
+      <map>
+        <key>
+          <str>height</str>
+        </key>
+        <value>
+          <int v="536"/>
+        </value>
+        <key>
+          <str>scale</str>
+        </key>
+        <value>
+          <real v="1.1"/>
+        </value>
+        <key>
+          <str>width</str>
+        </key>
+        <value>
+          <int v="590"/>
+        </value>
+        <key>
+          <str>x</str>
+        </key>
+        <value>
+          <int v="383"/>
+        </value>
+        <key>
+          <str>y</str>
+        </key>
+        <value>
+          <int v="124"/>
+        </value>
+      </map>
     </value>
   </map>
 </uxf>

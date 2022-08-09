@@ -38,15 +38,6 @@
           </list>
         </value>
         <key>
-          <str>New Acquistions</str>
-        </key>
-        <value>
-          <list>
-            <int v="1"/>
-            <no/>
-          </list>
-        </value>
-        <key>
           <str>Nested List of Lists</str>
         </key>
         <value>
@@ -67,48 +58,6 @@
               <no/>
             </list>
           </list>
-        </value>
-        <key>
-          <str>Nested Table</str>
-        </key>
-        <value>
-          <table name="Categories">
-            <row>
-              <int v="5"/>
-              <str>Classical</str>
-              <yes/>
-            </row>
-            <row>
-              <int v="4"/>
-              <str>Modern Instrumental</str>
-              <no/>
-            </row>
-            <row>
-              <int v="1"/>
-              <str>New Acquistions</str>
-              <no/>
-            </row>
-            <row>
-              <int v="2"/>
-              <str>Pop</str>
-              <no/>
-            </row>
-            <row>
-              <int v="3"/>
-              <str>Punk</str>
-              <no/>
-            </row>
-            <row>
-              <int v="7"/>
-              <str>Uncategorized</str>
-              <no/>
-            </row>
-            <row>
-              <int v="6"/>
-              <str>Unpopular Pop</str>
-              <no/>
-            </row>
-          </table>
         </value>
         <key>
           <str>Nested List of Tables</str>
@@ -226,6 +175,57 @@
                 <no/>
               </row>
             </table>
+          </list>
+        </value>
+        <key>
+          <str>Nested Table</str>
+        </key>
+        <value>
+          <table name="Categories">
+            <row>
+              <int v="5"/>
+              <str>Classical</str>
+              <yes/>
+            </row>
+            <row>
+              <int v="4"/>
+              <str>Modern Instrumental</str>
+              <no/>
+            </row>
+            <row>
+              <int v="1"/>
+              <str>New Acquistions</str>
+              <no/>
+            </row>
+            <row>
+              <int v="2"/>
+              <str>Pop</str>
+              <no/>
+            </row>
+            <row>
+              <int v="3"/>
+              <str>Punk</str>
+              <no/>
+            </row>
+            <row>
+              <int v="7"/>
+              <str>Uncategorized</str>
+              <no/>
+            </row>
+            <row>
+              <int v="6"/>
+              <str>Unpopular Pop</str>
+              <no/>
+            </row>
+          </table>
+        </value>
+        <key>
+          <str>New Acquistions</str>
+        </key>
+        <value>
+          <list>
+            <int v="1"/>
+            <no/>
           </list>
         </value>
       </map>

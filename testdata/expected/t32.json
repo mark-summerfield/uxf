@@ -34,9 +34,6 @@
             "ktype": "str",
             "vtype": null,
             "map": {
-              "shapename": "Hexagon",
-              "zoom": 150,
-              "showtoolbar": false,
               "Files": {
                 "UXF^map": {
                   "comment": null,
@@ -56,7 +53,10 @@
                     }
                   }
                 }
-              }
+              },
+              "shapename": "Hexagon",
+              "showtoolbar": false,
+              "zoom": 150
             }
           }
         },
@@ -90,6 +90,11 @@
                   ]
                 }
               },
+              "scale": [
+                1.1,
+                1.0,
+                0.5
+              ],
               "size": {
                 "UXF^table": {
                   "name": "size",
@@ -113,12 +118,7 @@
                     ]
                   ]
                 }
-              },
-              "scale": [
-                1.1,
-                1.0,
-                0.5
-              ]
+              }
             }
           }
         }

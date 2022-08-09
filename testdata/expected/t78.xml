@@ -21,53 +21,72 @@
   </ttypes>
   <map>
     <key>
-      <str>Window</str>
+      <str>General</str>
     </key>
     <value>
       <map>
         <key>
-          <str>scale</str>
+          <str>autosave</str>
         </key>
         <value>
-          <real v="1.1"/>
+          <yes/>
         </value>
         <key>
-          <str>pos</str>
+          <str>files</str>
         </key>
         <value>
-          <list>
-            <int v="383"/>
-            <int v="124"/>
-          </list>
+          <map>
+            <key>
+              <str>current</str>
+            </key>
+            <value>
+              <str>/home/mark/app/rs/tlm/PlaylistsTest.tlm</str>
+            </value>
+            <key>
+              <str>recent1</str>
+            </key>
+            <value>
+              <str>/home/mark/app/rs/tlm/PlaylistsTest.tlm</str>
+            </value>
+            <key>
+              <str>recent2</str>
+            </key>
+            <value>
+              <str>/home/mark/data/playlists-all.tlm</str>
+            </value>
+          </map>
         </value>
         <key>
-          <str>size</str>
+          <str>historysize</str>
         </key>
         <value>
-          <list>
-            <int v="590"/>
-            <int v="536"/>
-          </list>
+          <int v="-35"/>
+        </value>
+        <key>
+          <str>saved</str>
+        </key>
+        <value>
+          <date v="2022-03-21"/>
+        </value>
+        <key>
+          <str>volume</str>
+        </key>
+        <value>
+          <real v="0.7"/>
         </value>
       </map>
+    </value>
+    <key>
+      <str>Magic</str>
+    </key>
+    <value>
+      <bytes>1F8B</bytes>
     </value>
     <key>
       <str>More Tests</str>
     </key>
     <value>
       <map>
-        <key>
-          <str>red</str>
-        </key>
-        <value>
-          <table name="rgb">
-            <row>
-              <int v="255"/>
-              <int v="0"/>
-              <int v="0"/>
-            </row>
-          </table>
-        </value>
         <key>
           <str>many</str>
         </key>
@@ -94,19 +113,6 @@
           </table>
         </value>
         <key>
-          <str>semi-transparent blue</str>
-        </key>
-        <value>
-          <table name="rgba">
-            <row>
-              <int v="0"/>
-              <int v="0"/>
-              <int v="255"/>
-              <int v="80"/>
-            </row>
-          </table>
-        </value>
-        <key>
           <str>one</str>
         </key>
         <value>
@@ -119,19 +125,47 @@
             </row>
           </table>
         </value>
+        <key>
+          <str>red</str>
+        </key>
+        <value>
+          <table name="rgb">
+            <row>
+              <int v="255"/>
+              <int v="0"/>
+              <int v="0"/>
+            </row>
+          </table>
+        </value>
+        <key>
+          <str>semi-transparent blue</str>
+        </key>
+        <value>
+          <table name="rgba">
+            <row>
+              <int v="0"/>
+              <int v="0"/>
+              <int v="255"/>
+              <int v="80"/>
+            </row>
+          </table>
+        </value>
       </map>
-    </value>
-    <key>
-      <str>Magic</str>
-    </key>
-    <value>
-      <bytes>1F8B</bytes>
     </value>
     <key>
       <str>Nested Map</str>
     </key>
     <value>
       <map>
+        <key>
+          <str>Classical</str>
+        </key>
+        <value>
+          <list>
+            <int v="5"/>
+            <yes/>
+          </list>
+        </value>
         <key>
           <str>Modern Instrumental</str>
         </key>
@@ -150,70 +184,36 @@
             <no/>
           </list>
         </value>
-        <key>
-          <str>Classical</str>
-        </key>
-        <value>
-          <list>
-            <int v="5"/>
-            <yes/>
-          </list>
-        </value>
       </map>
     </value>
     <key>
-      <str>General</str>
+      <str>Window</str>
     </key>
     <value>
       <map>
         <key>
-          <str>volume</str>
+          <str>pos</str>
         </key>
         <value>
-          <real v="0.7"/>
+          <list>
+            <int v="383"/>
+            <int v="124"/>
+          </list>
         </value>
         <key>
-          <str>files</str>
+          <str>scale</str>
         </key>
         <value>
-          <map>
-            <key>
-              <str>recent2</str>
-            </key>
-            <value>
-              <str>/home/mark/data/playlists-all.tlm</str>
-            </value>
-            <key>
-              <str>current</str>
-            </key>
-            <value>
-              <str>/home/mark/app/rs/tlm/PlaylistsTest.tlm</str>
-            </value>
-            <key>
-              <str>recent1</str>
-            </key>
-            <value>
-              <str>/home/mark/app/rs/tlm/PlaylistsTest.tlm</str>
-            </value>
-          </map>
+          <real v="1.1"/>
         </value>
         <key>
-          <str>historysize</str>
+          <str>size</str>
         </key>
         <value>
-          <int v="-35"/>
-        </value>
-        <key>
-          <str>saved</str>
-        </key>
-        <value>
-          <date v="2022-03-21"/>
-        </value>
-        <key>
-          <str>autosave</str>
-        </key>
-        <value>
-          <yes/>
+          <list>
+            <int v="590"/>
+            <int v="536"/>
+          </list>
         </value>
       </map>
     </value>

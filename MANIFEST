@@ -1,4 +1,7 @@
-# TODO
+# TODO (0) test_map.rs t_map_ordering(): add a second test to ensure
+# case-insensitive works & that the full bytes < date < datetime < int < str
+# works.
+# TODO (1)
 # - create slides3.py using Uxf.visit()
 # - add to regression.py's test_slides()
 # - get rid of visit.py & slides1.py
@@ -12,13 +15,13 @@ rs/src/map.rs
 rs/src/table.rs
 rs/src/tclass.rs
 rs/src/field.rs
-rs/src/uxf.rs # TODO (1) parse_options() (2) to_string_options()
+rs/src/uxf.rs # TODO (2) parse_options() (3) to_string_options()
 rs/src/format.rs
 rs/src/util.rs
 rs/src/event.rs
 rs/src/constants.rs
-rs/src/parser.rs # TODO see (1) above
-rs/src/output.rs # TODO see (2) above
+rs/src/parser.rs # TODO see (2) above
+rs/src/output.rs # TODO see (3) above
 rs/src/test_utils.rs
 rs/tests/test_value.rs # TODO visit()
 rs/tests/test_list.rs
@@ -75,6 +78,8 @@ st.sh
 
 # TODO port tlm to use rust uxf
 # NOTE IDEAS:
+# - commit to map ordering?
+#	bytes < date < datetime < int < str (case-insensitive)
 # - uxfdiff.py
 # - uxfedit (GUI) applications
 # - rs: noncopy nonowned versions: UxfBuf ValueBuf ... FieldBuf

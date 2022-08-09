@@ -132,7 +132,7 @@ class Visit(enum.Enum):
     VALUE = enum.auto()
 
 
-UxfVisit = collections.namedtuple('UxfVisit', 'custom comment tclasses')
+UxfVisit = collections.namedtuple('UxfVisit', 'custom comment')
 ListVisit = collections.namedtuple('ListVisit', 'comment vtype')
 MapVisit = collections.namedtuple('MapVisit', 'comment ktype vtype')
 TableVisit = collections.namedtuple('TableVisit', 'comment ttype tclass')
@@ -167,6 +167,10 @@ class Uxf:
                 return # in case user on_event doesn't raise
             _add_to_tclasses(self.tclasses, tclass, lino=0, code=690,
                              on_event=self.on_event)
+
+
+    def tclass(self, ttype):
+        return self.tclasses[ttype]
 
 
     @property
@@ -219,8 +223,7 @@ class Uxf:
         and calls visitor(Visit, value) where Visit is an enum, and value is
         either a *Visit namedtuple (at the start of a collection) or a
         value.'''
-        visitor(Visit.UXF_BEGIN, UxfVisit(self.custom, self.comment,
-                                          self.tclasses))
+        visitor(Visit.UXF_BEGIN, UxfVisit(self.custom, self.comment))
         self.value.visit(visitor) # self.value is a UXF collection
         visitor(Visit.UXF_END, None)
 
@@ -1055,13 +1058,28 @@ class Map(collections.UserDict):
         value.'''
         visitor(Visit.MAP_BEGIN, MapVisit(self.comment, self.ktype,
                                           self.vtype))
-        for key, value in self.data.items():
+        for key, value in self.items(): # in _by_key order
             visitor(Visit.MAP_KEY, key) # keys are never collections
             if _is_uxf_collection(value):
                 value.visit(visitor)
             else:
                 visitor(Visit.VALUE, value)
         visitor(Visit.MAP_END, None)
+
+
+    def items(self):
+        for key, value in sorted(self.data.items(), key=_by_key):
+            yield key, value
+
+
+    def keys(self):
+        for key, _ in self.items():
+            yield key
+
+
+    def values(self):
+        for _, value in self.items():
+            yield value
 
 
     def is_equivalent(self, other, compare=Compare.EXACT):
@@ -1084,9 +1102,8 @@ class Map(collections.UserDict):
             return False
         if len(self.data) != len(other.data):
             return False
-        for ((akey, avalue), (bkey, bvalue)) in zip(
-                sorted(self.data.items(), key=_by_key),
-                sorted(other.data.items(), key=_by_key)):
+        for ((akey, avalue), (bkey, bvalue)) in zip(self.items(),
+                                                    other.items()):
             if akey != bkey:
                 return False
             if not _is_equivalent_value(avalue, bvalue, compare):
@@ -1108,9 +1125,8 @@ class Map(collections.UserDict):
             return False
         if len(self.data) != len(other.data):
             return False
-        for ((akey, avalue), (bkey, bvalue)) in zip(
-                sorted(self.data.items(), key=_by_key),
-                sorted(other.data.items(), key=_by_key)):
+        for ((akey, avalue), (bkey, bvalue)) in zip(self.items(),
+                                                    other.items()):
             if akey != bkey:
                 return False
             if not _is_equivalent_value(avalue, bvalue, Compare.EXACT):
@@ -2402,7 +2418,7 @@ class _Writer:
 
 
     def _write_short_map(self, sep, item):
-        for key, value in sorted(item.items(), key=_by_key):
+        for key, value in item.items():
             if sep:
                 self._write_one(sep)
             self.write_scalar(key)
@@ -2412,7 +2428,7 @@ class _Writer:
 
 
     def _write_map(self, item):
-        for key, value in sorted(item.items(), key=_by_key):
+        for key, value in item.items():
             self._write_pre_item_nl('')
             self.write_scalar(key)
             scalar = is_scalar(value)
@@ -2653,7 +2669,7 @@ def _full_filename(filename, path='.'):
 
 
 def _by_key(item):
-    # Order is: bytes, dates, datetimes, ints, strs
+    # Order is: bytes < date < datetime < int < str (case-insensitive)
     key = item[0]
     if isinstance(key, (bytes, bytearray)):
         return (1, key)
@@ -2663,7 +2679,7 @@ def _by_key(item):
         return (2, key)
     if isinstance(key, int):
         return (4, key)
-    return (5, key)
+    return (5, key.upper())
 
 
 class _AlreadyImported(Exception):

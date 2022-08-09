@@ -26,28 +26,10 @@
     <value>
       <map comment="Map comment">
         <key>
-          <str>saved</str>
-        </key>
-        <value>
-          <date v="2022-03-21"/>
-        </value>
-        <key>
           <str>autosave</str>
         </key>
         <value>
           <yes/>
-        </value>
-        <key>
-          <str>historysize</str>
-        </key>
-        <value>
-          <int v="-35"/>
-        </value>
-        <key>
-          <str>volume</str>
-        </key>
-        <value>
-          <real v="0.7"/>
         </value>
         <key>
           <str>files</str>
@@ -74,57 +56,37 @@
             </value>
           </map>
         </value>
+        <key>
+          <str>historysize</str>
+        </key>
+        <value>
+          <int v="-35"/>
+        </value>
+        <key>
+          <str>saved</str>
+        </key>
+        <value>
+          <date v="2022-03-21"/>
+        </value>
+        <key>
+          <str>volume</str>
+        </key>
+        <value>
+          <real v="0.7"/>
+        </value>
       </map>
     </value>
     <key>
-      <str>Window</str>
+      <str>Magic</str>
     </key>
     <value>
-      <map>
-        <key>
-          <str>pos</str>
-        </key>
-        <value>
-          <list>
-            <int v="383"/>
-            <int v="124"/>
-          </list>
-        </value>
-        <key>
-          <str>size</str>
-        </key>
-        <value>
-          <list>
-            <int v="590"/>
-            <int v="536"/>
-          </list>
-        </value>
-        <key>
-          <str>scale</str>
-        </key>
-        <value>
-          <real v="1.1"/>
-        </value>
-      </map>
+      <bytes>1F8B</bytes>
     </value>
     <key>
       <str>More Tests</str>
     </key>
     <value>
       <map>
-        <key>
-          <str>one</str>
-        </key>
-        <value>
-          <table name="IPv4">
-            <row>
-              <int v="141"/>
-              <int v="179"/>
-              <int v="19"/>
-              <int v="9"/>
-            </row>
-          </table>
-        </value>
         <key>
           <str>many</str>
         </key>
@@ -147,6 +109,19 @@
               <int v="0"/>
               <int v="0"/>
               <int v="1"/>
+            </row>
+          </table>
+        </value>
+        <key>
+          <str>one</str>
+        </key>
+        <value>
+          <table name="IPv4">
+            <row>
+              <int v="141"/>
+              <int v="179"/>
+              <int v="19"/>
+              <int v="9"/>
             </row>
           </table>
         </value>
@@ -178,12 +153,6 @@
       </map>
     </value>
     <key>
-      <str>Magic</str>
-    </key>
-    <value>
-      <bytes>1F8B</bytes>
-    </value>
-    <key>
       <str>Nested Map</str>
     </key>
     <value>
@@ -213,6 +182,37 @@
           <list>
             <int v="1"/>
             <no/>
+          </list>
+        </value>
+      </map>
+    </value>
+    <key>
+      <str>Window</str>
+    </key>
+    <value>
+      <map>
+        <key>
+          <str>pos</str>
+        </key>
+        <value>
+          <list>
+            <int v="383"/>
+            <int v="124"/>
+          </list>
+        </value>
+        <key>
+          <str>scale</str>
+        </key>
+        <value>
+          <real v="1.1"/>
+        </value>
+        <key>
+          <str>size</str>
+        </key>
+        <value>
+          <list>
+            <int v="590"/>
+            <int v="536"/>
           </list>
         </value>
       </map>

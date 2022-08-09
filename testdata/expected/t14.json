@@ -80,12 +80,7 @@
         "ktype": null,
         "vtype": null,
         "map": {
-          "saved": {
-            "UXF^date": "2022-03-21"
-          },
           "autosave": true,
-          "historysize": -35,
-          "volume": 0.7,
           "files": {
             "UXF^table": {
               "name": "Files",
@@ -109,16 +104,14 @@
                 ]
               ]
             }
-          }
+          },
+          "historysize": -35,
+          "saved": {
+            "UXF^date": "2022-03-21"
+          },
+          "volume": 0.7
         }
       }
-    },
-    "Window": {
-      "x": 383,
-      "y": 124,
-      "width": 590,
-      "height": 536,
-      "scale": 1.1
     },
     "Magic": {
       "UXF^bytes": "1F8B11FF0C"
@@ -128,12 +121,48 @@
         5,
         true
       ],
+      "Map Test #1": {
+        "UXF^map": {
+          "comment": "Map with different types of key",
+          "ktype": null,
+          "vtype": null,
+          "map": {
+            "757866": {
+              "UXF^datetime": "1985-05-22T04:31:00"
+            },
+            "2001-01-31": "world",
+            "1965-04-27T16:05:00": "UXF in ASCII bytes follows",
+            "5": 6,
+            "hello": {
+              "UXF^date": "2021-02-01"
+            }
+          },
+          "itypes": {
+            "757866": "bytes",
+            "2001-01-31": "uxf",
+            "1965-04-27T16:05:00": "uxf",
+            "5": "uxf"
+          }
+        }
+      },
+      "Map Test #2": {
+        "UXF^map": {
+          "comment": "Map same type of non-str keys",
+          "ktype": null,
+          "vtype": null,
+          "map": {
+            "1": "one",
+            "2": 2,
+            "3": 3.0,
+            "4": {
+              "UXF^bytes": "0220"
+            }
+          },
+          "itype": "uxf"
+        }
+      },
       "Modern Instrumental": [
         4,
-        false
-      ],
-      "New Acquistions": [
-        1,
         false
       ],
       "Nested List of Lists": {
@@ -159,46 +188,17 @@
           ]
         }
       },
-      "Map Test #1": {
-        "UXF^map": {
-          "comment": "Map with different types of key",
-          "ktype": null,
-          "vtype": null,
-          "map": {
-            "5": 6,
-            "hello": {
-              "UXF^date": "2021-02-01"
-            },
-            "2001-01-31": "world",
-            "1965-04-27T16:05:00": "UXF in ASCII bytes follows",
-            "757866": {
-              "UXF^datetime": "1985-05-22T04:31:00"
-            }
-          },
-          "itypes": {
-            "5": "uxf",
-            "2001-01-31": "uxf",
-            "1965-04-27T16:05:00": "uxf",
-            "757866": "bytes"
-          }
-        }
-      },
-      "Map Test #2": {
-        "UXF^map": {
-          "comment": "Map same type of non-str keys",
-          "ktype": null,
-          "vtype": null,
-          "map": {
-            "1": "one",
-            "2": 2,
-            "3": 3.0,
-            "4": {
-              "UXF^bytes": "0220"
-            }
-          },
-          "itype": "uxf"
-        }
-      }
+      "New Acquistions": [
+        1,
+        false
+      ]
+    },
+    "Window": {
+      "height": 536,
+      "scale": 1.1,
+      "width": 590,
+      "x": 383,
+      "y": 124
     }
   }
 }

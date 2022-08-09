@@ -7,16 +7,10 @@
     <value>
       <map comment="Map with different types of key">
         <key>
-          <int v="5"/>
+          <bytes>757866</bytes>
         </key>
         <value>
-          <int v="6"/>
-        </value>
-        <key>
-          <str>hello</str>
-        </key>
-        <value>
-          <date v="2021-02-01"/>
+          <datetime v="1985-05-22T04:31:00"/>
         </value>
         <key>
           <date v="2001-01-31"/>
@@ -31,10 +25,16 @@
           <str>UXF in ASCII bytes follows</str>
         </value>
         <key>
-          <bytes>757866</bytes>
+          <int v="5"/>
         </key>
         <value>
-          <datetime v="1985-05-22T04:31:00"/>
+          <int v="6"/>
+        </value>
+        <key>
+          <str>hello</str>
+        </key>
+        <value>
+          <date v="2021-02-01"/>
         </value>
       </map>
     </value>
@@ -75,18 +75,6 @@
     <value>
       <map ktype="int" vtype="date" comment="Map same type of non-str keys and values">
         <key>
-          <int v="5"/>
-        </key>
-        <value>
-          <date v="2001-12-27"/>
-        </value>
-        <key>
-          <int v="4"/>
-        </key>
-        <value>
-          <date v="1973-10-18"/>
-        </value>
-        <key>
           <int v="1"/>
         </key>
         <value>
@@ -105,16 +93,28 @@
           <date v="1999-06-09"/>
         </value>
         <key>
-          <int v="7"/>
+          <int v="4"/>
         </key>
         <value>
-          <date v="1992-02-24"/>
+          <date v="1973-10-18"/>
+        </value>
+        <key>
+          <int v="5"/>
+        </key>
+        <value>
+          <date v="2001-12-27"/>
         </value>
         <key>
           <int v="6"/>
         </key>
         <value>
           <date v="2004-04-11"/>
+        </value>
+        <key>
+          <int v="7"/>
+        </key>
+        <value>
+          <date v="1992-02-24"/>
         </value>
       </map>
     </value>
@@ -124,22 +124,10 @@
     <value>
       <map>
         <key>
-          <date v="2001-12-27"/>
-        </key>
-        <value>
-          <int v="5"/>
-        </value>
-        <key>
           <date v="1973-10-18"/>
         </key>
         <value>
           <int v="4"/>
-        </value>
-        <key>
-          <date v="2019-02-10"/>
-        </key>
-        <value>
-          <int v="1"/>
         </value>
         <key>
           <date v="1983-04-07"/>
@@ -148,22 +136,34 @@
           <int v="2"/>
         </value>
         <key>
-          <date v="1999-06-09"/>
-        </key>
-        <value>
-          <int v="3"/>
-        </value>
-        <key>
           <date v="1992-02-24"/>
         </key>
         <value>
           <int v="7"/>
         </value>
         <key>
+          <date v="1999-06-09"/>
+        </key>
+        <value>
+          <int v="3"/>
+        </value>
+        <key>
+          <date v="2001-12-27"/>
+        </key>
+        <value>
+          <int v="5"/>
+        </value>
+        <key>
           <date v="2004-04-11"/>
         </key>
         <value>
           <int v="6"/>
+        </value>
+        <key>
+          <date v="2019-02-10"/>
+        </key>
+        <value>
+          <int v="1"/>
         </value>
       </map>
     </value>
@@ -173,22 +173,10 @@
     <value>
       <map>
         <key>
-          <date v="2001-12-27"/>
-        </key>
-        <value>
-          <int v="5"/>
-        </value>
-        <key>
           <date v="1973-10-18"/>
         </key>
         <value>
           <int v="4"/>
-        </value>
-        <key>
-          <date v="2019-02-10"/>
-        </key>
-        <value>
-          <int v="1"/>
         </value>
         <key>
           <date v="1983-04-07"/>
@@ -197,22 +185,34 @@
           <int v="2"/>
         </value>
         <key>
-          <date v="1999-06-09"/>
-        </key>
-        <value>
-          <int v="3"/>
-        </value>
-        <key>
           <date v="1992-02-24"/>
         </key>
         <value>
           <int v="7"/>
         </value>
         <key>
+          <date v="1999-06-09"/>
+        </key>
+        <value>
+          <int v="3"/>
+        </value>
+        <key>
+          <date v="2001-12-27"/>
+        </key>
+        <value>
+          <int v="5"/>
+        </value>
+        <key>
           <date v="2004-04-11"/>
         </key>
         <value>
           <int v="6"/>
+        </value>
+        <key>
+          <date v="2019-02-10"/>
+        </key>
+        <value>
+          <int v="1"/>
         </value>
       </map>
     </value>
@@ -222,22 +222,10 @@
     <value>
       <map ktype="date">
         <key>
-          <date v="2001-12-27"/>
-        </key>
-        <value>
-          <int v="5"/>
-        </value>
-        <key>
           <date v="1973-10-18"/>
         </key>
         <value>
           <int v="4"/>
-        </value>
-        <key>
-          <date v="2019-02-10"/>
-        </key>
-        <value>
-          <int v="1"/>
         </value>
         <key>
           <date v="1983-04-07"/>
@@ -246,22 +234,34 @@
           <int v="2"/>
         </value>
         <key>
-          <date v="1999-06-09"/>
-        </key>
-        <value>
-          <int v="3"/>
-        </value>
-        <key>
           <date v="1992-02-24"/>
         </key>
         <value>
           <int v="7"/>
         </value>
         <key>
+          <date v="1999-06-09"/>
+        </key>
+        <value>
+          <int v="3"/>
+        </value>
+        <key>
+          <date v="2001-12-27"/>
+        </key>
+        <value>
+          <int v="5"/>
+        </value>
+        <key>
           <date v="2004-04-11"/>
         </key>
         <value>
           <int v="6"/>
+        </value>
+        <key>
+          <date v="2019-02-10"/>
+        </key>
+        <value>
+          <int v="1"/>
         </value>
       </map>
     </value>
@@ -271,22 +271,10 @@
     <value>
       <map ktype="date" vtype="int">
         <key>
-          <date v="2001-12-27"/>
-        </key>
-        <value>
-          <int v="5"/>
-        </value>
-        <key>
           <date v="1973-10-18"/>
         </key>
         <value>
           <int v="4"/>
-        </value>
-        <key>
-          <date v="2019-02-10"/>
-        </key>
-        <value>
-          <int v="1"/>
         </value>
         <key>
           <date v="1983-04-07"/>
@@ -295,22 +283,34 @@
           <int v="2"/>
         </value>
         <key>
-          <date v="1999-06-09"/>
-        </key>
-        <value>
-          <int v="3"/>
-        </value>
-        <key>
           <date v="1992-02-24"/>
         </key>
         <value>
           <int v="7"/>
         </value>
         <key>
+          <date v="1999-06-09"/>
+        </key>
+        <value>
+          <int v="3"/>
+        </value>
+        <key>
+          <date v="2001-12-27"/>
+        </key>
+        <value>
+          <int v="5"/>
+        </value>
+        <key>
           <date v="2004-04-11"/>
         </key>
         <value>
           <int v="6"/>
+        </value>
+        <key>
+          <date v="2019-02-10"/>
+        </key>
+        <value>
+          <int v="1"/>
         </value>
       </map>
     </value>

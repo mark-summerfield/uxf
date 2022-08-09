@@ -27,9 +27,6 @@
         "ktype": null,
         "vtype": null,
         "map": {
-          "shapename": "Hexagon",
-          "zoom": 150,
-          "showtoolbar": false,
           "Files": {
             "current": "test1.uxf",
             "recent": {
@@ -42,7 +39,10 @@
                 ]
               }
             }
-          }
+          },
+          "shapename": "Hexagon",
+          "showtoolbar": false,
+          "zoom": 150
         }
       }
     },
@@ -68,6 +68,7 @@
               ]
             }
           },
+          "scale": 1.1,
           "size": {
             "UXF^table": {
               "name": "size",
@@ -83,8 +84,7 @@
                 ]
               ]
             }
-          },
-          "scale": 1.1
+          }
         }
       }
     },
@@ -105,6 +105,7 @@
           ]
         }
       },
+      "scale": 1.0,
       "size": {
         "UXF^table": {
           "name": "size",
@@ -120,8 +121,7 @@
             ]
           ]
         }
-      },
-      "scale": 1.0
+      }
     },
     "Window3": {
       "pos": {
@@ -140,6 +140,7 @@
           ]
         }
       },
+      "scale": 0.5,
       "size": {
         "UXF^table": {
           "name": "size",
@@ -155,8 +156,7 @@
             ]
           ]
         }
-      },
-      "scale": 0.5
+      }
     }
   }
 }

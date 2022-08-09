@@ -27,9 +27,6 @@
             "ktype": "str",
             "vtype": null,
             "map": {
-              "shapename": "Hexagon",
-              "zoom": 150,
-              "showtoolbar": false,
               "Files": {
                 "UXF^map": {
                   "comment": null,
@@ -50,7 +47,10 @@
                     }
                   }
                 }
-              }
+              },
+              "shapename": "Hexagon",
+              "showtoolbar": false,
+              "zoom": 150
             }
           }
         },

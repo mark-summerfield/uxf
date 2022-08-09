@@ -80,12 +80,7 @@
         "ktype": null,
         "vtype": null,
         "map": {
-          "saved": {
-            "UXF^date": "2022-03-21"
-          },
           "autosave": true,
-          "historysize": -35,
-          "volume": 0.7,
           "files": {
             "UXF^table": {
               "name": "Files",
@@ -109,148 +104,15 @@
                 ]
               ]
             }
-          }
+          },
+          "historysize": -35,
+          "saved": {
+            "UXF^date": "2022-03-21"
+          },
+          "volume": 0.7
         }
       }
     },
-    "Window": {
-      "UXF^map": {
-        "comment": "Some numbers",
-        "ktype": null,
-        "vtype": null,
-        "map": {
-          "pos": {
-            "UXF^table": {
-              "name": "IntPair",
-              "comment": null,
-              "fields": {
-                "First": "int",
-                "Second": "int"
-              },
-              "records": [
-                [
-                  383,
-                  124
-                ]
-              ]
-            }
-          },
-          "size": {
-            "UXF^table": {
-              "name": "IntPair",
-              "comment": null,
-              "fields": {
-                "First": "int",
-                "Second": "int"
-              },
-              "records": [
-                [
-                  590,
-                  536
-                ]
-              ]
-            }
-          },
-          "scale": 1.1
-        }
-      }
-    },
-    "UXF Type Tests": [
-      "one",
-      {
-        "UXF^table": {
-          "name": "IPv4",
-          "comment": null,
-          "fields": {
-            "A": "int",
-            "B": "int",
-            "C": "int",
-            "D": "int"
-          },
-          "records": [
-            [
-              141,
-              179,
-              19,
-              9
-            ]
-          ]
-        }
-      },
-      "many",
-      {
-        "UXF^table": {
-          "name": "IPv4",
-          "comment": null,
-          "fields": {
-            "A": "int",
-            "B": "int",
-            "C": "int",
-            "D": "int"
-          },
-          "records": [
-            [
-              172,
-              16,
-              254,
-              1
-            ],
-            [
-              192,
-              0,
-              2,
-              235
-            ],
-            [
-              127,
-              0,
-              0,
-              1
-            ]
-          ]
-        }
-      },
-      "red",
-      {
-        "UXF^table": {
-          "name": "RGB",
-          "comment": null,
-          "fields": {
-            "Red": "int",
-            "Green": "int",
-            "Blue": "int"
-          },
-          "records": [
-            [
-              255,
-              0,
-              0
-            ]
-          ]
-        }
-      },
-      "semi-transparent blue",
-      {
-        "UXF^table": {
-          "name": "RGBA",
-          "comment": null,
-          "fields": {
-            "Red": "int",
-            "Green": "int",
-            "Blue": "int",
-            "Alpha": "int"
-          },
-          "records": [
-            [
-              0,
-              0,
-              255,
-              80
-            ]
-          ]
-        }
-      }
-    ],
     "Magic": {
       "UXF^bytes": "1F8B"
     },
@@ -266,10 +128,6 @@
           ],
           "Modern Instrumental": [
             4,
-            false
-          ],
-          "New Acquistions": [
-            1,
             false
           ],
           "Nested List of Lists": {
@@ -290,54 +148,6 @@
                 [
                   1,
                   "New Acquistions",
-                  false
-                ]
-              ]
-            }
-          },
-          "Nested Table": {
-            "UXF^table": {
-              "name": "Categories",
-              "comment": "A table with a rather long comment just to\nshow what can be done.",
-              "fields": {
-                "CID": null,
-                "Title": null,
-                "Selected": null
-              },
-              "records": [
-                [
-                  5,
-                  "Classical",
-                  true
-                ],
-                [
-                  4,
-                  "Modern Instrumental",
-                  false
-                ],
-                [
-                  1,
-                  "New Acquistions",
-                  false
-                ],
-                [
-                  2,
-                  "Pop",
-                  false
-                ],
-                [
-                  3,
-                  "Punk",
-                  false
-                ],
-                [
-                  7,
-                  "Uncategorized",
-                  false
-                ],
-                [
-                  6,
-                  "Unpopular Pop",
                   false
                 ]
               ]
@@ -482,6 +292,196 @@
                     ]
                   }
                 }
+              ]
+            }
+          },
+          "Nested Table": {
+            "UXF^table": {
+              "name": "Categories",
+              "comment": "A table with a rather long comment just to\nshow what can be done.",
+              "fields": {
+                "CID": null,
+                "Title": null,
+                "Selected": null
+              },
+              "records": [
+                [
+                  5,
+                  "Classical",
+                  true
+                ],
+                [
+                  4,
+                  "Modern Instrumental",
+                  false
+                ],
+                [
+                  1,
+                  "New Acquistions",
+                  false
+                ],
+                [
+                  2,
+                  "Pop",
+                  false
+                ],
+                [
+                  3,
+                  "Punk",
+                  false
+                ],
+                [
+                  7,
+                  "Uncategorized",
+                  false
+                ],
+                [
+                  6,
+                  "Unpopular Pop",
+                  false
+                ]
+              ]
+            }
+          },
+          "New Acquistions": [
+            1,
+            false
+          ]
+        }
+      }
+    },
+    "UXF Type Tests": [
+      "one",
+      {
+        "UXF^table": {
+          "name": "IPv4",
+          "comment": null,
+          "fields": {
+            "A": "int",
+            "B": "int",
+            "C": "int",
+            "D": "int"
+          },
+          "records": [
+            [
+              141,
+              179,
+              19,
+              9
+            ]
+          ]
+        }
+      },
+      "many",
+      {
+        "UXF^table": {
+          "name": "IPv4",
+          "comment": null,
+          "fields": {
+            "A": "int",
+            "B": "int",
+            "C": "int",
+            "D": "int"
+          },
+          "records": [
+            [
+              172,
+              16,
+              254,
+              1
+            ],
+            [
+              192,
+              0,
+              2,
+              235
+            ],
+            [
+              127,
+              0,
+              0,
+              1
+            ]
+          ]
+        }
+      },
+      "red",
+      {
+        "UXF^table": {
+          "name": "RGB",
+          "comment": null,
+          "fields": {
+            "Red": "int",
+            "Green": "int",
+            "Blue": "int"
+          },
+          "records": [
+            [
+              255,
+              0,
+              0
+            ]
+          ]
+        }
+      },
+      "semi-transparent blue",
+      {
+        "UXF^table": {
+          "name": "RGBA",
+          "comment": null,
+          "fields": {
+            "Red": "int",
+            "Green": "int",
+            "Blue": "int",
+            "Alpha": "int"
+          },
+          "records": [
+            [
+              0,
+              0,
+              255,
+              80
+            ]
+          ]
+        }
+      }
+    ],
+    "Window": {
+      "UXF^map": {
+        "comment": "Some numbers",
+        "ktype": null,
+        "vtype": null,
+        "map": {
+          "pos": {
+            "UXF^table": {
+              "name": "IntPair",
+              "comment": null,
+              "fields": {
+                "First": "int",
+                "Second": "int"
+              },
+              "records": [
+                [
+                  383,
+                  124
+                ]
+              ]
+            }
+          },
+          "scale": 1.1,
+          "size": {
+            "UXF^table": {
+              "name": "IntPair",
+              "comment": null,
+              "fields": {
+                "First": "int",
+                "Second": "int"
+              },
+              "records": [
+                [
+                  590,
+                  536
+                ]
               ]
             }
           }

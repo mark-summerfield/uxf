@@ -45,28 +45,10 @@
     <value>
       <map comment="Map comment">
         <key>
-          <str>saved</str>
-        </key>
-        <value>
-          <date v="2022-03-21"/>
-        </value>
-        <key>
           <str>autosave</str>
         </key>
         <value>
           <yes/>
-        </value>
-        <key>
-          <str>historysize</str>
-        </key>
-        <value>
-          <int v="-35"/>
-        </value>
-        <key>
-          <str>volume</str>
-        </key>
-        <value>
-          <real v="0.7"/>
         </value>
         <key>
           <str>files</str>
@@ -87,42 +69,23 @@
             </row>
           </table>
         </value>
-      </map>
-    </value>
-    <key>
-      <str>Window</str>
-    </key>
-    <value>
-      <map>
         <key>
-          <str>x</str>
+          <str>historysize</str>
         </key>
         <value>
-          <int v="383"/>
+          <int v="-35"/>
         </value>
         <key>
-          <str>y</str>
+          <str>saved</str>
         </key>
         <value>
-          <int v="124"/>
+          <date v="2022-03-21"/>
         </value>
         <key>
-          <str>width</str>
+          <str>volume</str>
         </key>
         <value>
-          <int v="590"/>
-        </value>
-        <key>
-          <str>height</str>
-        </key>
-        <value>
-          <int v="536"/>
-        </value>
-        <key>
-          <str>scale</str>
-        </key>
-        <value>
-          <real v="1.1"/>
+          <real v="0.7"/>
         </value>
       </map>
     </value>
@@ -147,61 +110,15 @@
           </list>
         </value>
         <key>
-          <str>Modern Instrumental</str>
-        </key>
-        <value>
-          <list>
-            <int v="4"/>
-            <no/>
-          </list>
-        </value>
-        <key>
-          <str>New Acquistions</str>
-        </key>
-        <value>
-          <list>
-            <int v="1"/>
-            <no/>
-          </list>
-        </value>
-        <key>
-          <str>Nested List of Lists</str>
-        </key>
-        <value>
-          <list comment="List comment">
-            <list>
-              <int v="5"/>
-              <str>Classical &amp; &lt;Special&gt;</str>
-              <yes/>
-            </list>
-            <list>
-              <int v="4"/>
-              <str>Modern Instrumental</str>
-              <no/>
-            </list>
-            <list>
-              <int v="1"/>
-              <str>New Acquistions</str>
-              <no/>
-            </list>
-          </list>
-        </value>
-        <key>
           <str>Map Test #1</str>
         </key>
         <value>
           <map comment="Map with different types of key">
             <key>
-              <int v="5"/>
+              <bytes>757866</bytes>
             </key>
             <value>
-              <int v="6"/>
-            </value>
-            <key>
-              <str>hello</str>
-            </key>
-            <value>
-              <date v="2021-02-01"/>
+              <datetime v="1985-05-22T04:31:00"/>
             </value>
             <key>
               <date v="2001-01-31"/>
@@ -216,10 +133,16 @@
               <str>UXF in ASCII bytes follows</str>
             </value>
             <key>
-              <bytes>757866</bytes>
+              <int v="5"/>
             </key>
             <value>
-              <datetime v="1985-05-22T04:31:00"/>
+              <int v="6"/>
+            </value>
+            <key>
+              <str>hello</str>
+            </key>
+            <value>
+              <date v="2021-02-01"/>
             </value>
           </map>
         </value>
@@ -253,6 +176,83 @@
               <bytes>0220</bytes>
             </value>
           </map>
+        </value>
+        <key>
+          <str>Modern Instrumental</str>
+        </key>
+        <value>
+          <list>
+            <int v="4"/>
+            <no/>
+          </list>
+        </value>
+        <key>
+          <str>Nested List of Lists</str>
+        </key>
+        <value>
+          <list comment="List comment">
+            <list>
+              <int v="5"/>
+              <str>Classical &amp; &lt;Special&gt;</str>
+              <yes/>
+            </list>
+            <list>
+              <int v="4"/>
+              <str>Modern Instrumental</str>
+              <no/>
+            </list>
+            <list>
+              <int v="1"/>
+              <str>New Acquistions</str>
+              <no/>
+            </list>
+          </list>
+        </value>
+        <key>
+          <str>New Acquistions</str>
+        </key>
+        <value>
+          <list>
+            <int v="1"/>
+            <no/>
+          </list>
+        </value>
+      </map>
+    </value>
+    <key>
+      <str>Window</str>
+    </key>
+    <value>
+      <map>
+        <key>
+          <str>height</str>
+        </key>
+        <value>
+          <int v="536"/>
+        </value>
+        <key>
+          <str>scale</str>
+        </key>
+        <value>
+          <real v="1.1"/>
+        </value>
+        <key>
+          <str>width</str>
+        </key>
+        <value>
+          <int v="590"/>
+        </value>
+        <key>
+          <str>x</str>
+        </key>
+        <value>
+          <int v="383"/>
+        </value>
+        <key>
+          <str>y</str>
+        </key>
+        <value>
+          <int v="124"/>
         </value>
       </map>
     </value>

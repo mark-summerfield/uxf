@@ -741,7 +741,7 @@ def main():
     try:
         total += 1
         e = 530
-        uxf.loads('uxf 1.0\n!http://www.qtrac.eu/robots.txt\n[]',
+        uxf.loads('uxf 1.0\n!http://localhost:5558/robots.txt\n[]',
                   on_event=on_event)
         fail(f'test_errors • #{e} FAIL', regression)
     except uxf.Error as err:
@@ -750,7 +750,7 @@ def main():
     try:
         total += 1
         e = 550
-        uxf.loads('uxf 1.0\n!http://www.qtrac.eu/missing.uxf\n[]',
+        uxf.loads('uxf 1.0\n!http://localhost:5558/missing.uxf\n[]',
                   on_event=on_event)
         fail(f'test_errors • #{e} FAIL', regression)
     except uxf.Error as err:

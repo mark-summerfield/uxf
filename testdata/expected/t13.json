@@ -81,12 +81,7 @@
         "ktype": null,
         "vtype": null,
         "map": {
-          "saved": {
-            "UXF^date": "2022-03-21"
-          },
           "autosave": true,
-          "historysize": -35,
-          "volume": 0.7,
           "files": {
             "UXF^table": {
               "name": "Files",
@@ -110,17 +105,16 @@
                 ]
               ]
             }
-          }
+          },
+          "historysize": -35,
+          "saved": {
+            "UXF^date": "2022-03-21"
+          },
+          "volume": 0.7
         }
       }
     },
-    "Window": {
-      "x": 383,
-      "y": 124,
-      "width": 590,
-      "height": 536,
-      "scale": 1.1
-    },
+    "Key for a long string": "This string occupies\nmultiple lines which we want to be able to round-trip\neven in UXF \u2194 XML conversions.",
     "Magic": {
       "UXF^bytes": "1F8B"
     },
@@ -150,10 +144,6 @@
               ]
             }
           },
-          "New Acquistions": [
-            1,
-            false
-          ],
           "Nested List of Lists": {
             "UXF^list": {
               "comment": "List comment #6",
@@ -230,10 +220,20 @@
                 ]
               ]
             }
-          }
+          },
+          "New Acquistions": [
+            1,
+            false
+          ]
         }
       }
     },
-    "Key for a long string": "This string occupies\nmultiple lines which we want to be able to round-trip\neven in UXF \u2194 XML conversions."
+    "Window": {
+      "height": 536,
+      "scale": 1.1,
+      "width": 590,
+      "x": 383,
+      "y": 124
+    }
   }
 }

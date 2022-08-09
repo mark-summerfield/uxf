@@ -7,9 +7,9 @@ use crate::constants::*;
 use crate::util::escape;
 use crate::value::bytes_to_uxf;
 use chrono::prelude::*;
-use std::fmt;
+use std::{cmp::Ordering, fmt};
 
-#[derive(Clone, Debug, Eq, Hash, Ord, PartialOrd, PartialEq)]
+#[derive(Clone, Debug, Eq, Hash, PartialEq)]
 pub enum Key {
     Bytes(Vec<u8>),
     Date(NaiveDate),
@@ -138,5 +138,53 @@ impl fmt::Display for Key {
                 Key::Str(s) => format!("<{}>", escape(s)),
             }
         )
+    }
+}
+
+impl Ord for Key {
+    /// ordering: bytes < date < datetime < int < str (case-insensitive)
+    fn cmp(&self, other: &Self) -> Ordering {
+        match self {
+            Key::Bytes(a) => {
+                match other {
+                    Key::Bytes(b) => a.cmp(b),
+                    _ => Ordering::Less
+                }
+            }
+            Key::Date(a) => {
+                match other {
+                    Key::Date(b) => a.cmp(b),
+                    Key::Bytes(_) => Ordering::Greater,
+                    _ => Ordering::Less
+                }
+            }
+            Key::DateTime(a) => {
+                match other {
+                    Key::DateTime(b) => a.cmp(b),
+                    Key::Bytes(_) | Key::Date(_) => Ordering::Greater,
+                    _ => Ordering::Less
+                }
+            }
+            Key::Int(a) => {
+                match other {
+                    Key::Int(b) => a.cmp(b),
+                    Key::Str(_) => Ordering::Less,
+                    _ => Ordering::Greater
+                }
+            }
+            Key::Str(a) => {
+                match other {
+                    Key::Str(b) => a.to_uppercase().cmp(&b.to_uppercase()),
+                    _ => Ordering::Greater
+                }
+            }
+
+        }
+    }
+}
+
+impl PartialOrd for Key {
+    fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
+        Some(self.cmp(other))
     }
 }

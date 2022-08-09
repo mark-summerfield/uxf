@@ -7,7 +7,7 @@ use crate::format::Format;
 use crate::list::List;
 use crate::tclass::TClass;
 use crate::util::escape;
-use crate::value::Value;
+use crate::value::{Value, Visit, Visitor};
 use anyhow::{bail, Result};
 use bitflags::bitflags;
 use std::{collections::HashMap, fmt, rc::Rc};
@@ -105,6 +105,18 @@ impl Uxf {
         }
         self.value = value;
         Ok(())
+    }
+
+    /// Returns a &TClass for the given ttype or None
+    pub fn tclass(&self, ttype: &str) -> Option<&TClass> {
+        self.tclass_for_ttype.get(ttype)
+    }
+
+    /// Iterates over every value in this Uxf's value; see Value::visit().
+    pub fn visit(&self, visitor: Visitor) {
+        (Rc::clone(&visitor))(Visit::UxfBegin, &Value::Null);
+        self.value.visit(Rc::clone(&visitor));
+        (Rc::clone(&visitor))(Visit::UxfEnd, &Value::Null);
     }
 
     /// Returns the text of a valid UXF file using the default human

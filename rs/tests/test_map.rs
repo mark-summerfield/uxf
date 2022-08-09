@@ -258,4 +258,28 @@ mod tests {
         <charlie> [<I> <V> <X>] <delta> {<C> 100 <D> 500 <L> 50 <M> 1000}}}"
         );
     }
+
+    #[test]
+    fn t_map_ordering() {
+        let mut m = Map::default();
+        assert_eq!(m.to_string(), "{}");
+        {
+            let items = m.inner_mut();
+            for (n, s) in [
+                (5, "V"),
+                (100, "C"),
+                (500, "D"),
+                (1000, "M"),
+                (10, "X"),
+                (50, "L"),
+                (1, "I"),
+            ] {
+                items.insert(n.into(), s.clone().into());
+                items.insert(s.into(), n.into());
+            }
+        }
+        assert_eq!(m.to_string(),
+        "{1 <I> 5 <V> 10 <X> 50 <L> 100 <C> 500 <D> 1000 <M> \
+          <C> 100 <D> 500 <I> 1 <L> 50 <M> 1000 <V> 5 <X> 10}");
+    }
 }

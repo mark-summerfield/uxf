@@ -32,10 +32,6 @@
         4,
         false
       ],
-      "New Acquistions": [
-        1,
-        false
-      ],
       "Nested List of Lists": [
         [
           5,
@@ -53,54 +49,6 @@
           false
         ]
       ],
-      "Nested Table": {
-        "UXF^table": {
-          "name": "Categories",
-          "comment": null,
-          "fields": {
-            "CID": "int",
-            "Title": "str",
-            "Selected": "bool"
-          },
-          "records": [
-            [
-              5,
-              "Classical",
-              true
-            ],
-            [
-              4,
-              "Modern Instrumental",
-              false
-            ],
-            [
-              1,
-              "New Acquistions",
-              false
-            ],
-            [
-              2,
-              "Pop",
-              false
-            ],
-            [
-              3,
-              "Punk",
-              false
-            ],
-            [
-              7,
-              "Uncategorized",
-              false
-            ],
-            [
-              6,
-              "Unpopular Pop",
-              false
-            ]
-          ]
-        }
-      },
       "Nested List of Tables": [
         {
           "UXF^table": {
@@ -236,6 +184,58 @@
             ]
           }
         }
+      ],
+      "Nested Table": {
+        "UXF^table": {
+          "name": "Categories",
+          "comment": null,
+          "fields": {
+            "CID": "int",
+            "Title": "str",
+            "Selected": "bool"
+          },
+          "records": [
+            [
+              5,
+              "Classical",
+              true
+            ],
+            [
+              4,
+              "Modern Instrumental",
+              false
+            ],
+            [
+              1,
+              "New Acquistions",
+              false
+            ],
+            [
+              2,
+              "Pop",
+              false
+            ],
+            [
+              3,
+              "Punk",
+              false
+            ],
+            [
+              7,
+              "Uncategorized",
+              false
+            ],
+            [
+              6,
+              "Unpopular Pop",
+              false
+            ]
+          ]
+        }
+      },
+      "New Acquistions": [
+        1,
+        false
       ]
     }
   }

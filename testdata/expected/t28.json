@@ -75,12 +75,7 @@
   ],
   "UXF^data": {
     "General": {
-      "saved": {
-        "UXF^date": "2022-03-21"
-      },
       "autosave": true,
-      "historysize": -35,
-      "volume": 0.7,
       "files": {
         "UXF^table": {
           "name": "Files",
@@ -104,14 +99,12 @@
             ]
           ]
         }
-      }
-    },
-    "Window": {
-      "x": 383,
-      "y": 124,
-      "width": 590,
-      "height": 536,
-      "scale": 1.1
+      },
+      "historysize": -35,
+      "saved": {
+        "UXF^date": "2022-03-21"
+      },
+      "volume": 0.7
     },
     "Magic": {
       "UXF^bytes": "1F8B110CFF"
@@ -123,10 +116,6 @@
       ],
       "Modern Instrumental": [
         4,
-        false
-      ],
-      "New Acquistions": [
-        1,
         false
       ],
       "Nested List of Lists": {
@@ -199,7 +188,18 @@
             ]
           ]
         }
-      }
+      },
+      "New Acquistions": [
+        1,
+        false
+      ]
+    },
+    "Window": {
+      "height": 536,
+      "scale": 1.1,
+      "width": 590,
+      "x": 383,
+      "y": 124
     }
   }
 }

@@ -45,28 +45,10 @@
     <value>
       <map comment="Various configuration items">
         <key>
-          <str>saved</str>
-        </key>
-        <value>
-          <date v="2022-03-21"/>
-        </value>
-        <key>
           <str>autosave</str>
         </key>
         <value>
           <yes/>
-        </value>
-        <key>
-          <str>historysize</str>
-        </key>
-        <value>
-          <int v="-35"/>
-        </value>
-        <key>
-          <str>volume</str>
-        </key>
-        <value>
-          <real v="0.7"/>
         </value>
         <key>
           <str>files</str>
@@ -87,96 +69,25 @@
             </row>
           </table>
         </value>
-      </map>
-    </value>
-    <key>
-      <str>Window</str>
-    </key>
-    <value>
-      <map comment="Some numbers">
         <key>
-          <str>pos</str>
+          <str>historysize</str>
         </key>
         <value>
-          <table name="IntPair">
-            <row>
-              <int v="383"/>
-              <int v="124"/>
-            </row>
-          </table>
+          <int v="-35"/>
         </value>
         <key>
-          <str>size</str>
+          <str>saved</str>
         </key>
         <value>
-          <table name="IntPair">
-            <row>
-              <int v="590"/>
-              <int v="536"/>
-            </row>
-          </table>
+          <date v="2022-03-21"/>
         </value>
         <key>
-          <str>scale</str>
+          <str>volume</str>
         </key>
         <value>
-          <real v="1.1"/>
+          <real v="0.7"/>
         </value>
       </map>
-    </value>
-    <key>
-      <str>UXF Type Tests</str>
-    </key>
-    <value>
-      <list>
-        <str>one</str>
-        <table name="IPv4">
-          <row>
-            <int v="141"/>
-            <int v="179"/>
-            <int v="19"/>
-            <int v="9"/>
-          </row>
-        </table>
-        <str>many</str>
-        <table name="IPv4">
-          <row>
-            <int v="172"/>
-            <int v="16"/>
-            <int v="254"/>
-            <int v="1"/>
-          </row>
-          <row>
-            <int v="192"/>
-            <int v="0"/>
-            <int v="2"/>
-            <int v="235"/>
-          </row>
-          <row>
-            <int v="127"/>
-            <int v="0"/>
-            <int v="0"/>
-            <int v="1"/>
-          </row>
-        </table>
-        <str>red</str>
-        <table name="RGB">
-          <row>
-            <int v="255"/>
-            <int v="0"/>
-            <int v="0"/>
-          </row>
-        </table>
-        <str>semi-transparent blue</str>
-        <table name="RGBA">
-          <row>
-            <int v="0"/>
-            <int v="0"/>
-            <int v="255"/>
-            <int v="80"/>
-          </row>
-        </table>
-      </list>
     </value>
     <key>
       <str>Magic</str>
@@ -208,15 +119,6 @@
           </list>
         </value>
         <key>
-          <str>New Acquistions</str>
-        </key>
-        <value>
-          <list>
-            <int v="1"/>
-            <no/>
-          </list>
-        </value>
-        <key>
           <str>Nested List of Lists</str>
         </key>
         <value>
@@ -237,49 +139,6 @@
               <no/>
             </list>
           </list>
-        </value>
-        <key>
-          <str>Nested Table</str>
-        </key>
-        <value>
-          <table name="Categories" comment="A table with a rather long comment just to
-show what can be done.">
-            <row>
-              <int v="5"/>
-              <str>Classical</str>
-              <yes/>
-            </row>
-            <row>
-              <int v="4"/>
-              <str>Modern Instrumental</str>
-              <no/>
-            </row>
-            <row>
-              <int v="1"/>
-              <str>New Acquistions</str>
-              <no/>
-            </row>
-            <row>
-              <int v="2"/>
-              <str>Pop</str>
-              <no/>
-            </row>
-            <row>
-              <int v="3"/>
-              <str>Punk</str>
-              <no/>
-            </row>
-            <row>
-              <int v="7"/>
-              <str>Uncategorized</str>
-              <no/>
-            </row>
-            <row>
-              <int v="6"/>
-              <str>Unpopular Pop</str>
-              <no/>
-            </row>
-          </table>
         </value>
         <key>
           <str>Nested List of Tables</str>
@@ -398,6 +257,147 @@ show what can be done.">
               </row>
             </table>
           </list>
+        </value>
+        <key>
+          <str>Nested Table</str>
+        </key>
+        <value>
+          <table name="Categories" comment="A table with a rather long comment just to
+show what can be done.">
+            <row>
+              <int v="5"/>
+              <str>Classical</str>
+              <yes/>
+            </row>
+            <row>
+              <int v="4"/>
+              <str>Modern Instrumental</str>
+              <no/>
+            </row>
+            <row>
+              <int v="1"/>
+              <str>New Acquistions</str>
+              <no/>
+            </row>
+            <row>
+              <int v="2"/>
+              <str>Pop</str>
+              <no/>
+            </row>
+            <row>
+              <int v="3"/>
+              <str>Punk</str>
+              <no/>
+            </row>
+            <row>
+              <int v="7"/>
+              <str>Uncategorized</str>
+              <no/>
+            </row>
+            <row>
+              <int v="6"/>
+              <str>Unpopular Pop</str>
+              <no/>
+            </row>
+          </table>
+        </value>
+        <key>
+          <str>New Acquistions</str>
+        </key>
+        <value>
+          <list>
+            <int v="1"/>
+            <no/>
+          </list>
+        </value>
+      </map>
+    </value>
+    <key>
+      <str>UXF Type Tests</str>
+    </key>
+    <value>
+      <list>
+        <str>one</str>
+        <table name="IPv4">
+          <row>
+            <int v="141"/>
+            <int v="179"/>
+            <int v="19"/>
+            <int v="9"/>
+          </row>
+        </table>
+        <str>many</str>
+        <table name="IPv4">
+          <row>
+            <int v="172"/>
+            <int v="16"/>
+            <int v="254"/>
+            <int v="1"/>
+          </row>
+          <row>
+            <int v="192"/>
+            <int v="0"/>
+            <int v="2"/>
+            <int v="235"/>
+          </row>
+          <row>
+            <int v="127"/>
+            <int v="0"/>
+            <int v="0"/>
+            <int v="1"/>
+          </row>
+        </table>
+        <str>red</str>
+        <table name="RGB">
+          <row>
+            <int v="255"/>
+            <int v="0"/>
+            <int v="0"/>
+          </row>
+        </table>
+        <str>semi-transparent blue</str>
+        <table name="RGBA">
+          <row>
+            <int v="0"/>
+            <int v="0"/>
+            <int v="255"/>
+            <int v="80"/>
+          </row>
+        </table>
+      </list>
+    </value>
+    <key>
+      <str>Window</str>
+    </key>
+    <value>
+      <map comment="Some numbers">
+        <key>
+          <str>pos</str>
+        </key>
+        <value>
+          <table name="IntPair">
+            <row>
+              <int v="383"/>
+              <int v="124"/>
+            </row>
+          </table>
+        </value>
+        <key>
+          <str>scale</str>
+        </key>
+        <value>
+          <real v="1.1"/>
+        </value>
+        <key>
+          <str>size</str>
+        </key>
+        <value>
+          <table name="IntPair">
+            <row>
+              <int v="590"/>
+              <int v="536"/>
+            </row>
+          </table>
         </value>
       </map>
     </value>

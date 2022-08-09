@@ -106,22 +106,12 @@ impl Map {
         self.items.clear();
     }
 
+    /// Returns the map's keys in sorted order.
+    /// It is recommended to always iterate using these keys.
     pub fn sorted_keys(&self) -> Vec<&Key> {
         let mut keys: Vec<&Key> = self.items.keys().collect();
-        keys.sort_unstable();
+        keys.sort();
         keys
-    }
-
-    /// Returns an iterator of the map's items as immutables.
-    pub fn iter(&self) -> std::collections::hash_map::Iter<Key, Value> {
-        self.items.iter()
-    }
-
-    /// Returns an iterator of the maps's items as mutables.
-    pub fn iter_mut(
-        &mut self,
-    ) -> std::collections::hash_map::IterMut<Key, Value> {
-        self.items.iter_mut()
     }
 
     /// Returns `&items` to make the entire immutable HashMap API available.
