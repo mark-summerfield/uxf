@@ -230,7 +230,8 @@ that follows the initial `uxf 1.0` on the first line.
 
 A possibly empty `dict` where each key is a `ttype` (i.e., the
 `.tclass.ttype` which is a [TClass](#tclass-class)'s name—a `str`) and each
-value is a [TClass](#tclass-class) object.
+value is a [TClass](#tclass-class) object. See also
+[tclass()](#uxf.tclass-def).
 
 **`.comment`**
 
@@ -292,6 +293,25 @@ is used:
 
 For exact equality use `==` or `!=`.
 
+<a name="Uxf.visit-def"></a>
+**`.visit(visitor)`**
+
+This method iterates over every value in the Uxf's `value` (recursively) and
+calls `visitor(Visit, value)` where Visit is an enum, and value is either a
+`namedtuple` (at the start or at the start of a collection—`UxfVisit`,
+`ListVisit`, `MapVisit`, or `TableVisit`, each with `.comment` and other
+data, e.g., `vtype`) or a value or None.
+
+Lists, Maps, and Tables also have `visit()` methods (that this method
+calls).
+
+<a name="Uxf.tclass-def"></a>
+**`.tclass(ttype: str) -> bool`**
+
+Returns the `TClass` whose _ttype_ is `ttype` or raises `KeyError`.
+
+See also the `tclasses` property.
+
 <a name="list-class"></a>
 #### List
 
@@ -299,7 +319,8 @@ A class used to represent a UXF list. It is a `collections.UserList`
 subclass which holds its list in the `.data` attribute and that also has
 `.comment` and `.vtype` attributes.
 
-Also provides ``is_equivalent()`` and support for `==` and `!=`.
+Also provides ``is_equivalent()`` and support for `==` and `!=`, as well as
+a `visit(visitor)` method.
 
 ##### Constructor
 
@@ -322,14 +343,16 @@ that holds its dict in the `.data` attribute and that also has `.comment`,
 `.ktype`, and `.vtype` attributes. The `ktype, `vtype`, and `comment`
 properties are immutable after construction.
 
-Note that although Python ``dict``s are insertion-ordered, UXF ``Map``s are
-unordered. This means that while this Python UXF library will always load
-and dump ``Map`` items in the same order, other UXF libraries may not. (The
-`py/uxfcompare.py` utility correctly compares two UXF files regardless of
-`Map` key order; useful for comparing two UXFs with different texts and
-useful for regression testing.)
+Although Python ``dict``s are insertion-ordered, UXF ``Map``s are
+key-ordered. To access keys, values, or items in UXF order use the
+overridden `keys()`, `values()`, or `items()` methods rather than iterating
+directly on the map. (The order works as follows: when two keys are of
+different types they are ordered `bytes` `<` `date` `<` `datetime` `<` `int`
+`<` `str`, and when two keys have the same types they are ordered using `<`
+except for ``str``s which use case-insensitive `<`.)
 
-Also provides ``is_equivalent()`` and support for `==` and `!=`.
+Also provides ``is_equivalent()`` and support for `==` and `!=`, as well as
+a `visit(visitor)` method.
 
 ##### Constructor
 
@@ -351,7 +374,8 @@ _vtypes_.
 
 A class used to store UXF Tables.
 
-Also provides ``is_equivalent()`` and support for `==` and `!=`.
+Also provides ``is_equivalent()`` and support for `==` and `!=`, as well as
+a `visit(visitor)` method.
 
 ##### Constructor
 
@@ -770,8 +794,13 @@ or
 
 ## Changes
 
-- 2.1.1 Although Maps are unordered, the library now always outputs them in
-  a predictable order.
+- 2.2.0
+  - Maps are now UXF ordered as follows: when two keys are of different
+    types they are ordered `bytes` `<` `date` `<` `datetime` `<` `int` `<`
+    `str`, and when two keys have the same types they are ordered using `<`
+    except for ``str``s which use case-insensitive `<`.
+  - Added some new methods, in particular `Uxf.visit()` (and `List.visit()`,
+    `Map.visit()`, and `Table.visit()`).
 - 2.1.0 added `is_equivalent()` and support for `==` (and `!=`) for Lists,
   Maps, Tables, and TClasses.
 - 2.0.1 `on_event()` now supports keyword argument `prefix`.

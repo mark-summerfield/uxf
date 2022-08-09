@@ -108,6 +108,10 @@ impl Map {
 
     /// Returns the map's keys in sorted order.
     /// It is recommended to always iterate using these keys.
+    /// The order works as follows: when two keys are of different types
+    /// they are ordered `bytes` `<` `date` `<` `datetime` `<` `int` `<`
+    /// `str`, and when two keys have the same types they are ordered using
+    /// `<` except for ``str``s which use case-insensitive `<`.
     pub fn sorted_keys(&self) -> Vec<&Key> {
         let mut keys: Vec<&Key> = self.items.keys().collect();
         keys.sort_unstable();
