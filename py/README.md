@@ -301,9 +301,7 @@ For exact equality use `==` or `!=`.
 
 This method iterates over every value in the Uxf's `value` (recursively) and
 calls `visitor(Visit, value)` where Visit is an enum, and value is either a
-`namedtuple` (at the start or at the start of a collection—`UxfVisit`,
-`ListVisit`, `MapVisit`, or `TableVisit`, each with `.comment` and other
-data, e.g., `vtype`) or a value or None.
+a value or None.
 
 Lists, Maps, and Tables also have `visit()` methods (that this method
 calls).

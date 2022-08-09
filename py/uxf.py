@@ -144,12 +144,6 @@ class Visit(enum.Enum):
     VALUE = enum.auto()
 
 
-UxfVisit = collections.namedtuple('UxfVisit', 'custom comment')
-ListVisit = collections.namedtuple('ListVisit', 'comment vtype')
-MapVisit = collections.namedtuple('MapVisit', 'comment ktype vtype')
-TableVisit = collections.namedtuple('TableVisit', 'comment ttype tclass')
-
-
 class Uxf:
 
     def __init__(self, value=None, *, custom='', tclasses=None,
@@ -234,9 +228,8 @@ class Uxf:
     def visit(self, visitor):
         '''This method iterates over every value in self.value (recursively)
         and calls visitor(Visit, value) where Visit is an enum, and value is
-        either a *Visit namedtuple (at the start of a collection) or a
-        value.'''
-        visitor(Visit.UXF_BEGIN, UxfVisit(self.custom, self.comment))
+        a value or None.'''
+        visitor(Visit.UXF_BEGIN, self)
         self.value.visit(visitor) # self.value is a UXF collection
         visitor(Visit.UXF_END, None)
 
@@ -919,9 +912,8 @@ class List(collections.UserList):
     def visit(self, visitor):
         '''This method iterates over every value in self.data (recursively)
         and calls visitor(Visit, value) where Visit is an enum, and value is
-        either a *Visit namedtuple (at the start of a collection) or a
-        value.'''
-        visitor(Visit.LIST_BEGIN, ListVisit(self.comment, self.vtype))
+        a value or None.'''
+        visitor(Visit.LIST_BEGIN, self)
         for value in self.data:
             if _is_uxf_collection(value):
                 value.visit(visitor)
@@ -1067,10 +1059,8 @@ class Map(collections.UserDict):
     def visit(self, visitor):
         '''This method iterates over every value in self.data (recursively)
         and calls visitor(Visit, value) where Visit is an enum, and value is
-        either a *Visit namedtuple (at the start of a collection) or a
-        value.'''
-        visitor(Visit.MAP_BEGIN, MapVisit(self.comment, self.ktype,
-                                          self.vtype))
+        a value or None.'''
+        visitor(Visit.MAP_BEGIN, self)
         for key, value in self.items(): # in _by_key order
             visitor(Visit.MAP_KEY, key) # keys are never collections
             if _is_uxf_collection(value):
@@ -1652,10 +1642,8 @@ class Table:
     def visit(self, visitor):
         '''This method iterates over every value in self.records
         (recursively) and calls visitor(Visit, value) where Visit is an
-        enum, and value is either a *Visit namedtuple (at the start of a
-        collection) or a value.'''
-        visitor(Visit.TABLE_BEGIN, TableVisit(self.comment, self.ttype,
-                                              self.tclass))
+        enum, and value a value or None.'''
+        visitor(Visit.TABLE_BEGIN, self)
         for record in self.records:
             visitor(Visit.RECORD_BEGIN, None)
             for value in record:
@@ -2692,7 +2680,7 @@ def _by_key(item):
         return (2, key)
     if isinstance(key, int):
         return (4, key)
-    return (5, key.upper())
+    return (5, key.lower())
 
 
 class _AlreadyImported(Exception):

@@ -186,7 +186,7 @@ impl Ord for Key {
             }
             Key::Str(a) => {
                 match other {
-                    Key::Str(b) => a.to_uppercase().cmp(&b.to_uppercase()),
+                    Key::Str(b) => a.to_lowercase().cmp(&b.to_lowercase()),
                     _ => Ordering::Greater
                 }
             }
