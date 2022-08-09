@@ -1,8 +1,12 @@
 # Python UXF Library
 
-UXF is a plain text human readable optionally typed storage format. UXF may
-serve as a convenient alternative to csv, ini, json, sqlite, toml, xml, or
-yaml.
+Uniform eXchange Format (UXF) is a plain text human readable optionally
+typed storage format. UXF is designed to make life easier for software
+developers and data designers. It directly competes with csv, ini, json,
+toml, and yaml formats. One key advantage of UXF is that it supports custom
+(i.e., user-defined) types. This can result in more compact, more readable,
+and easier to parse data. And in some contexts it may prove to be a
+convenient alternative to sqlite or xml.
 
 For details of the Uniform eXchange Format (UXF) supported by this library,
 see the [UXF Overview](../README.md). ([PyPI link to UXF
@@ -44,10 +48,9 @@ Installed alongside `uxf.py` are: `uxfconvert.py`, `uxfcompare.py`, and
 from `.csv`, to `.ini`, and to and from `.sqlite`, but these are really to
 illustrate use of the `uxf.py` APIs. `uxfcompare.py` can compare two UXF
 files, either for equality, i.e., they both contain the same data, with
-lists and tables compared value by value in order, and maps compared by
-item—regardless of order (since UXF Maps are unordered), or for equivalence.
-A UXF file can be linted using `python3 -m uxf -l file.uxf`; but to lint any
-number of files, use `uxflint.py`.
+lists and tables compared value by value in order, and maps compared by item
+in key-order, or for equivalence. A UXF file can be linted using `python3 -m
+uxf -l file.uxf`; but to lint any number of files, use `uxflint.py`.
 
 Also see the UXF test files in the `../testdata` folder, the Python examples
 in the `py/eg` folder, and the Python tests in the `py/t` folder.
@@ -154,9 +157,9 @@ user-defined table). A [TClass](#tclass-class) has `.ttype` and `.fields`
 attributes.
 
 For reading UXF data it is easiest to iterate, and to do so recursively, if
-the data has nested collections. Note that the `visit.py` example provides a
-way of doing this using the visitor design pattern. The `uxfconvert.py`
-example shows alternative approaches to manual iteration.
+the data has nested collections, e.g., using [Uxf.visit()](#uxf.visit-def).
+The `uxfconvert.py` tool and the `eg/slides2.py` example both show
+alternative approaches to manual iteration.
 
 Note that for imports, if the filename is relative it is searched for in the
 same folder as the importing UXF file, and if not found there, in the
@@ -795,7 +798,7 @@ or
 ## Changes
 
 - 2.2.0
-  - Maps are now UXF ordered as follows: when two keys are of different
+  - Maps are now key-ordered as follows: when two keys are of different
     types they are ordered `bytes` `<` `date` `<` `datetime` `<` `int` `<`
     `str`, and when two keys have the same types they are ordered using `<`
     except for ``str``s which use case-insensitive `<`.

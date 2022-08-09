@@ -87,7 +87,7 @@ nested inside each other, the UXF format is extremely flexible.
 ### Built-in Types
 
 Map keys (i.e., _ktype_) may only be of types `bytes`, `date`, `datetime`,
-`int`, and `str`.
+`int`, and `str` and may not be null (`?`).
 
 List, map, and table values may be of _any_ type (including nested ``map``s,
 ``list``s, and ``table``s), unless constrained to a specific type. If
@@ -96,9 +96,9 @@ listed above, except `null`), or any user-defined _ttype_, and the
 corresponding value or values must be any valid value for the specified
 type, or `?` (null).
 
-Lists and tables preserve the order in which values are appended. So the
-first value is at index/row 0, the second at index/row 1, etc. Maps are
-ordered by key. In particular when two keys are of different types they are
+Lists and tables preserve the order in which values appear. So the first
+value is at index/row 0, the second at index/row 1, etc. Maps are
+key-ordered. In particular when two keys are of different types they are
 ordered `bytes` `<` `date` `<` `datetime` `<` `int` `<` `str`, and when two
 keys have the same types they are ordered using `<` except for ``str``s
 which use case-insensitive `<`.
@@ -653,11 +653,11 @@ And here's a possible UXF alternative:
 
     uxf 1.0
     #<UXF version of TOML Example>
-    =DateTime base:datetime offset:str
-    =Owner name:str dob:DateTime
-    =Database server:str ports:list connection_max:int enabled:bool
-    =Server name:str ip:str dc:str
     =Clients a b
+    =Database server:str ports:list connection_max:int enabled:bool
+    =DateTime when:datetime tz:str
+    =Owner name:str dob:DateTime
+    =Server name:str ip:str dc:str
     =Hosts name:str
     [
       (Owner <Tom Preston-Werner> (DateTime 1979-05-27T07:32:00 <-08:00>))
@@ -671,7 +671,7 @@ And here's a possible UXF alternative:
     ]
 
 Unlike TOML, UXF doesn't natively support timezones, so we've created a
-DateTime _ttype_ which has a base datetime and a timezone offset. For
+DateTime _ttype_ which has a when datetime and a timezone offset. For
 Clients the data will come in pairs because we've specified two fields.
 Although written compactly, we could have newlines wherever whitespace is
 required—or optional.
@@ -930,25 +930,26 @@ If a list value, map key, or table value's type is specified, then the UXF
 processor is expected to be able to check for (and if requested and
 possible, correct) any mistyped values. UXF writers are expected output
 collections—``list`` values and  ``table`` records (and values within
-records) in order. Similarly `map` items should be output in map key order:
-when two keys are of different types they are ordered `bytes` `<` `date` `<`
-`datetime` `<` `int` `<` `str`, and when two keys have the same types they
-are ordered using `<` except for ``str``s which use case-insensitive `<`.
+records) in order. Similarly `map` items should be output in key-order: when
+two keys are of different types they should be ordered `bytes` `<` `date`
+`<` `datetime` `<` `int` `<` `str`, and when two keys have the same types
+they should be ordered using `<` except for ``str``s which should use
+case-insensitive `<`.
 
 For ``datetime``'s, only 1-second resolution is supported and no timezones.
 If microsecond resolution or timezones are required, consider using custom
 _ttypes_, e.g.,
 
     =Timestamp when:datetime microseconds:real
-    =DateTime when:datetime zone:str
+    =DateTime when:datetime tz:str
 
 Note that a UXF reader (writer) _must_ be able to read (write) a plain text
 `.uxf` file containing UTF-8 encoded text, and _ought_ to be able to read
 and write gzipped plain text `.uxf.gz` files.
 
-Note also that UXF readers and writers should not care about the actual file
-extension (apart from the `.gz` needed for gzipped files), since users are
-free to use their own. For example, `data.myapp` and `data.myapp.gz`.
+Note also that UXF readers and writers should _not_ care about the actual
+file extension (apart from the `.gz` needed for gzipped files), since users
+are free to use their own. For example, `data.myapp` and `data.myapp.gz`.
 
 ## Supplementary
 
