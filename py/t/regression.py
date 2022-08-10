@@ -21,8 +21,7 @@ try:
     import uxf
     UXF_EXE = os.path.join(PATH, '../uxf.py')
     UXFCONVERT_EXE = os.path.join(PATH, '../uxfconvert.py')
-    SLIDES1 = os.path.join(PATH, '../eg/slides1.py')
-    SLIDES2 = os.path.join(PATH, '../eg/slides2.py')
+    SLIDES = os.path.join(PATH, '../eg/slides.py')
     SLIDES_SLD = os.path.join(PATH, '../eg/slides.sld')
     TEST_TABLE = os.path.join(PATH, '../t/test_table.py')
     TEST_SQLITE = os.path.join(PATH, '../t/test_sqlite.py')
@@ -65,14 +64,11 @@ def main():
     total, ok = test_table_is_scalar(total, ok, verbose=verbose)
     print('5', end='', flush=True)
     if total < max_total:
-        total, ok = test_slides(SLIDES1, total, ok, verbose=verbose)
+        total, ok = test_slides(SLIDES, total, ok, verbose=verbose)
         print('6', end='', flush=True)
     if total < max_total:
-        total, ok = test_slides(SLIDES2, total, ok, verbose=verbose)
-        print('7', end='', flush=True)
-    if total < max_total:
         total, ok = test_format(total, ok, verbose=verbose)
-        print('8', end='', flush=True)
+        print('7', end='', flush=True)
     if total < max_total:
         total, ok = test_externals(
             (('A', TEST_TABLE), ('B', TEST_SQLITE), ('C', TEST_LINTS),
@@ -308,8 +304,7 @@ def test_table_is_scalar(total, ok, *, verbose):
 
 
 def test_slides(slides_py, total, ok, *, verbose):
-    num = 1 if slides_py.endswith('1.py') else 2
-    cmd = prep_cmd([slides_py, SLIDES_SLD, f'actual/slides{num}'])
+    cmd = prep_cmd([slides_py, SLIDES_SLD, 'actual/slides'])
     total += 1
     reply = subprocess.run(cmd, capture_output=True, text=True)
     cmd = ' '.join(cmd)
@@ -319,11 +314,11 @@ def test_slides(slides_py, total, ok, *, verbose):
     else:
         ok += 1
         for name in sorted(
-                name for name in os.listdir(f'actual/slides{num}')
+                name for name in os.listdir('actual/slides')
                 if name.endswith('.html')):
             total += 1
-            ok += compare(cmd, 'slides.sld', f'actual/slides{num}/{name}',
-                          f'expected/slides{num}/{name}', verbose=verbose)
+            ok += compare(cmd, 'slides.sld', f'actual/slides/{name}',
+                          f'expected/slides/{name}', verbose=verbose)
     return total, ok
 
 

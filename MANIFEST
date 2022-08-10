@@ -1,8 +1,5 @@
 # TODO (1)
-# - create slides3.py using Uxf.visit()
-# - add to regression.py's test_slides()
-# - get rid of visit.py & slides1.py
-# - update py/eg/README.md
+# - add visit.py to regression.py's tests
 # - pypi release
 rs/src/lib.rs # add docs at the end
 rs/src/value.rs
@@ -53,8 +50,7 @@ py/t/gen.py
 py/t/benchmark.py
 py/eg/README.md
 py/eg/visit.py
-py/eg/slides1.py
-py/eg/slides2.py
+py/eg/slides.py
 py/eg/slides.sld
 py/eg/merge.py
 py/eg/include.py

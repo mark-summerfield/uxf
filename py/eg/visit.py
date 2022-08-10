@@ -3,162 +3,142 @@
 # License: GPLv3
 
 '''
-The visit function calls the given function on every value in the given data
-(which can be a Uxf object or a single list, List, dict, Map, or Table).
+This example shows a use-case for the Uxf.visit() method.
+
+If you use it with testdata/t5.uxf you'll find it reveals that there is an
+inconsistency in the data which would not otherwise be apparent.
 '''
 
-import collections
-import datetime
-import enum
-import os
+import functools
+import pathlib
 import sys
 
 try:
     import uxf
 except ImportError: # needed for development
-    sys.path.append(os.path.abspath(os.path.dirname(__file__) + '/..'))
+    sys.path.append(str(pathlib.Path(__file__).parent.parent.resolve()))
     import uxf
 
 
-UTF8 = 'utf-8'
-MAX_IDENTIFIER_LEN = 60
-MAX_LIST_IN_LINE = 10
-MAX_SHORT_LEN = 32
-_KEY_TYPES = frozenset({'int', 'date', 'datetime', 'str', 'bytes'})
-_VALUE_TYPES = frozenset(_KEY_TYPES | {'bool', 'real'})
-_ANY_VALUE_TYPES = frozenset(_VALUE_TYPES | {'list', 'map', 'table'})
-_BOOL_FALSE = frozenset({'no', 'false'})
-_BOOL_TRUE = frozenset({'yes', 'true'})
-_CONSTANTS = frozenset(_BOOL_FALSE | _BOOL_TRUE)
-_BAREWORDS = frozenset(_ANY_VALUE_TYPES | _CONSTANTS)
-TYPENAMES = frozenset(_ANY_VALUE_TYPES | {'null'})
-_MISSING = object()
+def main():
+    if len(sys.argv) < 3 or sys.argv[1] in {'-h', '--help'}:
+        raise SystemExit('''usage: visit.py <infile.uxf> <outfile.txt|->
+suggested infile: testdata/t5.uxf''')
+    tracks = uxf.load(sys.argv[1])
+    state = State()
+    state_visitor = functools.partial(visitor, state=state)
+    tracks.visit(state_visitor)
+    print_tree(state.tree, sys.argv[2])
 
 
-class Error(Exception):
-    pass
+def print_tree(tree, outfile):
+    out, close = get_outstream(outfile)
+    try:
+        for category in tree:
+            out.write(f'{category}\n')
+            for playlist in tree[category]:
+                out.write(f'  {playlist}\n')
+                for name, secs in tree[category][playlist]:
+                    out.write(f'    {name} ({secs:.1f}s)\n')
+    finally:
+        if close:
+            out.close()
 
 
-def visit(function, value):
-    '''Calls the given function for every every value in the Uxf object (or
-    the list, List, dict, Map, or Table, value if given). The function is
-    called with one or two arguments, the first being a ValueType and the
-    second (where given) a value.
-
-        import uxf
-        import visit
-        u = uxf.load('file.uxf')
-        visit.visit(print, u)
-        # -or-
-        for value in u.value: # if u's value is a List or Table
-            visit.visit(print, value)
-
-    See also the ValueType enum.
-    '''
-    if value is None:
-        function(ValueType.NULL)
-    elif isinstance(value, uxf.Uxf):
-        _visit_uxf(function, value)
-    elif isinstance(value, (tuple, list, uxf.List)):
-        _visit_list(function, value)
-    elif isinstance(value, (dict, uxf.Map)):
-        _visit_map(function, value)
-    elif isinstance(value, uxf.Table):
-        _visit_table(function, value)
-    elif isinstance(value, bool):
-        function(ValueType.BOOL, value)
-    elif isinstance(value, int):
-        function(ValueType.INT, value)
-    elif isinstance(value, float):
-        function(ValueType.REAL, value)
-    elif isinstance(value, datetime.datetime):
-        function(ValueType.DATE_TIME, value)
-    elif isinstance(value, datetime.date):
-        function(ValueType.DATE, value)
-    elif isinstance(value, str):
-        function(ValueType.STR, value)
-    elif isinstance(value, (bytes, bytearray)):
-        function(ValueType.BYTES, value)
-    elif isinstance(value, uxf.TClass):
-        pass # ignore
-    elif value.__class__.__name__.startswith('UXF_'):
-        visit(function, tuple(value))
-    else:
-        raise Error('can\'t visit values of type '
-                    f'{value.__class__.__name__}: {value!r}')
+def get_outstream(outfile):
+    if outfile == '-':
+        return sys.stdout, False
+    return open(outfile, 'wt', encoding='utf-8'), True
 
 
-def _visit_uxf(function, uxo):
-    info = UxfInfo(uxo.custom, uxo.comment, uxo.tclasses)
-    function(ValueType.UXF_BEGIN, info)
-    visit(function, uxo.value)
-    function(ValueType.UXF_END, Tag(info.custom))
+def visitor(kind, value, *, state):
+    if kind is uxf.VisitKind.TABLE_BEGIN:
+        handle_table(state, value)
+    elif kind is uxf.VisitKind.TABLE_END:
+        state.in_categories = state.in_playlists = state.in_tracks = False
+    elif kind is uxf.VisitKind.RECORD_BEGIN:
+        state.record.clear()
+    elif kind is uxf.VisitKind.RECORD_END:
+        if state.in_categories:
+            handle_category(state)
+        elif state.in_playlists:
+            handle_playlist(state)
+        elif state.in_tracks:
+            handle_track(state)
+        state.record.clear()
+    elif kind is uxf.VisitKind.VALUE:
+        if value is not None:
+            state.record.append(value)
 
 
-def _visit_list(function, lst):
-    info = ListInfo(getattr(lst, 'comment', None),
-                    getattr(lst, 'vtype', None))
-    function(ValueType.LIST_BEGIN, info)
-    for element in lst:
-        visit(function, element)
-    function(ValueType.LIST_END)
+def handle_table(state, value):
+    state.in_categories = state.in_playlists = state.in_tracks = False
+    if value.ttype == 'Categories':
+        state.in_categories = True
+    elif value.ttype == 'Playlists':
+        state.in_playlists = True
+    elif value.ttype == 'Tracks':
+        state.in_tracks = True
 
 
-def _visit_map(function, d):
-    info = MapInfo(getattr(d, 'comment', None), getattr(d, 'ktype', None),
-                   getattr(d, 'vtype', None))
-    function(ValueType.MAP_BEGIN, info)
-    for key, element in d.items():
-        function(ValueType.MAP_KEY)
-        visit(function, key)
-        function(ValueType.MAP_VALUE)
-        visit(function, element)
-    function(ValueType.MAP_END)
+def handle_category(state):
+    if len(state.record) > 1:
+        cid = state.record[CATEGORY_CID]
+        title = state.record[CATEGORY_TITLE]
+        state.tree[title] = {} # playlists for category
+        state.category_for_cid[cid] = title
 
 
-def _visit_table(function, table):
-    info = TableInfo(getattr(table, 'comment', None),
-                     getattr(table, 'ttype', None),
-                     getattr(table, 'tclass', None))
-    function(ValueType.TABLE_BEGIN, info)
-    for record in table:
-        rtype = record.__class__.__name__
-        if rtype.startswith('UXF_'):
-            rtype = rtype[3:]
-        tag = Tag(rtype)
-        function(ValueType.ROW_BEGIN, tag)
-        for item in record:
-            visit(function, item)
-        function(ValueType.ROW_END, tag)
-    function(ValueType.TABLE_END, Tag(info.ttype))
+def handle_playlist(state):
+    if len(state.record) > 2:
+        pid = state.record[PLAYLIST_PID]
+        title = state.record[PLAYLIST_TITLE]
+        cid = state.record[PLAYLIST_CID]
+        category = state.category_for_cid[cid]
+        state.tree[category][title] = [] # tracks for playlist
+        state.playlist_for_pid[pid] = title
+        state.cid_for_pid[pid] = cid
 
 
-@enum.unique
-class ValueType(enum.Enum):
-    UXF_BEGIN = enum.auto()
-    UXF_END = enum.auto()
-    LIST_BEGIN = enum.auto()
-    LIST_END = enum.auto()
-    MAP_BEGIN = enum.auto()
-    MAP_KEY = enum.auto()
-    MAP_VALUE = enum.auto()
-    MAP_END = enum.auto()
-    TABLE_BEGIN = enum.auto()
-    TABLE_END = enum.auto()
-    ROW_BEGIN = enum.auto()
-    ROW_END = enum.auto()
-    BOOL = enum.auto()
-    INT = enum.auto()
-    REAL = enum.auto()
-    DATE = enum.auto()
-    DATE_TIME = enum.auto()
-    STR = enum.auto()
-    BYTES = enum.auto()
-    NULL = enum.auto()
+def handle_track(state):
+    if len(state.record) > 5:
+        title = state.record[TRACK_TITLE]
+        secs = state.record[TRACK_SECS]
+        pid = state.record[TRACK_PID]
+        if pid not in state.cid_for_pid:
+            print(f'skipping track {state.record!r}: no playlist')
+        else:
+            cid = state.cid_for_pid[pid]
+            playlist = state.playlist_for_pid[pid]
+            category = state.category_for_cid[cid]
+            state.tree[category][playlist].append((title, secs))
 
 
-UxfInfo = collections.namedtuple('UxfInfo', 'custom comment tclasses')
-ListInfo = collections.namedtuple('ListInfo', 'comment vtype')
-MapInfo = collections.namedtuple('MapInfo', 'comment ktype vtype')
-TableInfo = collections.namedtuple('TableInfo', 'comment ttype tclass')
-Tag = collections.namedtuple('Tag', 'name')
+class State:
+
+    def __init__(self):
+        # self.tree keys are categories, values are dicts
+        # these in turn have playlist keys and values are lists of tracks as
+        # (title, secs) 2-tuples
+        self.tree = {}
+        self.category_for_cid = {}
+        self.cid_for_pid = {}
+        self.playlist_for_pid = {}
+        self.in_categories = False
+        self.in_playlists = False
+        self.in_tracks = False
+        self.record = []
+
+
+CATEGORY_CID = 0
+CATEGORY_TITLE = 1
+PLAYLIST_PID = 0
+PLAYLIST_TITLE = 1
+PLAYLIST_CID = 2
+TRACK_TITLE = 1
+TRACK_SECS = 2
+TRACK_PID = 5
+
+
+if __name__ == '__main__':
+    main()

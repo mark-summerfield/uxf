@@ -1,16 +1,22 @@
 # Python UXF Library Examples
 
+- [visit.py](#visit-py)
 - [include.py](#include-py)
 - [merge.py](#merge-py)
-- [Slides](#slides)
-    - [slides1.py](#slides1-py)
-    - [slides2.py](#slides2-py)
+- [slides.py](#slides-py)
 - [Tlm.py](#tlm-py)
 - [Config.py](#config-py)
 - [t/ Files](#t--files)
     - [gen.py](#gen-py)
     - [benchmark.py](#benchmark-py)
 
+
+## visit.py
+
+This example shows how to use the `Uxf.visit()` method to iterate over a UXF
+file's contents. In this case it is used to operate on a file which has
+three tables associated with IDs (e.g., like a database) and outputs them as
+a hierarchy.
 
 ## include.py
 
@@ -49,7 +55,7 @@ of suffix, all infiles are assumed to be UXF format.
 This module can be imported and its `merge()` function used; this is done by
 the [include.py](#include-py) example.
 
-## Slides
+## slides.py
 
 The `py/eg/slides.sld` file is a very basic UXF format file which defines
 some custom _ttypes_ and includes some example slides using this format.
@@ -58,16 +64,11 @@ Two examples can read files of this format and output HTML pages as
 “slides”; their key difference being the way they handle the UXF `.sld`
 file.
 
-### slides1.py
-
-This example uses `Uxf.load()` and then uses the `visit.py` module's
-`visit()` function to iterate over the returned `Uxf` object's value to
-produce HTML output.
-
-### slides2.py
-
 This example uses `Uxf.load()` and then manually iterates over the returned
 `Uxf` object's value to produce HTML output.
+
+Using UXF as a markup format isn't ideal, but as this example shows, it can
+be done.
 
 ## Tlm.py
 

@@ -41,7 +41,7 @@ def main():
 
 def get_args():
     if len(sys.argv) < 3 or sys.argv[1] in {'-h', '--help'}:
-        raise SystemExit('usage: slides2.py <infile.sld> <outdir>]')
+        raise SystemExit('usage: slides.py <infile.sld> <outdir>]')
     infile = sys.argv[1]
     outdir = sys.argv[2]
     return infile, outdir

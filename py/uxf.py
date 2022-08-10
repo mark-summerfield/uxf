@@ -129,7 +129,7 @@ decimal place are needed to represent the given `real` (i.e., Python
 
 
 @enum.unique
-class Visit(enum.Enum):
+class VisitKind(enum.Enum):
     UXF_BEGIN = enum.auto()
     UXF_END = enum.auto()
     LIST_BEGIN = enum.auto()
@@ -227,11 +227,11 @@ class Uxf:
 
     def visit(self, visitor):
         '''This method iterates over every value in self.value (recursively)
-        and calls visitor(Visit, value) where Visit is an enum, and value is
-        a value or None.'''
-        visitor(Visit.UXF_BEGIN, self)
+        and calls visitor(VisitKind, value) where VisitKind is an enum, and
+        value is a value or None.'''
+        visitor(VisitKind.UXF_BEGIN, self)
         self.value.visit(visitor) # self.value is a UXF collection
-        visitor(Visit.UXF_END, None)
+        visitor(VisitKind.UXF_END, None)
 
 
     def dump(self, filename_or_filelike, *, on_event=on_event,
@@ -911,15 +911,15 @@ class List(collections.UserList):
 
     def visit(self, visitor):
         '''This method iterates over every value in self.data (recursively)
-        and calls visitor(Visit, value) where Visit is an enum, and value is
-        a value or None.'''
-        visitor(Visit.LIST_BEGIN, self)
+        and calls visitor(VisitKind, value) where VisitKind is an enum, and
+        value is a value or None.'''
+        visitor(VisitKind.LIST_BEGIN, self)
         for value in self.data:
             if _is_uxf_collection(value):
                 value.visit(visitor)
             else:
-                visitor(Visit.VALUE, value)
-        visitor(Visit.LIST_END, None)
+                visitor(VisitKind.VALUE, value)
+        visitor(VisitKind.LIST_END, None)
 
 
     def is_equivalent(self, other, compare=Compare.EXACT):
@@ -1058,16 +1058,16 @@ class Map(collections.UserDict):
 
     def visit(self, visitor):
         '''This method iterates over every value in self.data (recursively)
-        and calls visitor(Visit, value) where Visit is an enum, and value is
-        a value or None.'''
-        visitor(Visit.MAP_BEGIN, self)
+        and calls visitor(VisitKind, value) where VisitKind is an enum, and
+        value is a value or None.'''
+        visitor(VisitKind.MAP_BEGIN, self)
         for key, value in self.items(): # in _by_key order
-            visitor(Visit.MAP_KEY, key) # keys are never collections
+            visitor(VisitKind.MAP_KEY, key) # keys are never collections
             if _is_uxf_collection(value):
                 value.visit(visitor)
             else:
-                visitor(Visit.VALUE, value)
-        visitor(Visit.MAP_END, None)
+                visitor(VisitKind.VALUE, value)
+        visitor(VisitKind.MAP_END, None)
 
 
     def items(self):
@@ -1641,18 +1641,18 @@ class Table:
 
     def visit(self, visitor):
         '''This method iterates over every value in self.records
-        (recursively) and calls visitor(Visit, value) where Visit is an
-        enum, and value a value or None.'''
-        visitor(Visit.TABLE_BEGIN, self)
+        (recursively) and calls visitor(VisitKind, value) where VisitKind is
+        an enum, and value a value or None.'''
+        visitor(VisitKind.TABLE_BEGIN, self)
         for record in self.records:
-            visitor(Visit.RECORD_BEGIN, None)
+            visitor(VisitKind.RECORD_BEGIN, None)
             for value in record:
                 if _is_uxf_collection(value):
                     value.visit(visitor)
                 else:
-                    visitor(Visit.VALUE, value)
-            visitor(Visit.RECORD_END, None)
-        visitor(Visit.TABLE_END, self.ttype)
+                    visitor(VisitKind.VALUE, value)
+            visitor(VisitKind.RECORD_END, None)
+        visitor(VisitKind.TABLE_END, self.ttype)
 
 
     def is_equivalent(self, other, compare=Compare.EXACT):
