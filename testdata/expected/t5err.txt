@@ -1,0 +1,2 @@
+skipping track [818, 'Part One', 1536.0, '/home/mark/music/Mike Oldfield/01 - Part One.ogg', True, 35]: no playlist
+skipping track [819, 'Part Two', 1400.0, '/home/mark/music/Mike Oldfield/02 - Part Two.ogg', False, 35]: no playlist

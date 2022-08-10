@@ -801,7 +801,7 @@ or
     `str`, and when two keys have the same types they are ordered using `<`
     except for ``str``s which use case-insensitive `<`.
   - Added some new methods, in particular `Uxf.visit()` (and `List.visit()`,
-    `Map.visit()`, and `Table.visit()`).
+    `Map.visit()`, and `Table.visit()`), and a new `eg/visit.py` example.
 - 2.1.0 added `is_equivalent()` and support for `==` (and `!=`) for Lists,
   Maps, Tables, and TClasses.
 - 2.0.1 `on_event()` now supports keyword argument `prefix`.

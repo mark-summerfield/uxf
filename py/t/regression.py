@@ -33,6 +33,7 @@ try:
     TEST_EDITABLETUPLE = os.path.join(PATH, '../t/test_editabletuple.py')
     TEST_TLM = os.path.join(PATH, '../t/test_tlm.py')
     TEST_COMPARE = os.path.join(PATH, '../t/test_compare.py')
+    TEST_VISIT = os.path.join(PATH, '../t/test_visit.py')
     BENCHMARK = os.path.join(PATH, '../t/benchmark.py')
     os.chdir(os.path.join(PATH, '../../testdata')) # move to test data
 finally:
@@ -74,8 +75,8 @@ def main():
             (('A', TEST_TABLE), ('B', TEST_SQLITE), ('C', TEST_LINTS),
              ('D', TEST_IMPORTS), ('E', TEST_MERGE), ('F', TEST_INCLUDE),
              ('G', TEST_EDITABLETUPLE), ('H', TEST_TLM),
-             ('I', TEST_COMPARE), ('Z', TEST_ERRORS)), total, ok,
-            verbose=verbose, max_total=max_total)
+             ('I', TEST_COMPARE), ('J', TEST_VISIT), ('Z', TEST_ERRORS)),
+            total, ok, verbose=verbose, max_total=max_total)
         time.sleep(0.2) # allow Z to be visible
     if ok == total and os.isatty(sys.stdout.fileno()):
         span = min(1000, total // 10)

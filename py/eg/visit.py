@@ -24,11 +24,15 @@ def main():
     if len(sys.argv) < 3 or sys.argv[1] in {'-h', '--help'}:
         raise SystemExit('''usage: visit.py <infile.uxf> <outfile.txt|->
 suggested infile: testdata/t5.uxf''')
-    tracks = uxf.load(sys.argv[1])
+    visit(sys.argv[1], sys.argv[2])
+
+
+def visit(infile, outfile):
+    tracks = uxf.load(infile)
     state = State()
     state_visitor = functools.partial(visitor, state=state)
     tracks.visit(state_visitor)
-    print_tree(state.tree, sys.argv[2])
+    print_tree(state.tree, outfile)
 
 
 def print_tree(tree, outfile):
@@ -106,7 +110,8 @@ def handle_track(state):
         secs = state.record[TRACK_SECS]
         pid = state.record[TRACK_PID]
         if pid not in state.cid_for_pid:
-            print(f'skipping track {state.record!r}: no playlist')
+            print(f'skipping track {state.record!r}: no playlist',
+                  file=sys.stderr)
         else:
             cid = state.cid_for_pid[pid]
             playlist = state.playlist_for_pid[pid]

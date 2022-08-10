@@ -1,6 +1,3 @@
-# TODO (1)
-# - add visit.py to regression.py's tests
-# - pypi release
 rs/src/lib.rs # add docs at the end
 rs/src/value.rs
 rs/src/key.rs
@@ -46,6 +43,7 @@ py/t/test_use_config.py
 py/t/test_editabletuple.py
 py/t/test_compare.py
 py/t/test_tlm.py
+py/t/test_visit.py
 py/t/gen.py
 py/t/benchmark.py
 py/eg/README.md
