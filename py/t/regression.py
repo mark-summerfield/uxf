@@ -15,8 +15,11 @@ import sys
 import tempfile
 import time
 
+import util
+
 try:
     PATH = os.path.abspath(os.path.dirname(__file__))
+    SERVER_PATH = os.path.abspath(PATH + '/../../misc')
     sys.path.append(os.path.abspath(os.path.join(PATH, '../')))
     import uxf
     UXF_EXE = os.path.join(PATH, '../uxf.py')
@@ -42,7 +45,7 @@ finally:
 
 def main():
     print(f'testing uxf.py {uxf.__version__} (UXF {uxf.VERSION})')
-    check_server()
+    util.check_server(SERVER_PATH)
     max_total, verbose = get_config()
     cleanup()
     t = time.monotonic()
@@ -485,14 +488,6 @@ def prep_cmd(cmd):
     if sys.platform.startswith('win'):
         cmd = ['py.bat'] + cmd
     return cmd
-
-
-def check_server():
-    reply = subprocess.run(['nc', '-vz', 'localhost', '5558'],
-                           stdout=subprocess.DEVNULL,
-                           stderr=subprocess.DEVNULL)
-    if reply.returncode != 0:
-        raise SystemExit('run: ./misc/test_server.py &')
 
 
 if __name__ == '__main__':

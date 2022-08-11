@@ -46,6 +46,7 @@ py/t/test_tlm.py
 py/t/test_visit.py
 py/t/gen.py
 py/t/benchmark.py
+py/t/util.py
 py/eg/README.md
 py/eg/visit.py
 py/eg/slides.py
