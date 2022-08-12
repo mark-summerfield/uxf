@@ -1,0 +1,49 @@
+{
+  "UXF^comment": "File level comment for testing",
+  "UXF^ttypes": [
+    {
+      "UXF^ttype": {
+        "name": "A",
+        "fields": {
+          "a": null
+        },
+        "comment": "ttype comment for tests"
+      }
+    }
+  ],
+  "UXF^data": {
+    "UXF^list": {
+      "comment": "list comment for a list long comment test",
+      "vtype": null,
+      "list": [
+        {
+          "UXF^table": {
+            "name": "A",
+            "comment": "table comment as another test",
+            "fields": {
+              "a": null
+            },
+            "records": [
+              [
+                "an imaginary very long string to test string concatenation"
+              ],
+              [
+                {
+                  "UXF^bytes": "AB0154708140485899F065202122"
+                }
+              ]
+            ]
+          }
+        },
+        {
+          "UXF^map": {
+            "comment": "map commentto test map comments",
+            "ktype": null,
+            "vtype": null,
+            "map": {}
+          }
+        }
+      ]
+    }
+  }
+}

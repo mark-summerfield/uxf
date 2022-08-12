@@ -1,0 +1,19 @@
+<?xml version="1.0" ?>
+<uxf version="1.0" comment="File level comment for testing">
+  <ttypes>
+    <ttype name="A" comment="ttype comment for tests">
+      <field name="a"/>
+    </ttype>
+  </ttypes>
+  <list comment="list comment for a list long comment test">
+    <table name="A" comment="table comment as another test">
+      <row>
+        <str>an imaginary very long string to test string concatenation</str>
+      </row>
+      <row>
+        <bytes>AB0154708140485899F065202122</bytes>
+      </row>
+    </table>
+    <map comment="map commentto test map comments"/>
+  </list>
+</uxf>
