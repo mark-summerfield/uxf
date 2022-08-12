@@ -101,10 +101,14 @@ class PrettyPrinter: # Functor that can be used as a visitor
 
 
     def ws(self):
+        if self.tokens and self.tokens[-1].kind is TokenKind.WS:
+            self.tokens.pop() # Don't need duplicate WS
         self.tokens.append(Token(TokenKind.WS, depth=self.depth))
 
 
     def nl(self):
+        if self.tokens and self.tokens[-1].kind is TokenKind.WS:
+            self.tokens.pop() # Don't need WS before newline
         self.tokens.append(Token(TokenKind.NL, depth=self.depth))
 
 
