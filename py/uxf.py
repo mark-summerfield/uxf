@@ -135,7 +135,6 @@ class VisitKind(enum.Enum):
     LIST_BEGIN = enum.auto()
     LIST_END = enum.auto()
     MAP_BEGIN = enum.auto()
-    MAP_KEY = enum.auto()
     MAP_END = enum.auto()
     TABLE_BEGIN = enum.auto()
     TABLE_END = enum.auto()
@@ -1077,7 +1076,7 @@ class Map(collections.UserDict):
         value is a value or None.'''
         visitor(VisitKind.MAP_BEGIN, self)
         for key, value in self.items(): # in _by_key order
-            visitor(VisitKind.MAP_KEY, key) # keys are never collections
+            visitor(VisitKind.VALUE, key) # keys are never collections
             if _is_uxf_collection(value):
                 value.visit(visitor)
             else:

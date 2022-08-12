@@ -4,7 +4,6 @@
 
 import datetime
 import enum
-import functools
 import sys
 from xml.sax.saxutils import escape
 
@@ -14,194 +13,211 @@ import uxf
 def main():
     if len(sys.argv) == 1 or sys.argv[1] in {'-h', '--help'}:
         raise SystemExit('usage: oppen.py <file.uxf>')
-    wrap_width = 76
-    realdp = 3
     uxo = uxf.load(sys.argv[1], on_event=lambda *_, **__: None)
-    tokens = Tokens()
-    state_visitor = functools.partial(visitor, tokens=tokens, realdp=realdp,
-                                      wrap_width=wrap_width)
-    uxo.visit(state_visitor)
-    print('TOKENS')
-    for token in tokens.tokens:
-        print(f'  {token}')
-    print('-' * 40)
-    # TODO output header line (do this last since easiest)
+    lexer = PrettyPrintLexer(wrap_width=76, realdp=3)
+    uxo.visit(lexer)
+    print(' TOKENS '.center(40, '-'))
+    for token in lexer.tokens:
+        print(token)
+    print(' === '.center(40, '-'))
     # TODO pprint using Oppen algorithm
 
 
-def visitor(kind, value, *, tokens, wrap_width=96, realdp=6):
-    if kind is uxf.VisitKind.UXF_BEGIN:
-        # TODO imports
-        # TODO ttypes
-        tokens.begin()
-    elif kind is uxf.VisitKind.UXF_END:
-        tokens.end()
-        tokens.eof()
-    elif kind is uxf.VisitKind.LIST_BEGIN:
-        _list_begin(tokens, value)
-    elif kind is uxf.VisitKind.LIST_END:
-        tokens.brk()
-        tokens.puts(']')
-        tokens.end()
-    elif kind is uxf.VisitKind.MAP_BEGIN:
-        _map_begin(tokens, value)
-    elif kind is uxf.VisitKind.MAP_END:
-        tokens.brk()
-        tokens.puts('}')
-        tokens.end()
-    elif kind is uxf.VisitKind.TABLE_BEGIN:
-        _table_begin(tokens, value)
-    elif kind is uxf.VisitKind.TABLE_END:
-        tokens.brk()
-        tokens.puts(')')
-        tokens.end()
-    elif kind is uxf.VisitKind.RECORD_BEGIN:
-        tokens.begin()
-    elif kind is uxf.VisitKind.RECORD_END:
-        tokens.nl()
-        tokens.end()
-    elif kind in {uxf.VisitKind.MAP_KEY, uxf.VisitKind.VALUE}:
-        _scalar(tokens, value, wrap_width, realdp)
+class PrettyPrintLexer: # Functor that can be used as a visitor
 
-
-def _list_begin(tokens, value):
-    tokens.begin()
-    tokens.puts('[')
-    if value.comment:
-        tokens.puts(f'#<{escape(value.comment)}>')
-    if value.vtype:
-        if value.comment:
-            tokens.brk()
-        tokens.puts(value.vtype)
-    tokens.brk()
-
-
-def _map_begin(tokens, value):
-    tokens.begin()
-    tokens.puts('{')
-    if value.comment:
-        tokens.puts(f'#<{escape(value.comment)}>')
-    if value.ktype:
-        if value.comment:
-            tokens.brk()
-        tokens.puts(value.ktype)
-        if value.vtype:
-            tokens.puts(f' {value.vtype}')
-    tokens.brk()
-
-
-def _table_begin(tokens, value):
-    tokens.begin()
-    tokens.puts('(')
-    if value.comment:
-        tokens.puts(f'#<{escape(value.comment)}> ')
-    tokens.puts(value.ttype)
-    tokens.brk()
-
-
-def _real(tokens, value, realdp):
-    if realdp is not None:
-        value = round(value, realdp)
-    text = str(value)
-    if '.' not in text and 'e' not in text and 'E' not in text:
-        text += '.0'
-    tokens.puts(text)
-
-
-def _str(tokens, value, wrap_width):
-    text = escape(value)
-    if wrap_width and len(text) + 2 >= wrap_width:
-        sep = ''
-        span = wrap_width - 2
-        while text: # Try to split on words or newlines first
-            i = text.rfind(' ', 0, span)
-            if i == -1:
-                i = text.rfind('\n', 0, span)
-            if i > -1:
-                i += 1 # include the found whitespace
-                if sep:
-                    tokens.brk()
-                    tokens.puts(sep)
-                    tokens.brk()
-                tokens.puts(f'<{text[:i]}>')
-                text = text[i:]
-                sep = '&'
-            else:
-                break
-        # if we can't split on words, split anywhere
-        if text:
-            for i in range(0, len(text), span):
-                if sep:
-                    tokens.brk()
-                    tokens.puts(sep)
-                    tokens.brk()
-                tokens.puts(f'<{text[i:i + span]}>')
-                sep = '&'
-    else:
-        tokens.puts(f'<{text}>')
-
-
-def _bytes(tokens, value, wrap_width):
-    text = value.hex().upper()
-    if len(text) + 4 >= wrap_width:
-        span = wrap_width - 2
-        tokens.puts('(:')
-        for i in range(0, len(text), span):
-            tokens.puts(text[i:i + span])
-        tokens.puts(':)')
-    else:
-        tokens.puts(f'(:{text}:)')
-
-
-def _scalar(tokens, value, wrap_width, realdp):
-    if value is None:
-        tokens.puts('?')
-    elif isinstance(value, bool):
-        tokens.puts('yes' if value else 'no')
-    elif isinstance(value, int):
-        tokens.puts(str(value))
-    elif isinstance(value, float):
-        _real(tokens, value, realdp)
-    elif isinstance(value, (datetime.date, datetime.datetime)):
-        tokens.puts(value.isoformat()[:19]) # 1-second resolution
-    elif isinstance(value, str):
-        _str(tokens, value, wrap_width)
-    elif isinstance(value, (bytes, bytearray)):
-        _bytes(tokens, value, wrap_width)
-    else:
-        print(561, 'unexpected value of type '
-                   f'{value.__class__.__name__}: {value!r};'
-                   'consider using a ttype')
-
-
-class Tokens:
-
-    def __init__(self):
+    def __init__(self, wrap_width=96, realdp=None):
         self.tokens = []
+        self.wrap_width = wrap_width
+        self.realdp = realdp
+        self.depth = 0 # for debugging
+
+
+    def __call__(self, kind, value):
+        if kind is uxf.VisitKind.UXF_BEGIN:
+            header = 'uxf 1.0'
+            if value.custom:
+                header += f' {value.custom}'
+            self.puts(f'{header}\n')
+            if value.comment:
+                self.comment(value.comment)
+            self.begin()
+            self.depth += 1
+            self.puts('TODO: imports') # TODO
+            self.puts('TODO: ttype defs') # TODO
+            self.depth -= 1
+            self.end()
+        elif kind is uxf.VisitKind.UXF_END:
+            self.eof()
+        elif kind is uxf.VisitKind.LIST_BEGIN:
+            self.depth += 1
+            self.list_begin(value)
+        elif kind is uxf.VisitKind.LIST_END:
+            self.puts(']')
+            self.end()
+            self.depth -= 1
+        elif kind is uxf.VisitKind.MAP_BEGIN:
+            self.depth += 1
+            self.map_begin(value)
+        elif kind is uxf.VisitKind.MAP_END:
+            self.puts('}')
+            self.end()
+            self.depth -= 1
+        elif kind is uxf.VisitKind.TABLE_BEGIN:
+            self.depth += 1
+            self.table_begin(value)
+        elif kind is uxf.VisitKind.TABLE_END:
+            self.puts(')')
+            self.end()
+            self.depth -= 1
+        elif kind is uxf.VisitKind.RECORD_BEGIN:
+            self.depth += 1
+            self.begin()
+        elif kind is uxf.VisitKind.RECORD_END:
+            self.end()
+            self.brk()
+            self.depth -= 1
+        elif kind is uxf.VisitKind.VALUE:
+            self.scalar(value)
 
 
     def begin(self):
-        self.tokens.append(Token(TokenKind.BEGIN))
+        self.tokens.append(Token(TokenKind.BEGIN, depth=self.depth))
 
 
     def end(self):
-        self.tokens.append(Token(TokenKind.END))
+        self.tokens.append(Token(TokenKind.END, depth=self.depth))
 
 
     def eof(self):
-        self.tokens.append(Token(TokenKind.EOF))
+        self.tokens.append(Token(TokenKind.EOF, depth=self.depth))
 
 
     def puts(self, s):
-        self.tokens.append(Token(TokenKind.STRING, s))
+        self.tokens.append(Token(TokenKind.STRING, s, depth=self.depth))
+
+
+    def sep(self):
+        self.tokens.append(Token(TokenKind.STRING, ' ', depth=self.depth))
 
 
     def brk(self):
-        self.tokens.append(Token(TokenKind.BREAK))
+        self.tokens.append(Token(TokenKind.BREAK, depth=self.depth))
 
 
-    def nl(self):
-        self.tokens.append(Token(TokenKind.NEWLINE))
+    def list_begin(self, value):
+        self.begin()
+        self.puts('[')
+        if value.comment:
+            self.comment(value.comment)
+        if value.vtype:
+            if value.comment:
+                self.sep()
+            self.puts(value.vtype)
+        if len(value):
+            self.sep()
+
+
+    def map_begin(self, value):
+        self.begin()
+        self.puts('{')
+        if value.comment:
+            self.comment(value.comment)
+        if value.ktype:
+            if value.comment:
+                self.sep()
+            self.puts(value.ktype)
+            if value.vtype:
+                self.puts(f' {value.vtype}')
+        if len(value):
+            self.sep()
+
+
+    def table_begin(self, value):
+        self.begin()
+        self.puts('(')
+        if value.comment:
+            self.comment(value.comment)
+        self.puts(value.ttype)
+        if len(value):
+            self.sep()
+
+
+    def real(self, value):
+        if self.realdp is not None:
+            value = round(value, self.realdp)
+        text = str(value)
+        if '.' not in text and 'e' not in text and 'E' not in text:
+            text += '.0'
+        self.puts(text)
+
+
+    def comment(self, value):
+        self.str_(value, prefix='#')
+
+
+    def str_(self, value, *, prefix=''):
+        text = escape(value)
+        if self.wrap_width and len(text) + 2 >= self.wrap_width:
+            sep = ''
+            span = self.wrap_width - 2
+            while text: # Try to split on words or newlines first
+                i = text.rfind(' ', 0, span)
+                if i == -1:
+                    i = text.rfind('\n', 0, span)
+                if i > -1:
+                    i += 1 # include the found whitespace
+                    if sep:
+                        self.puts(sep)
+                    self.puts(f'{prefix}<{text[:i]}>')
+                    text = text[i:]
+                    sep = ' & '
+                    prefix = ''
+                else:
+                    break
+            # if we can't split on words, split anywhere
+            if text:
+                for i in range(0, len(text), span):
+                    if sep:
+                        self.puts(sep)
+                    self.puts(f'{prefix}<{text[i:i + span]}>')
+                    sep = ' & '
+                    prefix = ''
+        else:
+            self.puts(f'{prefix}<{text}>')
+
+
+    def bytes_(self, value):
+        text = value.hex().upper()
+        if len(text) + 4 >= self.wrap_width:
+            span = self.wrap_width - 2
+            self.puts('(:')
+            for i in range(0, len(text), span):
+                self.puts(text[i:i + span])
+            self.puts(':)')
+        else:
+            self.puts(f'(:{text}:)')
+
+
+    def scalar(self, value):
+        if value is None:
+            self.puts('?')
+        elif isinstance(value, bool):
+            self.puts('yes' if value else 'no')
+        elif isinstance(value, int):
+            self.puts(str(value))
+        elif isinstance(value, float):
+            self.real(value)
+        elif isinstance(value, (datetime.date, datetime.datetime)):
+            self.puts(value.isoformat()[:19]) # 1-second resolution
+        elif isinstance(value, str):
+            self.str_(value)
+        elif isinstance(value, (bytes, bytearray)):
+            self.bytes_(value)
+        else:
+            print(561, 'unexpected value of type '
+                  f'{value.__class__.__name__}: {value!r}; consider '
+                  'using a ttype')
+
 
 
 @enum.unique
@@ -209,22 +225,32 @@ class TokenKind(enum.Enum):
     BEGIN = enum.auto()
     END = enum.auto()
     BREAK = enum.auto()
-    NEWLINE = enum.auto()
     STRING = enum.auto()
     EOF = enum.auto()
 
 
 class Token:
 
-    def __init__(self, kind, value=''):
+    def __init__(self, kind, value='', *, depth=0):
         self.kind = kind
         self.value = value
+        self.depth = depth # for debugging
+
+
+    def __len__(self):
+        '''for strings with embedded newlines the length is effectively that
+        of the string's last line'''
+        i = self.value.rfind('\n')
+        if i == -1:
+            return len(self.value)
+        return len(self.value[i + 1:])
 
 
     def __repr__(self):
+        indent = self.depth * '   '
         if self.value == '':
-            return f'{self.__class__.__name__}({self.kind.name})'
-        return (f'{self.__class__.__name__}({self.kind.name}, '
+            return f'{indent}{self.__class__.__name__}({self.kind.name})'
+        return (f'{indent}{self.__class__.__name__}({self.kind.name}, '
                 f'{self.value!r})')
 
 
