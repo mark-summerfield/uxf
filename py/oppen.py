@@ -4,6 +4,7 @@
 
 import datetime
 import enum
+import io
 import sys
 from xml.sax.saxutils import escape
 
@@ -14,22 +15,20 @@ def main():
     if len(sys.argv) == 1 or sys.argv[1] in {'-h', '--help'}:
         raise SystemExit('usage: oppen.py <file.uxf>')
     uxo = uxf.load(sys.argv[1], on_event=lambda *_, **__: None)
-    lexer = PrettyPrintLexer(wrap_width=76, realdp=3)
-    uxo.visit(lexer)
-    print(' TOKENS '.center(40, '-'))
-    for token in lexer.tokens:
-        print(token)
-    print(' === '.center(40, '-'))
-    # TODO pprint using Oppen algorithm
+    pp = PrettyPrinter(wrap_width=76, realdp=3)
+    uxo.visit(pp)
+    pp.pprint(out=sys.stdout)
 
 
-class PrettyPrintLexer: # Functor that can be used as a visitor
+# TODO move to uxf.py if successful
+
+class PrettyPrinter: # Functor that can be used as a visitor
 
     def __init__(self, wrap_width=96, realdp=None):
         self.tokens = []
         self.wrap_width = wrap_width
         self.realdp = realdp
-        self.depth = 0 # for debugging
+        self.depth = 0
 
 
     def __call__(self, kind, value):
@@ -37,9 +36,11 @@ class PrettyPrintLexer: # Functor that can be used as a visitor
             header = 'uxf 1.0'
             if value.custom:
                 header += f' {value.custom}'
-            self.puts(f'{header}\n')
+            self.puts(f'{header}')
+            self.nl()
             if value.comment:
                 self.comment(value.comment)
+                self.nl()
             self.begin()
             self.depth += 1
             self.puts('TODO: imports') # TODO
@@ -52,6 +53,8 @@ class PrettyPrintLexer: # Functor that can be used as a visitor
             self.depth += 1
             self.list_begin(value)
         elif kind is uxf.VisitKind.LIST_END:
+            if self.tokens[-1].kind is TokenKind.WS:
+                self.tokens.pop() # Don't need WS before closer
             self.puts(']')
             self.end()
             self.depth -= 1
@@ -59,6 +62,8 @@ class PrettyPrintLexer: # Functor that can be used as a visitor
             self.depth += 1
             self.map_begin(value)
         elif kind is uxf.VisitKind.MAP_END:
+            if self.tokens[-1].kind is TokenKind.WS:
+                self.tokens.pop() # Don't need WS before closer
             self.puts('}')
             self.end()
             self.depth -= 1
@@ -66,6 +71,8 @@ class PrettyPrintLexer: # Functor that can be used as a visitor
             self.depth += 1
             self.table_begin(value)
         elif kind is uxf.VisitKind.TABLE_END:
+            if self.tokens[-1].kind is TokenKind.WS:
+                self.tokens.pop() # Don't need WS before closer
             self.puts(')')
             self.end()
             self.depth -= 1
@@ -74,10 +81,11 @@ class PrettyPrintLexer: # Functor that can be used as a visitor
             self.begin()
         elif kind is uxf.VisitKind.RECORD_END:
             self.end()
-            self.brk()
+            self.nl()
             self.depth -= 1
         elif kind is uxf.VisitKind.VALUE:
             self.scalar(value)
+            self.ws()
 
 
     def begin(self):
@@ -88,20 +96,20 @@ class PrettyPrintLexer: # Functor that can be used as a visitor
         self.tokens.append(Token(TokenKind.END, depth=self.depth))
 
 
-    def eof(self):
-        self.tokens.append(Token(TokenKind.EOF, depth=self.depth))
-
-
     def puts(self, s):
         self.tokens.append(Token(TokenKind.STRING, s, depth=self.depth))
 
 
-    def sep(self):
-        self.tokens.append(Token(TokenKind.STRING, ' ', depth=self.depth))
+    def ws(self):
+        self.tokens.append(Token(TokenKind.WS, depth=self.depth))
 
 
-    def brk(self):
-        self.tokens.append(Token(TokenKind.BREAK, depth=self.depth))
+    def nl(self):
+        self.tokens.append(Token(TokenKind.NL, depth=self.depth))
+
+
+    def eof(self):
+        self.tokens.append(Token(TokenKind.EOF, depth=self.depth))
 
 
     def list_begin(self, value):
@@ -111,10 +119,8 @@ class PrettyPrintLexer: # Functor that can be used as a visitor
             self.comment(value.comment)
         if value.vtype:
             if value.comment:
-                self.sep()
+                self.ws()
             self.puts(value.vtype)
-        if len(value):
-            self.sep()
 
 
     def map_begin(self, value):
@@ -124,12 +130,10 @@ class PrettyPrintLexer: # Functor that can be used as a visitor
             self.comment(value.comment)
         if value.ktype:
             if value.comment:
-                self.sep()
+                self.ws()
             self.puts(value.ktype)
             if value.vtype:
                 self.puts(f' {value.vtype}')
-        if len(value):
-            self.sep()
 
 
     def table_begin(self, value):
@@ -138,8 +142,6 @@ class PrettyPrintLexer: # Functor that can be used as a visitor
         if value.comment:
             self.comment(value.comment)
         self.puts(value.ttype)
-        if len(value):
-            self.sep()
 
 
     def real(self, value):
@@ -158,7 +160,7 @@ class PrettyPrintLexer: # Functor that can be used as a visitor
     def str_(self, value, *, prefix=''):
         text = escape(value)
         if self.wrap_width and len(text) + 2 >= self.wrap_width:
-            sep = ''
+            ampersand = False
             span = self.wrap_width - 2
             while text: # Try to split on words or newlines first
                 i = text.rfind(' ', 0, span)
@@ -166,24 +168,30 @@ class PrettyPrintLexer: # Functor that can be used as a visitor
                     i = text.rfind('\n', 0, span)
                 if i > -1:
                     i += 1 # include the found whitespace
-                    if sep:
-                        self.puts(sep)
+                    if ampersand:
+                        self.ampersand()
                     self.puts(f'{prefix}<{text[:i]}>')
                     text = text[i:]
-                    sep = ' & '
+                    ampersand = True
                     prefix = ''
                 else:
                     break
             # if we can't split on words, split anywhere
             if text:
                 for i in range(0, len(text), span):
-                    if sep:
-                        self.puts(sep)
+                    if ampersand:
+                        self.ampersand()
                     self.puts(f'{prefix}<{text[i:i + span]}>')
-                    sep = ' & '
+                    ampersand = True
                     prefix = ''
         else:
             self.puts(f'{prefix}<{text}>')
+
+
+    def ampersand(self):
+        self.ws()
+        self.puts('&')
+        self.ws()
 
 
     def bytes_(self, value):
@@ -219,13 +227,26 @@ class PrettyPrintLexer: # Functor that can be used as a visitor
                   'using a ttype')
 
 
+    def pprint(self, out=None):
+        out = out or io.StringIO()
+        # TODO pprint using Oppen algorithm
+        out.write(' TOKENS '.center(40, '-'))
+        out.write('\n')
+        for token in self.tokens:
+            out.write(f'{token}\n')
+        out.write(' === '.center(40, '-'))
+        out.write('\n')
+
+
+
 
 @enum.unique
 class TokenKind(enum.Enum):
     BEGIN = enum.auto()
     END = enum.auto()
-    BREAK = enum.auto()
     STRING = enum.auto()
+    WS = enum.auto() # output either ' ' or '\n' at pprint's option
+    NL = enum.auto() # output '\n'
     EOF = enum.auto()
 
 
@@ -234,16 +255,18 @@ class Token:
     def __init__(self, kind, value='', *, depth=0):
         self.kind = kind
         self.value = value
-        self.depth = depth # for debugging
+        self.depth = depth
 
 
-    def __len__(self):
-        '''for strings with embedded newlines the length is effectively that
-        of the string's last line'''
-        i = self.value.rfind('\n')
-        if i == -1:
-            return len(self.value)
-        return len(self.value[i + 1:])
+    @property
+    def is_multiline(self):
+        return '\n' in self.value
+
+
+    def size(self):
+        if self.is_multiline:
+            return self.value.find('\n') + 1
+        return len(self.value)
 
 
     def __repr__(self):
