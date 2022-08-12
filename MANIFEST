@@ -26,6 +26,7 @@ rs/Cargo.toml
 rs/README.md
 
 py/uxf.py
+py/oppen.py # TODO if successful merge into uxf.py to replace _Writer
 py/uxfconvert.py
 py/uxflint.py
 py/uxfcompare.py
