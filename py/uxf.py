@@ -2221,17 +2221,17 @@ def dump(filename_or_filelike, data, *, on_event=on_event, format=Format()):
         filename_or_filelike = str(filename_or_filelike)
         opener = (gzip.open if filename_or_filelike[-3:].upper().endswith(
                   '.GZ') else open)
-        file = opener(filename_or_filelike, 'wt', encoding=UTF8)
+        out = opener(filename_or_filelike, 'wt', encoding=UTF8)
         close = True
     else:
-        file = filename_or_filelike
+        out = filename_or_filelike
     try:
         if not isinstance(data, Uxf):
             data = Uxf(data, on_event=on_event)
-        _Writer(file, data, on_event, format)
+        _Writer(out, data, on_event, format)
     finally:
         if close:
-            file.close()
+            out.close()
 
 
 def dumps(data, *, on_event=on_event, format=Format()):
@@ -2249,8 +2249,8 @@ def dumps(data, *, on_event=on_event, format=Format()):
 
 class _Writer:
 
-    def __init__(self, file, uxo, on_event, format):
-        self.file = file
+    def __init__(self, out, uxo, on_event, format):
+        self.out = out
         self.on_event = on_event
         self.format = format
         self.column = 0
@@ -2261,7 +2261,7 @@ class _Writer:
         self.pending = []
         self.write_header(uxo.custom)
         if uxo.comment is not None:
-            self.file.write(f'#<{escape(uxo.comment)}>\n')
+            self.out.write(f'#<{escape(uxo.comment)}>\n')
         if uxo.imports:
             self.write_imports(uxo.import_filenames)
         if uxo.tclasses:
@@ -2281,15 +2281,15 @@ class _Writer:
 
 
     def write_header(self, custom):
-        self.file.write(f'uxf {VERSION}')
+        self.out.write(f'uxf {VERSION}')
         if custom:
-            self.file.write(f' {custom}')
-        self.file.write('\n')
+            self.out.write(f' {custom}')
+        self.out.write('\n')
 
 
     def write_imports(self, import_filenames):
         for filename in import_filenames: # don't sort!
-            self.file.write(f'!{filename}\n')
+            self.out.write(f'!{filename}\n')
 
 
     def write_tclasses(self, tclasses, imports):
@@ -2297,19 +2297,19 @@ class _Writer:
                                     key=lambda t: t[0].upper()):
             if imports and ttype in imports:
                 continue # defined in an import
-            self.file.write('=')
+            self.out.write('=')
             column = self._write_tclass_comment(1, tclass)
             column = self._write_tclass_ttype(column, tclass)
             for field in tclass.fields:
                 column = self._write_tclass_field(column, field)
-            self.file.write('\n')
+            self.out.write('\n')
 
 
     def _write_tclass_comment(self, column, tclass):
         if tclass.comment:
             text = f'#<{escape(tclass.comment)}> '
             column += len(text)
-            self.file.write(text)
+            self.out.write(text)
         return column
 
 
@@ -2317,11 +2317,11 @@ class _Writer:
         text = f'{tclass.ttype}'
         if self.format.wrap_width:
             if column + len(text) > self.format.wrap_width:
-                self.file.write(f'\n{self.format.indent}')
+                self.out.write(f'\n{self.format.indent}')
                 column = len(self.format.indent)
             else:
                 column += len(text)
-        self.file.write(text)
+        self.out.write(text)
         return column
 
 
@@ -2331,11 +2331,11 @@ class _Writer:
             text += f':{field.vtype}'
         if self.format.wrap_width:
             if column + len(text) > self.format.wrap_width:
-                self.file.write(f'\n{self.format.indent}')
+                self.out.write(f'\n{self.format.indent}')
                 column = len(self.format.indent)
             else:
                 column += len(text)
-        self.file.write(text)
+        self.out.write(text)
         return column
 
 
@@ -2577,7 +2577,7 @@ class _Writer:
             force = True
         if force:
             text = ''.join(self.pending)
-            self.file.write(text)
+            self.out.write(text)
             self._update(text)
             self.pending.clear()
         else:
