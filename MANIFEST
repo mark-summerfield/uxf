@@ -1,3 +1,6 @@
+# TODO (i) UXF 1.1 string concatenation support
+# such that: <AB> <c> <d> ≣ <ABcd>
+# TODO (ii) try Oppen's algo (in branch x)
 rs/src/lib.rs # add docs at the end
 rs/src/value.rs
 rs/src/key.rs
