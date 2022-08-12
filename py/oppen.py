@@ -69,11 +69,9 @@ def _list_begin(tokens, value):
     tokens.puts('[')
     if value.comment:
         tokens.puts(f'#<{escape(value.comment)}>')
-        tokens.brk()
     if value.vtype:
         if value.comment:
             tokens.brk()
-            tokens.puts(' ')
         tokens.puts(value.vtype)
     tokens.brk()
 
@@ -83,11 +81,9 @@ def _map_begin(tokens, value):
     tokens.puts('{')
     if value.comment:
         tokens.puts(f'#<{escape(value.comment)}>')
-        tokens.brk()
     if value.ktype:
         if value.comment:
             tokens.brk()
-            tokens.puts(' ')
         tokens.puts(value.ktype)
         if value.vtype:
             tokens.puts(f' {value.vtype}')
