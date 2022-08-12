@@ -22,7 +22,7 @@ def main():
     pp.pprint(out=sys.stdout)
 
 
-# TODO move to uxf.py if successful
+# TODO move to uxf.py if successful & change version to 2.4.0
 
 class PrettyPrinter: # Functor that can be used as a visitor
 
