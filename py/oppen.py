@@ -10,6 +10,8 @@ from xml.sax.saxutils import escape
 
 import uxf
 
+# TODO create a small t85.uxf that tests everything
+
 
 def main():
     if len(sys.argv) == 1 or sys.argv[1] in {'-h', '--help'}:
@@ -37,10 +39,10 @@ class PrettyPrinter: # Functor that can be used as a visitor
             if value.custom:
                 header += f' {value.custom}'
             self.puts(f'{header}')
-            self.nl()
+            self.rnl()
             if value.comment:
                 self.comment(value.comment)
-                self.nl()
+                self.rnl()
             self.begin()
             self.depth += 1
             self.puts('TODO: imports') # TODO
@@ -53,8 +55,8 @@ class PrettyPrinter: # Functor that can be used as a visitor
             self.depth += 1
             self.list_begin(value)
         elif kind is uxf.VisitKind.LIST_END:
-            if self.tokens[-1].kind is TokenKind.WS:
-                self.tokens.pop() # Don't need WS before closer
+            if self.tokens[-1].kind is TokenKind.RWS:
+                self.tokens.pop() # Don't need RWS before closer
             self.puts(']')
             self.end()
             self.depth -= 1
@@ -62,8 +64,8 @@ class PrettyPrinter: # Functor that can be used as a visitor
             self.depth += 1
             self.map_begin(value)
         elif kind is uxf.VisitKind.MAP_END:
-            if self.tokens[-1].kind is TokenKind.WS:
-                self.tokens.pop() # Don't need WS before closer
+            if self.tokens[-1].kind is TokenKind.RWS:
+                self.tokens.pop() # Don't need RWS before closer
             self.puts('}')
             self.end()
             self.depth -= 1
@@ -71,8 +73,8 @@ class PrettyPrinter: # Functor that can be used as a visitor
             self.depth += 1
             self.table_begin(value)
         elif kind is uxf.VisitKind.TABLE_END:
-            if self.tokens[-1].kind is TokenKind.WS:
-                self.tokens.pop() # Don't need WS before closer
+            if self.tokens[-1].kind is TokenKind.RWS:
+                self.tokens.pop() # Don't need RWS before closer
             self.puts(')')
             self.end()
             self.depth -= 1
@@ -81,11 +83,11 @@ class PrettyPrinter: # Functor that can be used as a visitor
             self.begin()
         elif kind is uxf.VisitKind.RECORD_END:
             self.end()
-            self.nl()
+            self.rnl()
             self.depth -= 1
         elif kind is uxf.VisitKind.VALUE:
             self.scalar(value)
-            self.ws()
+            self.rws()
 
 
     def begin(self):
@@ -100,16 +102,15 @@ class PrettyPrinter: # Functor that can be used as a visitor
         self.tokens.append(Token(TokenKind.STRING, s, depth=self.depth))
 
 
-    def ws(self):
-        if self.tokens and self.tokens[-1].kind is TokenKind.WS:
-            self.tokens.pop() # Don't need duplicate WS
-        self.tokens.append(Token(TokenKind.WS, depth=self.depth))
+    def rws(self): # Don't need duplicate RWS
+        if not (self.tokens and self.tokens[-1].kind is TokenKind.RWS):
+            self.tokens.append(Token(TokenKind.RWS, depth=self.depth))
 
 
-    def nl(self):
-        if self.tokens and self.tokens[-1].kind is TokenKind.WS:
-            self.tokens.pop() # Don't need WS before newline
-        self.tokens.append(Token(TokenKind.NL, depth=self.depth))
+    def rnl(self):
+        if self.tokens and self.tokens[-1].kind is TokenKind.RWS:
+            self.tokens.pop() # Don't need RWS before newline
+        self.tokens.append(Token(TokenKind.RNL, depth=self.depth))
 
 
     def eof(self):
@@ -123,7 +124,7 @@ class PrettyPrinter: # Functor that can be used as a visitor
             self.comment(value.comment)
         if value.vtype:
             if value.comment:
-                self.ws()
+                self.rws()
             self.puts(value.vtype)
 
 
@@ -134,7 +135,7 @@ class PrettyPrinter: # Functor that can be used as a visitor
             self.comment(value.comment)
         if value.ktype:
             if value.comment:
-                self.ws()
+                self.rws()
             self.puts(value.ktype)
             if value.vtype:
                 self.puts(f' {value.vtype}')
@@ -193,9 +194,9 @@ class PrettyPrinter: # Functor that can be used as a visitor
 
 
     def ampersand(self):
-        self.ws()
+        self.rws()
         self.puts('&')
-        self.ws()
+        self.rws()
 
 
     def bytes_(self, value):
@@ -242,15 +243,13 @@ class PrettyPrinter: # Functor that can be used as a visitor
         out.write('\n')
 
 
-
-
 @enum.unique
 class TokenKind(enum.Enum):
     BEGIN = enum.auto()
     END = enum.auto()
     STRING = enum.auto()
-    WS = enum.auto() # output either ' ' or '\n' at pprint's option
-    NL = enum.auto() # output '\n'
+    RWS = enum.auto() # required whitespace: output either ' ' or '\n'
+    RNL = enum.auto() # required newline: output '\n'
     EOF = enum.auto()
 
 
