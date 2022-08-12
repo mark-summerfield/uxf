@@ -31,7 +31,7 @@ from xml.sax.saxutils import escape, unescape
 
 import editabletuple
 
-__version__ = '2.2.0' # uxf module version
+__version__ = '2.3.0' # uxf module version
 VERSION = 1.0 # UXF file format version
 
 UTF8 = 'utf-8'
@@ -425,6 +425,7 @@ class _Lexer(_EventMixin):
         self.lino = 0
         self.custom = None
         self.in_tclass = False
+        self.concatenate = False
         self.tokens = []
 
 
@@ -516,6 +517,9 @@ class _Lexer(_EventMixin):
             self.read_comment()
         elif c == '<':
             self.read_string()
+        elif c == '&':
+            self.skip_ws()
+            self.concatenate = True
         elif c == ':':
             self.read_field_vtype()
         elif c == '-' and isasciidigit(self.peek()):
@@ -569,8 +573,19 @@ class _Lexer(_EventMixin):
 
 
     def read_string(self):
-        value = self.match_to('>', what='string')
-        self.add_token(_Kind.STR, unescape(value))
+        value = unescape(self.match_to('>', what='string'))
+        if self.concatenate:
+            token = self.tokens[-1]
+            if token.kind in {_Kind.FILE_COMMENT, _Kind.STR}:
+                token.value += value
+            elif token.kind in {_Kind.TCLASS_BEGIN, _Kind.LIST_BEGIN,
+                                _Kind.MAP_BEGIN, _Kind.TABLE_BEGIN}:
+                token.comment += value
+            else:
+                self.error(195, 'attempt to concatenate a str to a non-str')
+        else:
+            self.add_token(_Kind.STR, value)
+        self.concatenate = False
 
 
     def read_bytes(self):

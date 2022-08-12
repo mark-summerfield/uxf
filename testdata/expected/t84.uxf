@@ -1,0 +1,10 @@
+uxf 1.0
+#<File level comment for testing>
+=#<ttype comment for tests> A a
+[#<list comment for a list long comment test> 
+  (#<table comment as another test> A
+    <an imaginary very long string to test string concatenation>
+    (:AB0154708140485899F065202122:)
+  )
+  {#<map commentto test map comments>}
+]
