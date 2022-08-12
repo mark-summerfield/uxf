@@ -1,5 +1,4 @@
-py/tp.py
-# TODO (i) try Oppen's algo (in branch x)
+# TODO (0) implement Oppen's algo
 rs/src/lib.rs # add docs at the end
 rs/src/value.rs
 rs/src/key.rs
