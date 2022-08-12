@@ -1,5 +1,5 @@
 {
-  "UXF^comment": "File level comment for testing",
+  "UXF^comment": "File level comment for testing string concatenation with the & operator.",
   "UXF^ttypes": [
     {
       "UXF^ttype": {
@@ -37,7 +37,7 @@
         },
         {
           "UXF^map": {
-            "comment": "map commentto test map comments",
+            "comment": "map comment to test map comments",
             "ktype": null,
             "vtype": null,
             "map": {}

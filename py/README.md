@@ -795,6 +795,8 @@ or
 
 ## Changes
 
+- 2.3.0 Added support for string concatenation. This will make proper pretty
+  printing possible.
 - 2.2.0
   - Maps are now key-ordered as follows: when two keys are of different
     types they are ordered `bytes` `<` `date` `<` `datetime` `<` `int` `<`

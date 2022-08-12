@@ -1,5 +1,5 @@
 <?xml version="1.0" ?>
-<uxf version="1.0" comment="File level comment for testing">
+<uxf version="1.0" comment="File level comment for testing string concatenation with the &amp; operator.">
   <ttypes>
     <ttype name="A" comment="ttype comment for tests">
       <field name="a"/>
@@ -14,6 +14,6 @@
         <bytes>AB0154708140485899F065202122</bytes>
       </row>
     </table>
-    <map comment="map commentto test map comments"/>
+    <map comment="map comment to test map comments"/>
   </list>
 </uxf>
