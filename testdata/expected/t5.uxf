@@ -420,8 +420,9 @@ uxf 1.0 EPD (SQLite full list of tables)
     235 <Get Back> 192.0 </home/mark/music/Beatles/Greatest Hits/22-Get Back.ogg> no 5
     241 <Getting Better> 0.0
     </home/mark/music/Beatles/Sgt Pepper's Lonely Hearts Club Band/04-Getting Better.ogg> no 5
-    247 <Good Morning Good Morning> 0.0 </home/mark/music/Beatles/Sgt Pepper's Lonely Hearts Club Band/11-Good Morning Good Morning.ogg>
-    no 5
+    247 <Good Morning Good Morning> 0.0
+    </home/mark/music/Beatles/Sgt Pepper's Lonely Hearts Club Band/11-Good Morning Good >
+     & <Morning.ogg> no 5
     232 <Hello, Goodbye> 207.0 </home/mark/music/Beatles/Greatest Hits/19-Hello, Goodbye.ogg> no
     5
     224 <Help!> 138.0 </home/mark/music/Beatles/Greatest Hits/10-Help!.ogg> no 5
@@ -433,8 +434,9 @@ uxf 1.0 EPD (SQLite full list of tables)
     215 <Love Me Do> 140.0 </home/mark/music/Beatles/Greatest Hits/01-Love Me Do.ogg> no 5
     246 <Lovely Rita> 0.0
     </home/mark/music/Beatles/Sgt Pepper's Lonely Hearts Club Band/10-Lovely Rita.ogg> no 5
-    240 <Lucy In The Sky With Diamonds> 0.0 </home/mark/music/Beatles/Sgt Pepper's Lonely Hearts Club Band/03-Lucy In The Sky With Diamonds.ogg>
-    no 5
+    240 <Lucy In The Sky With Diamonds> 0.0
+    </home/mark/music/Beatles/Sgt Pepper's Lonely Hearts Club Band/03-Lucy In The Sky With >
+     & <Diamonds.ogg> no 5
     228 <Paperback Writer> 0.0 </home/mark/music/Beatles/Greatest Hits/14-Paperback Writer.ogg>
     no 5
     230 <Penny Lane> 0.0 </home/mark/music/Beatles/Greatest Hits/17-Penny Lane.ogg> no 5
@@ -452,8 +454,9 @@ uxf 1.0 EPD (SQLite full list of tables)
     245 <When I'm Sixty-Four> 157.0
     </home/mark/music/Beatles/Sgt Pepper's Lonely Hearts Club Band/09-When I'm Sixty-Four.ogg>
     no 5
-    239 <With A Little Help From My Friends> 164.0 </home/mark/music/Beatles/Sgt Pepper's Lonely Hearts Club Band/02-With A Little Help From My Friends.ogg>
-    no 5
+    239 <With A Little Help From My Friends> 164.0
+    </home/mark/music/Beatles/Sgt Pepper's Lonely Hearts Club Band/02-With A Little Help From My >
+     & <Friends.ogg> no 5
     244 <Within You Without You> 0.0
     </home/mark/music/Beatles/Sgt Pepper's Lonely Hearts Club Band/08-Within You Without You.ogg>
     no 5
@@ -849,16 +852,16 @@ uxf 1.0 EPD (SQLite full list of tables)
     505 <Love Comes Quickly> 258.0
     </home/mark/music/Pet_Shop_Boys/The_Complete_Singles_Collection/Love_Comes_Quickly.ogg> no
     23
-    506 <Opportunities (Let's Make Lots of Money)> 218.0 </home/mark/music/Pet_Shop_Boys/The_Complete_Singles_Collection/Opportunities__Let_s_Make_Lots_of_Money_.ogg>
-    no 23
+    506 <Opportunities (Let's Make Lots of Money)> 218.0 </home/mark/music/Pet_Shop_Boys/The_Complete_Singles_Collection/Opportunities__Let_s_Make_Lots_>
+     & <of_Money_.ogg> no 23
     510 <Rent> 213.0 </home/mark/music/Pet_Shop_Boys/The_Complete_Singles_Collection/Rent.ogg>
     no 23
     507 <Suburbia> 244.0
     </home/mark/music/Pet_Shop_Boys/The_Complete_Singles_Collection/Suburbia.ogg> no 23
     504 <West End Girls> 240.0
     </home/mark/music/Pet_Shop_Boys/The_Complete_Singles_Collection/West_End_Girls.ogg> yes 23
-    509 <What Have I Done to Deserve This?> 260.0 </home/mark/music/Pet_Shop_Boys/The_Complete_Singles_Collection/What_Have_I_Done_to_Deserve_This_.ogg>
-    no 23
+    509 <What Have I Done to Deserve This?> 260.0 </home/mark/music/Pet_Shop_Boys/The_Complete_Singles_Collection/What_Have_I_Done_to_Deserve_Thi>
+     & <s_.ogg> no 23
     525 <2000 Miles> 219.0 </home/mark/music/The Pretenders/10-2000 Miles.ogg> no 24
     523 <Back On The Chain Gang> 232.0
     </home/mark/music/The Pretenders/08-Back On The Chain Gang.ogg> no 24
@@ -887,8 +890,8 @@ uxf 1.0 EPD (SQLite full list of tables)
     </home/mark/music/Queen/The_Platinum_Collection/CD2/01-A_Kind_of_Magic.ogg> no 25
     553 <Another One Bites the Dust> 216.0
     </home/mark/music/Queen/The_Platinum_Collection/CD1/02-Another_One_Bites_the_Dust.ogg> no 25
-    598 <Another One Bites the Dust (feat. Pras Michel, Free, Queen)> 260.0 </home/mark/music/Queen/The_Platinum_Collection/CD3/14-Another_One_Bites_the_Dust_feat._Pras_Michel_Free_Queen.ogg>
-    no 25
+    598 <Another One Bites the Dust (feat. Pras Michel, Free, Queen)> 260.0 </home/mark/music/Queen/The_Platinum_Collection/CD3/14-Another_One_Bites_the_Dust_feat._Pras_Mi>
+     & <chel_Free_Queen.ogg> no 25
     587 <Barcelona> 265.0 </home/mark/music/Queen/The_Platinum_Collection/CD3/03-Barcelona.ogg>
     no 25
     556 <Bicycle Race> 183.0
@@ -939,8 +942,8 @@ uxf 1.0 EPD (SQLite full list of tables)
     </home/mark/music/Queen/The_Platinum_Collection/CD2/07-It_s_a_Hard_Life.ogg> no 25
     554 <Killer Queen> 182.0
     </home/mark/music/Queen/The_Platinum_Collection/CD1/03-Killer_Queen.ogg> no 25
-    592 <Las Palabras de Amor (The Words of Love)> 269.0 </home/mark/music/Queen/The_Platinum_Collection/CD3/08-Las_Palabras_de_Amor_The_Words_of_Love.ogg>
-    no 25
+    592 <Las Palabras de Amor (The Words of Love)> 269.0 </home/mark/music/Queen/The_Platinum_Collection/CD3/08-Las_Palabras_de_Amor_The_Words_of_Love.o>
+     & <gg> no 25
     543 <Lazing on a Sunday Afternoon> 67.0
     </home/mark/music/Queen/A_Night_at_the_Opera/02-Lazing_on_a_Sunday_Afternoon.ogg> no 25
     595 <Let Me Live> 285.0
@@ -950,8 +953,8 @@ uxf 1.0 EPD (SQLite full list of tables)
     534 <Long Away> 213.0 </home/mark/music/Queen/A_Day_at_the_Races/03-Long_Away.ogg> no 25
     549 <Love of My Life> 219.0
     </home/mark/music/Queen/A_Night_at_the_Opera/09-Love_of_My_Life.ogg> no 25
-    599 <No-One but You (Only the Good Die Young)> 251.0 </home/mark/music/Queen/The_Platinum_Collection/CD3/15-No-One_but_You_Only_the_Good_Die_Young.ogg>
-    no 25
+    599 <No-One but You (Only the Good Die Young)> 251.0 </home/mark/music/Queen/The_Platinum_Collection/CD3/15-No-One_but_You_Only_the_Good_Die_Young.o>
+     & <gg> no 25
     561 <Now I'm Here> 255.0
     </home/mark/music/Queen/The_Platinum_Collection/CD1/11-Now_I_m_Here.ogg> no 25
     584 <One Vision> 242.0
@@ -1218,8 +1221,9 @@ uxf 1.0 EPD (SQLite full list of tables)
     </home/mark/music/The Saints/The Saints CD1/14-Do The Robot - Bonus.ogg> no 33
     736 <Erotic Neurotic> 248.0
     </home/mark/music/The Saints/The Saints CD1/05-Erotic Neurotic.ogg> no 33
-    760 <Every Day's A Holiday, Every Night's A Party> 168.0 </home/mark/music/The Saints/The Saints CD3/03-Every Day's A Holiday, Every Night's A Party.ogg>
-    no 33
+    760 <Every Day's A Holiday, Every Night's A Party> 168.0
+    </home/mark/music/The Saints/The Saints CD3/03-Every Day's A Holiday, Every Night's A >
+     & <Party.ogg> no 33
     764 <Everything's Fine> 157.0
     </home/mark/music/The Saints/The Saints CD3/07-Everything's Fine.ogg> no 33
     738 <Kissin' Cousins> 120.0
@@ -1228,8 +1232,9 @@ uxf 1.0 EPD (SQLite full list of tables)
     </home/mark/music/The Saints/The Saints CD2/01-Know Your Product.ogg> no 33
     743 <L-I-E-S - Bonus> 125.0
     </home/mark/music/The Saints/The Saints CD1/13-L-I-E-S - Bonus.ogg> no 33
-    771 <Looking For The Sun> 208.0 </home/mark/music/The Saints/The Saints CD3/14-Looking For The Sun [Studio Outtake From Prehistoric Sounds, Bonus Track].ogg>
-    no 33
+    771 <Looking For The Sun> 208.0
+    </home/mark/music/The Saints/The Saints CD3/14-Looking For The Sun [Studio Outtake From >
+     & <Prehistoric Sounds, Bonus > & <Track].ogg> no 33
     746 <Lost And Found> 229.0
     </home/mark/music/The Saints/The Saints CD2/02-Lost And Found.ogg> no 33
     747 <Memories Are Made Of This> 140.0
@@ -1280,10 +1285,12 @@ uxf 1.0 EPD (SQLite full list of tables)
     </home/mark/music/Joy_Division/Heart And Soul 1/20-Autosuggestion.ogg> no 34
     776 <Candidate> 184.0 </home/mark/music/Joy_Division/Heart And Soul 1/05-Candidate.ogg> no
     34
-    816 <Ceremony (Tour Rehearsal Session - Manchester, April 1980)> 261.0 </home/mark/music/Joy_Division/Heart And Soul 3/23-Ceremony (Tour Rehearsal Session - Manchester, April 1980).ogg>
-    no 34
-    814 <Chance (Atmosphere) (Piccadilly Radio Session)> 294.0 </home/mark/music/Joy_Division/Heart And Soul 3/19-Chance (Atmosphere) (Piccadilly Radio Session).ogg>
-    no 34
+    816 <Ceremony (Tour Rehearsal Session - Manchester, April 1980)> 261.0
+    </home/mark/music/Joy_Division/Heart And Soul 3/23-Ceremony (Tour Rehearsal Session - >
+     & <Manchester, April > & <1980).ogg> no 34
+    814 <Chance (Atmosphere) (Piccadilly Radio Session)> 294.0
+    </home/mark/music/Joy_Division/Heart And Soul 3/19-Chance (Atmosphere) (Piccadilly Radio >
+     & <Session).ogg> no 34
     775 <Day of the Lords> 290.0
     </home/mark/music/Joy_Division/Heart And Soul 1/04-Day of the Lords.ogg> no 34
     795 <Dead Souls> 297.0 </home/mark/music/Joy_Division/Heart And Soul 2/04-Dead Souls.ogg> no
@@ -1302,8 +1309,9 @@ uxf 1.0 EPD (SQLite full list of tables)
     783 <I Remember Nothing> 356.0
     </home/mark/music/Joy_Division/Heart And Soul 1/12-I Remember Nothing.ogg> no 34
     784 <Ice Age> 145.0 </home/mark/music/Joy_Division/Heart And Soul 1/13-Ice Age.ogg> no 34
-    817 <In A Lonely Place (Detail) (Tour Rehearsal Session - Manchester, April 1980)> 146.0 </home/mark/music/Joy_Division/Heart And Soul 3/24-In A Lonely Place (Detail) (Tour Rehearsal Session - Manchester, April 1980).ogg>
-    no 34
+    817 <In A Lonely Place (Detail) (Tour Rehearsal Session - Manchester, April 1980)> 146.0
+    </home/mark/music/Joy_Division/Heart And Soul 3/24-In A Lonely Place (Detail) (Tour Rehearsal >
+     & <Session - Manchester, April > & <1980).ogg> no 34
     797 <Incubation> 172.0 </home/mark/music/Joy_Division/Heart And Soul 2/06-Incubation.ogg> no
     34
     777 <Insight> 268.0 </home/mark/music/Joy_Division/Heart And Soul 1/06-Insight.ogg> no 34
@@ -1332,8 +1340,9 @@ uxf 1.0 EPD (SQLite full list of tables)
     </home/mark/music/Joy_Division/Heart And Soul 1/19-Something Must Break.ogg> no 34
     793 <Sound of Music> 236.0
     </home/mark/music/Joy_Division/Heart And Soul 2/02-Sound of Music.ogg> no 34
-    812 <The Drawback (RCA Unreleased Album Session - Arrow Studios, Manchester, May 1> 106.0 </home/mark/music/Joy_Division/Heart And Soul 3/05-The Drawback (RCA Unreleased Album Session - Arrow Studios, Manchester, May 1.ogg>
-    no 34
+    812 <The Drawback (RCA Unreleased Album Session - Arrow Studios, Manchester, May 1> 106.0
+    </home/mark/music/Joy_Division/Heart And Soul 3/05-The Drawback (RCA Unreleased Album Session >
+     & <- Arrow Studios, Manchester, May > & <1.ogg> no 34
     804 <The Eternal> 367.0 </home/mark/music/Joy_Division/Heart And Soul 2/14-The Eternal.ogg>
     no 34
     788 <The Kill> 136.0 </home/mark/music/Joy_Division/Heart And Soul 1/17-The Kill.ogg> no 34
@@ -1424,8 +1433,8 @@ uxf 1.0 EPD (SQLite full list of tables)
     no 37
     869 <Larghetto from Serenade for strings> 205.0
     </home/mark/music/Classical/CD3/18-Larghetto_from_Serenade_for_strings.ogg> no 37
-    839 <Liszt/Piano Concerto No.1 - Allegro maestoso - tempo giusto> 319.0 </home/mark/music/Classical/CD2/05-Liszt-Piano_Concerto_No.1_-Allegro_maestoso_-tempo_giusto.ogg>
-    no 37
+    839 <Liszt/Piano Concerto No.1 - Allegro maestoso - tempo giusto> 319.0 </home/mark/music/Classical/CD2/05-Liszt-Piano_Concerto_No.1_-Allegro_maestoso_-tempo_giusto.og>
+     & <g> no 37
     883 <Mahler - Symphony No.2 in c (II, 1963) - Klemperer> 637.0
     </home/mark/music/Classical/CD5/05-Mahler_-Symphony_No.2_in_c_II_1963_-Klemperer.ogg> no 37
     884 <Mahler - Symphony No.9 in D (III, 1938) - Bruno Walter> 678.0
@@ -1461,8 +1470,8 @@ uxf 1.0 EPD (SQLite full list of tables)
     848 <Pomp and Circumstance March No.1> 365.0
     </home/mark/music/Classical/CD2/15-Pomp_and_Circumstance_March_No.1.ogg> no 37
     836 <Radoczy March> 262.0 </home/mark/music/Classical/CD2/01-Radoczy_March.ogg> no 37
-    885 <Richard Straus - Tod und Verklarung (conclusion, 1974) - Kempe> 389.0 </home/mark/music/Classical/CD5/07-Richard_Straus_-Tod_und_Verklarung_conclusion_1974_-Kempe.ogg>
-    no 37
+    885 <Richard Straus - Tod und Verklarung (conclusion, 1974) - Kempe> 389.0 </home/mark/music/Classical/CD5/07-Richard_Straus_-Tod_und_Verklarung_conclusion_1974_-Kempe.og>
+     & <g> no 37
     857 <Romanze, from Piano Concerto No.1> 194.0
     </home/mark/music/Classical/CD3/06-Romanze_from_Piano_Concerto_No.1.ogg> no 37
     876 <Schubert - Symphony No.8 in b (I, 1950) - Furtwangler> 677.0
@@ -1483,57 +1492,57 @@ uxf 1.0 EPD (SQLite full list of tables)
     842 <Tchaikovsky: Nutcracker Suite - Danse Des Mirlitons> 146.0
     </home/mark/music/Classical/CD2/08-Tchaikovsky-Nutcracker_Suite_-Danse_Des_Mirlitons.ogg> no
     37
-    880 <Wagner - Die Meisersinger (Act III Prelude, 1958) - Rudolf kempe> 443.0 </home/mark/music/Classical/CD5/02-Wagner_-Die_Meisersinger_Act_III_Prelude_1958_-Rudolf_kempe.ogg>
-    no 37
+    880 <Wagner - Die Meisersinger (Act III Prelude, 1958) - Rudolf kempe> 443.0 </home/mark/music/Classical/CD5/02-Wagner_-Die_Meisersinger_Act_III_Prelude_1958_-Rudolf_kempe.>
+     & <ogg> no 37
     879 <Wagner - Tristan und Isolde (Prelude, 1953) - Furtwangler> 666.0
     </home/mark/music/Classical/CD5/01-Wagner_-Tristan_und_Isolde_Prelude_1953_-Furtwangler.ogg>
     no 37
     901 <II. Air> 239.0 </home/mark/music/J.S._Bach/Orchestral_Suites_Nos.1-4/16-II._Air.ogg> no
     38
-    886 <Suite No.1 in C (BWV1066) - I Ouvertüre> 361.0 </home/mark/music/J.S._Bach/Orchestral_Suites_Nos.1-4/01-Suite_No.1_in_C_BWV1066_-I_Ouvert_re.ogg>
-    no 38
-    887 <Suite No.1 in C (BWV1066) - II Courante> 124.0 </home/mark/music/J.S._Bach/Orchestral_Suites_Nos.1-4/02-Suite_No.1_in_C_BWV1066_-II_Courante.ogg>
-    no 38
-    888 <Suite No.1 in C (BWV1066) - III Gavottes I &amp; II> 175.0 </home/mark/music/J.S._Bach/Orchestral_Suites_Nos.1-4/03-Suite_No.1_in_C_BWV1066_-III_Gavottes_I__II.ogg>
-    no 38
-    889 <Suite No.1 in C (BWV1066) - IV Forlane> 79.0 </home/mark/music/J.S._Bach/Orchestral_Suites_Nos.1-4/04-Suite_No.1_in_C_BWV1066_-IV_Forlane.ogg>
-    no 38
-    890 <Suite No.1 in C (BWV1066) - V Menutes I &amp; II> 201.0 </home/mark/music/J.S._Bach/Orchestral_Suites_Nos.1-4/05-Suite_No.1_in_C_BWV1066_-V_Menutes_I__II.ogg>
-    no 38
-    891 <Suite No.1 in C (BWV1066) - VI Bourrées I &amp; II> 142.0 </home/mark/music/J.S._Bach/Orchestral_Suites_Nos.1-4/06-Suite_No.1_in_C_BWV1066_-VI_Bourr_es_I__II.ogg>
-    no 38
-    892 <Suite No.1 in C (BWV1066) - VII Passepieds I &amp; II> 159.0 </home/mark/music/J.S._Bach/Orchestral_Suites_Nos.1-4/07-Suite_No.1_in_C_BWV1066_-VII_Passepieds_I__II.ogg>
-    no 38
-    893 <Suite No.2 in B minor (BWV1067) - I Ouvertüre> 379.0 </home/mark/music/J.S._Bach/Orchestral_Suites_Nos.1-4/08-Suite_No.2_in_B_minor_BWV1067_-I_Ouvert_re.ogg>
-    no 38
-    896 <Suite No.2 in B minor (BWV1067) - IV Bourrées I &amp; II> 115.0 </home/mark/music/J.S._Bach/Orchestral_Suites_Nos.1-4/11-Suite_No.2_in_B_minor_BWV1067_-IV_Bourr_es_I__II.ogg>
-    no 38
-    894 <Suite No.2 in B minor, BWV 1067 - II. Rondeau> 107.0 </home/mark/music/J.S._Bach/Orchestral_Suites_Nos.1-4/09-Suite_No.2_in_B_minor_BWV_1067_-II._Rondeau.ogg>
-    no 38
-    895 <Suite No.2 in B minor, BWV 1067 - III. Sarabande> 170.0 </home/mark/music/J.S._Bach/Orchestral_Suites_Nos.1-4/10-Suite_No.2_in_B_minor_BWV_1067_-III._Sarabande.ogg>
-    no 38
-    897 <Suite No.2 in B minor, BWV 1067 - V. Polonaise - Double> 192.0 </home/mark/music/J.S._Bach/Orchestral_Suites_Nos.1-4/12-Suite_No.2_in_B_minor_BWV_1067_-V._Polonaise_-Double.ogg>
-    no 38
-    898 <Suite No.2 in B minor, BWV 1067 - VI. Menuet> 86.0 </home/mark/music/J.S._Bach/Orchestral_Suites_Nos.1-4/13-Suite_No.2_in_B_minor_BWV_1067_-VI._Menuet.ogg>
-    no 38
-    899 <Suite No.2 in B minor, BWV 1067 - VII. Badinerie> 93.0 </home/mark/music/J.S._Bach/Orchestral_Suites_Nos.1-4/14-Suite_No.2_in_B_minor_BWV_1067_-VII._Badinerie.ogg>
-    no 38
-    900 <Suite No.3 in D (BWV1068) - I Ouvertüre> 406.0 </home/mark/music/J.S._Bach/Orchestral_Suites_Nos.1-4/15-Suite_No.3_in_D_BWV1068_-I_Ouvert_re.ogg>
-    no 38
-    902 <Suite No.3 in D (BWV1068) - III Gavottes I &amp; II> 212.0 </home/mark/music/J.S._Bach/Orchestral_Suites_Nos.1-4/17-Suite_No.3_in_D_BWV1068_-III_Gavottes_I__II.ogg>
-    no 38
-    903 <Suite No.3 in D (BWV1068) - IV Bourrée> 0.0 </home/mark/music/J.S._Bach/Orchestral_Suites_Nos.1-4/18-Suite_No.3_in_D_BWV1068_-IV_Bourr_e.ogg>
-    no 38
-    905 <Suite No.4 in D (BWV1069) - I Ouvertüre> 0.0 </home/mark/music/J.S._Bach/Orchestral_Suites_Nos.1-4/20-Suite_No.4_in_D_BWV1069_-I_Ouvert_re.ogg>
-    no 38
-    906 <Suite No.4 in D (BWV1069) - II Bourrées I &amp; II> 153.0 </home/mark/music/J.S._Bach/Orchestral_Suites_Nos.1-4/21-Suite_No.4_in_D_BWV1069_-II_Bourr_es_I__II.ogg>
-    yes 38
-    907 <Suite No.4 in D (BWV1069) - III Gavotte> 112.0 </home/mark/music/J.S._Bach/Orchestral_Suites_Nos.1-4/22-Suite_No.4_in_D_BWV1069_-III_Gavotte.ogg>
-    no 38
-    908 <Suite No.4 in D (BWV1069) - IV Menuets I &amp; II> 235.0 </home/mark/music/J.S._Bach/Orchestral_Suites_Nos.1-4/23-Suite_No.4_in_D_BWV1069_-IV_Menuets_I__II.ogg>
-    no 38
-    909 <Suite No.4 in D (BWV1069) - V Réjouissance> 156.0 </home/mark/music/J.S._Bach/Orchestral_Suites_Nos.1-4/24-Suite_No.4_in_D_BWV1069_-V_R_jouissance.ogg>
-    no 38
+    886 <Suite No.1 in C (BWV1066) - I Ouvertüre> 361.0 </home/mark/music/J.S._Bach/Orchestral_Suites_Nos.1-4/01-Suite_No.1_in_C_BWV1066_-I_Ouvert_re.o>
+     & <gg> no 38
+    887 <Suite No.1 in C (BWV1066) - II Courante> 124.0 </home/mark/music/J.S._Bach/Orchestral_Suites_Nos.1-4/02-Suite_No.1_in_C_BWV1066_-II_Courante.o>
+     & <gg> no 38
+    888 <Suite No.1 in C (BWV1066) - III Gavottes I &amp; II> 175.0 </home/mark/music/J.S._Bach/Orchestral_Suites_Nos.1-4/03-Suite_No.1_in_C_BWV1066_-III_Gavottes_>
+     & <I__II.ogg> no 38
+    889 <Suite No.1 in C (BWV1066) - IV Forlane> 79.0 </home/mark/music/J.S._Bach/Orchestral_Suites_Nos.1-4/04-Suite_No.1_in_C_BWV1066_-IV_Forlane.og>
+     & <g> no 38
+    890 <Suite No.1 in C (BWV1066) - V Menutes I &amp; II> 201.0 </home/mark/music/J.S._Bach/Orchestral_Suites_Nos.1-4/05-Suite_No.1_in_C_BWV1066_-V_Menutes_I__>
+     & <II.ogg> no 38
+    891 <Suite No.1 in C (BWV1066) - VI Bourrées I &amp; II> 142.0 </home/mark/music/J.S._Bach/Orchestral_Suites_Nos.1-4/06-Suite_No.1_in_C_BWV1066_-VI_Bourr_es_I>
+     & <__II.ogg> no 38
+    892 <Suite No.1 in C (BWV1066) - VII Passepieds I &amp; II> 159.0 </home/mark/music/J.S._Bach/Orchestral_Suites_Nos.1-4/07-Suite_No.1_in_C_BWV1066_-VII_Passepied>
+     & <s_I__II.ogg> no 38
+    893 <Suite No.2 in B minor (BWV1067) - I Ouvertüre> 379.0 </home/mark/music/J.S._Bach/Orchestral_Suites_Nos.1-4/08-Suite_No.2_in_B_minor_BWV1067_-I_Ouver>
+     & <t_re.ogg> no 38
+    896 <Suite No.2 in B minor (BWV1067) - IV Bourrées I &amp; II> 115.0 </home/mark/music/J.S._Bach/Orchestral_Suites_Nos.1-4/11-Suite_No.2_in_B_minor_BWV1067_-IV_Bour>
+     & <r_es_I__II.ogg> no 38
+    894 <Suite No.2 in B minor, BWV 1067 - II. Rondeau> 107.0 </home/mark/music/J.S._Bach/Orchestral_Suites_Nos.1-4/09-Suite_No.2_in_B_minor_BWV_1067_-II._Ro>
+     & <ndeau.ogg> no 38
+    895 <Suite No.2 in B minor, BWV 1067 - III. Sarabande> 170.0 </home/mark/music/J.S._Bach/Orchestral_Suites_Nos.1-4/10-Suite_No.2_in_B_minor_BWV_1067_-III._S>
+     & <arabande.ogg> no 38
+    897 <Suite No.2 in B minor, BWV 1067 - V. Polonaise - Double> 192.0 </home/mark/music/J.S._Bach/Orchestral_Suites_Nos.1-4/12-Suite_No.2_in_B_minor_BWV_1067_-V._Pol>
+     & <onaise_-Double.ogg> no 38
+    898 <Suite No.2 in B minor, BWV 1067 - VI. Menuet> 86.0 </home/mark/music/J.S._Bach/Orchestral_Suites_Nos.1-4/13-Suite_No.2_in_B_minor_BWV_1067_-VI._Me>
+     & <nuet.ogg> no 38
+    899 <Suite No.2 in B minor, BWV 1067 - VII. Badinerie> 93.0 </home/mark/music/J.S._Bach/Orchestral_Suites_Nos.1-4/14-Suite_No.2_in_B_minor_BWV_1067_-VII._B>
+     & <adinerie.ogg> no 38
+    900 <Suite No.3 in D (BWV1068) - I Ouvertüre> 406.0 </home/mark/music/J.S._Bach/Orchestral_Suites_Nos.1-4/15-Suite_No.3_in_D_BWV1068_-I_Ouvert_re.o>
+     & <gg> no 38
+    902 <Suite No.3 in D (BWV1068) - III Gavottes I &amp; II> 212.0 </home/mark/music/J.S._Bach/Orchestral_Suites_Nos.1-4/17-Suite_No.3_in_D_BWV1068_-III_Gavottes_>
+     & <I__II.ogg> no 38
+    903 <Suite No.3 in D (BWV1068) - IV Bourrée> 0.0 </home/mark/music/J.S._Bach/Orchestral_Suites_Nos.1-4/18-Suite_No.3_in_D_BWV1068_-IV_Bourr_e.og>
+     & <g> no 38
+    905 <Suite No.4 in D (BWV1069) - I Ouvertüre> 0.0 </home/mark/music/J.S._Bach/Orchestral_Suites_Nos.1-4/20-Suite_No.4_in_D_BWV1069_-I_Ouvert_re.o>
+     & <gg> no 38
+    906 <Suite No.4 in D (BWV1069) - II Bourrées I &amp; II> 153.0 </home/mark/music/J.S._Bach/Orchestral_Suites_Nos.1-4/21-Suite_No.4_in_D_BWV1069_-II_Bourr_es_I>
+     & <__II.ogg> yes 38
+    907 <Suite No.4 in D (BWV1069) - III Gavotte> 112.0 </home/mark/music/J.S._Bach/Orchestral_Suites_Nos.1-4/22-Suite_No.4_in_D_BWV1069_-III_Gavotte.o>
+     & <gg> no 38
+    908 <Suite No.4 in D (BWV1069) - IV Menuets I &amp; II> 235.0 </home/mark/music/J.S._Bach/Orchestral_Suites_Nos.1-4/23-Suite_No.4_in_D_BWV1069_-IV_Menuets_I_>
+     & <_II.ogg> no 38
+    909 <Suite No.4 in D (BWV1069) - V Réjouissance> 156.0 </home/mark/music/J.S._Bach/Orchestral_Suites_Nos.1-4/24-Suite_No.4_in_D_BWV1069_-V_R_jouissanc>
+     & <e.ogg> no 38
     904 <V. Gigue> 0.0 </home/mark/music/J.S._Bach/Orchestral_Suites_Nos.1-4/19-V._Gigue.ogg> no
     38
     924 <Concerto For Orchestra - 3. Elegia - Andante Non Troppo> 408.0
@@ -1542,8 +1551,8 @@ uxf 1.0 EPD (SQLite full list of tables)
     926 <Concerto For Orchestra - 5. Finale - Pesante - Presto> 568.0
     </home/mark/music/Bela_Bartok/CD2/08-Concerto_For_Orchestra_-5._Finale_-Pesante_-Presto.ogg>
     no 39
-    922 <Concerto for Orchestra - 1. Introduzione. Andante non troppo> 563.0 </home/mark/music/Bela_Bartok/CD2/04-Concerto_for_Orchestra_-1._Introduzione._Andante_non_troppo.ogg>
-    no 39
+    922 <Concerto for Orchestra - 1. Introduzione. Andante non troppo> 563.0 </home/mark/music/Bela_Bartok/CD2/04-Concerto_for_Orchestra_-1._Introduzione._Andante_non_tropp>
+     & <o.ogg> no 39
     923 <Concerto for Orchestra-2. Giuoco delle coppie> 400.0
     </home/mark/music/Bela_Bartok/CD2/05-Concerto_for_Orchestra-2._Giuoco_delle_coppie.ogg> no
     39
@@ -1575,82 +1584,108 @@ uxf 1.0 EPD (SQLite full list of tables)
     </home/mark/music/Bela_Bartok/CD2/02-Violin_Concerto_No.2_-II_-Andante_tranquillo.ogg> no 39
     921 <Violin Concerto No.2 - III - Allegro molto> 743.0
     </home/mark/music/Bela_Bartok/CD2/03-Violin_Concerto_No.2_-III_-Allegro_molto.ogg> no 39
-    927 <Symphony No.1 in C Major, Op.21 - I. Adagio molto - Allegro con brio> 573.0 </home/mark/music/Beethoven/9 Symphonies - Karajan 1/01-Symphony No.1 in C Major, Op.21 - I. Adagio molto - Allegro con brio.ogg>
-    no 40
-    928 <Symphony No.1 in C Major, Op.21 - II. Andante cantabile con moto> 353.0 </home/mark/music/Beethoven/9 Symphonies - Karajan 1/02-Symphony No.1 in C Major, Op.21 - II. Andante cantabile con moto.ogg>
-    no 40
-    929 <Symphony No.1 in C Major, Op.21 - III. Menuetto. Allegro moltoe vivace> 237.0 </home/mark/music/Beethoven/9 Symphonies - Karajan 1/03-Symphony No.1 in C Major, Op.21 - III. Menuetto. Allegro moltoe vivace.ogg>
-    no 40
-    930 <Symphony No.1 in C Major, Op.21 - IV. Adagio - Allegro molto evivace> 351.0 </home/mark/music/Beethoven/9 Symphonies - Karajan 1/04-Symphony No.1 in C Major, Op.21 - IV. Adagio - Allegro molto evivace.ogg>
-    no 40
-    931 <Symphony No.2 in D Major, Op.36 - I. Adagio - Allegro con brio> 621.0 </home/mark/music/Beethoven/9 Symphonies - Karajan 2/01-Symphony No.2 in D Major, Op.36 - I. Adagio - Allegro con brio.ogg>
-    no 40
-    932 <Symphony No.2 in D Major, Op.36 - II. Larghetto> 636.0 </home/mark/music/Beethoven/9 Symphonies - Karajan 2/02-Symphony No.2 in D Major, Op.36 - II. Larghetto.ogg>
-    no 40
-    933 <Symphony No.2 in D Major, Op.36 - III. Scherzo. Allegro> 233.0 </home/mark/music/Beethoven/9 Symphonies - Karajan 2/03-Symphony No.2 in D Major, Op.36 - III. Scherzo. Allegro.ogg>
-    no 40
-    934 <Symphony No.2 in D Major, Op.36 - IV. Allegro molto> 388.0 </home/mark/music/Beethoven/9 Symphonies - Karajan 2/04-Symphony No.2 in D Major, Op.36 - IV. Allegro molto.ogg>
-    no 40
-    935 <Symphony No.3 in E-flat Major, Op.55 "Eroica" - I. Allegro conbrio> 0.0 </home/mark/music/Beethoven/9 Symphonies - Karajan 1/05-Symphony No.3 in E-flat Major, Op.55 Eroica - I. Allegro conbrio.ogg>
-    no 40
-    936 <Symphony No.3 in E-flat Major, Op.55 "Eroica" - II. Marcia funebre. Adagio assai> 0.0 </home/mark/music/Beethoven/9 Symphonies - Karajan 1/06-Symphony No.3 in E-flat Major, Op.55 Eroica - II. Marcia funebre. Adagio assai.ogg>
-    no 40
-    937 <Symphony No.3 in E-flat Major, Op.55 "Eroica" - III. Scherzo.Allegro vivace> 0.0 </home/mark/music/Beethoven/9 Symphonies - Karajan 1/07-Symphony No.3 in E-flat Major, Op.55 Eroica - III. Scherzo.Allegro vivace.ogg>
-    no 40
-    938 <Symphony No.3 in E-flat Major, Op.55 "Eroica" - IV. Finale. Allegro molto> 0.0 </home/mark/music/Beethoven/9 Symphonies - Karajan 1/08-Symphony No.3 in E-flat Major, Op.55 Eroica - IV. Finale. Allegro molto.ogg>
-    no 40
-    939 <Symphony No.4 in B-flat Major, Op.60 - I. Adagio - Allegro vivace> 0.0 </home/mark/music/Beethoven/9 Symphonies - Karajan 2/05-Symphony No.4 in B-flat Major, Op.60 - I. Adagio - Allegro vivace.ogg>
-    no 40
-    940 <Symphony No.4 in B-flat Major, Op.60 - II. Adagio> 0.0 </home/mark/music/Beethoven/9 Symphonies - Karajan 2/06-Symphony No.4 in B-flat Major, Op.60 - II. Adagio.ogg>
-    no 40
-    941 <Symphony No.4 in B-flat Major, Op.60 - III. Allegro vivace> 0.0 </home/mark/music/Beethoven/9 Symphonies - Karajan 2/07-Symphony No.4 in B-flat Major, Op.60 - III. Allegro vivace.ogg>
-    no 40
-    942 <Symphony No.4 in B-flat Major, Op.60 - IV. Allegro ma non troppo> 0.0 </home/mark/music/Beethoven/9 Symphonies - Karajan 2/08-Symphony No.4 in B-flat Major, Op.60 - IV. Allegro ma non troppo.ogg>
-    no 40
-    943 <Symphony No.5 in C Minor, Op.67 - I. Allegro con brio> 0.0 </home/mark/music/Beethoven/9 Symphonies - Karajan 3/01-Symphony No.5 in C Minor, Op.67 - I. Allegro con brio.ogg>
-    no 40
-    944 <Symphony No.5 in C Minor, Op.67 - II. Andante con moto> 0.0 </home/mark/music/Beethoven/9 Symphonies - Karajan 3/02-Symphony No.5 in C Minor, Op.67 - II. Andante con moto.ogg>
-    no 40
-    945 <Symphony No.5 in C Minor, Op.67 - III. Allegro> 0.0 </home/mark/music/Beethoven/9 Symphonies - Karajan 3/03-Symphony No.5 in C Minor, Op.67 - III. Allegro.ogg>
-    no 40
-    946 <Symphony No.5 in C Minor, Op.67 - IV. Allegro> 547.0 </home/mark/music/Beethoven/9 Symphonies - Karajan 3/04-Symphony No.5 in C Minor, Op.67 - IV. Allegro.ogg>
-    yes 40
-    947 <Symphony No.6 in F Major, Op.68 - I. Allegro ma non troppo> 541.0 </home/mark/music/Beethoven/9 Symphonies - Karajan 3/05-Symphony No.6 in F Major, Op.68 - I. Allegro ma non troppo.ogg>
-    no 40
-    948 <Symphony No.6 in F Major, Op.68 - II. Andante molto mosso> 696.0 </home/mark/music/Beethoven/9 Symphonies - Karajan 3/06-Symphony No.6 in F Major, Op.68 - II. Andante molto mosso.ogg>
-    no 40
-    949 <Symphony No.6 in F Major, Op.68 - III. Allegro> 182.0 </home/mark/music/Beethoven/9 Symphonies - Karajan 3/07-Symphony No.6 in F Major, Op.68 - III. Allegro.ogg>
-    no 40
-    950 <Symphony No.6 in F Major, Op.68 - IV. Allegro> 205.0 </home/mark/music/Beethoven/9 Symphonies - Karajan 3/08-Symphony No.6 in F Major, Op.68 - IV. Allegro.ogg>
-    no 40
-    951 <Symphony No.6 in F Major, Op.68 - V. Allegretto> 526.0 </home/mark/music/Beethoven/9 Symphonies - Karajan 3/09-Symphony No.6 in F Major, Op.68 - V. Allegretto.ogg>
-    no 40
-    952 <Symphony No.7 in A Major, Op.92 - I. Poco sostenuto - Vivace> 687.0 </home/mark/music/Beethoven/9 Symphonies - Karajan 4/01-Symphony No.7 in A Major, Op.92 - I. Poco sostenuto - Vivace.ogg>
-    no 40
-    953 <Symphony No.7 in A Major, Op.92 - II. Allegretto> 481.0 </home/mark/music/Beethoven/9 Symphonies - Karajan 4/02-Symphony No.7 in A Major, Op.92 - II. Allegretto.ogg>
-    no 40
-    954 <Symphony No.7 in A Major, Op.92 - III. Presto> 470.0 </home/mark/music/Beethoven/9 Symphonies - Karajan 4/03-Symphony No.7 in A Major, Op.92 - III. Presto.ogg>
-    no 40
-    955 <Symphony No.7 in A Major, Op.92 - IV. Allegro con brio> 406.0 </home/mark/music/Beethoven/9 Symphonies - Karajan 4/04-Symphony No.7 in A Major, Op.92 - IV. Allegro con brio.ogg>
-    no 40
-    956 <Symphony No.8 in F Major, Op.93 - I. Allegro vivace e con brio> 560.0 </home/mark/music/Beethoven/9 Symphonies - Karajan 4/05-Symphony No.8 in F Major, Op.93 - I. Allegro vivace e con brio.ogg>
-    no 40
-    957 <Symphony No.8 in F Major, Op.93 - II. Allegretto scherzando> 238.0 </home/mark/music/Beethoven/9 Symphonies - Karajan 4/06-Symphony No.8 in F Major, Op.93 - II. Allegretto scherzando.ogg>
-    no 40
-    958 <Symphony No.8 in F Major, Op.93 - III. Tempo di Menuetto> 358.0 </home/mark/music/Beethoven/9 Symphonies - Karajan 4/07-Symphony No.8 in F Major, Op.93 - III. Tempo di Menuetto.ogg>
-    no 40
-    959 <Symphony No.8 in F Major, Op.93 - IV. Allegro vivace> 426.0 </home/mark/music/Beethoven/9 Symphonies - Karajan 4/08-Symphony No.8 in F Major, Op.93 - IV. Allegro vivace.ogg>
-    no 40
-    960 <Symphony No.9 in D Minor, Op.125 - I. Allegro ma non troppo, un poco maestoso> 932.0 </home/mark/music/Beethoven/9 Symphonies - Karajan 5/01-Symphony No.9 in D Minor, Op.125 - I. Allegro ma non troppo, un poco maestoso.ogg>
-    no 40
-    961 <Symphony No.9 in D Minor, Op.125 - II. Molto vivace> 663.0 </home/mark/music/Beethoven/9 Symphonies - Karajan 5/02-Symphony No.9 in D Minor, Op.125 - II. Molto vivace.ogg>
-    no 40
-    962 <Symphony No.9 in D Minor, Op.125 - III. Adagio molto e cantabile> 988.0 </home/mark/music/Beethoven/9 Symphonies - Karajan 5/03-Symphony No.9 in D Minor, Op.125 - III. Adagio molto e cantabile.ogg>
-    no 40
-    963 <Symphony No.9 in D Minor, Op.125 - IV. Presto> 382.0 </home/mark/music/Beethoven/9 Symphonies - Karajan 5/04-Symphony No.9 in D Minor, Op.125 - IV. Presto.ogg>
-    no 40
-    964 <Symphony No.9 in D Minor, Op.125 - V. Presto - Allegro assai> 1054.0 </home/mark/music/Beethoven/9 Symphonies - Karajan 5/05-Symphony No.9 in D Minor, Op.125 - V. Presto - Allegro assai.ogg>
-    no 40
+    927 <Symphony No.1 in C Major, Op.21 - I. Adagio molto - Allegro con brio> 573.0
+    </home/mark/music/Beethoven/9 Symphonies - Karajan 1/01-Symphony No.1 in C Major, Op.21 - I. >
+     & <Adagio molto - Allegro con > & <brio.ogg> no 40
+    928 <Symphony No.1 in C Major, Op.21 - II. Andante cantabile con moto> 353.0
+    </home/mark/music/Beethoven/9 Symphonies - Karajan 1/02-Symphony No.1 in C Major, Op.21 - II. >
+     & <Andante cantabile con > & <moto.ogg> no 40
+    929 <Symphony No.1 in C Major, Op.21 - III. Menuetto. Allegro moltoe vivace> 237.0 </home/mark/music/Beethoven/9 Symphonies - Karajan 1/03-Symphony No.1 in C Major, Op.21 - III. >
+     & <Menuetto. Allegro moltoe > & <vivace.ogg> no 40
+    930 <Symphony No.1 in C Major, Op.21 - IV. Adagio - Allegro molto evivace> 351.0
+    </home/mark/music/Beethoven/9 Symphonies - Karajan 1/04-Symphony No.1 in C Major, Op.21 - IV. >
+     & <Adagio - Allegro molto > & <evivace.ogg> no 40
+    931 <Symphony No.2 in D Major, Op.36 - I. Adagio - Allegro con brio> 621.0
+    </home/mark/music/Beethoven/9 Symphonies - Karajan 2/01-Symphony No.2 in D Major, Op.36 - I. >
+     & <Adagio - Allegro con > & <brio.ogg> no 40
+    932 <Symphony No.2 in D Major, Op.36 - II. Larghetto> 636.0
+    </home/mark/music/Beethoven/9 Symphonies - Karajan 2/02-Symphony No.2 in D Major, Op.36 - II. >
+     & <Larghetto.ogg> no 40
+    933 <Symphony No.2 in D Major, Op.36 - III. Scherzo. Allegro> 233.0 </home/mark/music/Beethoven/9 Symphonies - Karajan 2/03-Symphony No.2 in D Major, Op.36 - III. >
+     & <Scherzo. > & <Allegro.ogg> no 40
+    934 <Symphony No.2 in D Major, Op.36 - IV. Allegro molto> 388.0
+    </home/mark/music/Beethoven/9 Symphonies - Karajan 2/04-Symphony No.2 in D Major, Op.36 - IV. >
+     & <Allegro > & <molto.ogg> no 40
+    935 <Symphony No.3 in E-flat Major, Op.55 "Eroica" - I. Allegro conbrio> 0.0
+    </home/mark/music/Beethoven/9 Symphonies - Karajan 1/05-Symphony No.3 in E-flat Major, Op.55 >
+     & <Eroica - I. Allegro > & <conbrio.ogg> no 40
+    936 <Symphony No.3 in E-flat Major, Op.55 "Eroica" - II. Marcia funebre. Adagio assai> 0.0
+    </home/mark/music/Beethoven/9 Symphonies - Karajan 1/06-Symphony No.3 in E-flat Major, Op.55 >
+     & <Eroica - II. Marcia funebre. Adagio > & <assai.ogg> no 40
+    937 <Symphony No.3 in E-flat Major, Op.55 "Eroica" - III. Scherzo.Allegro vivace> 0.0
+    </home/mark/music/Beethoven/9 Symphonies - Karajan 1/07-Symphony No.3 in E-flat Major, Op.55 >
+     & <Eroica - III. Scherzo.Allegro > & <vivace.ogg> no 40
+    938 <Symphony No.3 in E-flat Major, Op.55 "Eroica" - IV. Finale. Allegro molto> 0.0
+    </home/mark/music/Beethoven/9 Symphonies - Karajan 1/08-Symphony No.3 in E-flat Major, Op.55 >
+     & <Eroica - IV. Finale. Allegro > & <molto.ogg> no 40
+    939 <Symphony No.4 in B-flat Major, Op.60 - I. Adagio - Allegro vivace> 0.0 </home/mark/music/Beethoven/9 Symphonies - Karajan 2/05-Symphony No.4 in B-flat Major, Op.60 - >
+     & <I. Adagio - Allegro > & <vivace.ogg> no 40
+    940 <Symphony No.4 in B-flat Major, Op.60 - II. Adagio> 0.0 </home/mark/music/Beethoven/9 Symphonies - Karajan 2/06-Symphony No.4 in B-flat Major, Op.60 - >
+     & <II. > & <Adagio.ogg> no 40
+    941 <Symphony No.4 in B-flat Major, Op.60 - III. Allegro vivace> 0.0 </home/mark/music/Beethoven/9 Symphonies - Karajan 2/07-Symphony No.4 in B-flat Major, Op.60 - >
+     & <III. Allegro > & <vivace.ogg> no 40
+    942 <Symphony No.4 in B-flat Major, Op.60 - IV. Allegro ma non troppo> 0.0 </home/mark/music/Beethoven/9 Symphonies - Karajan 2/08-Symphony No.4 in B-flat Major, Op.60 - >
+     & <IV. Allegro ma non > & <troppo.ogg> no 40
+    943 <Symphony No.5 in C Minor, Op.67 - I. Allegro con brio> 0.0
+    </home/mark/music/Beethoven/9 Symphonies - Karajan 3/01-Symphony No.5 in C Minor, Op.67 - I. >
+     & <Allegro con > & <brio.ogg> no 40
+    944 <Symphony No.5 in C Minor, Op.67 - II. Andante con moto> 0.0
+    </home/mark/music/Beethoven/9 Symphonies - Karajan 3/02-Symphony No.5 in C Minor, Op.67 - II. >
+     & <Andante con > & <moto.ogg> no 40
+    945 <Symphony No.5 in C Minor, Op.67 - III. Allegro> 0.0 </home/mark/music/Beethoven/9 Symphonies - Karajan 3/03-Symphony No.5 in C Minor, Op.67 - III. >
+     & <Allegro.ogg> no 40
+    946 <Symphony No.5 in C Minor, Op.67 - IV. Allegro> 547.0
+    </home/mark/music/Beethoven/9 Symphonies - Karajan 3/04-Symphony No.5 in C Minor, Op.67 - IV. >
+     & <Allegro.ogg> yes 40
+    947 <Symphony No.6 in F Major, Op.68 - I. Allegro ma non troppo> 541.0
+    </home/mark/music/Beethoven/9 Symphonies - Karajan 3/05-Symphony No.6 in F Major, Op.68 - I. >
+     & <Allegro ma non > & <troppo.ogg> no 40
+    948 <Symphony No.6 in F Major, Op.68 - II. Andante molto mosso> 696.0
+    </home/mark/music/Beethoven/9 Symphonies - Karajan 3/06-Symphony No.6 in F Major, Op.68 - II. >
+     & <Andante molto > & <mosso.ogg> no 40
+    949 <Symphony No.6 in F Major, Op.68 - III. Allegro> 182.0 </home/mark/music/Beethoven/9 Symphonies - Karajan 3/07-Symphony No.6 in F Major, Op.68 - III. >
+     & <Allegro.ogg> no 40
+    950 <Symphony No.6 in F Major, Op.68 - IV. Allegro> 205.0
+    </home/mark/music/Beethoven/9 Symphonies - Karajan 3/08-Symphony No.6 in F Major, Op.68 - IV. >
+     & <Allegro.ogg> no 40
+    951 <Symphony No.6 in F Major, Op.68 - V. Allegretto> 526.0
+    </home/mark/music/Beethoven/9 Symphonies - Karajan 3/09-Symphony No.6 in F Major, Op.68 - V. >
+     & <Allegretto.ogg> no 40
+    952 <Symphony No.7 in A Major, Op.92 - I. Poco sostenuto - Vivace> 687.0
+    </home/mark/music/Beethoven/9 Symphonies - Karajan 4/01-Symphony No.7 in A Major, Op.92 - I. >
+     & <Poco sostenuto - > & <Vivace.ogg> no 40
+    953 <Symphony No.7 in A Major, Op.92 - II. Allegretto> 481.0
+    </home/mark/music/Beethoven/9 Symphonies - Karajan 4/02-Symphony No.7 in A Major, Op.92 - II. >
+     & <Allegretto.ogg> no 40
+    954 <Symphony No.7 in A Major, Op.92 - III. Presto> 470.0 </home/mark/music/Beethoven/9 Symphonies - Karajan 4/03-Symphony No.7 in A Major, Op.92 - III. >
+     & <Presto.ogg> no 40
+    955 <Symphony No.7 in A Major, Op.92 - IV. Allegro con brio> 406.0
+    </home/mark/music/Beethoven/9 Symphonies - Karajan 4/04-Symphony No.7 in A Major, Op.92 - IV. >
+     & <Allegro con > & <brio.ogg> no 40
+    956 <Symphony No.8 in F Major, Op.93 - I. Allegro vivace e con brio> 560.0
+    </home/mark/music/Beethoven/9 Symphonies - Karajan 4/05-Symphony No.8 in F Major, Op.93 - I. >
+     & <Allegro vivace e con > & <brio.ogg> no 40
+    957 <Symphony No.8 in F Major, Op.93 - II. Allegretto scherzando> 238.0
+    </home/mark/music/Beethoven/9 Symphonies - Karajan 4/06-Symphony No.8 in F Major, Op.93 - II. >
+     & <Allegretto > & <scherzando.ogg> no 40
+    958 <Symphony No.8 in F Major, Op.93 - III. Tempo di Menuetto> 358.0 </home/mark/music/Beethoven/9 Symphonies - Karajan 4/07-Symphony No.8 in F Major, Op.93 - III. >
+     & <Tempo di > & <Menuetto.ogg> no 40
+    959 <Symphony No.8 in F Major, Op.93 - IV. Allegro vivace> 426.0
+    </home/mark/music/Beethoven/9 Symphonies - Karajan 4/08-Symphony No.8 in F Major, Op.93 - IV. >
+     & <Allegro > & <vivace.ogg> no 40
+    960 <Symphony No.9 in D Minor, Op.125 - I. Allegro ma non troppo, un poco maestoso> 932.0
+    </home/mark/music/Beethoven/9 Symphonies - Karajan 5/01-Symphony No.9 in D Minor, Op.125 - I. >
+     & <Allegro ma non troppo, un poco > & <maestoso.ogg> no 40
+    961 <Symphony No.9 in D Minor, Op.125 - II. Molto vivace> 663.0 </home/mark/music/Beethoven/9 Symphonies - Karajan 5/02-Symphony No.9 in D Minor, Op.125 - II. >
+     & <Molto > & <vivace.ogg> no 40
+    962 <Symphony No.9 in D Minor, Op.125 - III. Adagio molto e cantabile> 988.0
+    </home/mark/music/Beethoven/9 Symphonies - Karajan 5/03-Symphony No.9 in D Minor, Op.125 - >
+     & <III. Adagio molto e > & <cantabile.ogg> no 40
+    963 <Symphony No.9 in D Minor, Op.125 - IV. Presto> 382.0 </home/mark/music/Beethoven/9 Symphonies - Karajan 5/04-Symphony No.9 in D Minor, Op.125 - IV. >
+     & <Presto.ogg> no 40
+    964 <Symphony No.9 in D Minor, Op.125 - V. Presto - Allegro assai> 1054.0
+    </home/mark/music/Beethoven/9 Symphonies - Karajan 5/05-Symphony No.9 in D Minor, Op.125 - V. >
+     & <Presto - Allegro > & <assai.ogg> no 40
     965 <Allegro maestoso> 1200.0 </home/mark/music/Chopin/CD1/01-Allegro_maestoso.ogg> yes 41
     986 <Ballade, in g-moll, Op. 23> 533.0
     </home/mark/music/Chopin/CD2/17-Ballade_in_g-moll_Op._23.ogg> no 41
@@ -1693,20 +1728,20 @@ uxf 1.0 EPD (SQLite full list of tables)
     </home/mark/music/Chopin/CD2/11-Walzer_Nr._14_in_e-moll_Op._posth.ogg> no 41
     994 <Bruch - Kol Nidrei Op. 47> 714.0
     </home/mark/music/Dvorak-_Cello_Concerto/08_-_Bruch_-_Kol_Nidrei_Op._47.ogg> yes 42
-    993 <Cello Concerto in E Minor Op. 85. IV. Allegro-Moderato-Allegro, ma non troppo> 679.0 </home/mark/music/Dvorak-_Cello_Concerto/07_-_Cello_Concerto_in_E_Minor_Op._85._IV._Allegro-Moderato-Allegro,_ma_non_troppo.ogg>
-    no 42
-    990 <Cello Concerto in E minor, Op. 85 - I. Adagio - Moderato> 473.0 </home/mark/music/Dvorak-_Cello_Concerto/04_-_Cello_Concerto_in_E_minor,_Op._85_-_I._Adagio_-_Moderato.ogg>
-    no 42
-    992 <Cello Concerto in E minor, Op. 85 - III: Adagio> 250.0 </home/mark/music/Dvorak-_Cello_Concerto/06_-_Cello_Concerto_in_E_minor,_Op._85_-_III-_Adagio.ogg>
-    no 42
-    991 <Cello Concerto in E minor, Op. 85: II - Lento - Allegro molto> 286.0 </home/mark/music/Dvorak-_Cello_Concerto/05_-_Cello_Concerto_in_E_minor,_Op._85-_II_-_Lento_-_Allegro_molto.ogg>
-    no 42
-    987 <Dvorak Cello Concerto in B minor, op.104 - I. Allegro> 821.0 </home/mark/music/Dvorak-_Cello_Concerto/01_-_Dvorak_Cello_Concerto_in_B_minor,_op.104_-_I._Allegro.ogg>
-    no 42
-    988 <Dvorak Cello Concerto in B minor, op.104 - II. Adagio ma non troppo> 634.0 </home/mark/music/Dvorak-_Cello_Concerto/02_-_Dvorak_Cello_Concerto_in_B_minor,_op.104_-_II._Adagio_ma_non_troppo.ogg>
-    no 42
-    989 <Dvorak: Cello Concerto in B minor, op. 104 - III. Finale: Allegro moderato> 717.0 </home/mark/music/Dvorak-_Cello_Concerto/03_-_Dvorak-_Cello_Concerto_in_B_minor,_op._104_-_III._Finale-_Allegro_moderato.ogg>
-    no 42
+    993 <Cello Concerto in E Minor Op. 85. IV. Allegro-Moderato-Allegro, ma non troppo> 679.0 </home/mark/music/Dvorak-_Cello_Concerto/07_-_Cello_Concerto_in_E_Minor_Op._85._IV._Allegro-Mod>
+     & <erato-Allegro,_ma_non_troppo.ogg> no 42
+    990 <Cello Concerto in E minor, Op. 85 - I. Adagio - Moderato> 473.0 </home/mark/music/Dvorak-_Cello_Concerto/04_-_Cello_Concerto_in_E_minor,_Op._85_-_I._Adagio_-_M>
+     & <oderato.ogg> no 42
+    992 <Cello Concerto in E minor, Op. 85 - III: Adagio> 250.0 </home/mark/music/Dvorak-_Cello_Concerto/06_-_Cello_Concerto_in_E_minor,_Op._85_-_III-_Adagio.o>
+     & <gg> no 42
+    991 <Cello Concerto in E minor, Op. 85: II - Lento - Allegro molto> 286.0 </home/mark/music/Dvorak-_Cello_Concerto/05_-_Cello_Concerto_in_E_minor,_Op._85-_II_-_Lento_-_A>
+     & <llegro_molto.ogg> no 42
+    987 <Dvorak Cello Concerto in B minor, op.104 - I. Allegro> 821.0 </home/mark/music/Dvorak-_Cello_Concerto/01_-_Dvorak_Cello_Concerto_in_B_minor,_op.104_-_I._All>
+     & <egro.ogg> no 42
+    988 <Dvorak Cello Concerto in B minor, op.104 - II. Adagio ma non troppo> 634.0 </home/mark/music/Dvorak-_Cello_Concerto/02_-_Dvorak_Cello_Concerto_in_B_minor,_op.104_-_II._Ad>
+     & <agio_ma_non_troppo.ogg> no 42
+    989 <Dvorak: Cello Concerto in B minor, op. 104 - III. Finale: Allegro moderato> 717.0 </home/mark/music/Dvorak-_Cello_Concerto/03_-_Dvorak-_Cello_Concerto_in_B_minor,_op._104_-_III.>
+     & <_Finale-_Allegro_moderato.ogg> no 42
     995 <I Lento - Sostenuto Tranquillo Ma Cantabile> 1631.0
     </home/mark/music/Gorecki/01-I Lento - Sostenuto Tranquillo Ma Cantabile.ogg> no 43
     998 <I Three Olden Style Pieces> 197.0
@@ -1724,8 +1759,8 @@ uxf 1.0 EPD (SQLite full list of tables)
     1023 <Alleluia Ostende> -1.0
     </home/mark/music/Choir_of_Le_Bec-Hellouin_Abbey/Gregorian_Chant/23-Alleluia-Ostende.ogg> no
     44
-    1012 <Alleluia Veni Sancte Spiritus> -1.0 </home/mark/music/Choir_of_Le_Bec-Hellouin_Abbey/Gregorian_Chant/12-Alleluia_Veni_Sancte_Spiritus.ogg>
-    no 44
+    1012 <Alleluia Veni Sancte Spiritus> -1.0 </home/mark/music/Choir_of_Le_Bec-Hellouin_Abbey/Gregorian_Chant/12-Alleluia_Veni_Sancte_Spirit>
+     & <us.ogg> no 44
     1019 <Alma Redemptoris Mater> -1.0
     </home/mark/music/Choir_of_Le_Bec-Hellouin_Abbey/Gregorian_Chant/19-Alma_Redemptoris_Mater.ogg>
     no 44
@@ -1749,8 +1784,8 @@ uxf 1.0 EPD (SQLite full list of tables)
     1018 <Ecce nomen Domini> -1.0
     </home/mark/music/Choir_of_Le_Bec-Hellouin_Abbey/Gregorian_Chant/18-Ecce_nomen_Domini.ogg>
     no 44
-    1008 <Ecce quomodo moritur justus> -1.0 </home/mark/music/Choir_of_Le_Bec-Hellouin_Abbey/Gregorian_Chant/08-Ecce_quomodo_moritur_justus.ogg>
-    no 44
+    1008 <Ecce quomodo moritur justus> -1.0 </home/mark/music/Choir_of_Le_Bec-Hellouin_Abbey/Gregorian_Chant/08-Ecce_quomodo_moritur_justus>
+     & <.ogg> no 44
     1006 <Ecce vidimus eum> -1.0
     </home/mark/music/Choir_of_Le_Bec-Hellouin_Abbey/Gregorian_Chant/06-Ecce_vidimus_eum.ogg> no
     44
@@ -1765,8 +1800,8 @@ uxf 1.0 EPD (SQLite full list of tables)
     44
     1007 <Lamed> -1.0
     </home/mark/music/Choir_of_Le_Bec-Hellouin_Abbey/Gregorian_Chant/07-Lamed.ogg> no 44
-    1026 <Notre Pere Rimsky Korsakov> -1.0 </home/mark/music/Choir_of_Le_Bec-Hellouin_Abbey/Gregorian_Chant/26-Notre_Pere_Rimsky-Korsakov.ogg>
-    no 44
+    1026 <Notre Pere Rimsky Korsakov> -1.0 </home/mark/music/Choir_of_Le_Bec-Hellouin_Abbey/Gregorian_Chant/26-Notre_Pere_Rimsky-Korsakov.>
+     & <ogg> no 44
     1014 <O Dieu saveur Goudimel> -1.0
     </home/mark/music/Choir_of_Le_Bec-Hellouin_Abbey/Gregorian_Chant/14-O_Dieu_saveur_Goudimel.ogg>
     no 44
@@ -1783,10 +1818,10 @@ uxf 1.0 EPD (SQLite full list of tables)
     1013 <Veni Sancte Spiritus> -1.0
     </home/mark/music/Choir_of_Le_Bec-Hellouin_Abbey/Gregorian_Chant/13-Veni_Sancte_Spiritus.ogg>
     no 44
-    1010 <Victimae paschali laudes> -1.0 </home/mark/music/Choir_of_Le_Bec-Hellouin_Abbey/Gregorian_Chant/10-Victimae_paschali_laudes.ogg>
-    no 44
-    1027 <Das Lied von der Erde: I. Das Trinklied vom Jammer der Erde> 487.0 </home/mark/music/Gustav_Mahler/01-Das_Lied_von_der_Erde-I._Das_Trinklied_vom_Jammer_der_Erde.ogg>
-    yes 45
+    1010 <Victimae paschali laudes> -1.0 </home/mark/music/Choir_of_Le_Bec-Hellouin_Abbey/Gregorian_Chant/10-Victimae_paschali_laudes.og>
+     & <g> no 44
+    1027 <Das Lied von der Erde: I. Das Trinklied vom Jammer der Erde> 487.0 </home/mark/music/Gustav_Mahler/01-Das_Lied_von_der_Erde-I._Das_Trinklied_vom_Jammer_der_Erde.o>
+     & <gg> yes 45
     1028 <Das Lied von der Erde: II. Der Einsame im Herbst> 610.0
     </home/mark/music/Gustav_Mahler/02-Das_Lied_von_der_Erde-II._Der_Einsame_im_Herbst.ogg> no
     45
@@ -1799,17 +1834,17 @@ uxf 1.0 EPD (SQLite full list of tables)
     45
     1032 <Das Lied von der Erde: VI. Der Abschied> 1772.0
     </home/mark/music/Gustav_Mahler/06-Das_Lied_von_der_Erde-VI._Der_Abschied.ogg> no 45
-    1053 <CONCERTO FOR HORN AND ORCHESTRA IN E FLAT, K417 - Allegro maestoso> 406.0 </home/mark/music/Mozart/CD2/09-CONCERTO_FOR_HORN_AND_ORCHESTRA_IN_E_FLAT_K417_-Allegro_maestoso.ogg>
-    no 46
+    1053 <CONCERTO FOR HORN AND ORCHESTRA IN E FLAT, K417 - Allegro maestoso> 406.0 </home/mark/music/Mozart/CD2/09-CONCERTO_FOR_HORN_AND_ORCHESTRA_IN_E_FLAT_K417_-Allegro_maestos>
+     & <o.ogg> no 46
     1054 <CONCERTO FOR HORN AND ORCHESTRA IN E FLAT, K417 - Andante> 195.0
     </home/mark/music/Mozart/CD2/10-CONCERTO_FOR_HORN_AND_ORCHESTRA_IN_E_FLAT_K417_-Andante.ogg>
     no 46
-    1055 <Concerto for Horn and Orchestra in E Flat, K417: Rondo - Allegro> 241.0 </home/mark/music/Mozart/CD2/11-Concerto_for_Horn_and_Orchestra_in_E_Flat_K417-Rondo_-Allegro.ogg>
-    no 46
+    1055 <Concerto for Horn and Orchestra in E Flat, K417: Rondo - Allegro> 241.0 </home/mark/music/Mozart/CD2/11-Concerto_for_Horn_and_Orchestra_in_E_Flat_K417-Rondo_-Allegro.o>
+     & <gg> no 46
     1049 <EINE KLEINE NACHTMUSIK, IN G, K525 - Allegro> 390.0
     </home/mark/music/Mozart/CD2/05-EINE_KLEINE_NACHTMUSIK_IN_G_K525_-Allegro.ogg> no 46
-    1051 <Eine Kleine Nachtmusik, in G, K525: Menuetto and Trio - Allegretto> 139.0 </home/mark/music/Mozart/CD2/07-Eine_Kleine_Nachtmusik_in_G_K525-Menuetto_and_Trio_-Allegretto.ogg>
-    no 46
+    1051 <Eine Kleine Nachtmusik, in G, K525: Menuetto and Trio - Allegretto> 139.0 </home/mark/music/Mozart/CD2/07-Eine_Kleine_Nachtmusik_in_G_K525-Menuetto_and_Trio_-Allegretto.>
+     & <ogg> no 46
     1050 <Eine Kleine Nachtmusik, in G, K525: Romance - Andante> 405.0
     </home/mark/music/Mozart/CD2/06-Eine_Kleine_Nachtmusik_in_G_K525-Romance_-Andante.ogg> no 46
     1052 <Eine Kleine Nachtmusik, in G, K525: Rondo - Allegro> 208.0
@@ -1826,8 +1861,8 @@ uxf 1.0 EPD (SQLite full list of tables)
     1042 <Piano Piece, K. 3> 60.0 </home/mark/music/Mozart/CD1/10-Piano_Piece_K._3.ogg> no 46
     1043 <Piano Piece, K. 4> 95.0 </home/mark/music/Mozart/CD1/11-Piano_Piece_K._4.ogg> no 46
     1044 <Piano Piece, K. 5> 79.0 </home/mark/music/Mozart/CD1/12-Piano_Piece_K._5.ogg> no 46
-    1047 <SYMPHONY No.41 IN C, K551 ''JUPITER'' - Menuetto and Trio-Allegro> 303.0 </home/mark/music/Mozart/CD2/03-SYMPHONY_No.41_IN_C_K551__JUPITER__-Menuetto_and_Trio-Allegro.ogg>
-    no 46
+    1047 <SYMPHONY No.41 IN C, K551 ''JUPITER'' - Menuetto and Trio-Allegro> 303.0 </home/mark/music/Mozart/CD2/03-SYMPHONY_No.41_IN_C_K551__JUPITER__-Menuetto_and_Trio-Allegro.o>
+     & <gg> no 46
     1036 <Symph. No. 40 - Allegro Assai> 409.0
     </home/mark/music/Mozart/CD1/04-Symph._No._40_-Allegro_Assai.ogg> no 46
     1034 <Symph. No. 40 - Andante> 725.0
@@ -1868,44 +1903,44 @@ uxf 1.0 EPD (SQLite full list of tables)
     48
     1072 <Piano Concerto No 1: II> 0.0
     </home/mark/music/Prokofiev/09-Piano Concerto No 1 II.ogg> no 48
-    1081 <Piano Concerto No. 1 in D-flat major, Op. 10: I. Allegro brioso> 0.0 </home/mark/music/Prokofiev/The_5_Piano_Concertos/01-Piano_Concerto_No._1_in_D-flat_major_Op._10-I._Allegro_brioso.ogg>
-    no 48
-    1082 <Piano Concerto No. 1 in D-flat major, Op. 10: II. Andante assai> 0.0 </home/mark/music/Prokofiev/The_5_Piano_Concertos/02-Piano_Concerto_No._1_in_D-flat_major_Op._10-II._Andante_assai.ogg>
-    no 48
-    1083 <Piano Concerto No. 1 in D-flat major, Op. 10: III. Allegro scherzando> 0.0 </home/mark/music/Prokofiev/The_5_Piano_Concertos/03-Piano_Concerto_No._1_in_D-flat_major_Op._10-III._Allegro_scherzando.ogg>
-    no 48
-    1084 <Piano Concerto No. 2 in G minor, Op. 16: I. Andantino> 0.0 </home/mark/music/Prokofiev/The_5_Piano_Concertos/03-Piano_Concerto_No._2_in_G_minor_Op._16-I._Andantino.ogg>
-    no 48
-    1085 <Piano Concerto No. 2 in G minor, Op. 16: II. Scherzo: Vivace> 0.0 </home/mark/music/Prokofiev/The_5_Piano_Concertos/04-Piano_Concerto_No._2_in_G_minor_Op._16-II._Scherzo-Vivace.ogg>
-    no 48
-    1086 <Piano Concerto No. 2 in G minor, Op. 16: III. Intermezzo: Allegro moderato> 0.0 </home/mark/music/Prokofiev/The_5_Piano_Concertos/05-Piano_Concerto_No._2_in_G_minor_Op._16-III._Intermezzo-Allegro_moderato.ogg>
-    no 48
-    1087 <Piano Concerto No. 2 in G minor, Op. 16: IV. Allegro tempestoso> 0.0 </home/mark/music/Prokofiev/The_5_Piano_Concertos/06-Piano_Concerto_No._2_in_G_minor_Op._16-IV._Allegro_tempestoso.ogg>
-    no 48
-    1088 <Piano Concerto No. 3 in C major, Op. 26: I. Andante - Allegro> 0.0 </home/mark/music/Prokofiev/The_5_Piano_Concertos/07-Piano_Concerto_No._3_in_C_major_Op._26-I._Andante_-Allegro.ogg>
-    no 48
-    1089 <Piano Concerto No. 3 in C major, Op. 26: II. Tema con variazioni> 0.0 </home/mark/music/Prokofiev/The_5_Piano_Concertos/08-Piano_Concerto_No._3_in_C_major_Op._26-II._Tema_con_variazioni.ogg>
-    no 48
-    1090 <Piano Concerto No. 3 in C major, Op. 26: III. Allegro, ma non troppo> 0.0 </home/mark/music/Prokofiev/The_5_Piano_Concertos/09-Piano_Concerto_No._3_in_C_major_Op._26-III._Allegro_ma_non_troppo.ogg>
-    no 48
-    1091 <Piano Concerto No. 4 in B-flat major, Op. 53 "For the Left Hand": I. Vivace> 0.0 </home/mark/music/Prokofiev/The_5_Piano_Concertos/11-Piano_Concerto_No._4_in_B-flat_major_Op._53_For_the_Left_Hand_-I._Vivace.ogg>
-    no 48
-    1092 <Piano Concerto No. 4 in B-flat major, Op. 53 "For the Left Hand": II. Andante> 539.0 </home/mark/music/Prokofiev/The_5_Piano_Concertos/12-Piano_Concerto_No._4_in_B-flat_major_Op._53_For_the_Left_Hand_-II._Andante.ogg>
-    no 48
-    1093 <Piano Concerto No. 4 in B-flat major, Op. 53 "For the Left Hand": III. Moderato> 505.0 </home/mark/music/Prokofiev/The_5_Piano_Concertos/13-Piano_Concerto_No._4_in_B-flat_major_Op._53_For_the_Left_Hand_-III._Moderato.ogg>
-    no 48
-    1094 <Piano Concerto No. 4 in B-flat major, Op. 53 "For the Left Hand": IV. Vivace> 104.0 </home/mark/music/Prokofiev/The_5_Piano_Concertos/14-Piano_Concerto_No._4_in_B-flat_major_Op._53_For_the_Left_Hand_-IV._Vivace.ogg>
-    no 48
-    1095 <Piano Concerto No. 5 in G major, Op. 55: I. Allegro con brio> 0.0 </home/mark/music/Prokofiev/The_5_Piano_Concertos/15-Piano_Concerto_No._5_in_G_major_Op._55-I._Allegro_con_brio.ogg>
-    no 48
-    1096 <Piano Concerto No. 5 in G major, Op. 55: II. Moderato ben accentuato> 0.0 </home/mark/music/Prokofiev/The_5_Piano_Concertos/16-Piano_Concerto_No._5_in_G_major_Op._55-II._Moderato_ben_accentuato.ogg>
-    no 48
-    1097 <Piano Concerto No. 5 in G major, Op. 55: III. Toccata: Allegro con fuoco> 116.0 </home/mark/music/Prokofiev/The_5_Piano_Concertos/17-Piano_Concerto_No._5_in_G_major_Op._55-III._Toccata-Allegro_con_fuoco.ogg>
-    yes 48
-    1098 <Piano Concerto No. 5 in G major, Op. 55: IV. Larghetto> 451.0 </home/mark/music/Prokofiev/The_5_Piano_Concertos/18-Piano_Concerto_No._5_in_G_major_Op._55-IV._Larghetto.ogg>
-    no 48
-    1099 <Piano Concerto No. 5 in G major, Op. 55: V. Vivo> 323.0 </home/mark/music/Prokofiev/The_5_Piano_Concertos/19-Piano_Concerto_No._5_in_G_major_Op._55-V._Vivo.ogg>
-    no 48
+    1081 <Piano Concerto No. 1 in D-flat major, Op. 10: I. Allegro brioso> 0.0 </home/mark/music/Prokofiev/The_5_Piano_Concertos/01-Piano_Concerto_No._1_in_D-flat_major_Op._1>
+     & <0-I._Allegro_brioso.ogg> no 48
+    1082 <Piano Concerto No. 1 in D-flat major, Op. 10: II. Andante assai> 0.0 </home/mark/music/Prokofiev/The_5_Piano_Concertos/02-Piano_Concerto_No._1_in_D-flat_major_Op._1>
+     & <0-II._Andante_assai.ogg> no 48
+    1083 <Piano Concerto No. 1 in D-flat major, Op. 10: III. Allegro scherzando> 0.0 </home/mark/music/Prokofiev/The_5_Piano_Concertos/03-Piano_Concerto_No._1_in_D-flat_major_Op._1>
+     & <0-III._Allegro_scherzando.ogg> no 48
+    1084 <Piano Concerto No. 2 in G minor, Op. 16: I. Andantino> 0.0 </home/mark/music/Prokofiev/The_5_Piano_Concertos/03-Piano_Concerto_No._2_in_G_minor_Op._16-I._>
+     & <Andantino.ogg> no 48
+    1085 <Piano Concerto No. 2 in G minor, Op. 16: II. Scherzo: Vivace> 0.0 </home/mark/music/Prokofiev/The_5_Piano_Concertos/04-Piano_Concerto_No._2_in_G_minor_Op._16-II.>
+     & <_Scherzo-Vivace.ogg> no 48
+    1086 <Piano Concerto No. 2 in G minor, Op. 16: III. Intermezzo: Allegro moderato> 0.0 </home/mark/music/Prokofiev/The_5_Piano_Concertos/05-Piano_Concerto_No._2_in_G_minor_Op._16-III>
+     & <._Intermezzo-Allegro_moderato.ogg> no 48
+    1087 <Piano Concerto No. 2 in G minor, Op. 16: IV. Allegro tempestoso> 0.0 </home/mark/music/Prokofiev/The_5_Piano_Concertos/06-Piano_Concerto_No._2_in_G_minor_Op._16-IV.>
+     & <_Allegro_tempestoso.ogg> no 48
+    1088 <Piano Concerto No. 3 in C major, Op. 26: I. Andante - Allegro> 0.0 </home/mark/music/Prokofiev/The_5_Piano_Concertos/07-Piano_Concerto_No._3_in_C_major_Op._26-I._>
+     & <Andante_-Allegro.ogg> no 48
+    1089 <Piano Concerto No. 3 in C major, Op. 26: II. Tema con variazioni> 0.0 </home/mark/music/Prokofiev/The_5_Piano_Concertos/08-Piano_Concerto_No._3_in_C_major_Op._26-II.>
+     & <_Tema_con_variazioni.ogg> no 48
+    1090 <Piano Concerto No. 3 in C major, Op. 26: III. Allegro, ma non troppo> 0.0 </home/mark/music/Prokofiev/The_5_Piano_Concertos/09-Piano_Concerto_No._3_in_C_major_Op._26-III>
+     & <._Allegro_ma_non_troppo.ogg> no 48
+    1091 <Piano Concerto No. 4 in B-flat major, Op. 53 "For the Left Hand": I. Vivace> 0.0 </home/mark/music/Prokofiev/The_5_Piano_Concertos/11-Piano_Concerto_No._4_in_B-flat_major_Op._5>
+     & <3_For_the_Left_Hand_-I._Vivace.ogg> no 48
+    1092 <Piano Concerto No. 4 in B-flat major, Op. 53 "For the Left Hand": II. Andante> 539.0 </home/mark/music/Prokofiev/The_5_Piano_Concertos/12-Piano_Concerto_No._4_in_B-flat_major_Op._5>
+     & <3_For_the_Left_Hand_-II._Andante.ogg> no 48
+    1093 <Piano Concerto No. 4 in B-flat major, Op. 53 "For the Left Hand": III. Moderato> 505.0 </home/mark/music/Prokofiev/The_5_Piano_Concertos/13-Piano_Concerto_No._4_in_B-flat_major_Op._5>
+     & <3_For_the_Left_Hand_-III._Moderato.ogg> no 48
+    1094 <Piano Concerto No. 4 in B-flat major, Op. 53 "For the Left Hand": IV. Vivace> 104.0 </home/mark/music/Prokofiev/The_5_Piano_Concertos/14-Piano_Concerto_No._4_in_B-flat_major_Op._5>
+     & <3_For_the_Left_Hand_-IV._Vivace.ogg> no 48
+    1095 <Piano Concerto No. 5 in G major, Op. 55: I. Allegro con brio> 0.0 </home/mark/music/Prokofiev/The_5_Piano_Concertos/15-Piano_Concerto_No._5_in_G_major_Op._55-I._>
+     & <Allegro_con_brio.ogg> no 48
+    1096 <Piano Concerto No. 5 in G major, Op. 55: II. Moderato ben accentuato> 0.0 </home/mark/music/Prokofiev/The_5_Piano_Concertos/16-Piano_Concerto_No._5_in_G_major_Op._55-II.>
+     & <_Moderato_ben_accentuato.ogg> no 48
+    1097 <Piano Concerto No. 5 in G major, Op. 55: III. Toccata: Allegro con fuoco> 116.0 </home/mark/music/Prokofiev/The_5_Piano_Concertos/17-Piano_Concerto_No._5_in_G_major_Op._55-III>
+     & <._Toccata-Allegro_con_fuoco.ogg> yes 48
+    1098 <Piano Concerto No. 5 in G major, Op. 55: IV. Larghetto> 451.0 </home/mark/music/Prokofiev/The_5_Piano_Concertos/18-Piano_Concerto_No._5_in_G_major_Op._55-IV.>
+     & <_Larghetto.ogg> no 48
+    1099 <Piano Concerto No. 5 in G major, Op. 55: V. Vivo> 323.0 </home/mark/music/Prokofiev/The_5_Piano_Concertos/19-Piano_Concerto_No._5_in_G_major_Op._55-V._>
+     & <Vivo.ogg> no 48
     1077 <Romeo And Juliet: Dance Of The Knights> 242.0
     </home/mark/music/Prokofiev/14-Romeo And Juliet Dance Of The Knights.ogg> no 48
     1078 <Romeo And Juliet: Dance Of The Lily Maidens> 153.0
@@ -1942,8 +1977,8 @@ uxf 1.0 EPD (SQLite full list of tables)
     49
     1130 <Prelude in G sharp minor> 136.0
     </home/mark/music/Rachmaninov/31-Prelude_in_G_sharp_minor.ogg> no 49
-    1103 <Rhapsody on a theme of Paganini - Introduction and Variation 1> 50.0 </home/mark/music/Rachmaninov/04-Rhapsody_on_a_theme_of_Paganini_-Introduction_and_Variation_1.ogg>
-    no 49
+    1103 <Rhapsody on a theme of Paganini - Introduction and Variation 1> 50.0 </home/mark/music/Rachmaninov/04-Rhapsody_on_a_theme_of_Paganini_-Introduction_and_Variation_1.>
+     & <ogg> no 49
     1112 <Rhapsody on a theme of Paganini - Variation 10> 57.0
     </home/mark/music/Rachmaninov/13-Rhapsody_on_a_theme_of_Paganini_-Variation_10.ogg> no 49
     1113 <Rhapsody on a theme of Paganini - Variation 11> 93.0
@@ -2015,8 +2050,8 @@ uxf 1.0 EPD (SQLite full list of tables)
     1142 <Der Rosenkavalier - Act I Introduction> 206.0
     </home/mark/music/Richard_Strauss/Four_Last_Songs/02-Der_Rosenkavalier_-Act_I_Introduction.ogg>
     no 51
-    1143 <Der Rosenkavalier - Act II Letter Scene and Waltz> 442.0 </home/mark/music/Richard_Strauss/Four_Last_Songs/03-Der_Rosenkavalier_-Act_II_Letter_Scene_and_Waltz.ogg>
-    no 51
+    1143 <Der Rosenkavalier - Act II Letter Scene and Waltz> 442.0 </home/mark/music/Richard_Strauss/Four_Last_Songs/03-Der_Rosenkavalier_-Act_II_Letter_Scene_and>
+     & <_Waltz.ogg> no 51
     1146 <Four Last Songs - September> 316.0
     </home/mark/music/Richard_Strauss/Four_Last_Songs/06-Four_Last_Songs_-September.ogg> no 51
     1147 <Four last songs - Beim Schlafengehen> 380.0

@@ -2520,9 +2520,39 @@ class _Writer:
         elif isinstance(item, (datetime.date, datetime.datetime)):
             self._write_one(isoformat(item)) # 1-second resolution
         elif isinstance(item, str):
-            self._write_one(f'<{escape(item)}>')
+            text = escape(item)
+            if (self.format.wrap_width and
+                    len(text) + 2 >= self.format.wrap_width):
+                sep = ''
+                span = self.format.wrap_width - 2
+                while text: # Try to split on words or newlines first
+                    i = text.rfind(' ', 0, span)
+                    if i == -1:
+                        i = text.rfind('\n', 0, span)
+                    if i > -1:
+                        i += 1 # include the found whitespace
+                        self._write_one(f'{sep}<{text[:i]}>')
+                        text = text[i:]
+                        sep = ' & '
+                    else:
+                        break
+                # if we can't split on words, split anywhere
+                if text:
+                    for i in range(0, len(text), span):
+                        self._write_one(f'{sep}<{text[i:i + span]}>')
+                        sep = ' & '
+            else:
+                self._write_one(f'<{text}>')
         elif isinstance(item, (bytes, bytearray)):
-            self._write_one(f'(:{item.hex().upper()}:)')
+            text = item.hex().upper()
+            if len(text) + 4 >= self.format.wrap_width:
+                span = self.format.wrap_width - 2
+                self._write_one('(:')
+                for i in range(0, len(text), span):
+                    self._write_one(text[i:i + span])
+                self._write_one(':)')
+            else:
+                self._write_one(f'(:{text}:)')
         else:
             self.on_event(Event.FATAL, 561, 'unexpected item of type '
                           f'{item.__class__.__name__}: {item!r};'

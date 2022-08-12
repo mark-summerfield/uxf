@@ -21,9 +21,10 @@ uxf 1.0 TLM Config
       <saved> 2022-03-21
       <volume> 0.7
     }
-  <Key for a long string> <This string occupies
+  <Key for a long string>
+  <This string occupies
 multiple lines which we want to be able to round-trip
-even in UXF ↔ XML conversions.>
+even in UXF ↔ XML > & <conversions.>
   <Magic> (:1F8B:)
   <Nested Map>
     {#<Map comment #3> 

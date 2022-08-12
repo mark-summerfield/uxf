@@ -72,6 +72,7 @@ def test(n, total, ok, regression):
         ok += 1
     elif not regression:
         print('unequal text #3')
+        uxo1.dump(f'/tmp/tlm-eg{n}.uxx.gz')
 
     return total, ok
 

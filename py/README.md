@@ -795,6 +795,8 @@ or
 
 ## Changes
 
+- 2.3.1 When ``str``s and `bytes` are output they now respect the
+  `wrap_width`.
 - 2.3.0 Added support for string concatenation. This will make proper pretty
   printing possible.
 - 2.2.0
