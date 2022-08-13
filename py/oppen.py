@@ -12,7 +12,9 @@ from xml.sax.saxutils import escape
 import uxf
 from uxf import _EventMixin
 
-# TODO create a small t85.uxf that tests everything
+#####################################################
+# TODO create a small t85.uxf that tests everything #
+#####################################################
 
 
 def main():
