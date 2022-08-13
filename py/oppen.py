@@ -100,14 +100,6 @@ class PrettyPrinter(_EventMixin): # Functor that can be used as a visitor
                                  num_records=num_records))
 
 
-    def begin_record(self):
-        self.tokens.append(Token(TokenKind.BEGIN_RECORD, depth=self.depth))
-
-
-    def end_record(self):
-        self.tokens.append(Token(TokenKind.END_RECORD, depth=self.depth))
-
-
     def puts(self, s):
         self.tokens.append(Token(TokenKind.STRING, s, depth=self.depth))
 
@@ -247,18 +239,18 @@ class PrettyPrinter(_EventMixin): # Functor that can be used as a visitor
         if self.tokens[-1].kind is TokenKind.RWS:
             self.tokens.pop() # Don't need RWS before closer
         self.puts(')')
-        self.end(num_records=self.table_row_counts[-1])
+        self.end()
         self.table_row_counts.pop()
         self.depth -= 1
 
 
     def handle_record_begin(self):
         self.depth += 1
-        self.begin_record()
+        self.begin()
 
 
     def handle_record_end(self):
-        self.end_record()
+        self.end(num_records=self.table_row_counts[-1])
         self.depth -= 1
 
 
@@ -369,8 +361,6 @@ class PrettyPrinter(_EventMixin): # Functor that can be used as a visitor
 class TokenKind(enum.Enum):
     BEGIN = '▶'
     END = '◀'
-    BEGIN_RECORD = '▷'
-    END_RECORD = '◁'
     STRING = ' '
     RWS = '␣ ' # required whitespace: output either ' ' or '\n'
     RNL = '⏎ ' # required newline: output '\n'
@@ -402,7 +392,7 @@ class Token:
         text = f'{indent}{self.kind.value}'
         if self.value == '':
             if self.kind is TokenKind.END and self.num_records is not None:
-                text += f' × {self.num_records}'
+                text += f' of {self.num_records}'
         else:
             text += f' {self.value!r}'
         return text
