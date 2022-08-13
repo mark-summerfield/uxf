@@ -95,8 +95,17 @@ class PrettyPrinter(_EventMixin): # Functor that can be used as a visitor
         self.tokens.append(Token(TokenKind.BEGIN, depth=self.depth))
 
 
-    def end(self):
-        self.tokens.append(Token(TokenKind.END, depth=self.depth))
+    def end(self, *, num_records=None):
+        self.tokens.append(Token(TokenKind.END, depth=self.depth,
+                                 num_records=num_records))
+
+
+    def begin_record(self):
+        self.tokens.append(Token(TokenKind.BEGIN_RECORD, depth=self.depth))
+
+
+    def end_record(self):
+        self.tokens.append(Token(TokenKind.END_RECORD, depth=self.depth))
 
 
     def puts(self, s):
@@ -238,20 +247,18 @@ class PrettyPrinter(_EventMixin): # Functor that can be used as a visitor
         if self.tokens[-1].kind is TokenKind.RWS:
             self.tokens.pop() # Don't need RWS before closer
         self.puts(')')
-        self.end()
+        self.end(num_records=self.table_row_counts[-1])
         self.table_row_counts.pop()
         self.depth -= 1
 
 
     def handle_record_begin(self):
         self.depth += 1
-        self.begin()
+        self.begin_record()
 
 
     def handle_record_end(self):
-        self.end()
-        if self.table_row_counts[-1] > 1:
-            self.rnl() # no newline for 0 or 1 record tables
+        self.end_record()
         self.depth -= 1
 
 
@@ -343,19 +350,27 @@ class PrettyPrinter(_EventMixin): # Functor that can be used as a visitor
 
     def pprint(self, out=None):
         out = out or io.StringIO()
-        # TODO pprint using Oppen algorithm
+        # TODO
         out.write(' TOKENS '.center(40, '-'))
         out.write('\n')
-        for token in self.tokens:
+        for i, token in enumerate(self.tokens):
             out.write(f'{token}\n')
         out.write(' === '.center(40, '-'))
         out.write('\n')
+
+
+    def _peek(self, i):
+        if 0 <= i < len(self.tokens):
+            return self.tokens[i]
+        # else return None
 
 
 @enum.unique
 class TokenKind(enum.Enum):
     BEGIN = '▶'
     END = '◀'
+    BEGIN_RECORD = '▷'
+    END_RECORD = '◁'
     STRING = ' '
     RWS = '␣ ' # required whitespace: output either ' ' or '\n'
     RNL = '⏎ ' # required newline: output '\n'
@@ -364,10 +379,11 @@ class TokenKind(enum.Enum):
 
 class Token:
 
-    def __init__(self, kind, value='', *, depth=0):
+    def __init__(self, kind, value='', *, depth=0, num_records=0):
         self.kind = kind
         self.value = value
         self.depth = depth
+        self.num_records = num_records
 
 
     @property
@@ -383,9 +399,13 @@ class Token:
 
     def __repr__(self):
         indent = self.depth * '   '
+        text = f'{indent}{self.kind.value}'
         if self.value == '':
-            return f'{indent}{self.kind.value}'
-        return f'{indent}{self.kind.value} {self.value!r}'
+            if self.kind is TokenKind.END and self.num_records is not None:
+                text += f' × {self.num_records}'
+        else:
+            text += f' {self.value!r}'
+        return text
 
 
 if __name__ == '__main__':
