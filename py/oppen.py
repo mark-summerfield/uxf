@@ -12,10 +12,6 @@ from xml.sax.saxutils import escape
 import uxf
 from uxf import _EventMixin
 
-#####################################################
-# TODO create a small t85.uxf that tests everything #
-#####################################################
-
 
 def main():
     if len(sys.argv) == 1 or sys.argv[1] in {'-h', '--help'}:

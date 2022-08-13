@@ -1,0 +1,426 @@
+<?xml version="1.0" ?>
+<uxf version="1.0" custom="PrettyPrint Test" comment="This file is for quick visual tests of the PrettyPrint experiment.">
+  <imports>
+    <import filename="numeric"/>
+  </imports>
+  <ttypes>
+    <ttype name="Categories">
+      <field name="CID"/>
+      <field name="Title"/>
+      <field name="Selected"/>
+      <field name="Date" vtype="date"/>
+    </ttype>
+    <ttype name="Complex">
+      <field name="Real" vtype="real"/>
+      <field name="Imag" vtype="real"/>
+    </ttype>
+    <ttype name="Files">
+      <field name="Kind"/>
+      <field name="Filename"/>
+    </ttype>
+    <ttype name="Fraction">
+      <field name="numerator" vtype="int"/>
+      <field name="denominator" vtype="int"/>
+    </ttype>
+    <ttype name="IPv4">
+      <field name="A" vtype="int"/>
+      <field name="B" vtype="int"/>
+      <field name="C" vtype="int"/>
+      <field name="D" vtype="int"/>
+    </ttype>
+    <ttype name="Playlists">
+      <field name="PID"/>
+      <field name="Title"/>
+      <field name="Cid"/>
+      <field name="Selected"/>
+      <field name="DateTime" vtype="datetime"/>
+    </ttype>
+    <ttype name="rgb" comment="0-255 for 3 components">
+      <field name="red" vtype="int"/>
+      <field name="green" vtype="int"/>
+      <field name="blue" vtype="int"/>
+    </ttype>
+    <ttype name="rgba" comment="0-255 per 3 components 0.0-1.0 for 1 component">
+      <field name="red" vtype="int"/>
+      <field name="green" vtype="int"/>
+      <field name="blue" vtype="int"/>
+      <field name="alpha" vtype="real"/>
+    </ttype>
+  </ttypes>
+  <map>
+    <key>
+      <str>Empties</str>
+    </key>
+    <value>
+      <list>
+        <list/>
+        <map/>
+        <table name="Files"/>
+        <list vtype="int"/>
+        <map ktype="str"/>
+        <map ktype="date" vtype="str"/>
+      </list>
+    </value>
+    <key>
+      <str>General</str>
+    </key>
+    <value>
+      <map>
+        <key>
+          <str>autosave</str>
+        </key>
+        <value>
+          <yes/>
+        </value>
+        <key>
+          <str>files</str>
+        </key>
+        <value>
+          <table name="Files">
+            <row>
+              <str>current</str>
+              <str>/home/mark/test1.uxf</str>
+            </row>
+            <row>
+              <str>recent3</str>
+              <null/>
+            </row>
+            <row>
+              <str>recent2</str>
+              <str>/home/mark/test2.uxf</str>
+            </row>
+          </table>
+        </value>
+        <key>
+          <str>historysize</str>
+        </key>
+        <value>
+          <int v="-35"/>
+        </value>
+        <key>
+          <str>saved</str>
+        </key>
+        <value>
+          <date v="2022-03-21"/>
+        </value>
+        <key>
+          <str>volume</str>
+        </key>
+        <value>
+          <real v="0.7"/>
+        </value>
+      </map>
+    </value>
+    <key>
+      <str>Magic</str>
+    </key>
+    <value>
+      <bytes>1F8B</bytes>
+    </value>
+    <key>
+      <str>Map Test #1</str>
+    </key>
+    <value>
+      <map comment="Map with different types of key">
+        <key>
+          <bytes>757866</bytes>
+        </key>
+        <value>
+          <datetime v="1985-05-22T04:31:00"/>
+        </value>
+        <key>
+          <date v="2001-01-31"/>
+        </key>
+        <value>
+          <str>world</str>
+        </value>
+        <key>
+          <datetime v="1965-04-27T16:05:00"/>
+        </key>
+        <value>
+          <str>UXF in ASCII bytes follows</str>
+        </value>
+        <key>
+          <int v="5"/>
+        </key>
+        <value>
+          <table name="Complex" comment="From !numeric import">
+            <row>
+              <real v="1.0"/>
+              <real v="-3.8"/>
+            </row>
+          </table>
+        </value>
+        <key>
+          <int v="19"/>
+        </key>
+        <value>
+          <null/>
+        </value>
+        <key>
+          <int v="24"/>
+        </key>
+        <value>
+          <str>An imaginarily long string joined by &amp;s that isn't really that long.</str>
+        </value>
+        <key>
+          <str>hello</str>
+        </key>
+        <value>
+          <date v="2021-02-01"/>
+        </value>
+      </map>
+    </value>
+    <key>
+      <str>Map Test #2</str>
+    </key>
+    <value>
+      <map ktype="int" comment="Map same type of non-str keys">
+        <key>
+          <int v="1"/>
+        </key>
+        <value>
+          <str>one</str>
+        </value>
+        <key>
+          <int v="2"/>
+        </key>
+        <value>
+          <int v="2"/>
+        </value>
+        <key>
+          <int v="3"/>
+        </key>
+        <value>
+          <real v="3.0"/>
+        </value>
+        <key>
+          <int v="4"/>
+        </key>
+        <value>
+          <bytes>0220</bytes>
+        </value>
+      </map>
+    </value>
+    <key>
+      <str>More Tests</str>
+    </key>
+    <value>
+      <list comment="A list of name value pairs; normally would be a map">
+        <str>one</str>
+        <table name="IPv4">
+          <row>
+            <int v="141"/>
+            <int v="179"/>
+            <int v="19"/>
+            <int v="9"/>
+          </row>
+        </table>
+        <str>many</str>
+        <table name="IPv4" comment="A list of IPv4 addresses">
+          <row>
+            <int v="172"/>
+            <int v="16"/>
+            <int v="254"/>
+            <int v="1"/>
+          </row>
+          <row>
+            <int v="192"/>
+            <int v="0"/>
+            <int v="2"/>
+            <int v="235"/>
+          </row>
+        </table>
+        <str>red</str>
+        <table name="rgb">
+          <row>
+            <int v="255"/>
+            <int v="0"/>
+            <int v="0"/>
+          </row>
+        </table>
+        <str>semi-transparent blue</str>
+        <table name="rgba">
+          <row>
+            <int v="0"/>
+            <int v="0"/>
+            <int v="255"/>
+            <real v="0.8"/>
+          </row>
+        </table>
+      </list>
+    </value>
+    <key>
+      <str>Nested Map</str>
+    </key>
+    <value>
+      <map>
+        <key>
+          <str>Classical</str>
+        </key>
+        <value>
+          <list>
+            <int v="5"/>
+            <yes/>
+          </list>
+        </value>
+        <key>
+          <str>Nested List of Lists</str>
+        </key>
+        <value>
+          <list comment="A list of lists">
+            <list>
+              <int v="5"/>
+              <str>Classical</str>
+              <yes/>
+            </list>
+            <list>
+              <null/>
+              <null/>
+              <null/>
+            </list>
+            <list>
+              <int v="1"/>
+              <str>New Acquistions</str>
+              <no/>
+            </list>
+          </list>
+        </value>
+        <key>
+          <str>Nested List of Tables</str>
+        </key>
+        <value>
+          <list>
+            <table name="Categories" comment="These categories are just to show nesting">
+              <row>
+                <int v="5"/>
+                <str>Classical</str>
+                <yes/>
+                <date v="2001-12-27"/>
+              </row>
+              <row>
+                <int v="3"/>
+                <str>Punk</str>
+                <no/>
+                <date v="1999-06-09"/>
+              </row>
+              <row>
+                <null/>
+                <null/>
+                <null/>
+                <null/>
+              </row>
+              <row>
+                <int v="7"/>
+                <str>Uncategorized</str>
+                <no/>
+                <date v="1992-02-24"/>
+              </row>
+            </table>
+            <table name="Playlists">
+              <row>
+                <int v="39"/>
+                <str>Bartok</str>
+                <int v="5"/>
+                <no/>
+                <datetime v="1983-04-13T23:46:31"/>
+              </row>
+              <row>
+                <int v="5"/>
+                <str>Beatles</str>
+                <int v="2"/>
+                <no/>
+                <datetime v="2022-04-11T23:48:01"/>
+              </row>
+              <row>
+                <null/>
+                <null/>
+                <null/>
+                <null/>
+                <null/>
+              </row>
+              <row>
+                <int v="8"/>
+                <str>David Bowie</str>
+                <int v="2"/>
+                <no/>
+                <datetime v="2008-09-01T23:59:46"/>
+              </row>
+            </table>
+          </list>
+        </value>
+        <key>
+          <str>Nested Table</str>
+        </key>
+        <value>
+          <table name="Categories">
+            <row>
+              <int v="4"/>
+              <str>Modern Instrumental</str>
+              <no/>
+              <date v="1973-10-18"/>
+            </row>
+            <row>
+              <int v="2"/>
+              <str>Pop</str>
+              <no/>
+              <date v="1983-04-07"/>
+            </row>
+            <row>
+              <null/>
+              <null/>
+              <null/>
+              <null/>
+            </row>
+            <row>
+              <int v="7"/>
+              <str>Uncategorized</str>
+              <no/>
+              <date v="1992-02-24"/>
+            </row>
+          </table>
+        </value>
+        <key>
+          <str>New Acquistions</str>
+        </key>
+        <value>
+          <list>
+            <int v="1"/>
+            <no/>
+          </list>
+        </value>
+      </map>
+    </value>
+    <key>
+      <str>Window</str>
+    </key>
+    <value>
+      <map>
+        <key>
+          <str>pos</str>
+        </key>
+        <value>
+          <list>
+            <int v="383"/>
+            <int v="124"/>
+          </list>
+        </value>
+        <key>
+          <str>scale</str>
+        </key>
+        <value>
+          <real v="1.1"/>
+        </value>
+        <key>
+          <str>size</str>
+        </key>
+        <value>
+          <list>
+            <int v="590"/>
+            <int v="536"/>
+          </list>
+        </value>
+      </map>
+    </value>
+  </map>
+</uxf>

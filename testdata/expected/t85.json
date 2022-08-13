@@ -1,0 +1,506 @@
+{
+  "UXF^custom": "PrettyPrint Test",
+  "UXF^comment": "This file is for quick visual tests of the PrettyPrint experiment.",
+  "UXF^imports": [
+    "numeric"
+  ],
+  "UXF^ttypes": [
+    {
+      "UXF^ttype": {
+        "name": "Categories",
+        "fields": {
+          "CID": null,
+          "Title": null,
+          "Selected": null,
+          "Date": "date"
+        }
+      }
+    },
+    {
+      "UXF^ttype": {
+        "name": "Complex",
+        "fields": {
+          "Real": "real",
+          "Imag": "real"
+        }
+      }
+    },
+    {
+      "UXF^ttype": {
+        "name": "Files",
+        "fields": {
+          "Kind": null,
+          "Filename": null
+        }
+      }
+    },
+    {
+      "UXF^ttype": {
+        "name": "Fraction",
+        "fields": {
+          "numerator": "int",
+          "denominator": "int"
+        }
+      }
+    },
+    {
+      "UXF^ttype": {
+        "name": "IPv4",
+        "fields": {
+          "A": "int",
+          "B": "int",
+          "C": "int",
+          "D": "int"
+        }
+      }
+    },
+    {
+      "UXF^ttype": {
+        "name": "Playlists",
+        "fields": {
+          "PID": null,
+          "Title": null,
+          "Cid": null,
+          "Selected": null,
+          "DateTime": "datetime"
+        }
+      }
+    },
+    {
+      "UXF^ttype": {
+        "name": "rgb",
+        "fields": {
+          "red": "int",
+          "green": "int",
+          "blue": "int"
+        },
+        "comment": "0-255 for 3 components"
+      }
+    },
+    {
+      "UXF^ttype": {
+        "name": "rgba",
+        "fields": {
+          "red": "int",
+          "green": "int",
+          "blue": "int",
+          "alpha": "real"
+        },
+        "comment": "0-255 per 3 components 0.0-1.0 for 1 component"
+      }
+    }
+  ],
+  "UXF^data": {
+    "Empties": [
+      [],
+      {},
+      {
+        "UXF^table": {
+          "name": "Files",
+          "comment": null,
+          "fields": {
+            "Kind": null,
+            "Filename": null
+          },
+          "records": []
+        }
+      },
+      {
+        "UXF^list": {
+          "comment": null,
+          "vtype": "int",
+          "list": []
+        }
+      },
+      {
+        "UXF^map": {
+          "comment": null,
+          "ktype": "str",
+          "vtype": null,
+          "map": {}
+        }
+      },
+      {
+        "UXF^map": {
+          "comment": null,
+          "ktype": "date",
+          "vtype": "str",
+          "map": {}
+        }
+      }
+    ],
+    "General": {
+      "autosave": true,
+      "files": {
+        "UXF^table": {
+          "name": "Files",
+          "comment": null,
+          "fields": {
+            "Kind": null,
+            "Filename": null
+          },
+          "records": [
+            [
+              "current",
+              "/home/mark/test1.uxf"
+            ],
+            [
+              "recent3",
+              null
+            ],
+            [
+              "recent2",
+              "/home/mark/test2.uxf"
+            ]
+          ]
+        }
+      },
+      "historysize": -35,
+      "saved": {
+        "UXF^date": "2022-03-21"
+      },
+      "volume": 0.7
+    },
+    "Magic": {
+      "UXF^bytes": "1F8B"
+    },
+    "Map Test #1": {
+      "UXF^map": {
+        "comment": "Map with different types of key",
+        "ktype": null,
+        "vtype": null,
+        "map": {
+          "757866": {
+            "UXF^datetime": "1985-05-22T04:31:00"
+          },
+          "2001-01-31": "world",
+          "1965-04-27T16:05:00": "UXF in ASCII bytes follows",
+          "5": {
+            "UXF^table": {
+              "name": "Complex",
+              "comment": "From !numeric import",
+              "fields": {
+                "Real": "real",
+                "Imag": "real"
+              },
+              "records": [
+                [
+                  1.0,
+                  -3.8
+                ]
+              ]
+            }
+          },
+          "19": null,
+          "24": "An imaginarily long string joined by &s that isn't really that long.",
+          "hello": {
+            "UXF^date": "2021-02-01"
+          }
+        },
+        "itypes": {
+          "757866": "bytes",
+          "2001-01-31": "uxf",
+          "1965-04-27T16:05:00": "uxf",
+          "5": "uxf",
+          "19": "uxf",
+          "24": "uxf"
+        }
+      }
+    },
+    "Map Test #2": {
+      "UXF^map": {
+        "comment": "Map same type of non-str keys",
+        "ktype": "int",
+        "vtype": null,
+        "map": {
+          "1": "one",
+          "2": 2,
+          "3": 3.0,
+          "4": {
+            "UXF^bytes": "0220"
+          }
+        },
+        "itype": "uxf"
+      }
+    },
+    "More Tests": {
+      "UXF^list": {
+        "comment": "A list of name value pairs; normally would be a map",
+        "vtype": null,
+        "list": [
+          "one",
+          {
+            "UXF^table": {
+              "name": "IPv4",
+              "comment": null,
+              "fields": {
+                "A": "int",
+                "B": "int",
+                "C": "int",
+                "D": "int"
+              },
+              "records": [
+                [
+                  141,
+                  179,
+                  19,
+                  9
+                ]
+              ]
+            }
+          },
+          "many",
+          {
+            "UXF^table": {
+              "name": "IPv4",
+              "comment": "A list of IPv4 addresses",
+              "fields": {
+                "A": "int",
+                "B": "int",
+                "C": "int",
+                "D": "int"
+              },
+              "records": [
+                [
+                  172,
+                  16,
+                  254,
+                  1
+                ],
+                [
+                  192,
+                  0,
+                  2,
+                  235
+                ]
+              ]
+            }
+          },
+          "red",
+          {
+            "UXF^table": {
+              "name": "rgb",
+              "comment": null,
+              "fields": {
+                "red": "int",
+                "green": "int",
+                "blue": "int"
+              },
+              "records": [
+                [
+                  255,
+                  0,
+                  0
+                ]
+              ]
+            }
+          },
+          "semi-transparent blue",
+          {
+            "UXF^table": {
+              "name": "rgba",
+              "comment": null,
+              "fields": {
+                "red": "int",
+                "green": "int",
+                "blue": "int",
+                "alpha": "real"
+              },
+              "records": [
+                [
+                  0,
+                  0,
+                  255,
+                  0.8
+                ]
+              ]
+            }
+          }
+        ]
+      }
+    },
+    "Nested Map": {
+      "Classical": [
+        5,
+        true
+      ],
+      "Nested List of Lists": {
+        "UXF^list": {
+          "comment": "A list of lists",
+          "vtype": null,
+          "list": [
+            [
+              5,
+              "Classical",
+              true
+            ],
+            [
+              null,
+              null,
+              null
+            ],
+            [
+              1,
+              "New Acquistions",
+              false
+            ]
+          ]
+        }
+      },
+      "Nested List of Tables": [
+        {
+          "UXF^table": {
+            "name": "Categories",
+            "comment": "These categories are just to show nesting",
+            "fields": {
+              "CID": null,
+              "Title": null,
+              "Selected": null,
+              "Date": "date"
+            },
+            "records": [
+              [
+                5,
+                "Classical",
+                true,
+                {
+                  "UXF^date": "2001-12-27"
+                }
+              ],
+              [
+                3,
+                "Punk",
+                false,
+                {
+                  "UXF^date": "1999-06-09"
+                }
+              ],
+              [
+                null,
+                null,
+                null,
+                null
+              ],
+              [
+                7,
+                "Uncategorized",
+                false,
+                {
+                  "UXF^date": "1992-02-24"
+                }
+              ]
+            ]
+          }
+        },
+        {
+          "UXF^table": {
+            "name": "Playlists",
+            "comment": null,
+            "fields": {
+              "PID": null,
+              "Title": null,
+              "Cid": null,
+              "Selected": null,
+              "DateTime": "datetime"
+            },
+            "records": [
+              [
+                39,
+                "Bartok",
+                5,
+                false,
+                {
+                  "UXF^datetime": "1983-04-13T23:46:31"
+                }
+              ],
+              [
+                5,
+                "Beatles",
+                2,
+                false,
+                {
+                  "UXF^datetime": "2022-04-11T23:48:01"
+                }
+              ],
+              [
+                null,
+                null,
+                null,
+                null,
+                null
+              ],
+              [
+                8,
+                "David Bowie",
+                2,
+                false,
+                {
+                  "UXF^datetime": "2008-09-01T23:59:46"
+                }
+              ]
+            ]
+          }
+        }
+      ],
+      "Nested Table": {
+        "UXF^table": {
+          "name": "Categories",
+          "comment": null,
+          "fields": {
+            "CID": null,
+            "Title": null,
+            "Selected": null,
+            "Date": "date"
+          },
+          "records": [
+            [
+              4,
+              "Modern Instrumental",
+              false,
+              {
+                "UXF^date": "1973-10-18"
+              }
+            ],
+            [
+              2,
+              "Pop",
+              false,
+              {
+                "UXF^date": "1983-04-07"
+              }
+            ],
+            [
+              null,
+              null,
+              null,
+              null
+            ],
+            [
+              7,
+              "Uncategorized",
+              false,
+              {
+                "UXF^date": "1992-02-24"
+              }
+            ]
+          ]
+        }
+      },
+      "New Acquistions": [
+        1,
+        false
+      ]
+    },
+    "Window": {
+      "pos": [
+        383,
+        124
+      ],
+      "scale": 1.1,
+      "size": [
+        590,
+        536
+      ]
+    }
+  }
+}
