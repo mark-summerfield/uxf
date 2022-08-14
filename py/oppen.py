@@ -79,6 +79,10 @@ class PrettyPrinter(_EventMixin): # Functor that can be used as a visitor
             self.handle_map_begin(value)
         elif kind is uxf.VisitKind.MAP_END:
             self.handle_map_end()
+        elif kind is uxf.VisitKind.ITEM_BEGIN:
+            self.handle_item_begin()
+        elif kind is uxf.VisitKind.ITEM_END:
+            self.handle_item_end()
         elif kind is uxf.VisitKind.TABLE_BEGIN:
             self.handle_table_begin(value)
         elif kind is uxf.VisitKind.TABLE_END:
@@ -100,8 +104,9 @@ class PrettyPrinter(_EventMixin): # Functor that can be used as a visitor
                                  num_records=num_records))
 
 
-    def puts(self, s):
-        self.tokens.append(Token(TokenKind.STRING, s, depth=self.depth))
+    def puts(self, s, num_records=None):
+        self.tokens.append(Token(TokenKind.STRING, s, depth=self.depth,
+                                 num_records=num_records))
 
 
     def rws(self): # Don't need duplicate RWS; don't need RWS if RNL present
@@ -225,6 +230,16 @@ class PrettyPrinter(_EventMixin): # Functor that can be used as a visitor
         self.depth -= 1
 
 
+    def handle_item_begin(self):
+        self.depth += 1
+        self.begin()
+
+
+    def handle_item_end(self):
+        self.end()
+        self.depth -= 1
+
+
     def handle_table_begin(self, value):
         self.depth += 1
         self.table_row_counts.append(len(value))
@@ -232,7 +247,7 @@ class PrettyPrinter(_EventMixin): # Functor that can be used as a visitor
         self.puts('(')
         if value.comment:
             self.handle_comment(value.comment)
-        self.puts(value.ttype)
+        self.puts(value.ttype, num_records=len(value))
 
 
     def handle_table_end(self):
@@ -250,7 +265,7 @@ class PrettyPrinter(_EventMixin): # Functor that can be used as a visitor
 
 
     def handle_record_end(self):
-        self.end(num_records=self.table_row_counts[-1])
+        self.end(num_records=self.table_row_counts[-1]) # TODO needed?
         self.depth -= 1
 
 
@@ -388,12 +403,11 @@ class Token:
 
 
     def __repr__(self):
-        indent = self.depth * '   '
-        text = f'{indent}{self.kind.value}'
-        if self.value == '':
-            if self.kind is TokenKind.END and self.num_records is not None:
-                text += f' of {self.num_records}'
-        else:
+        text = self.depth * '   '
+        if self.num_records:
+            text += f'{self.num_records} × '
+        text += self.kind.value
+        if self.value:
             text += f' {self.value!r}'
         return text
 
