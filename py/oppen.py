@@ -37,7 +37,7 @@ class _PrettyPrinter(_EventMixin): # Functor that can be used as a visitor
         self.on_event = on_event
         self.lino = 0 # for on_event
         self.tokens = []
-        self.depth = -1
+        self.depth = 0
         self.table_row_counts = []
 
 
@@ -185,7 +185,6 @@ class _PrettyPrinter(_EventMixin): # Functor that can be used as a visitor
 
 
     def handle_list_begin(self, value):
-        self.depth += 1
         self.begin()
         self.puts('[')
         if value.comment:
@@ -194,18 +193,18 @@ class _PrettyPrinter(_EventMixin): # Functor that can be used as a visitor
             if value.comment:
                 self.rws()
             self.puts(value.vtype)
+        self.depth += 1
 
 
     def handle_list_end(self):
         if self.tokens[-1].kind is TokenKind.RWS:
             self.tokens.pop() # Don't need RWS before closer
+        self.depth -= 1
         self.puts(']')
         self.end()
-        self.depth -= 1
 
 
     def handle_map_begin(self, value):
-        self.depth += 1
         self.begin()
         self.puts('{')
         if value.comment:
@@ -216,34 +215,35 @@ class _PrettyPrinter(_EventMixin): # Functor that can be used as a visitor
             self.puts(value.ktype)
             if value.vtype:
                 self.puts(f' {value.vtype}')
+        self.depth += 1
 
 
     def handle_map_end(self):
         if self.tokens[-1].kind is TokenKind.RWS:
             self.tokens.pop() # Don't need RWS before closer
+        self.depth -= 1
         self.puts('}')
         self.end()
-        self.depth -= 1
 
 
     def handle_item_begin(self):
-        self.depth += 1
         self.begin()
+        self.depth += 1
 
 
     def handle_item_end(self):
-        self.end()
         self.depth -= 1
+        self.end()
 
 
     def handle_table_begin(self, value):
-        self.depth += 1
         self.table_row_counts.append(len(value))
         self.begin()
         self.puts('(')
         if value.comment:
             self.handle_comment(value.comment)
         self.puts(value.ttype, num_records=len(value))
+        self.depth += 1
         if len(value) == 1:
             self.rws()
         elif len(value) > 1:
@@ -253,21 +253,23 @@ class _PrettyPrinter(_EventMixin): # Functor that can be used as a visitor
     def handle_table_end(self):
         if self.tokens[-1].kind is TokenKind.RWS:
             self.tokens.pop() # Don't need RWS before closer
+        self.depth -= 1
         self.puts(')')
+        if self.table_row_counts[-1] > 1:
+            self.rnl()
         self.end()
         self.table_row_counts.pop()
-        self.depth -= 1
 
 
     def handle_record_begin(self):
-        self.depth += 1
         self.begin()
+        self.depth += 1
 
 
     def handle_record_end(self):
         self.rnl()
-        self.end()
         self.depth -= 1
+        self.end()
 
 
     def handle_real(self, value):
@@ -373,7 +375,6 @@ class _Writer:
         self.width = wrap_width
         self.realdp = realdp
         self.indent = indent
-        self.wrote = ''
         self.pos = 0
         self.tp = 0
 
@@ -390,6 +391,7 @@ class _Writer:
                 sys.stderr.write(f'{token}\n')
             sys.stderr.write(' === '.center(40, '-'))
             sys.stderr.write('\n')
+        # end delete
 
         self.pos = 0
         self.tp = 0
@@ -398,14 +400,14 @@ class _Writer:
             self.tp += 1
             if token.kind is TokenKind.BEGIN:
                 self.begin(token)
-            elif token.kind is TokenKind.END:
-                pass
             elif token.kind is TokenKind.STRING:
                 self.string(token)
             elif token.kind is TokenKind.RWS:
                 self.rws()
             elif token.kind is TokenKind.RNL:
                 self.rnl()
+            elif token.kind is TokenKind.END:
+                pass
             elif token.kind is TokenKind.EOF:
                 break
         self.write('\n')
@@ -413,81 +415,100 @@ class _Writer:
 
     def begin(self, token):
         tab = self.indent * token.depth
-        if self.pos: # in a line
-            peek = self.prev()
-            if peek is not None and peek.kind is TokenKind.END:
-                self.pos += self.write(' ')
-            needed = self.pos
-        else:
-            needed = len(tab)
-        i = self.tp + 1
+        needed = self.pos if self.pos else len(tab)
+        i = self.find_matching_end(needed, self.tp, token.depth)
+        if i > -1: # found & fits on line
+            if self.pos == 0:
+                self.write(tab)
+            self.write_tokens_to(i)
+        elif self.pos: # try to fit begin…end on its own wrapped line
+            i = self.find_matching_end(len(tab), self.tp, token.depth)
+            if i > -1: # found & will fit on next line even with indent
+                self.rnl()
+                self.write(tab)
+                self.write_tokens_to(i)
+            # else: # skip this begin and continue from the next token
+
+
+    def find_matching_end(self, needed, i, depth):
         while needed < self.width and i < len(self.tokens):
-            tok = self.tokens[i]
+            token = self.tokens[i]
             i += 1
-            if tok.kind is TokenKind.END:
-                if tok.depth == token.depth: # matching end
-                    break
-            elif tok.kind in {TokenKind.RNL, TokenKind.EOF}:
-                break # forced onto newline anyway or EOF
-            elif tok.kind is TokenKind.RWS:
+            if token.kind is TokenKind.END:
+                if token.depth == depth: # matching end
+                    return i
+            elif token.kind in {TokenKind.RNL, TokenKind.EOF}:
+                return i # de-facto; forced onto newline anyway or EOF
+            elif token.kind is TokenKind.RWS:
                 needed += 1
-            elif tok.kind is TokenKind.STRING:
-                needed += len(tok.text)
-        if self.tp < i and self.pos == 0:
-            self.pos = self.write(tab)
+            elif token.kind is TokenKind.STRING:
+                needed += len(token.text)
+                if token.is_multiline:
+                    return i # de-facto; forced onto newline anyway
+        return -1
+
+
+    def write_tokens_to(self, i):
         while self.tp < i: # room for more
-            tok = self.tokens[self.tp]
+            token = self.tokens[self.tp]
             self.tp += 1
-            if tok.kind is TokenKind.STRING:
-                self.pos += self.write(tok.text)
-            elif tok.kind is TokenKind.RWS:
-                self.pos += self.write(' ')
+            if token.kind is TokenKind.STRING:
+                self.write(token.text)
+                if token.is_multiline:
+                    break
+            elif token.kind is TokenKind.RWS:
+                self.rws()
+            elif token.kind is TokenKind.RNL:
+                self.rnl()
+            elif token.kind in {TokenKind.BEGIN, TokenKind.END}:
+                pass
+            elif token.kind is TokenKind.EOF:
+                break
 
 
     def string(self, token):
         tab = self.indent * token.depth
         if token.is_multiline:
-            if self.pos: # in a line:
-                first, rest = token.text.split('\n', 1)
-                if self.pos + len(first) < self.width:
-                    self.write(first)
-                    self.write('\n')
-                    self.write(rest)
-                    i = rest.rfind('\n')
-                    text = rest
-            else: # newline
-                text = token.text
-                self.write(text)
-                i = text.rfind('\n')
-            if i > -1:
-                self.pos = len(text[i:])
-            else:
-                self.pos = len(text)
+            self.multiline(token)
         else:
             if self.pos: # in a line
                 if self.pos + len(token.text) < self.width: # fits on line
-                    self.pos += self.write(token.text)
+                    self.write(token.text)
                     return
                 else:
                     self.write('\n')
-                    self.pos = 0
             if len(tab) + len(token.text) < self.width:
-                self.pos = self.write(tab) # fits after indent
-            self.pos += self.write(token.text)
+                self.write(tab) # fits after indent
+            self.write(token.text)
+
+
+    def multiline(self, token): # write direct & handle pos
+        if self.pos: # in a line:
+            first, rest = token.text.split('\n', 1)
+            if self.pos + len(first) < self.width:
+                self.out.write(first)
+                self.out.write('\n')
+                self.out.write(rest)
+                self.set_pos(rest)
+            else:
+                self.out.write('\n')
+                self.out.write(token.text)
+                self.set_pos(token.text)
+        else: # newline
+            self.out.write(token.text)
+            self.set_pos(token.text)
 
 
     def rws(self):
-        if self.pos != 0: # safe to ignore RWS at start of line
+        if self.pos > 0: # safe to ignore RWS at start of line
             if self.pos + self.peek_len(self.tp + 1) < self.width:
-                self.pos += self.write(' ')
+                self.write(' ')
             else:
                 self.write('\n')
-                self.pos = 0
 
 
     def rnl(self):
         self.write('\n')
-        self.pos = 0
 
 
     def prev(self):
@@ -497,6 +518,7 @@ class _Writer:
     def next(self):
         return self.peek(self.tp + 1)
 
+
     def peek(self, i):
         return self.tokens[i] if 0 <= i < len(self.tokens) else None
 
@@ -505,12 +527,20 @@ class _Writer:
         return len(self.tokens[i].text) if 0 <= i < len(self.tokens) else 0
 
 
+    def set_pos(self, text):
+        if text.endswith('\n'):
+            self.pos = 0
+        else:
+            i = text.rfind('\n')
+            if i > -1:
+                text = text[i + i:]
+            self.pos += len(text)
+
+
     def write(self, text):
-        if text == ' ' and self.wrote.endswith((' ', '\n')):
-            return 0
         self.out.write(text)
-        self.wrote = text
-        return len(text)
+        self.set_pos(text)
+        #print(f'{text!r} → {self.pos}') # TODO
 
 
 @enum.unique
