@@ -29,7 +29,7 @@ def main():
 
 class _PrettyPrinter(_EventMixin): # Functor that can be used as a visitor
 
-    def __init__(self, *, wrap_width=96, realdp=None, indent='  ',
+    def __init__(self, *, wrap_width=96, realdp=None, indent='   ',
                  on_event=uxf.on_event):
         self.wrap_width = wrap_width
         self.realdp = realdp
@@ -81,17 +81,18 @@ class _PrettyPrinter(_EventMixin): # Functor that can be used as a visitor
         elif kind is uxf.VisitKind.MAP_END:
             self.handle_map_end()
         elif kind is uxf.VisitKind.ITEM_BEGIN:
-            self.handle_item_begin()
+            self.begin()
         elif kind is uxf.VisitKind.ITEM_END:
-            self.handle_item_end()
+            self.end()
         elif kind is uxf.VisitKind.TABLE_BEGIN:
             self.handle_table_begin(value)
         elif kind is uxf.VisitKind.TABLE_END:
             self.handle_table_end()
         elif kind is uxf.VisitKind.RECORD_BEGIN:
-            self.handle_record_begin()
+            self.begin()
         elif kind is uxf.VisitKind.RECORD_END:
-            self.handle_record_end()
+            self.end()
+            self.rnl()
         elif kind is uxf.VisitKind.VALUE:
             self.handle_scalar(value)
 
@@ -102,7 +103,9 @@ class _PrettyPrinter(_EventMixin): # Functor that can be used as a visitor
         self.tokens.append(Token(TokenKind.BEGIN, depth=self.depth))
 
 
-    def end(self, *, num_records=None):
+    def end(self, *, num_records=None): # Don't need RWS before END
+        if self.tokens and self.tokens[-1].kind is TokenKind.RWS:
+            self.tokens.pop()
         self.tokens.append(Token(TokenKind.END, depth=self.depth,
                                  num_records=num_records))
 
@@ -113,9 +116,14 @@ class _PrettyPrinter(_EventMixin): # Functor that can be used as a visitor
 
 
     def rws(self): # Don't need duplicate RWS; don't need RWS if RNL present
-        if not self.tokens or self.tokens[-1] not in {TokenKind.RWS,
-                                                      TokenKind.RNL}:
-            self.tokens.append(Token(TokenKind.RWS, depth=self.depth))
+        if self.tokens:
+            pos = -1
+            if (self.tokens[pos].kind is TokenKind.END and
+                    len(self.tokens) > 1):
+                pos -= 1
+            if self.tokens[pos].kind in {TokenKind.RWS, TokenKind.RNL}:
+                return
+        self.tokens.append(Token(TokenKind.RWS, depth=self.depth))
 
 
     def rnl(self): # Don't need RWS before newline; don't need dup RNL
@@ -226,16 +234,6 @@ class _PrettyPrinter(_EventMixin): # Functor that can be used as a visitor
         self.end()
 
 
-    def handle_item_begin(self):
-        self.begin()
-        self.depth += 1
-
-
-    def handle_item_end(self):
-        self.depth -= 1
-        self.end()
-
-
     def handle_table_begin(self, value):
         self.table_row_counts.append(len(value))
         self.begin()
@@ -259,17 +257,6 @@ class _PrettyPrinter(_EventMixin): # Functor that can be used as a visitor
         if self.table_row_counts[-1] > 1:
             self.rnl()
         self.table_row_counts.pop()
-
-
-    def handle_record_begin(self):
-        self.begin()
-        self.depth += 1
-
-
-    def handle_record_end(self):
-        self.depth -= 1
-        self.end()
-        self.rnl()
 
 
     def handle_real(self, value):
@@ -544,7 +531,6 @@ class _Writer:
     def write(self, text):
         self.out.write(text)
         self.set_pos(text)
-        #print(f'{text!r} → {self.pos}') # TODO
 
 
 @enum.unique
