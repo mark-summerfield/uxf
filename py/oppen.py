@@ -243,10 +243,10 @@ class _PrettyPrinter(_EventMixin): # Functor that can be used as a visitor
         if value.comment:
             self.handle_comment(value.comment)
         self.puts(value.ttype, num_records=len(value))
-        self.depth += 1
         if len(value) == 1:
             self.rws()
         elif len(value) > 1:
+            self.depth += 1
             self.rnl()
 
 
@@ -255,9 +255,9 @@ class _PrettyPrinter(_EventMixin): # Functor that can be used as a visitor
             self.tokens.pop() # Don't need RWS before closer
         self.depth -= 1
         self.puts(')')
+        self.end()
         if self.table_row_counts[-1] > 1:
             self.rnl()
-        self.end()
         self.table_row_counts.pop()
 
 
@@ -267,9 +267,9 @@ class _PrettyPrinter(_EventMixin): # Functor that can be used as a visitor
 
 
     def handle_record_end(self):
-        self.rnl()
         self.depth -= 1
         self.end()
+        self.rnl()
 
 
     def handle_real(self, value):
@@ -377,6 +377,7 @@ class _Writer:
         self.indent = indent
         self.pos = 0
         self.tp = 0
+        self.end_nl = False
 
 
     def pprint(self):
@@ -410,7 +411,8 @@ class _Writer:
                 pass
             elif token.kind is TokenKind.EOF:
                 break
-        self.write('\n')
+        if not self.end_nl:
+            self.write('\n')
 
 
     def begin(self, token):
@@ -530,7 +532,9 @@ class _Writer:
     def set_pos(self, text):
         if text.endswith('\n'):
             self.pos = 0
+            self.end_nl = True
         else:
+            self.end_nl = False
             i = text.rfind('\n')
             if i > -1:
                 text = text[i + i:]
