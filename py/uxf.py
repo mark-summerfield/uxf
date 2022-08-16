@@ -2344,11 +2344,8 @@ class _PrettyPrinter(_EventMixin): # Functor that can be used as a visitor
 
 
     def begin(self):
-        # TODO which specific case(s) is this needed:
-        #   - list containing empty lists: t46.uxf
-        #   - map followed by collection: t63.uxf t73.uxf t76.uxf
-        #if self.tokens and self.tokens[-1].kind is _PrintKind.END:
-        #    self.rws()
+        if self.tokens and self.tokens[-1].kind is _PrintKind.END:
+            self.rws()
         self.tokens.append(_PrintToken(_PrintKind.BEGIN, depth=self.depth))
 
 
@@ -2662,6 +2659,7 @@ class _Writer:
         self.pos = 0
         self.tp = 0
         self.end_nl = False
+        self.pending_rws = False
 
 
     def pprint(self):
@@ -2692,7 +2690,7 @@ class _Writer:
             elif token.kind is _PrintKind.EOF:
                 break
         if not self.end_nl:
-            self.write('\n')
+            self.rnl()
 
 
     def begin(self, token):
@@ -2706,6 +2704,7 @@ class _Writer:
         elif self.pos: # try to fit begin…end on its own wrapped line
             i = self.find_matching_end(len(tab), self.tp, token.depth)
             if i > -1: # found & will fit on next line even with indent
+                self.pending_rws = False
                 self.rnl()
                 self.write(tab)
                 self.write_tokens_to(i)
@@ -2713,6 +2712,7 @@ class _Writer:
 
 
     def find_matching_end(self, needed, i, depth):
+        needed += (1 if self.pending_rws else 0)
         while needed < self.width and i < len(self.tokens):
             token = self.tokens[i]
             i += 1
@@ -2754,7 +2754,8 @@ class _Writer:
             self.multiline(token)
         else:
             if self.pos: # in a line
-                if self.pos + len(token.text) < self.width: # fits on line
+                n = 1 if self.pending_rws else 0
+                if self.pos + len(token.text) + n < self.width: # fits line
                     self.write(token.text)
                     return
                 else:
@@ -2766,17 +2767,23 @@ class _Writer:
 
     def multiline(self, token): # write direct & handle pos
         if self.pos: # in a line:
+            n = 1 if self.pending_rws else 0
             first, rest = token.text.split('\n', 1)
-            if self.pos + len(first) < self.width:
+            if self.pos + len(first) + n < self.width:
+                if self.pending_rws:
+                    self.out.write(' ')
+                    self.pending_rws = False
                 self.out.write(first)
                 self.out.write('\n')
                 self.out.write(rest)
                 self.set_pos(rest)
             else:
+                self.pending_rws = False
                 self.out.write('\n')
                 self.out.write(token.text)
                 self.set_pos(token.text)
         else: # newline
+            self.pending_rws = False
             self.out.write(token.text)
             self.set_pos(token.text)
 
@@ -2784,12 +2791,13 @@ class _Writer:
     def rws(self):
         if self.pos > 0: # safe to ignore RWS at start of line
             if self.pos + self.peek_len(self.tp + 1) < self.width:
-                self.write(' ')
+                self.pending_rws = True
             else:
-                self.write('\n')
+                self.rnl()
 
 
     def rnl(self):
+        self.pending_rws = False
         self.write('\n')
 
 
@@ -2822,7 +2830,9 @@ class _Writer:
 
 
     def write(self, text):
-        self.pending = False
+        if self.pending_rws:
+            self.out.write(' ')
+            self.pending_rws = False
         self.out.write(text)
         self.set_pos(text)
 
