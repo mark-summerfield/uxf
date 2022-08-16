@@ -2344,8 +2344,11 @@ class _PrettyPrinter(_EventMixin): # Functor that can be used as a visitor
 
 
     def begin(self):
-        if self.tokens and self.tokens[-1].kind is _PrintKind.END:
-            self.rws()
+        # TODO which specific case(s) is this needed:
+        #   - list containing empty lists: t46.uxf
+        #   - map followed by collection: t63.uxf t73.uxf t76.uxf
+        #if self.tokens and self.tokens[-1].kind is _PrintKind.END:
+        #    self.rws()
         self.tokens.append(_PrintToken(_PrintKind.BEGIN, depth=self.depth))
 
 
@@ -2664,7 +2667,7 @@ class _Writer:
     def pprint(self):
         if not self.tokens:
             return
-        if 1 or self.debug: # TODO
+        if self.debug:
             sys.stderr.write(' TOKENS '.center(40, '-'))
             sys.stderr.write('\n')
             for i, token in enumerate(self.tokens):
@@ -2819,6 +2822,7 @@ class _Writer:
 
 
     def write(self, text):
+        self.pending = False
         self.out.write(text)
         self.set_pos(text)
 
@@ -2868,31 +2872,6 @@ def is_scalar(x):
 def _is_key_type(x):
     return isinstance(x, (int, datetime.date, datetime.datetime, str,
                           bytes))
-
-
-def _is_short(value, format):
-    if isinstance(value, (bytes, bytearray, str)):
-        return len(value) <= format.max_short_len
-    if is_scalar(value) or len(value) == 1:
-        return True
-    if isinstance(value, (list, List)) and _are_short(format.max_short_len,
-                                                      *value):
-        return True
-    if isinstance(value, (dict, Map)) and _are_short(
-            format.max_short_len, *list(value.values())):
-        return True
-    return False
-
-
-def _are_short(max_short_len, *items):
-    for x in items:
-        if isinstance(x, (bytes, bytearray, str)):
-            if len(x) > max_short_len:
-                return False
-        elif x is not None and not isinstance(
-                x, (bool, int, float, datetime.date, datetime.datetime)):
-            return False
-    return True
 
 
 def _is_uxf_collection(value):
