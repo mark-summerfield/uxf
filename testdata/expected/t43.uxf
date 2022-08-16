@@ -2,6 +2,12 @@ uxf 1.0
 =Pair First:int Second:list
 (Pair
   1 []
-  2 [<a> <b>]
-  3 [9.8 7.1]
+  2 [
+    <a>
+    <b>
+  ]
+  3 [
+    9.8
+    7.1
+  ]
 )

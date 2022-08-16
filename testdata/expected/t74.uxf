@@ -1,7 +1,7 @@
 uxf 1.0 MyApp Data
 #<A hierarchical alternative to some foreign key IDs.
-We've kept Customers as-is because different invoices may be for the same
-customer.>
+We've kept Customers as-is because >& <different invoices may be for the > & <same
+> & <customer.>
 =Customers CID:int Company:str Address:str Contact:str Email:str
 =Database customers:Customers invoices:Invoices
 =Invoices INUM:int CID:int Raised_Date:date Due_Date:date Paid:bool Description:str Items:Items
@@ -16,4 +16,5 @@ customer.>
     1840 2022-01-16 5.98 3 <Straps>
   )
   153 19 2022-01-19 2022-02-19 yes <> (Items 1620 2022-01-19 11.5 1 <Washers (1-in)>)
-))
+)
+)

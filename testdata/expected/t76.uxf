@@ -2,11 +2,21 @@ uxf 1.0
 #<typed empties>
 =Contact name:str phone:str id:int
 [
-  (#<empty table> Contact) {#<empty map with ktype and vtype> int Contact}
-  {#<empty map with ktype and vtype> str datetime} {#<empty map with ktype> date} {#<empty map>}
-  [#<empty list with vtype> date] [#<empty list>]
-  (Contact) {int Contact} {str datetime} {date} {} [date] [] (#<singleton table> Contact
-  <Jane Doe> <555 1234 5668> 498)
+  (#<empty table> Contact)
+  {#<empty map with ktype and vtype> int Contact}
+  {#<empty map with ktype and vtype> str datetime}
+  {#<empty map with ktype> date}
+  {#<empty map>}
+  [#<empty list with vtype> date]
+  [#<empty list>]
+  (Contact)
+  {int Contact}
+  {str datetime}
+  {date}
+  {}
+  [date]
+  []
+  (#<singleton table> Contact <Jane Doe> <555 1234 5668> 498)
   {#<singleton map with ktype and vtype> int Contact 300 (Contact <John Doe> ? 380)}
   {#<singleton map with ktype and vtype> str datetime <When> 1948-11-21T18:06:00}
   {#<singleton map with ktype> date 1952-02-24 3.85}
@@ -28,12 +38,26 @@ uxf 1.0
     300 (Contact <John Doe> ? 380)
     400 (Contact <Red Rover> <555 0012 2100> 385)
   }
-  {#<two element map with ktype and vtype> str datetime <Then> 1939-01-22T03:14:17 <When>
-  1948-11-21T18:06:00}
-  {#<two element map with ktype> date 1952-02-24 3.85 1956-05-25 14.71}
-  {#<two element map> 15 19 16 23}
-  [#<two element list with vtype> date 1963-05-15 1964-08-11]
-  [#<two element list> <One> <Two>]
+  {#<two element map with ktype and vtype> str datetime
+    <Then> 1939-01-22T03:14:17
+    <When> 1948-11-21T18:06:00
+  }
+  {#<two element map with ktype> date
+    1952-02-24 3.85
+    1956-05-25 14.71
+  }
+  {#<two element map>
+    15 19
+    16 23
+  }
+  [#<two element list with vtype> date
+    1963-05-15
+    1964-08-11
+  ]
+  [#<two element list>
+    <One>
+    <Two>
+  ]
   (Contact
     <Jane Doe> <555 1234 5668> 498
     <Sam Smith> <555 9876 5432> 571
@@ -42,9 +66,24 @@ uxf 1.0
     300 (Contact <John Doe> ? 380)
     400 (Contact <Red Rover> <555 0012 2100> 385)
   }
-  {str datetime <Then> 1939-01-22T03:14:17 <When> 1948-11-21T18:06:00}
-  {date 1952-02-24 3.85 1956-05-25 14.71}
-  {15 19 16 23}
-  [date 1963-05-15 1964-08-11]
-  [<One> <Two>]
+  {str datetime
+    <Then> 1939-01-22T03:14:17
+    <When> 1948-11-21T18:06:00
+  }
+  {date
+    1952-02-24 3.85
+    1956-05-25 14.71
+  }
+  {
+    15 19
+    16 23
+  }
+  [date
+    1963-05-15
+    1964-08-11
+  ]
+  [
+    <One>
+    <Two>
+  ]
 ]

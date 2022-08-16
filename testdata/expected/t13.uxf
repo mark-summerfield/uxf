@@ -8,11 +8,9 @@ uxf 1.0 TLM Config
 =RGB Red:int Green:int Blue:int
 =RGBA Red:int Green:int Blue:int Alpha:int
 {
-  <General>
-    {#<Map comment #1> 
+  <General> {#<Map comment #1>
       <autosave> yes
-      <files>
-        (#<Table comment #2> Files
+      <files> (#<Table comment #2> Files
           <current> </home/mark/app/rs/tlm/PlaylistsTest.tlm>
           <recent1> </home/mark/app/rs/tlm/PlaylistsTest.tlm>
           <recent2> </home/mark/data/playlists-all.tlm>
@@ -21,23 +19,37 @@ uxf 1.0 TLM Config
       <saved> 2022-03-21
       <volume> 0.7
     }
-  <Key for a long string>
-  <This string occupies
+  <Key for a long string> <This string occupies
 multiple lines which we want to be able to round-trip
 even in UXF ↔ XML > & <conversions.>
   <Magic> (:1F8B:)
-  <Nested Map>
-    {#<Map comment #3> 
-      <Classical> [#<List comment #4> 5 yes]
-      <Modern Instrumental> [#<List comment #5> 4 no]
-      <Nested List of Lists>
-        [#<List comment #6> 
-          [#<List comment #7> 5 <Classical> yes]
-          [4 <Modern Instrumental> no]
-          [1 <New Acquistions> no]
+  <Nested Map> {#<Map comment #3>
+      <Classical> [#<List comment #4>
+          5
+          yes
         ]
-      <Nested Table>
-        (#<Table comment #8> Categories
+      <Modern Instrumental> [#<List comment #5>
+          4
+          no
+        ]
+      <Nested List of Lists> [#<List comment #6>
+          [#<List comment #7>
+            5
+            <Classical>
+            yes
+          ]
+          [
+            4
+            <Modern Instrumental>
+            no
+          ]
+          [
+            1
+            <New Acquistions>
+            no
+          ]
+        ]
+      <Nested Table> (#<Table comment #8> Categories
           5 <Classical> yes
           4 <Modern Instrumental> no
           1 <New Acquistions> no
@@ -46,7 +58,16 @@ even in UXF ↔ XML > & <conversions.>
           7 <Uncategorized> no
           6 <Unpopular Pop> no
         )
-      <New Acquistions> [1 no]
+      <New Acquistions> [
+          1
+          no
+        ]
     }
-  <Window> {<height> 536 <scale> 1.1 <width> 590 <x> 383 <y> 124}
+  <Window> {
+      <height> 536
+      <scale> 1.1
+      <width> 590
+      <x> 383
+      <y> 124
+    }
 }

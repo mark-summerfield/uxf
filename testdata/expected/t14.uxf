@@ -7,11 +7,9 @@ uxf 1.0 TLM Config
 =RGB Red:int Green:int Blue:int
 =RGBA Red:int Green:int Blue:int Alpha:int
 {
-  <General>
-    {#<Map comment> 
+  <General> {#<Map comment>
       <autosave> yes
-      <files>
-        (#<Table comment> Files
+      <files> (#<Table comment> Files
           <current> </home/mark/app/rs/tlm/PlaylistsTest.tlm>
           <recent1> </home/mark/app/rs/tlm/PlaylistsTest.tlm>
           <recent2> </home/mark/data/playlists-all.tlm>
@@ -21,21 +19,55 @@ uxf 1.0 TLM Config
       <volume> 0.7
     }
   <Magic> (:1F8B11FF0C:)
-  <Nested Map>
-    {
-      <Classical> [5 yes]
-      <Map Test #1> {#<Map with different types of key> (:757866:) 1985-05-22T04:31:00
-        2001-01-31 <world> 1965-04-27T16:05:00 <UXF in ASCII bytes follows> 5 6 <hello>
-        2021-02-01}
-      <Map Test #2> {#<Map same type of non-str keys> 1 <one> 2 2 3 3.0 4 (:0220:)}
-      <Modern Instrumental> [4 no]
-      <Nested List of Lists>
-        [#<List comment> 
-          [5 <Classical &amp; &lt;Special&gt;> yes]
-          [4 <Modern Instrumental> no]
-          [1 <New Acquistions> no]
+  <Nested Map> {
+      <Classical> [
+          5
+          yes
         ]
-      <New Acquistions> [1 no]
+      <Map Test #1> {#<Map with different types of key>
+          (:757866:) 1985-05-22T04:31:00
+          2001-01-31 <world>
+          1965-04-27T16:05:00 <UXF in ASCII bytes follows>
+          5 6
+          <hello> 2021-02-01
+        }
+      <Map Test #2> {#<Map same type of non-str keys>
+          1 <one>
+          2 2
+          3 3.0
+          4 (:0220:)
+        }
+      <Modern Instrumental> [
+          4
+          no
+        ]
+      <Nested List of Lists> [#<List comment>
+          [
+            5
+            <Classical &amp; &lt;Special&gt;>
+            yes
+          ]
+          [
+            4
+            <Modern Instrumental>
+            no
+          ]
+          [
+            1
+            <New Acquistions>
+            no
+          ]
+        ]
+      <New Acquistions> [
+          1
+          no
+        ]
     }
-  <Window> {<height> 536 <scale> 1.1 <width> 590 <x> 383 <y> 124}
+  <Window> {
+      <height> 536
+      <scale> 1.1
+      <width> 590
+      <x> 383
+      <y> 124
+    }
 }

@@ -1,7 +1,32 @@
 uxf 1.0
 [
-  [<Price List> <Date> <Price> <Quantity> <ID> <Description>]
-  [2022-09-21 3.99 2 <CH1-A2> <Chisels (pair), 1in &amp; 1¼in>]
-  [2022-10-02 4.49 1 <HV2-K9> <Hammer, 2lb>]
-  [2022-10-02 5.89 1 <SX4-D1> <Eversure Sealant, 13-floz>]
+  [
+    <Price List>
+    <Date>
+    <Price>
+    <Quantity>
+    <ID>
+    <Description>
+  ]
+  [
+    2022-09-21
+    3.99
+    2
+    <CH1-A2>
+    <Chisels (pair), 1in &amp; 1¼in>
+  ]
+  [
+    2022-10-02
+    4.49
+    1
+    <HV2-K9>
+    <Hammer, 2lb>
+  ]
+  [
+    2022-10-02
+    5.89
+    1
+    <SX4-D1>
+    <Eversure Sealant, 13-floz>
+  ]
 ]

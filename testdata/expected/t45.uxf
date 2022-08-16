@@ -2,14 +2,10 @@ uxf 1.0
 =Pair First Second
 =Quad First:Pair Second:Pair
 [
-  (Quad (Pair 1 2)
-  (Pair 3 4))
+  (Quad (Pair 1 2) (Pair 3 4))
   (Quad
-    (Pair 1 2)
-    (Pair 3 4)
-    (Pair 5 6)
-    (Pair 7 8)
-    (Pair 9 10)
-    (Pair 11 12)
+    (Pair 1 2) (Pair 3 4)
+    (Pair 5 6) (Pair 7 8)
+    (Pair 9 10) (Pair 11 12)
   )
 ]

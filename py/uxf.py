@@ -134,6 +134,8 @@ class VisitKind(enum.Enum):
     UXF_END = enum.auto()
     LIST_BEGIN = enum.auto()
     LIST_END = enum.auto()
+    LIST_VALUE_BEGIN = enum.auto()
+    LIST_VALUE_END = enum.auto()
     MAP_BEGIN = enum.auto()
     MAP_END = enum.auto()
     ITEM_BEGIN = enum.auto()
@@ -931,10 +933,12 @@ class List(collections.UserList):
         value is a value or None.'''
         visitor(VisitKind.LIST_BEGIN, self)
         for value in self.data:
+            visitor(VisitKind.LIST_VALUE_BEGIN, None)
             if _is_uxf_collection(value):
                 value.visit(visitor)
             else:
                 visitor(VisitKind.VALUE, value)
+            visitor(VisitKind.LIST_VALUE_END, None)
         visitor(VisitKind.LIST_END, None)
 
 
@@ -2284,6 +2288,7 @@ class _PrettyPrinter(_EventMixin): # Functor that can be used as a visitor
         self.depth = 0
         self.table_row_counts = []
         self.item_counts = []
+        self.list_value_counts = []
 
 
     @property
@@ -2321,6 +2326,11 @@ class _PrettyPrinter(_EventMixin): # Functor that can be used as a visitor
             self.handle_list_begin(value)
         elif kind is VisitKind.LIST_END:
             self.handle_list_end()
+        elif kind is VisitKind.LIST_VALUE_BEGIN:
+            pass
+        elif kind is VisitKind.LIST_VALUE_END:
+            if self.list_value_counts[-1] > 1:
+                self.rnl()
         elif kind is VisitKind.MAP_BEGIN:
             self.handle_map_begin(value)
         elif kind is VisitKind.MAP_END:
@@ -2453,6 +2463,7 @@ class _PrettyPrinter(_EventMixin): # Functor that can be used as a visitor
 
 
     def handle_list_begin(self, value):
+        self.list_value_counts.append(len(value))
         self.begin()
         self.puts('[')
         if value.comment:
@@ -2461,9 +2472,11 @@ class _PrettyPrinter(_EventMixin): # Functor that can be used as a visitor
             if value.comment:
                 self.rws()
             self.puts(value.vtype)
-            if len(value):
+            if len(value) == 1:
                 self.rws()
-        elif value.comment and len(value):
+        if len(value) > 1:
+            self.rnl()
+        elif value.comment and len(value) == 1:
             self.rws()
         self.depth += 1
 
@@ -2474,6 +2487,7 @@ class _PrettyPrinter(_EventMixin): # Functor that can be used as a visitor
         self.depth -= 1
         self.puts(']')
         self.end()
+        self.list_value_counts.pop()
 
 
     def handle_map_begin(self, value):

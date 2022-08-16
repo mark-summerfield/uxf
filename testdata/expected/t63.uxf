@@ -10,8 +10,7 @@ uxf 1.0
   (img (rgb 0 0 127) (:DECADE:))
   (i <is this oblique?>)
   {
-    10
-      (point3d
+    10 (point3d
         3 4 5
         5 12 13
         8 15 17

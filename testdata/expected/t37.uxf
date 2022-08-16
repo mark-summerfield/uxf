@@ -3,7 +3,7 @@ uxf 1.0 MyApp Data
 =Customers CID:int Company:str Address:str Contact:str Email:str
 =Invoices INUM:int CID:int Raised_Date:date Due_Date:date Paid:bool Description:str
 =Items IID:int INUM:int Delivery_Date:date Unit_Price:real Quantity:int Description:str
-[#<There is a 1:M relationship between the Invoices and Items tables> 
+[#<There is a 1:M relationship between the Invoices and Items tables>
   (Customers
     50 <Best People> <123 Somewhere> <John Doe> <j@doe.com>
     19 <Supersuppliers> ? <Jane Doe> <jane@super.com>

@@ -24,9 +24,8 @@ rs/tests/test_uxf.rs # TODO more, incl. == and is_equivalent()
 rs/Cargo.toml
 rs/README.md
 
-# TODO prettyprint failures:
-# - unique prolems: t38 t41 t83
-# - incorrect map item indent: t10 t11 t12 t13 t14 t27 t28 t31 t46 t7 t85 t8
+# TODO prettyprint failures x 2:
+# (1) t38 '>&' (2)(i) t41 ']10' (2)(ii) t83 ']5000'
 py/uxf.py
 py/oppen.py # TODO delete
 py/uxfconvert.py

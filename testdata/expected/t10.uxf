@@ -3,11 +3,9 @@ uxf 1.0 TLM Config
 =Files Kind Filename
 =Playlists PID Title CID Selected
 {
-  <General>
-    {
+  <General> {
       <autosave> yes
-      <files>
-        (Files
+      <files> (Files
           <current> </home/mark/app/rs/tlm/PlaylistsTest.tlm>
           <recent1> </home/mark/app/rs/tlm/PlaylistsTest.tlm>
           <recent2> </home/mark/data/playlists-all.tlm>
@@ -17,18 +15,33 @@ uxf 1.0 TLM Config
       <volume> 0.7
     }
   <Magic> (:1F8B:)
-  <Nested Map>
-    {
-      <Classical> [5 yes]
-      <Modern Instrumental> [4 no]
-      <Nested List of Lists>
-        [
-          [5 <Classical> yes]
-          [4 <Modern Instrumental> no]
-          [1 <New Acquistions> no]
+  <Nested Map> {
+      <Classical> [
+          5
+          yes
         ]
-      <Nested List of Tables>
-        [
+      <Modern Instrumental> [
+          4
+          no
+        ]
+      <Nested List of Lists> [
+          [
+            5
+            <Classical>
+            yes
+          ]
+          [
+            4
+            <Modern Instrumental>
+            no
+          ]
+          [
+            1
+            <New Acquistions>
+            no
+          ]
+        ]
+      <Nested List of Tables> [
           (Categories
             5 <Classical> yes
             4 <Modern Instrumental> no
@@ -53,8 +66,7 @@ uxf 1.0 TLM Config
             9 <Dire Straits> 2 no
           )
         ]
-      <Nested Table>
-        (Categories
+      <Nested Table> (Categories
           5 <Classical> yes
           4 <Modern Instrumental> no
           1 <New Acquistions> no
@@ -63,7 +75,16 @@ uxf 1.0 TLM Config
           7 <Uncategorized> no
           6 <Unpopular Pop> no
         )
-      <New Acquistions> [1 no]
+      <New Acquistions> [
+          1
+          no
+        ]
     }
-  <Window> {<height> 536 <scale> 1.1 <width> 590 <x> 383 <y> 124}
+  <Window> {
+      <height> 536
+      <scale> 1.1
+      <width> 590
+      <x> 383
+      <y> 124
+    }
 }

@@ -2,31 +2,29 @@ uxf 1.0 MyApp 1.2.0 Config
 =pos x:int y:int
 =size width:int height:int
 {
-  <General>
-    {#<Miscellaneous settings> 
-      <Files>
-        {
+  <General> {#<Miscellaneous settings>
+      <Files> {
           <current> <test1.uxf>
-          <recent> [#<From most to least recent> </tmp/test2.uxf> <C:\Users\mark\test3.uxf>]
+          <recent> [#<From most to least recent>
+              </tmp/test2.uxf>
+              <C:\Users\mark\test3.uxf>
+            ]
         }
       <shapename> <Hexagon>
       <showtoolbar> no
       <zoom> 150
     }
-  <Window1>
-    {#<Window dimensions and scales> str
+  <Window1> {#<Window dimensions and scales> str
       <pos> (pos 615 252)
       <scale> 1.1
       <size> (size 592 636)
     }
-  <Window2>
-    {
+  <Window2> {
       <pos> (pos 28 42)
       <scale> 1.0
       <size> (size 140 81)
     }
-  <Window3>
-    {
+  <Window3> {
       <pos> (pos 57 98)
       <scale> 0.5
       <size> (size 89 22)

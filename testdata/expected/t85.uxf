@@ -8,16 +8,17 @@ uxf 1.0 PrettyPrint Test
 =#<0-255 for 3 components> rgb red:int green:int blue:int
 =#<0-255 per 3 components 0.0-1.0 for 1 component> rgba red:int green:int blue:int alpha:real
 {
-  <Empties>
-    [
-      [] {}
-      (Files) [int] {str} {date str}
+  <Empties> [
+      []
+      {}
+      (Files)
+      [int]
+      {str}
+      {date str}
     ]
-  <General>
-    {
+  <General> {
       <autosave> yes
-      <files>
-        (Files
+      <files> (Files
           <current> </home/mark/test1.uxf>
           <recent3> ?
           <recent2> </home/mark/test2.uxf>
@@ -27,8 +28,7 @@ uxf 1.0 PrettyPrint Test
       <volume> 0.7
     }
   <Magic> (:1F8B:)
-  <Map Test #1>
-    {#<Map with different types of key> 
+  <Map Test #1> {#<Map with different types of key>
       (:757866:) 1985-05-22T04:31:00
       2001-01-31 <world>
       1965-04-27T16:05:00 <UXF in ASCII bytes follows>
@@ -37,26 +37,48 @@ uxf 1.0 PrettyPrint Test
       24 <An imaginarily long string joined by &amp;s that isn't really that long.>
       <hello> 2021-02-01
     }
-  <Map Test #2> {#<Map same type of non-str keys> int 1 <one> 2 2 3 3.0 4 (:0220:)}
-  <More Tests>
-    [#<A list of name value pairs; normally would be a map> 
-      <one> (IPv4 141 179 19 9) <many>
+  <Map Test #2> {#<Map same type of non-str keys> int
+      1 <one>
+      2 2
+      3 3.0
+      4 (:0220:)
+    }
+  <More Tests> [#<A list of name value pairs; normally would be a map>
+      <one>
+      (IPv4 141 179 19 9)
+      <many>
       (#<A list of IPv4 addresses> IPv4
         172 16 254 1
         192 0 2 235
-      ) <red> (rgb 255 0 0) <semi-transparent blue> (rgba 0 0 255 0.8)
+      )
+      <red>
+      (rgb 255 0 0)
+      <semi-transparent blue>
+      (rgba 0 0 255 0.8)
     ]
-  <Nested Map>
-    {
-      <Classical> [5 yes]
-      <Nested List of Lists>
-        [#<A list of lists> 
-          [5 <Classical> yes]
-          [? ? ?]
-          [1 <New Acquistions> no]
+  <Nested Map> {
+      <Classical> [
+          5
+          yes
         ]
-      <Nested List of Tables>
-        [
+      <Nested List of Lists> [#<A list of lists>
+          [
+            5
+            <Classical>
+            yes
+          ]
+          [
+            ?
+            ?
+            ?
+          ]
+          [
+            1
+            <New Acquistions>
+            no
+          ]
+        ]
+      <Nested List of Tables> [
           (#<These categories are just to show nesting> Categories
             5 <Classical> yes 2001-12-27
             3 <Punk> no 1999-06-09
@@ -70,19 +92,26 @@ uxf 1.0 PrettyPrint Test
             8 <David Bowie> 2 no 2008-09-01T23:59:46
           )
         ]
-      <Nested Table>
-        (Categories
+      <Nested Table> (Categories
           4 <Modern Instrumental> no 1973-10-18
           2 <Pop> no 1983-04-07
           ? ? ? ?
           7 <Uncategorized> no 1992-02-24
         )
-      <New Acquistions> [1 no]
+      <New Acquistions> [
+          1
+          no
+        ]
     }
-  <Window>
-    {
-      <pos> [383 124]
+  <Window> {
+      <pos> [
+          383
+          124
+        ]
       <scale> 1.1
-      <size> [590 536]
+      <size> [
+          590
+          536
+        ]
     }
 }

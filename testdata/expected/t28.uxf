@@ -7,11 +7,9 @@ uxf 1.0 TLM Config
 =RGB Red:int Green:int Blue:int
 =RGBA Red:int Green:int Blue:int Alpha:int
 {
-  <General>
-    {
+  <General> {
       <autosave> yes
-      <files>
-        (Files
+      <files> (Files
           <current> </home/mark/app/rs/tlm/PlaylistsTest.tlm>
           <recent1> </home/mark/app/rs/tlm/PlaylistsTest.tlm>
           <recent2> </home/mark/data/playlists-all.tlm>
@@ -21,18 +19,33 @@ uxf 1.0 TLM Config
       <volume> 0.7
     }
   <Magic> (:1F8B110CFF:)
-  <Nested Map>
-    {
-      <Classical> [5 yes]
-      <Modern Instrumental> [4 no]
-      <Nested List of Lists>
-        [list
-          [5 <Classical> yes]
-          [4 <Modern Instrumental> no]
-          [1 <New Acquistions> no]
+  <Nested Map> {
+      <Classical> [
+          5
+          yes
         ]
-      <Nested Table>
-        (Categories
+      <Modern Instrumental> [
+          4
+          no
+        ]
+      <Nested List of Lists> [list
+          [
+            5
+            <Classical>
+            yes
+          ]
+          [
+            4
+            <Modern Instrumental>
+            no
+          ]
+          [
+            1
+            <New Acquistions>
+            no
+          ]
+        ]
+      <Nested Table> (Categories
           5 <Classical> yes
           4 <Modern Instrumental> no
           1 <New Acquistions> no
@@ -41,7 +54,16 @@ uxf 1.0 TLM Config
           7 <Uncategorized> ?
           ? ? no
         )
-      <New Acquistions> [1 no]
+      <New Acquistions> [
+          1
+          no
+        ]
     }
-  <Window> {<height> 536 <scale> 1.1 <width> 590 <x> 383 <y> 124}
+  <Window> {
+      <height> 536
+      <scale> 1.1
+      <width> 590
+      <x> 383
+      <y> 124
+    }
 }

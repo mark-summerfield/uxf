@@ -6,11 +6,9 @@ uxf 1.0 TLM Config
 =#<0-255 per component> rgb red:int green:int blue:int
 =#<0-255 per component> rgba red:int green:int blue:int alpha:int
 {
-  <General>
-    {
+  <General> {
       <autosave> yes
-      <files>
-        (Files
+      <files> (Files
           <current> </home/mark/app/rs/tlm/PlaylistsTest.tlm>
           <recent1> </home/mark/app/rs/tlm/PlaylistsTest.tlm>
           <recent2> </home/mark/data/playlists-all.tlm>
@@ -20,27 +18,47 @@ uxf 1.0 TLM Config
       <volume> 0.7
     }
   <Magic> (:1F8B:)
-  <More Tests>
-    [#<A list of name value pairs; normally would be a map> 
-      <one> (IPv4 141 179 19 9) <many>
+  <More Tests> [#<A list of name value pairs; normally would be a map>
+      <one>
+      (IPv4 141 179 19 9)
+      <many>
       (IPv4
         172 16 254 1
         192 0 2 235
         127 0 0 1
-      ) <red> (rgb 255 0 0) <semi-transparent blue> (rgba 0 0 255 80)
+      )
+      <red>
+      (rgb 255 0 0)
+      <semi-transparent blue>
+      (rgba 0 0 255 80)
     ]
-  <Nested Map>
-    {
-      <Classical> [5 yes]
-      <Modern Instrumental> [4 no]
-      <Nested List of Lists>
-        [
-          [5 <Classical> yes]
-          [4 <Modern Instrumental> no]
-          [1 <New Acquistions> no]
+  <Nested Map> {
+      <Classical> [
+          5
+          yes
         ]
-      <Nested List of Tables>
-        [
+      <Modern Instrumental> [
+          4
+          no
+        ]
+      <Nested List of Lists> [
+          [
+            5
+            <Classical>
+            yes
+          ]
+          [
+            4
+            <Modern Instrumental>
+            no
+          ]
+          [
+            1
+            <New Acquistions>
+            no
+          ]
+        ]
+      <Nested List of Tables> [
           (Categories
             5 <Classical> yes
             4 <Modern Instrumental> no
@@ -65,8 +83,7 @@ uxf 1.0 TLM Config
             9 <Dire Straits> 2 no
           )
         ]
-      <Nested Table>
-        (Categories
+      <Nested Table> (Categories
           5 <Classical> yes
           4 <Modern Instrumental> no
           1 <New Acquistions> no
@@ -75,12 +92,20 @@ uxf 1.0 TLM Config
           7 <Uncategorized> no
           6 <Unpopular Pop> no
         )
-      <New Acquistions> [1 no]
+      <New Acquistions> [
+          1
+          no
+        ]
     }
-  <Window>
-    {
-      <pos> [383 124]
+  <Window> {
+      <pos> [
+          383
+          124
+        ]
       <scale> 1.1
-      <size> [590 536]
+      <size> [
+          590
+          536
+        ]
     }
 }

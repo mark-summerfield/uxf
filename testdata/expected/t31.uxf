@@ -1,19 +1,58 @@
 uxf 1.0
 =Categories CID:int Title:str Selected:bool
 =Playlists PID:int Title:str CID:int Selected:bool
-{<Nested Map>
-{
-  <Classical> [5 yes]
-  <Modern Instrumental> [4 no]
-  <Nested List of Lists>
-    [
-      [5 <Classical> yes]
-      [4 <Modern Instrumental> no]
-      [1 <New Acquistions> no]
-    ]
-  <Nested List of Tables>
-    [
-      (Categories
+{<Nested Map> {
+    <Classical> [
+        5
+        yes
+      ]
+    <Modern Instrumental> [
+        4
+        no
+      ]
+    <Nested List of Lists> [
+        [
+          5
+          <Classical>
+          yes
+        ]
+        [
+          4
+          <Modern Instrumental>
+          no
+        ]
+        [
+          1
+          <New Acquistions>
+          no
+        ]
+      ]
+    <Nested List of Tables> [
+        (Categories
+          5 <Classical> yes
+          4 <Modern Instrumental> no
+          1 <New Acquistions> no
+          2 <Pop> no
+          3 <Punk> no
+          7 <Uncategorized> no
+          6 <Unpopular Pop> no
+        )
+        (Playlists
+          4 <ABBA> 2 no
+          38 <Bach> 5 no
+          39 <Bartok> 5 no
+          5 <Beatles> 2 no
+          40 <Beethoven> 5 no
+          6 <Blondie> 2 no
+          52 <Bob Marley> 6 yes
+          7 <Bruce Springsteen> 2 no
+          41 <Chopin> 5 yes
+          37 <Classical> 5 no
+          8 <David Bowie> 2 no
+          9 <Dire Straits> 2 no
+        )
+      ]
+    <Nested Table> (Categories
         5 <Classical> yes
         4 <Modern Instrumental> no
         1 <New Acquistions> no
@@ -22,30 +61,8 @@ uxf 1.0
         7 <Uncategorized> no
         6 <Unpopular Pop> no
       )
-      (Playlists
-        4 <ABBA> 2 no
-        38 <Bach> 5 no
-        39 <Bartok> 5 no
-        5 <Beatles> 2 no
-        40 <Beethoven> 5 no
-        6 <Blondie> 2 no
-        52 <Bob Marley> 6 yes
-        7 <Bruce Springsteen> 2 no
-        41 <Chopin> 5 yes
-        37 <Classical> 5 no
-        8 <David Bowie> 2 no
-        9 <Dire Straits> 2 no
-      )
-    ]
-  <Nested Table>
-    (Categories
-      5 <Classical> yes
-      4 <Modern Instrumental> no
-      1 <New Acquistions> no
-      2 <Pop> no
-      3 <Punk> no
-      7 <Uncategorized> no
-      6 <Unpopular Pop> no
-    )
-  <New Acquistions> [1 no]
-}}
+    <New Acquistions> [
+        1
+        no
+      ]
+  }}

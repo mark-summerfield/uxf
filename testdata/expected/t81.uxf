@@ -1,7 +1,7 @@
 uxf 1.0
 #<last modified 1 April 2001 by John Doe>
-=#<use IP address in case network name resolution is not working> Database server:str port:int
-   file:str
+=#<use IP address in case network name resolution is not working> Database server:str port:int 
+file:str
 =Owner name:str organization:str
 [
   (Owner <John Doe> <Acme Widgets Inc.>)

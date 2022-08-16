@@ -3,14 +3,10 @@ uxf 1.0 TLM Config
 =IntQuad First:IntPair Second:IntPair
 [
   (IntPair 1 2)
-  (IntQuad (IntPair 1 2)
-  (IntPair 3 4))
+  (IntQuad (IntPair 1 2) (IntPair 3 4))
   (IntQuad
-    (IntPair 1 2)
-    (IntPair 3 4)
-    (IntPair 5 6)
-    (IntPair 7 8)
-    (IntPair 9 10)
-    (IntPair 11 12)
+    (IntPair 1 2) (IntPair 3 4)
+    (IntPair 5 6) (IntPair 7 8)
+    (IntPair 9 10) (IntPair 11 12)
   )
 ]

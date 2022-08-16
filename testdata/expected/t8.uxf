@@ -4,11 +4,9 @@ before evertthing else.>
 =Categories CID Title Selected
 =Files Kind Filename
 {
-  <General>
-    {
+  <General> {
       <autosave> yes
-      <files>
-        (Files
+      <files> (Files
           <current> </home/mark/app/rs/tlm/PlaylistsTest.tlm>
           <recent1> </home/mark/app/rs/tlm/PlaylistsTest.tlm>
           <recent2> </home/mark/data/playlists-all.tlm>
@@ -18,18 +16,33 @@ before evertthing else.>
       <volume> 0.7
     }
   <Magic> (:1F8B:)
-  <Nested Dict>
-    {
-      <Classical> [5 yes]
-      <Modern Instrumental> [4 no]
-      <Nested List of Lists>
-        [
-          [5 <Classical> yes]
-          [4 <Modern Instrumental> no]
-          [1 <New Acquistions> no]
+  <Nested Dict> {
+      <Classical> [
+          5
+          yes
         ]
-      <Nested Table>
-        (Categories
+      <Modern Instrumental> [
+          4
+          no
+        ]
+      <Nested List of Lists> [
+          [
+            5
+            <Classical>
+            yes
+          ]
+          [
+            4
+            <Modern Instrumental>
+            no
+          ]
+          [
+            1
+            <New Acquistions>
+            no
+          ]
+        ]
+      <Nested Table> (Categories
           5 <Classical> yes
           4 <Modern Instrumental> no
           1 <New Acquistions> no
@@ -38,7 +51,16 @@ before evertthing else.>
           ? ? no
           6 <Unpopular Pop> no
         )
-      <New Acquistions> [1 no]
+      <New Acquistions> [
+          1
+          no
+        ]
     }
-  <Window> {<height> 536 <scale> 1.1 <width> 590 <x> 383 <y> 124}
+  <Window> {
+      <height> 536
+      <scale> 1.1
+      <width> 590
+      <x> 383
+      <y> 124
+    }
 }
