@@ -103,57 +103,58 @@ class _PrettyPrinter(_EventMixin): # Functor that can be used as a visitor
 
 
     def begin(self):
-        if self.tokens and self.tokens[-1].kind is TokenKind.END:
+        if self.tokens and self.tokens[-1].kind is _PrintKind.END:
             self.rnl()
-        self.tokens.append(Token(TokenKind.BEGIN, depth=self.depth))
+        self.tokens.append(_PrintToken(_PrintKind.BEGIN, depth=self.depth))
 
 
     def end(self, *, num_records=None): # Don't need RWS before END
-        if self.tokens and self.tokens[-1].kind is TokenKind.RWS:
+        if self.tokens and self.tokens[-1].kind is _PrintKind.RWS:
             self.tokens.pop()
-        self.tokens.append(Token(TokenKind.END, depth=self.depth,
-                                 num_records=num_records))
+        self.tokens.append(_PrintToken(_PrintKind.END, depth=self.depth,
+                                       num_records=num_records))
 
 
     def puts(self, s, num_records=None):
         if self.tokens:
             token = self.tokens[-1]
-            if (token.kind is TokenKind.STRING and
+            if (token.kind is _PrintKind.STRING and
                     not token.is_multiline and
                     not token.text.endswith('\n')):
                 token.text += s
                 if num_records is not None and token.num_records is None:
                     token.num_records = num_records
                 return
-        self.tokens.append(Token(TokenKind.STRING, s, depth=self.depth,
-                                 num_records=num_records))
+        self.tokens.append(_PrintToken(_PrintKind.STRING, s,
+                                       depth=self.depth,
+                                       num_records=num_records))
 
 
     def rws(self): # Don't need duplicate RWS; don't need RWS if RNL present
         if self.tokens:
             pos = -1
-            if (self.tokens[pos].kind is TokenKind.END and
+            if (self.tokens[pos].kind is _PrintKind.END and
                     len(self.tokens) > 1):
                 pos -= 1
-            if self.tokens[pos].kind in {TokenKind.RWS, TokenKind.RNL}:
+            if self.tokens[pos].kind in {_PrintKind.RWS, _PrintKind.RNL}:
                 return
-        self.tokens.append(Token(TokenKind.RWS, depth=self.depth))
+        self.tokens.append(_PrintToken(_PrintKind.RWS, depth=self.depth))
 
 
     def rnl(self): # Don't need RWS before newline; don't need dup RNL
         if self.tokens:
-            if self.tokens[-1].kind is TokenKind.RWS:
+            if self.tokens[-1].kind is _PrintKind.RWS:
                 self.tokens.pop()
-            if self.tokens[-1].kind is TokenKind.RNL or (
+            if self.tokens[-1].kind is _PrintKind.RNL or (
                     len(self.tokens) > 1 and
-                    self.tokens[-1].kind is TokenKind.END and
-                    self.tokens[-2].kind is TokenKind.RNL):
+                    self.tokens[-1].kind is _PrintKind.END and
+                    self.tokens[-2].kind is _PrintKind.RNL):
                 return
-        self.tokens.append(Token(TokenKind.RNL, depth=self.depth))
+        self.tokens.append(_PrintToken(_PrintKind.RNL, depth=self.depth))
 
 
     def eof(self):
-        self.tokens.append(Token(TokenKind.EOF, depth=self.depth))
+        self.tokens.append(_PrintToken(_PrintKind.EOF, depth=self.depth))
 
 
     def handle_header(self, value):
@@ -228,7 +229,7 @@ class _PrettyPrinter(_EventMixin): # Functor that can be used as a visitor
 
 
     def handle_list_end(self):
-        if self.tokens[-1].kind is TokenKind.RWS:
+        if self.tokens[-1].kind is _PrintKind.RWS:
             self.tokens.pop() # Don't need RWS before closer
         self.depth -= 1
         self.puts(']')
@@ -258,7 +259,7 @@ class _PrettyPrinter(_EventMixin): # Functor that can be used as a visitor
 
 
     def handle_map_end(self):
-        if self.tokens[-1].kind is TokenKind.RWS:
+        if self.tokens[-1].kind is _PrintKind.RWS:
             self.tokens.pop() # Don't need RWS before closer
         self.depth -= 1
         self.puts('}')
@@ -282,7 +283,7 @@ class _PrettyPrinter(_EventMixin): # Functor that can be used as a visitor
 
 
     def handle_table_end(self):
-        if self.tokens[-1].kind is TokenKind.RWS:
+        if self.tokens[-1].kind is _PrintKind.RWS:
             self.tokens.pop() # Don't need RWS before closer
         self.depth -= 1
         self.puts(')')
@@ -418,17 +419,17 @@ class _Writer:
         while self.tp < len(self.tokens):
             token = self.tokens[self.tp]
             self.tp += 1
-            if token.kind is TokenKind.BEGIN:
+            if token.kind is _PrintKind.BEGIN:
                 self.begin(token)
-            elif token.kind is TokenKind.STRING:
+            elif token.kind is _PrintKind.STRING:
                 self.string(token)
-            elif token.kind is TokenKind.RWS:
+            elif token.kind is _PrintKind.RWS:
                 self.rws()
-            elif token.kind is TokenKind.RNL:
+            elif token.kind is _PrintKind.RNL:
                 self.rnl()
-            elif token.kind is TokenKind.END:
+            elif token.kind is _PrintKind.END:
                 pass
-            elif token.kind is TokenKind.EOF:
+            elif token.kind is _PrintKind.EOF:
                 break
         if not self.end_nl:
             self.write('\n')
@@ -455,14 +456,14 @@ class _Writer:
         while needed < self.width and i < len(self.tokens):
             token = self.tokens[i]
             i += 1
-            if token.kind is TokenKind.END:
+            if token.kind is _PrintKind.END:
                 if token.depth == depth: # matching end
                     return i
-            elif token.kind in {TokenKind.RNL, TokenKind.EOF}:
+            elif token.kind in {_PrintKind.RNL, _PrintKind.EOF}:
                 return i # de-facto; forced onto newline anyway or EOF
-            elif token.kind is TokenKind.RWS:
+            elif token.kind is _PrintKind.RWS:
                 needed += 1
-            elif token.kind is TokenKind.STRING:
+            elif token.kind is _PrintKind.STRING:
                 needed += len(token.text)
                 if token.is_multiline:
                     return i # de-facto; forced onto newline anyway
@@ -473,17 +474,17 @@ class _Writer:
         while self.tp < i: # room for more
             token = self.tokens[self.tp]
             self.tp += 1
-            if token.kind is TokenKind.STRING:
+            if token.kind is _PrintKind.STRING:
                 self.write(token.text)
                 if token.is_multiline:
                     break
-            elif token.kind is TokenKind.RWS:
+            elif token.kind is _PrintKind.RWS:
                 self.rws()
-            elif token.kind is TokenKind.RNL:
+            elif token.kind is _PrintKind.RNL:
                 self.rnl()
-            elif token.kind in {TokenKind.BEGIN, TokenKind.END}:
+            elif token.kind in {_PrintKind.BEGIN, _PrintKind.END}:
                 pass
-            elif token.kind is TokenKind.EOF:
+            elif token.kind is _PrintKind.EOF:
                 break
 
 
@@ -566,7 +567,7 @@ class _Writer:
 
 
 @enum.unique
-class TokenKind(enum.Enum):
+class _PrintKind(enum.Enum):
     BEGIN = enum.auto()
     END = enum.auto()
     STRING = enum.auto()
@@ -575,7 +576,7 @@ class TokenKind(enum.Enum):
     EOF = enum.auto()
 
 
-class Token:
+class _PrintToken:
 
     def __init__(self, kind, text='', *, depth=0, num_records=0):
         self.kind = kind
