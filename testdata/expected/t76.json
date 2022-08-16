@@ -70,6 +70,503 @@
         "vtype": null,
         "list": []
       }
-    }
+    },
+    {
+      "UXF^table": {
+        "name": "Contact",
+        "comment": null,
+        "fields": {
+          "name": "str",
+          "phone": "str",
+          "id": "int"
+        },
+        "records": []
+      }
+    },
+    {
+      "UXF^map": {
+        "comment": null,
+        "ktype": "int",
+        "vtype": "Contact",
+        "map": {}
+      }
+    },
+    {
+      "UXF^map": {
+        "comment": null,
+        "ktype": "str",
+        "vtype": "datetime",
+        "map": {}
+      }
+    },
+    {
+      "UXF^map": {
+        "comment": null,
+        "ktype": "date",
+        "vtype": null,
+        "map": {}
+      }
+    },
+    {},
+    {
+      "UXF^list": {
+        "comment": null,
+        "vtype": "date",
+        "list": []
+      }
+    },
+    [],
+    {
+      "UXF^table": {
+        "name": "Contact",
+        "comment": "singleton table",
+        "fields": {
+          "name": "str",
+          "phone": "str",
+          "id": "int"
+        },
+        "records": [
+          [
+            "Jane Doe",
+            "555 1234 5668",
+            498
+          ]
+        ]
+      }
+    },
+    {
+      "UXF^map": {
+        "comment": "singleton map with ktype and vtype",
+        "ktype": "int",
+        "vtype": "Contact",
+        "map": {
+          "300": {
+            "UXF^table": {
+              "name": "Contact",
+              "comment": null,
+              "fields": {
+                "name": "str",
+                "phone": "str",
+                "id": "int"
+              },
+              "records": [
+                [
+                  "John Doe",
+                  null,
+                  380
+                ]
+              ]
+            }
+          }
+        },
+        "itype": "uxf"
+      }
+    },
+    {
+      "UXF^map": {
+        "comment": "singleton map with ktype and vtype",
+        "ktype": "str",
+        "vtype": "datetime",
+        "map": {
+          "When": {
+            "UXF^datetime": "1948-11-21T18:06:00"
+          }
+        }
+      }
+    },
+    {
+      "UXF^map": {
+        "comment": "singleton map with ktype",
+        "ktype": "date",
+        "vtype": null,
+        "map": {
+          "1952-02-24": 3.85
+        },
+        "itype": "uxf"
+      }
+    },
+    {
+      "UXF^map": {
+        "comment": "singleton map",
+        "ktype": null,
+        "vtype": null,
+        "map": {
+          "15": 19
+        },
+        "itype": "uxf"
+      }
+    },
+    {
+      "UXF^list": {
+        "comment": "singleton list with vtype",
+        "vtype": "date",
+        "list": [
+          {
+            "UXF^date": "1963-05-15"
+          }
+        ]
+      }
+    },
+    {
+      "UXF^list": {
+        "comment": "singleton list",
+        "vtype": null,
+        "list": [
+          "One"
+        ]
+      }
+    },
+    {
+      "UXF^table": {
+        "name": "Contact",
+        "comment": null,
+        "fields": {
+          "name": "str",
+          "phone": "str",
+          "id": "int"
+        },
+        "records": [
+          [
+            "Jane Doe",
+            "555 1234 5668",
+            498
+          ]
+        ]
+      }
+    },
+    {
+      "UXF^map": {
+        "comment": null,
+        "ktype": "int",
+        "vtype": "Contact",
+        "map": {
+          "300": {
+            "UXF^table": {
+              "name": "Contact",
+              "comment": null,
+              "fields": {
+                "name": "str",
+                "phone": "str",
+                "id": "int"
+              },
+              "records": [
+                [
+                  "John Doe",
+                  null,
+                  380
+                ]
+              ]
+            }
+          }
+        },
+        "itype": "uxf"
+      }
+    },
+    {
+      "UXF^map": {
+        "comment": null,
+        "ktype": "str",
+        "vtype": "datetime",
+        "map": {
+          "When": {
+            "UXF^datetime": "1948-11-21T18:06:00"
+          }
+        }
+      }
+    },
+    {
+      "UXF^map": {
+        "comment": null,
+        "ktype": "date",
+        "vtype": null,
+        "map": {
+          "1952-02-24": 3.85
+        },
+        "itype": "uxf"
+      }
+    },
+    {
+      "UXF^map": {
+        "comment": null,
+        "ktype": null,
+        "vtype": null,
+        "map": {
+          "15": 19
+        },
+        "itype": "uxf"
+      }
+    },
+    {
+      "UXF^list": {
+        "comment": null,
+        "vtype": "date",
+        "list": [
+          {
+            "UXF^date": "1963-05-15"
+          }
+        ]
+      }
+    },
+    [
+      "One"
+    ],
+    {
+      "UXF^table": {
+        "name": "Contact",
+        "comment": "two element table",
+        "fields": {
+          "name": "str",
+          "phone": "str",
+          "id": "int"
+        },
+        "records": [
+          [
+            "Jane Doe",
+            "555 1234 5668",
+            498
+          ],
+          [
+            "Sam Smith",
+            "555 9876 5432",
+            571
+          ]
+        ]
+      }
+    },
+    {
+      "UXF^map": {
+        "comment": "two element map with ktype and vtype",
+        "ktype": "int",
+        "vtype": "Contact",
+        "map": {
+          "300": {
+            "UXF^table": {
+              "name": "Contact",
+              "comment": null,
+              "fields": {
+                "name": "str",
+                "phone": "str",
+                "id": "int"
+              },
+              "records": [
+                [
+                  "John Doe",
+                  null,
+                  380
+                ]
+              ]
+            }
+          },
+          "400": {
+            "UXF^table": {
+              "name": "Contact",
+              "comment": null,
+              "fields": {
+                "name": "str",
+                "phone": "str",
+                "id": "int"
+              },
+              "records": [
+                [
+                  "Red Rover",
+                  "555 0012 2100",
+                  385
+                ]
+              ]
+            }
+          }
+        },
+        "itype": "uxf"
+      }
+    },
+    {
+      "UXF^map": {
+        "comment": "two element map with ktype and vtype",
+        "ktype": "str",
+        "vtype": "datetime",
+        "map": {
+          "Then": {
+            "UXF^datetime": "1939-01-22T03:14:17"
+          },
+          "When": {
+            "UXF^datetime": "1948-11-21T18:06:00"
+          }
+        }
+      }
+    },
+    {
+      "UXF^map": {
+        "comment": "two element map with ktype",
+        "ktype": "date",
+        "vtype": null,
+        "map": {
+          "1952-02-24": 3.85,
+          "1956-05-25": 14.71
+        },
+        "itype": "uxf"
+      }
+    },
+    {
+      "UXF^map": {
+        "comment": "two element map",
+        "ktype": null,
+        "vtype": null,
+        "map": {
+          "15": 19,
+          "16": 23
+        },
+        "itype": "uxf"
+      }
+    },
+    {
+      "UXF^list": {
+        "comment": "two element list with vtype",
+        "vtype": "date",
+        "list": [
+          {
+            "UXF^date": "1963-05-15"
+          },
+          {
+            "UXF^date": "1964-08-11"
+          }
+        ]
+      }
+    },
+    {
+      "UXF^list": {
+        "comment": "two element list",
+        "vtype": null,
+        "list": [
+          "One",
+          "Two"
+        ]
+      }
+    },
+    {
+      "UXF^table": {
+        "name": "Contact",
+        "comment": null,
+        "fields": {
+          "name": "str",
+          "phone": "str",
+          "id": "int"
+        },
+        "records": [
+          [
+            "Jane Doe",
+            "555 1234 5668",
+            498
+          ],
+          [
+            "Sam Smith",
+            "555 9876 5432",
+            571
+          ]
+        ]
+      }
+    },
+    {
+      "UXF^map": {
+        "comment": null,
+        "ktype": "int",
+        "vtype": "Contact",
+        "map": {
+          "300": {
+            "UXF^table": {
+              "name": "Contact",
+              "comment": null,
+              "fields": {
+                "name": "str",
+                "phone": "str",
+                "id": "int"
+              },
+              "records": [
+                [
+                  "John Doe",
+                  null,
+                  380
+                ]
+              ]
+            }
+          },
+          "400": {
+            "UXF^table": {
+              "name": "Contact",
+              "comment": null,
+              "fields": {
+                "name": "str",
+                "phone": "str",
+                "id": "int"
+              },
+              "records": [
+                [
+                  "Red Rover",
+                  "555 0012 2100",
+                  385
+                ]
+              ]
+            }
+          }
+        },
+        "itype": "uxf"
+      }
+    },
+    {
+      "UXF^map": {
+        "comment": null,
+        "ktype": "str",
+        "vtype": "datetime",
+        "map": {
+          "Then": {
+            "UXF^datetime": "1939-01-22T03:14:17"
+          },
+          "When": {
+            "UXF^datetime": "1948-11-21T18:06:00"
+          }
+        }
+      }
+    },
+    {
+      "UXF^map": {
+        "comment": null,
+        "ktype": "date",
+        "vtype": null,
+        "map": {
+          "1952-02-24": 3.85,
+          "1956-05-25": 14.71
+        },
+        "itype": "uxf"
+      }
+    },
+    {
+      "UXF^map": {
+        "comment": null,
+        "ktype": null,
+        "vtype": null,
+        "map": {
+          "15": 19,
+          "16": 23
+        },
+        "itype": "uxf"
+      }
+    },
+    {
+      "UXF^list": {
+        "comment": null,
+        "vtype": "date",
+        "list": [
+          {
+            "UXF^date": "1963-05-15"
+          },
+          {
+            "UXF^date": "1964-08-11"
+          }
+        ]
+      }
+    },
+    [
+      "One",
+      "Two"
+    ]
   ]
 }

@@ -30,11 +30,12 @@ def main():
 class _PrettyPrinter(_EventMixin): # Functor that can be used as a visitor
 
     def __init__(self, *, wrap_width=96, realdp=None, indent='   ',
-                 on_event=uxf.on_event):
+                 on_event=uxf.on_event, _debug=False):
         self.wrap_width = wrap_width
         self.realdp = realdp
         self.indent = indent
         self.on_event = on_event
+        self._debug = _debug
         self.lino = 0 # for on_event
         self.tokens = []
         self.depth = 0
@@ -92,7 +93,8 @@ class _PrettyPrinter(_EventMixin): # Functor that can be used as a visitor
             self.begin()
         elif kind is uxf.VisitKind.RECORD_END:
             self.end()
-            self.rnl()
+            if self.table_row_counts[-1] > 1:
+                self.rnl()
         elif kind is uxf.VisitKind.VALUE:
             self.handle_scalar(value)
 
@@ -111,6 +113,15 @@ class _PrettyPrinter(_EventMixin): # Functor that can be used as a visitor
 
 
     def puts(self, s, num_records=None):
+        if self.tokens:
+            token = self.tokens[-1]
+            if (token.kind is TokenKind.STRING and
+                    not token.is_multiline and
+                    not token.text.endswith('\n')):
+                token.text += s
+                if num_records is not None and token.num_records is None:
+                    token.num_records = num_records
+                return
         self.tokens.append(Token(TokenKind.STRING, s, depth=self.depth,
                                  num_records=num_records))
 
@@ -201,6 +212,10 @@ class _PrettyPrinter(_EventMixin): # Functor that can be used as a visitor
             if value.comment:
                 self.rws()
             self.puts(value.vtype)
+            if len(value):
+                self.rws()
+        elif value.comment and len(value):
+            self.rws()
         self.depth += 1
 
 
@@ -220,9 +235,14 @@ class _PrettyPrinter(_EventMixin): # Functor that can be used as a visitor
         if value.ktype:
             if value.comment:
                 self.rws()
-            self.puts(value.ktype)
+            text = value.ktype
             if value.vtype:
-                self.puts(f' {value.vtype}')
+                text += f' {value.vtype}'
+            self.puts(text)
+            if len(value):
+                self.rws()
+        elif value.comment and len(value):
+            self.rws()
         self.depth += 1
 
 
@@ -240,6 +260,7 @@ class _PrettyPrinter(_EventMixin): # Functor that can be used as a visitor
         self.puts('(')
         if value.comment:
             self.handle_comment(value.comment)
+            self.rws()
         self.puts(value.ttype, num_records=len(value))
         if len(value) == 1:
             self.rws()
@@ -350,18 +371,21 @@ class _PrettyPrinter(_EventMixin): # Functor that can be used as a visitor
             return
         out = out or io.StringIO()
         writer = _Writer(self.tokens, out, wrap_width=self.wrap_width,
-                         realdp=self.realdp, indent=self.indent)
+                         realdp=self.realdp, indent=self.indent,
+                         debug=self._debug)
         writer.pprint()
 
 
 class _Writer:
 
-    def __init__(self, tokens, out, *, wrap_width, realdp, indent):
+    def __init__(self, tokens, out, *, wrap_width, realdp, indent,
+                 debug=False):
         self.tokens = tokens
         self.out = out
-        self.width = wrap_width
+        self.width = wrap_width + 1 # since we compare with < not <=
         self.realdp = realdp
         self.indent = indent
+        self.debug = debug
         self.pos = 0
         self.tp = 0
         self.end_nl = False
@@ -370,17 +394,13 @@ class _Writer:
     def pprint(self):
         if not self.tokens:
             return
-
-        # TODO delete
-        if 1:
+        if self.debug:
             sys.stderr.write(' TOKENS '.center(40, '-'))
             sys.stderr.write('\n')
             for i, token in enumerate(self.tokens):
                 sys.stderr.write(f'{token}\n')
             sys.stderr.write(' === '.center(40, '-'))
             sys.stderr.write('\n')
-        # end delete
-
         self.pos = 0
         self.tp = 0
         while self.tp < len(self.tokens):
@@ -535,12 +555,12 @@ class _Writer:
 
 @enum.unique
 class TokenKind(enum.Enum):
-    BEGIN = '▶'
-    END = '◀'
-    STRING = ' '
-    RWS = '␣ ' # required whitespace: output either ' ' or '\n'
-    RNL = '⏎ ' # required newline: output '\n'
-    EOF = '■'
+    BEGIN = enum.auto()
+    END = enum.auto()
+    STRING = enum.auto()
+    RWS = enum.auto() # required whitespace: output either ' ' or '\n'
+    RNL = enum.auto() # required newline: output '\n'
+    EOF = enum.auto()
 
 
 class Token:
@@ -560,8 +580,8 @@ class Token:
     def __repr__(self):
         text = self.depth * '   '
         if self.num_records:
-            text += f'{self.num_records} × '
-        text += self.kind.name # .text
+            text += f'{self.num_records}* '
+        text += self.kind.name
         if self.text:
             text += f' {self.text!r}'
         return text

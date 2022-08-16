@@ -15,5 +15,290 @@
     <map comment="empty map"/>
     <list vtype="date" comment="empty list with vtype"/>
     <list comment="empty list"/>
+    <table name="Contact"/>
+    <map ktype="int" vtype="Contact"/>
+    <map ktype="str" vtype="datetime"/>
+    <map ktype="date"/>
+    <map/>
+    <list vtype="date"/>
+    <list/>
+    <table name="Contact" comment="singleton table">
+      <row>
+        <str>Jane Doe</str>
+        <str>555 1234 5668</str>
+        <int v="498"/>
+      </row>
+    </table>
+    <map ktype="int" vtype="Contact" comment="singleton map with ktype and vtype">
+      <key>
+        <int v="300"/>
+      </key>
+      <value>
+        <table name="Contact">
+          <row>
+            <str>John Doe</str>
+            <null/>
+            <int v="380"/>
+          </row>
+        </table>
+      </value>
+    </map>
+    <map ktype="str" vtype="datetime" comment="singleton map with ktype and vtype">
+      <key>
+        <str>When</str>
+      </key>
+      <value>
+        <datetime v="1948-11-21T18:06:00"/>
+      </value>
+    </map>
+    <map ktype="date" comment="singleton map with ktype">
+      <key>
+        <date v="1952-02-24"/>
+      </key>
+      <value>
+        <real v="3.85"/>
+      </value>
+    </map>
+    <map comment="singleton map">
+      <key>
+        <int v="15"/>
+      </key>
+      <value>
+        <int v="19"/>
+      </value>
+    </map>
+    <list vtype="date" comment="singleton list with vtype">
+      <date v="1963-05-15"/>
+    </list>
+    <list comment="singleton list">
+      <str>One</str>
+    </list>
+    <table name="Contact">
+      <row>
+        <str>Jane Doe</str>
+        <str>555 1234 5668</str>
+        <int v="498"/>
+      </row>
+    </table>
+    <map ktype="int" vtype="Contact">
+      <key>
+        <int v="300"/>
+      </key>
+      <value>
+        <table name="Contact">
+          <row>
+            <str>John Doe</str>
+            <null/>
+            <int v="380"/>
+          </row>
+        </table>
+      </value>
+    </map>
+    <map ktype="str" vtype="datetime">
+      <key>
+        <str>When</str>
+      </key>
+      <value>
+        <datetime v="1948-11-21T18:06:00"/>
+      </value>
+    </map>
+    <map ktype="date">
+      <key>
+        <date v="1952-02-24"/>
+      </key>
+      <value>
+        <real v="3.85"/>
+      </value>
+    </map>
+    <map>
+      <key>
+        <int v="15"/>
+      </key>
+      <value>
+        <int v="19"/>
+      </value>
+    </map>
+    <list vtype="date">
+      <date v="1963-05-15"/>
+    </list>
+    <list>
+      <str>One</str>
+    </list>
+    <table name="Contact" comment="two element table">
+      <row>
+        <str>Jane Doe</str>
+        <str>555 1234 5668</str>
+        <int v="498"/>
+      </row>
+      <row>
+        <str>Sam Smith</str>
+        <str>555 9876 5432</str>
+        <int v="571"/>
+      </row>
+    </table>
+    <map ktype="int" vtype="Contact" comment="two element map with ktype and vtype">
+      <key>
+        <int v="300"/>
+      </key>
+      <value>
+        <table name="Contact">
+          <row>
+            <str>John Doe</str>
+            <null/>
+            <int v="380"/>
+          </row>
+        </table>
+      </value>
+      <key>
+        <int v="400"/>
+      </key>
+      <value>
+        <table name="Contact">
+          <row>
+            <str>Red Rover</str>
+            <str>555 0012 2100</str>
+            <int v="385"/>
+          </row>
+        </table>
+      </value>
+    </map>
+    <map ktype="str" vtype="datetime" comment="two element map with ktype and vtype">
+      <key>
+        <str>Then</str>
+      </key>
+      <value>
+        <datetime v="1939-01-22T03:14:17"/>
+      </value>
+      <key>
+        <str>When</str>
+      </key>
+      <value>
+        <datetime v="1948-11-21T18:06:00"/>
+      </value>
+    </map>
+    <map ktype="date" comment="two element map with ktype">
+      <key>
+        <date v="1952-02-24"/>
+      </key>
+      <value>
+        <real v="3.85"/>
+      </value>
+      <key>
+        <date v="1956-05-25"/>
+      </key>
+      <value>
+        <real v="14.71"/>
+      </value>
+    </map>
+    <map comment="two element map">
+      <key>
+        <int v="15"/>
+      </key>
+      <value>
+        <int v="19"/>
+      </value>
+      <key>
+        <int v="16"/>
+      </key>
+      <value>
+        <int v="23"/>
+      </value>
+    </map>
+    <list vtype="date" comment="two element list with vtype">
+      <date v="1963-05-15"/>
+      <date v="1964-08-11"/>
+    </list>
+    <list comment="two element list">
+      <str>One</str>
+      <str>Two</str>
+    </list>
+    <table name="Contact">
+      <row>
+        <str>Jane Doe</str>
+        <str>555 1234 5668</str>
+        <int v="498"/>
+      </row>
+      <row>
+        <str>Sam Smith</str>
+        <str>555 9876 5432</str>
+        <int v="571"/>
+      </row>
+    </table>
+    <map ktype="int" vtype="Contact">
+      <key>
+        <int v="300"/>
+      </key>
+      <value>
+        <table name="Contact">
+          <row>
+            <str>John Doe</str>
+            <null/>
+            <int v="380"/>
+          </row>
+        </table>
+      </value>
+      <key>
+        <int v="400"/>
+      </key>
+      <value>
+        <table name="Contact">
+          <row>
+            <str>Red Rover</str>
+            <str>555 0012 2100</str>
+            <int v="385"/>
+          </row>
+        </table>
+      </value>
+    </map>
+    <map ktype="str" vtype="datetime">
+      <key>
+        <str>Then</str>
+      </key>
+      <value>
+        <datetime v="1939-01-22T03:14:17"/>
+      </value>
+      <key>
+        <str>When</str>
+      </key>
+      <value>
+        <datetime v="1948-11-21T18:06:00"/>
+      </value>
+    </map>
+    <map ktype="date">
+      <key>
+        <date v="1952-02-24"/>
+      </key>
+      <value>
+        <real v="3.85"/>
+      </value>
+      <key>
+        <date v="1956-05-25"/>
+      </key>
+      <value>
+        <real v="14.71"/>
+      </value>
+    </map>
+    <map>
+      <key>
+        <int v="15"/>
+      </key>
+      <value>
+        <int v="19"/>
+      </value>
+      <key>
+        <int v="16"/>
+      </key>
+      <value>
+        <int v="23"/>
+      </value>
+    </map>
+    <list vtype="date">
+      <date v="1963-05-15"/>
+      <date v="1964-08-11"/>
+    </list>
+    <list>
+      <str>One</str>
+      <str>Two</str>
+    </list>
   </list>
 </uxf>
