@@ -40,6 +40,7 @@ class _PrettyPrinter(_EventMixin): # Functor that can be used as a visitor
         self.tokens = []
         self.depth = 0
         self.table_row_counts = []
+        self.item_counts = []
 
 
     @property
@@ -85,6 +86,8 @@ class _PrettyPrinter(_EventMixin): # Functor that can be used as a visitor
             self.begin()
         elif kind is uxf.VisitKind.ITEM_END:
             self.end()
+            if self.item_counts[-1] > 1:
+                self.rnl()
         elif kind is uxf.VisitKind.TABLE_BEGIN:
             self.handle_table_begin(value)
         elif kind is uxf.VisitKind.TABLE_END:
@@ -101,7 +104,7 @@ class _PrettyPrinter(_EventMixin): # Functor that can be used as a visitor
 
     def begin(self):
         if self.tokens and self.tokens[-1].kind is TokenKind.END:
-            self.rws()
+            self.rnl()
         self.tokens.append(Token(TokenKind.BEGIN, depth=self.depth))
 
 
@@ -138,10 +141,15 @@ class _PrettyPrinter(_EventMixin): # Functor that can be used as a visitor
 
 
     def rnl(self): # Don't need RWS before newline; don't need dup RNL
-        if self.tokens and self.tokens[-1].kind is TokenKind.RWS:
-            self.tokens.pop()
-        if not self.tokens or self.tokens[-1] is not TokenKind.RNL:
-            self.tokens.append(Token(TokenKind.RNL, depth=self.depth))
+        if self.tokens:
+            if self.tokens[-1].kind is TokenKind.RWS:
+                self.tokens.pop()
+            if self.tokens[-1].kind is TokenKind.RNL or (
+                    len(self.tokens) > 1 and
+                    self.tokens[-1].kind is TokenKind.END and
+                    self.tokens[-2].kind is TokenKind.RNL):
+                return
+        self.tokens.append(Token(TokenKind.RNL, depth=self.depth))
 
 
     def eof(self):
@@ -228,6 +236,7 @@ class _PrettyPrinter(_EventMixin): # Functor that can be used as a visitor
 
 
     def handle_map_begin(self, value):
+        self.item_counts.append(len(value))
         self.begin()
         self.puts('{')
         if value.comment:
@@ -239,9 +248,11 @@ class _PrettyPrinter(_EventMixin): # Functor that can be used as a visitor
             if value.vtype:
                 text += f' {value.vtype}'
             self.puts(text)
-            if len(value):
+            if len(value) == 1:
                 self.rws()
-        elif value.comment and len(value):
+        if len(value) > 1:
+            self.rnl()
+        elif value.comment and len(value) == 1:
             self.rws()
         self.depth += 1
 
@@ -252,6 +263,7 @@ class _PrettyPrinter(_EventMixin): # Functor that can be used as a visitor
         self.depth -= 1
         self.puts('}')
         self.end()
+        self.item_counts.pop()
 
 
     def handle_table_begin(self, value):
