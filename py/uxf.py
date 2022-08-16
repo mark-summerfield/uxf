@@ -2487,6 +2487,7 @@ class _PrettyPrinter(_EventMixin): # Functor that can be used as a visitor
         self.depth -= 1
         self.puts(']')
         self.end()
+        self.rws()
         self.list_value_counts.pop()
 
 
@@ -2579,9 +2580,15 @@ class _PrettyPrinter(_EventMixin): # Functor that can be used as a visitor
 
     def handle_str(self, value, *, prefix='', suffix=''):
         text = escape(value)
-        if self.wrap_width and len(text) + 2 >= self.wrap_width:
+        span = self.wrap_width - len(prefix)
+        ampersand = False
+        for line in text.splitlines():
+            if len(line) > span:
+                ampersand = True
+                break
+        if ampersand: # TODO This doesn't produce nice output
             ampersand = False
-            span = self.wrap_width - 2
+            span = self.wrap_width - 4
             while text: # Try to split on words or newlines first
                 i = text.rfind(' ', 0, span)
                 if i == -1:
@@ -2591,37 +2598,43 @@ class _PrettyPrinter(_EventMixin): # Functor that can be used as a visitor
                     if ampersand:
                         self.ampersand()
                     self.puts(f'{prefix}<{text[:i]}>')
+                    prefix = ''
                     text = text[i:]
                     ampersand = True
-                    prefix = ''
                 else:
                     break
             # if we can't split on words, split anywhere
-            if text:
-                for i in range(0, len(text), span):
+            while text:
+                chunk = text[:span]
+                text = text[span:]
+                if chunk:
                     if ampersand:
                         self.ampersand()
-                    self.puts(f'{prefix}<{text[i:i + span]}>')
-                    ampersand = True
+                    self.puts(f'{prefix}<{chunk}>')
                     prefix = ''
+                    ampersand = True
             self.rnl() # newline always follows multiline bytes or str
         else:
             self.puts(f'{prefix}<{text}>{suffix}')
 
 
     def ampersand(self):
-        self.rws()
         self.puts('&')
-        self.rws()
+        self.rnl()
 
 
     def handle_bytes(self, value):
         text = value.hex().upper()
-        if len(text) + 4 >= self.wrap_width:
-            span = self.wrap_width - 2
+        if self.wrap_width and len(text) + 4 >= self.wrap_width:
+            span = self.wrap_width - len(self.indent)
             self.puts('(:')
-            for i in range(0, len(text), span):
-                self.puts(text[i:i + span])
+            self.rnl()
+            while text:
+                chunk = text[:span]
+                text = text[span:]
+                if chunk:
+                    self.puts(f'{self.indent}{chunk}')
+                    self.rnl()
             self.puts(':)')
             self.rnl() # newline always follows multiline bytes or str
         else:

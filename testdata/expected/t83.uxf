@@ -8,7 +8,11 @@ uxf 1.0
 =Server name:str ip:str dc:str
 [
   (Owner <Tom Preston-Werner> (DateTime 1979-05-27T07:32:00 <-08:00>))
-  (Database <192.168.1.1> [8000 8001 8002] 5000 yes)
+  (Database <192.168.1.1> [
+    8000
+    8001
+    8002
+  ] 5000 yes)
   (Server
     <alpha> <10.0.0.1> <eqdc10>
     <beta> <10.0.0.2> <eqdc10>

@@ -6,5 +6,10 @@ uxf 1.0
 One way to avoid the warnings is to use them for empty tables.>
   (IntPair)
   (IP4 168 1 4 29 192 0 18 27)
-  (RGB)
+  (#<This is a very long comment just to check that long comments work the same as for long strings, i.e., they are
+split using the &amp; string concatenation oprator as needed> RGB)
+  <This is a very long string that has some
+newlines but even so,
+also has at least one line that exceeds the default pretty print wrap width of ninety six characters and so will
+be split into pieces using the &amp; string concatenation operator.>
 ]
