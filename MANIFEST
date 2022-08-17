@@ -24,7 +24,6 @@ rs/tests/test_uxf.rs # TODO more, incl. == and is_equivalent()
 rs/Cargo.toml
 rs/README.md
 
-# TODO prettyprint failure: t38 ugly output for & string concatenation
 py/uxf.py
 py/oppen.py # TODO delete
 py/uxfconvert.py
