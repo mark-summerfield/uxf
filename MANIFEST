@@ -25,7 +25,6 @@ rs/Cargo.toml
 rs/README.md
 
 py/uxf.py
-py/oppen.py # TODO delete
 py/uxfconvert.py
 py/uxflint.py
 py/uxfcompare.py
