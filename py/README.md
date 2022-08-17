@@ -581,9 +581,9 @@ your needs. For `realdp`, `None` signifies use however many digits after the
 decimal point are needed for UXF ``real``'s (i.e., for Python ``float``'s);
 otherwise specify a value 0-15.
 
-For example, if you had a `Uxf` object with a table and wanted the output
-with ``real``s output with 3 decimal places, you could pass a format of
-`Format(realdp=3)`.
+For example, if you had a `Uxf` object wanted the output to limit lines to
+72 characters and to use 3 decimal places for ``real``s, you could pass a
+format of `Format(wrap_width=72, realdp=3)`.
 
 <a name="error-class"></a>
 #### Error
@@ -795,6 +795,10 @@ or
 
 ## Changes
 
+- 2.4.0 `dump()` and `dumps()` now use the pretty printing algorithm which
+  produces much neater and more consistent output than prefer. It also means
+  that `wrap_width` is properly respected even for `bytes` and for long
+  ``str``s.
 - 2.3.1 When ``str``s and `bytes` are output they now respect the
   `wrap_width`. The formatting is still unsatisfactory though: a proper
   pretty printing algorithm needs to be used.

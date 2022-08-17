@@ -16,7 +16,7 @@
 This example shows how to use the `Uxf.visit()` method to iterate over a UXF
 file's contents. In this case it is used to operate on a file which has
 three tables associated with IDs (e.g., like a database) and outputs them as
-a hierarchy.
+a hierarchy. Note that the pretty printer in `uxf.py` uses the visit API.
 
 ## include.py
 
