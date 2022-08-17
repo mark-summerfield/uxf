@@ -25,7 +25,7 @@ rs/Cargo.toml
 rs/README.md
 
 py/uxf.py
-py/uxfconvert.py
+py/uxfconvert.py # TODO (0) XML bug: comments must be in tags not attrs
 py/uxflint.py
 py/uxfcompare.py
 py/README.md
