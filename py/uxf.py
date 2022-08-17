@@ -2589,10 +2589,10 @@ class _PrettyPrinter(_EventMixin): # Functor that can be used as a visitor
         if not too_wide:
             self.puts(f'{prefix}<{text}>{suffix}')
         else:
-            self.handle_wide_str(text, prefix)
+            self.handle_long_str(text, prefix)
 
 
-    def handle_wide_str(self, text, prefix):
+    def handle_long_str(self, text, prefix):
         # TODO This doesn't produce nice output
         # NOTE alg should iterate by line & for each line if < span,
         # output with put_line() else split & again use put_line() for
