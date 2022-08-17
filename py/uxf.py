@@ -31,7 +31,7 @@ from xml.sax.saxutils import escape, unescape
 
 import editabletuple
 
-__version__ = '2.3.1' # uxf module version
+__version__ = '2.4.0' # uxf module version
 VERSION = 1.0 # UXF file format version
 
 UTF8 = 'utf-8'
@@ -103,8 +103,8 @@ def _raise_error(code, message):
 
 def _validate_format(name, value): # If invalid we return the valid default
     if name == 'indent':
-        return value if (value == '' or (
-                         value.isspace() and len(value) < 33)) else '  '
+        return (value if (value == '' or value == '\t' or (
+                all(c == ' ' for c in value) and len(value) < 9)) else '  ')
     if name == 'wrap_width':
         return value if (value is None or value == 0 or
                          40 <= value <= 240) else 96
@@ -117,7 +117,8 @@ Format = editabletuple.editableobject(
     validator=_validate_format,
     doc='''Specifies various aspects of how a UXF file is dumped to file or
 to a string.
-`indent` defaults to 2 spaces and may be an empty string or up to 32 spaces
+`indent` defaults to 2 spaces and may be an empty string or a tab or up \
+to 8 spaces
 `wrap_width` defaults to 96 characters and may be None (use the default) \
 or 40<=240
 `realdp` defaults to None which means use however many digits after the
@@ -2272,6 +2273,9 @@ def _dump(out, data, on_event, format):
     pp.pprint(out)
 
 
+# Inspired by Prettyprinting by Derek C. Oppen, Stanford,
+# ACM Transactions on Programming Languages and Systems,
+# Vol. 2, No. 4, October 1980, Pages 465-483
 class _PrettyPrinter(_EventMixin): # Functor that can be used as a visitor
 
     def __init__(self, *, on_event=on_event, format=Format(), _debug=False):
@@ -2295,8 +2299,8 @@ class _PrettyPrinter(_EventMixin): # Functor that can be used as a visitor
 
     @wrap_width.setter
     def wrap_width(self, value):
-        if value is not None and 40 <= value <= 999:
-            self._wrap_width = value # only allow 40-999
+        if value is not None and 40 <= value <= 240:
+            self._wrap_width = value # only allow 40-240
         else:
             self._wrap_width = 96 # default
 
@@ -2326,8 +2330,7 @@ class _PrettyPrinter(_EventMixin): # Functor that can be used as a visitor
         elif kind is VisitKind.LIST_VALUE_BEGIN:
             pass
         elif kind is VisitKind.LIST_VALUE_END:
-            if self.list_value_counts[-1] > 1:
-                self.rnl()
+            self.handle_list_value_end()
         elif kind is VisitKind.MAP_BEGIN:
             self.handle_map_begin(value)
         elif kind is VisitKind.MAP_END:
@@ -2343,9 +2346,7 @@ class _PrettyPrinter(_EventMixin): # Functor that can be used as a visitor
         elif kind is VisitKind.RECORD_BEGIN:
             self.begin()
         elif kind is VisitKind.RECORD_END:
-            self.end()
-            if self.table_row_counts[-1] > 1:
-                self.rnl()
+            self.handle_record_end()
         elif kind is VisitKind.VALUE:
             self.handle_scalar(value)
 
@@ -2491,6 +2492,11 @@ class _PrettyPrinter(_EventMixin): # Functor that can be used as a visitor
         self.list_value_counts.pop()
 
 
+    def handle_list_value_end(self):
+        if self.list_value_counts[-1] > 1:
+            self.rnl()
+
+
     def handle_map_begin(self, value):
         self.item_counts.append(len(value))
         self.begin()
@@ -2565,6 +2571,12 @@ class _PrettyPrinter(_EventMixin): # Functor that can be used as a visitor
         self.table_row_counts.pop()
 
 
+    def handle_record_end(self):
+        self.end()
+        if self.table_row_counts[-1] > 1:
+            self.rnl()
+
+
     def handle_real(self, value):
         if self.realdp is not None:
             value = round(value, self.realdp)
@@ -2608,7 +2620,7 @@ class _PrettyPrinter(_EventMixin): # Functor that can be used as a visitor
 
     def handle_bytes(self, value):
         text = value.hex().upper()
-        if self.wrap_width and len(text) + 4 >= self.wrap_width:
+        if len(text) + 4 >= self.wrap_width:
             span = self.wrap_width - len(self.indent)
             self.puts('(:')
             self.rnl()
@@ -2676,12 +2688,7 @@ class _Writer:
         if not self.tokens:
             return
         if self.debug:
-            sys.stderr.write(' TOKENS '.center(40, '-'))
-            sys.stderr.write('\n')
-            for i, token in enumerate(self.tokens):
-                sys.stderr.write(f'{token}\n')
-            sys.stderr.write(' === '.center(40, '-'))
-            sys.stderr.write('\n')
+            self._debug()
         self.pos = 0
         self.tp = 0
         while self.tp < len(self.tokens):
@@ -2701,6 +2708,15 @@ class _Writer:
                 break
         if not self.end_nl:
             self.rnl()
+
+
+    def _debug(self):
+        sys.stderr.write(' TOKENS '.center(40, '-'))
+        sys.stderr.write('\n')
+        for i, token in enumerate(self.tokens):
+            sys.stderr.write(f'{token}\n')
+        sys.stderr.write(' === '.center(40, '-'))
+        sys.stderr.write('\n')
 
 
     def begin(self, token):

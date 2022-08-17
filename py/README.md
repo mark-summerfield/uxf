@@ -572,7 +572,7 @@ methods).
 
 ##### Constructor
 
-**`Format(indent='  ', wrap_width=96, realdp=None, max_short_len=32)`**
+**`Format(indent='  ', wrap_width=96, realdp=None)`**
 
 The [dump()](#dump-def) and [dumps()](#dumps-def) functions use the default
 `Format()` which uses the defaults shown (indent is two spaces). However, by
@@ -581,9 +581,9 @@ your needs. For `realdp`, `None` signifies use however many digits after the
 decimal point are needed for UXF ``real``'s (i.e., for Python ``float``'s);
 otherwise specify a value 0-15.
 
-For example, if you had a `Uxf` object with a table and wanted the output to
-be one record per line, with ``real``s output with 3 decimal places, you
-could pass a format of `Format(wrap_width=None, realdp=3)`.
+For example, if you had a `Uxf` object with a table and wanted the output
+with ``real``s output with 3 decimal places, you could pass a format of
+`Format(realdp=3)`.
 
 <a name="error-class"></a>
 #### Error
