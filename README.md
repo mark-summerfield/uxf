@@ -21,7 +21,7 @@ UXF-based formats are very easy to adapt to future requirements
     - [Terminology](#terminology)
     - [Minimal empty UXF](#minimal-empty-uxf)
     - [Built-in Types](#built-in-types)
-    - [Line Width](#line-width)
+    - [Wrap Width](#wrap-width)
     - [Custom Types](#custom-types)
 - [Examples](#examples)
     - [CSV](#csv)
@@ -122,12 +122,12 @@ spaces, tabs, or newlines in any combination.
 If you don't want to be committed to a particular UXF type, just use a `str`
 and do whatever conversion you want, or use a [Custom Type](#custom-types).
 
-### Line Width
+### Wrap Width
 
 A UXF file's header must always occupy its own line (i.e., end with a
 newline). The rest of the file could in theory be a single line no matter
 how long. In practice and for human readability it is normal to limit the
-width of lines, for example, to 76 or 80 characters.
+width of lines, for example, to 76, 80, or the UXF default of 96 characters.
 
 UXF `bytes` and ``str``s can be of any length, but nonetheless they can be
 width-limited without changing their semantics.
@@ -171,6 +171,11 @@ to, say:
     <this is a > &
     <really long > &
     <string...>
+
+Comments work the same way, but note that the comment marker must only
+precede the _first_ fragment.
+
+    #<This is a comment in one or more strings.> ≣ #<This is a > & <comment in > & <one or more> & < strings.>
 
 ### Custom Types
 
