@@ -2633,7 +2633,7 @@ class _PrettyPrinter(_EventMixin): # Functor that can be used as a visitor
             self.puts('(:')
             self.rnl()
             while text:
-                chunk = text[:span].strip()
+                chunk = text[:span]
                 text = text[span:]
                 if chunk:
                     self.put_line(chunk)
