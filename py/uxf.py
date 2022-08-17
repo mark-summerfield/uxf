@@ -110,13 +110,11 @@ def _validate_format(name, value): # If invalid we return the valid default
                          40 <= value <= 240) else 96
     if name == 'realdp':
         return value if (value is None or 0 <= value <= 15) else None
-    if name == 'max_short_len':
-        return value if 24 <= value <= 60 else 32
 
 
 Format = editabletuple.editableobject(
-    'Format', 'indent', 'wrap_width', 'realdp', 'max_short_len',
-    defaults=('  ', 96, None, 32), validator=_validate_format,
+    'Format', 'indent', 'wrap_width', 'realdp', defaults=('  ', 96, None),
+    validator=_validate_format,
     doc='''Specifies various aspects of how a UXF file is dumped to file or
 to a string.
 `indent` defaults to 2 spaces and may be an empty string or up to 32 spaces
@@ -124,8 +122,7 @@ to a string.
 or 40<=240
 `realdp` defaults to None which means use however many digits after the
 decimal place are needed to represent the given `real` (i.e., Python
-`float`); if not None specify an int 0<=15
-`max_short_len` defaults to 32 and must be 24<=60''')
+`float`); if not None specify an int 0<=15''')
 
 
 @enum.unique
@@ -2380,6 +2377,9 @@ class _PrettyPrinter(_EventMixin): # Functor that can be used as a visitor
                                        depth=self.depth,
                                        num_records=num_records))
 
+    def put_line(self, s):
+        self.tokens.append(_PrintToken(_PrintKind.STRING, s, depth=1))
+
 
     def rws(self): # Don't need duplicate RWS; don't need RWS if RNL present
         if self.tokens:
@@ -2587,6 +2587,9 @@ class _PrettyPrinter(_EventMixin): # Functor that can be used as a visitor
                 ampersand = True
                 break
         if ampersand: # TODO This doesn't produce nice output
+            # NOTE alg should iterate by line & for each line if < span,
+            # output with put_line() else split & again use put_line() for
+            # each part
             ampersand = False
             span = self.wrap_width - 4
             while text: # Try to split on words or newlines first
@@ -2630,10 +2633,10 @@ class _PrettyPrinter(_EventMixin): # Functor that can be used as a visitor
             self.puts('(:')
             self.rnl()
             while text:
-                chunk = text[:span]
+                chunk = text[:span].strip()
                 text = text[span:]
                 if chunk:
-                    self.puts(f'{self.indent}{chunk}')
+                    self.put_line(chunk)
                     self.rnl()
             self.puts(':)')
             self.rnl() # newline always follows multiline bytes or str
