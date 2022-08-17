@@ -1,14 +1,69 @@
 uxf 1.0 0.csv
 [
-  [4 <ABBA> 2 no]
-  [38 <Bach> 5 no]
-  [39 <Bartok> 5 no]
-  [5 <Beatles> 2 no]
-  [40 <Beethoven> 5 no]
-  [6 <Blondie> 2 no]
-  [52 <Bob Marley> 6 yes]
-  [7 <Bruce Springsteen> 2 no]
-  [41 <Chopin> 5 yes]
-  [37 <Classical &amp; &lt;Special&gt;> 5 no]
-  [8 <David Bowie> 2 no]
+  [
+    4
+    <ABBA>
+    2
+    no
+  ]
+  [
+    38
+    <Bach>
+    5
+    no
+  ]
+  [
+    39
+    <Bartok>
+    5
+    no
+  ]
+  [
+    5
+    <Beatles>
+    2
+    no
+  ]
+  [
+    40
+    <Beethoven>
+    5
+    no
+  ]
+  [
+    6
+    <Blondie>
+    2
+    no
+  ]
+  [
+    52
+    <Bob Marley>
+    6
+    yes
+  ]
+  [
+    7
+    <Bruce Springsteen>
+    2
+    no
+  ]
+  [
+    41
+    <Chopin>
+    5
+    yes
+  ]
+  [
+    37
+    <Classical &amp; &lt;Special&gt;>
+    5
+    no
+  ]
+  [
+    8
+    <David Bowie>
+    2
+    no
+  ]
 ]

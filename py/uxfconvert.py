@@ -52,9 +52,9 @@ def _get_converter():
     parser.add_argument('-r', '--replaceimports', action='store_true',
                         help='replace imports with their used ttypes')
     parser.add_argument('-i', '--indent', type=int, default=2,
-                        help='indent (0-32; default 2)')
+                        help='indent (0-8; default 2)')
     parser.add_argument('-w', '--wrapwidth', type=int, default=96,
-                        help='wrapwidth (0 or 40-240; default 96)')
+                        help='wrapwidth (40-240; default 96)')
     parser.add_argument('-v', '--verbose', action='store_true')
     parser.add_argument(
         '-f', '--fieldnames', action='store_true',
@@ -827,9 +827,9 @@ Use -d or --dropunused to drop unused ttype definitions and imports.
 Use -r or --replaceimports to replace imports with ttype definitions
 to make the outfile standalone (i.e., not dependent on any imports).
 
-Indent defaults to 2 and accepts a range of 0-32.
+Indent defaults to 2 and accepts a range of 0-8.
 
-Wrapwidth defaults to 96 and accepts 0 (no wrapping) or a range of 40-240.
+Wrapwidth defaults to 96 and accepts a range of 40-240.
 
 For indent and wrapwidth the default is silently used if an out of range
 value is given. Indent applies when converting to JSON, UXF, and XML;

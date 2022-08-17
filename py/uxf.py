@@ -932,6 +932,7 @@ class List(collections.UserList):
         visitor(VisitKind.LIST_BEGIN, self)
         for value in self.data:
             visitor(VisitKind.LIST_VALUE_BEGIN, None)
+            value = _maybe_to_uxf_collection(value)
             if _is_uxf_collection(value):
                 value.visit(visitor)
             else:
@@ -1082,6 +1083,7 @@ class Map(collections.UserDict):
         for key, value in self.items(): # in _by_key order
             visitor(VisitKind.ITEM_BEGIN, None)
             visitor(VisitKind.VALUE, key) # keys are never collections
+            value = _maybe_to_uxf_collection(value)
             if _is_uxf_collection(value):
                 value.visit(visitor)
             else:
@@ -1667,6 +1669,7 @@ class Table:
         for record in self.records:
             visitor(VisitKind.RECORD_BEGIN, None)
             for value in record:
+                value = _maybe_to_uxf_collection(value)
                 if _is_uxf_collection(value):
                     value.visit(visitor)
                 else:
