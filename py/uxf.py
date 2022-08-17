@@ -3054,9 +3054,10 @@ if __name__ == '__main__':
             for para in text.strip().split('\n\n') if para.strip())
 
     parser = argparse.ArgumentParser(usage=get_usage('''\
-usage: uxf.py [-l|--lint] [-d|--dropunused] [-r|--replaceimports] \
+usage: uxf.py [-l|--lint] [-d|--dropunused] [-r|--replaceimports]
 [-iI|--indent=I] [-wW|--wrapwidth=W] <infile.uxf[.gz]> [<outfile.uxf[.gz]>]
-   or: python3 -m uxf ...same options as above...
+
+or: python3 -m uxf ...same options as above...
 
 If an outfile is specified and ends .gz it will be gzip-compressed.
 If outfile is - output will be to stdout.
@@ -3070,9 +3071,9 @@ to make the outfile standalone (i.e., not dependent on any imports).
 
 (-d, -l, and -r may be grouped, e.g., -ldr, -dl, etc.)
 
-Indent defaults to 2 and accepts a range of 0-32.
+Indent defaults to 2 and accepts a range of 0-8.
 
-Wrapwidth defaults to 96 and accepts 0 (no wrapping) or a range of 40-240.
+Wrapwidth defaults to 96 and accepts a range of 40-240.
 
 For indent and wrapwidth the default is silently used if an out of range
 value is given.
@@ -3081,9 +3082,10 @@ To get an uncompressed .uxf file run: `uxf.py infile.uxf.gz outfile.uxf` or
 simply `gunzip infile.uxf.gz`.
 
 To produce a compressed and compact .uxf file run:
-`uxf.py -i0 -w0 infile.uxf outfile.uxf.gz`
+`uxf.py -i0 -w240 infile.uxf outfile.uxf.gz`
 
-Converting uxf to uxf will alphabetically order any ttypes.
+Converting uxf to uxf will alphabetically order any ttypes and will order
+map items by key (bytes < date < datetime < int < case-insensitive str).
 However, the order of imports is preserved (with any duplicates removed)
 to allow later imports to override earlier ones.
 '''))
@@ -3094,9 +3096,9 @@ to allow later imports to override earlier ones.
     parser.add_argument('-r', '--replaceimports', action='store_true',
                         help='replace imports with their used ttypes')
     parser.add_argument('-i', '--indent', type=int, default=2,
-                        help='indent (0-32; default 2)')
+                        help='indent (0-8; default 2)')
     parser.add_argument('-w', '--wrapwidth', type=int, default=96,
-                        help='wrapwidth (0 or 40-240; default 96)')
+                        help='wrapwidth (40-240; default 96)')
     parser.add_argument('infile', nargs=1, help='required UXF infile')
     parser.add_argument('outfile', nargs='?', help='optional UXF outfile')
     config = parser.parse_args()
