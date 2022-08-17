@@ -1,7 +1,7 @@
 uxf 1.0 MyApp Data
 #<A hierarchical alternative to some foreign key IDs.
-We've kept Customers as-is because >& <different invoices may be for the > & <same
-> & <customer.>
+We've kept Customers as-is because different invoices may be for the same
+customer.>
 =Customers CID:int Company:str Address:str Contact:str Email:str
 =Invoices INUM:int CID:int Raised_Date:date Due_Date:date Paid:bool Description:str Items:Items
 =Items IID:int Delivery_Date:date Unit_Price:real Quantity:int Description:str

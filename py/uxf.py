@@ -2581,44 +2581,50 @@ class _PrettyPrinter(_EventMixin): # Functor that can be used as a visitor
     def handle_str(self, value, *, prefix='', suffix=''):
         text = escape(value)
         span = self.wrap_width - len(prefix)
-        ampersand = False
+        too_wide = False
         for line in text.splitlines():
             if len(line) > span:
-                ampersand = True
+                too_wide = True
                 break
-        if ampersand: # TODO This doesn't produce nice output
-            # NOTE alg should iterate by line & for each line if < span,
-            # output with put_line() else split & again use put_line() for
-            # each part
-            ampersand = False
-            span = self.wrap_width - 4
-            while text: # Try to split on words or newlines first
-                i = text.rfind(' ', 0, span)
-                if i == -1:
-                    i = text.rfind('\n', 0, span)
-                if i > -1:
-                    i += 1 # include the found whitespace
-                    if ampersand:
-                        self.ampersand()
-                    self.puts(f'{prefix}<{text[:i]}>')
-                    prefix = ''
-                    text = text[i:]
-                    ampersand = True
-                else:
-                    break
-            # if we can't split on words, split anywhere
-            while text:
-                chunk = text[:span]
-                text = text[span:]
-                if chunk:
-                    if ampersand:
-                        self.ampersand()
-                    self.puts(f'{prefix}<{chunk}>')
-                    prefix = ''
-                    ampersand = True
-            self.rnl() # newline always follows multiline bytes or str
-        else:
+        if not too_wide:
             self.puts(f'{prefix}<{text}>{suffix}')
+        else:
+            self.handle_wide_str(text, prefix)
+
+
+    def handle_wide_str(self, text, prefix):
+        # TODO This doesn't produce nice output
+        # NOTE alg should iterate by line & for each line if < span,
+        # output with put_line() else split & again use put_line() for
+        # each part
+        ampersand = False
+        span = self.wrap_width - 4
+        # Try to split on words or newlines first
+        while text:
+            i = text.rfind(' ', 0, span)
+            if i == -1:
+                i = text.rfind('\n', 0, span)
+            if i > -1:
+                i += 1 # include the found whitespace
+                if ampersand:
+                    self.ampersand()
+                self.puts(f'{prefix}<{text[:i]}>')
+                prefix = ''
+                text = text[i:]
+                ampersand = True
+            else:
+                break
+        # if we can't split on words, split anywhere
+        while text:
+            chunk = text[:span]
+            text = text[span:]
+            if chunk:
+                if ampersand:
+                    self.ampersand()
+                self.puts(f'{prefix}<{chunk}>')
+                prefix = ''
+                ampersand = True
+        self.rnl() # newline always follows multiline bytes or str
 
 
     def ampersand(self):
