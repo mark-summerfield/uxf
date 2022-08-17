@@ -3,11 +3,133 @@ uxf 1.0
 =IP4 A:int B:int C:int D:int
 =RGB Red:int Green:int Blue:int
 [#<Unused TTypes produce warnings when converting from uxf to uxf.
-One way to avoid the warnings is to use them for empty tables.> 
+One way to avoid the warnings is to use them for empty tables.>
   (IntPair)
   (IP4
     168 1 4 29
     192 0 18 27
   )
-  (RGB)
+  (#<This is a very long comment just to check that long comments work the same as for long > &
+<strings, i.e., they are
+split using the &amp; string concatenation oprator as needed. > &
+<Notice that this long comment has some newlines of its
+own which the UXF processor is > &
+<expected to use to make nicer line > &
+<breaks.>
+  RGB)
+<This is a very long string that has some
+newlines but even so,
+also has at least one line > &
+<that exceeds the default pretty print wrap width of ninety six characters and so will
+be > &
+<split into pieces using the &amp; string concatenation > &
+<operator.>
+<Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus eleifend vestibulum augue > &
+<eu maximus. Donec commodo a mi id rhoncus. Sed non sollicitudin tortor. Nullam tincidunt > &
+<nulla a augue scelerisque, eu commodo nisl consectetur. Integer cursus magna augue, maximus > &
+<imperdiet ipsum auctor eu. Praesent placerat fermentum porttitor. Praesent id justo > &
+<volutpat, eleifend mi ac, dignissim justo. Phasellus dapibus velit tortor, et fringilla > &
+<augue tincidunt sit amet. Suspendisse potenti. Aenean sollicitudin est quis dignissim > &
+<vehicula. Duis magna sapien, ultrices ut elit ut, consequat luctus lorem. Aliquam in turpis > &
+<risus.
+Sed dapibus, lacus sit amet vestibulum ultrices, ante purus vehicula neque, eget > &
+<ullamcorper eros ex ut quam. Ut vel mollis arcu. Praesent sed metus tellus. Praesent > &
+<pharetra elementum nunc, nec condimentum enim euismod vitae. Sed tortor neque, pretium a ex > &
+<quis, gravida consequat diam. Suspendisse eu orci est. Sed et ex et ipsum convallis commodo > &
+<ac in eros. Nam risus quam, rhoncus vitae turpis ac, condimentum ultrices nunc. Quisque > &
+<commodo, tortor eget mollis consectetur, urna ex suscipit justo, in ultricies justo nisl > &
+<non leo. Sed leo purus, blandit at lacus sit amet, tristique pellentesque lectus. Aliquam > &
+<velit risus, ornare eget suscipit non, tempus sit amet lorem.
+Sed finibus odio mauris, > &
+<tristique imperdiet justo fringilla quis. Sed ut turpis sit amet tortor dictum dapibus sit > &
+<amet nec risus. Suspendisse potenti. Nulla scelerisque a nibh quis sollicitudin. Donec > &
+<maximus mi id elit rhoncus, in pellentesque ligula viverra. Praesent sed fermentum purus. > &
+<Nullam sollicitudin ultricies finibus. Nulla non molestie lectus, vel hendrerit tellus. > &
+<Proin ullamcorper urna in rutrum faucibus. Integer mollis auctor diam vitae varius. Morbi > &
+<eu vestibulum ipsum. Nullam ornare magna nisl, eget vulputate diam tempus vitae. > &
+<Pellentesque enim felis, gravida in accumsan ut, luctus eget justo. Fusce placerat ipsum > &
+<tempor justo consequat dignissim. Nulla sed diam eu ex fermentum egestas in eu ante. > &
+<Maecenas consectetur pellentesque leo euismod pretium.
+In malesuada sapien mi, mattis > &
+<pulvinar lectus sollicitudin vel. Nunc imperdiet quam augue, eu sollicitudin turpis > &
+<molestie fringilla. Praesent tempus sit amet purus sed iaculis. Pellentesque finibus turpis > &
+<dolor, id eleifend leo eleifend sed. Praesent ac turpis ultricies, condimentum urna nec, > &
+<vehicula nisl. Mauris suscipit justo vitae mi venenatis posuere. Phasellus efficitur dictum > &
+<magna, sit amet malesuada sem finibus sit amet. Nunc ut augue quis risus dictum dictum eu > &
+<sed metus. Nulla pellentesque rhoncus leo. Sed rhoncus, arcu ut porttitor rhoncus, neque > &
+<augue molestie nisi, a facilisis metus nulla eu turpis. Etiam et ultrices libero, eget > &
+<commodo nibh.
+Sed pulvinar consectetur justo, at venenatis risus varius a. Curabitur ut > &
+<gravida sem. Morbi dictum eget mauris at faucibus. Phasellus nec accumsan elit, at auctor > &
+<lacus. Nam dignissim erat a dignissim suscipit. Cras sollicitudin, magna vel gravida > &
+<blandit, est nulla aliquet tortor, a imperdiet quam metus nec dui. In semper turpis tortor, > &
+<eget faucibus ipsum faucibus at. Class aptent taciti sociosqu ad litora torquent per > &
+<conubia nostra, per inceptos himenaeos. Orci varius natoque penatibus et magnis dis > &
+<parturient montes, nascetur ridiculus mus. Maecenas augue mauris, convallis id hendrerit > &
+<in, varius eget leo. Pellentesque sit amet suscipit libero. In at porttitor est. Curabitur > &
+<fringilla turpis eu molestie dignissim. Nullam a semper > &
+<dolor.>
+  (:
+  89504E470D0A1A0A0000000D49484452000000180000001D0806000000B0BAAC4B0000000473424954080808087C08
+  648800000009704859730000012600000126015FFB12280000001974455874536F667477617265007777772E696E6B
+  73636170652E6F72679BEE3C1A0000049A4944415448899D967B6C536518C69FEFDC7ADBBA8DB5ABEB2E1D731BBBE2
+  580F640C655E32071B97B848A32420A22078FB8799282290210B73930413251A9DAD0846D08981190D89036246CC1C
+  2872999932A2026B601BF4C64EDB733EFF28AD5D77A3BCFF7DCFFB9CE7F79E2FE7E4FB484BA99DE24EF15AD6B9F083
+  A2874551EC434CB5963B3A9520AD8BD5A7AA3431A9838916F844D604E0C189CCACC0A8E20907007DAEA681BB5BB3DA
+  201C3715681F9BCAE3BB2661F8BC07A0004848BB6B40CD9E8A56B7DB7D642ACF2F6F0F2C05B0231C1E17203F3F5F02
+  F0DB549E9612477974785C0000D859B42F9DE5947993F5A942F362F2E303708CB200941E9AACAF36089ED121FF188D
+  99C47B4FC5AA98847143C513200BF28939EB73BA1915B97FA2FE489F4FEDBD3A9A74CF80CD67D65EC7462C98ACDF52
+  E2780604F6686DCA2D6A2E74A4EE2EF978C664FDDD0F3832A61B6A5240F39C7623CBD32E26557361FF739D9671D396
+  7EBA214871C9BEF69B4D71032828E1824C2728CAA4E18069E8F2ADF3ED1BBFCEFD3FDCBE09207BA94285EB675C6D5F
+  6DFD6E5D5C000242B36A8D9FB3AAD0577DDBE9D7792E4AE73E5ADD51B0ABD4DE08A02DEC355AF5B0D4A72D8F0B0000
+  4FB7D5BF975D6BDC1281DCF06B3C7F78CF11A035EC312F4C41F1BA8C1F090B5BDC0000B035D7EDB4D41A1B594DC816
+  F0CA7C24BC3A05856BCCC782727089288ABE7B0200C08AE6BA77557AFE58B4C6A9195816194E78BC9E65555555B7A7
+  7A7EDAFFA0A5C4D1E4734A35D15A7054416FCBE5F986627D3180D3619D003C8D361280210C02E175C027038010092F
+  75BC0342DF0AAFD3AB92C1EB580080FF664018BAE83AB5FFD5A3D6709F32481DFBA66C90213CE389003C32FC9EA029
+  146E6F03E86BE19EA5CE88E2F59947336B535EE4751C05006924205C3F73EB94E3A58EF92102CD8B06087AD6CBF01A
+  F6AF884281E173DE0500905CA093084322E17936D321000DB6A6257BB317CF789E4F6029001096F039B5A6F70180E1
+  C9E3D180448BA68F610819734ADD38EDAAEAEAEAE25EE858F1A6B93AB963E6F234E4D94C07DD6EF74A51140300F0E4
+  F6BAF6AC9AD435FA5C8D6C7D7DA64B9B2E6CD855E658AC04687654383446E104D959B42F5D5029FF2A41CADC990879
+  2B4CDB1AB62C6A02809E9E9E650303039D369B4D464CF5F6F656524AFDDD4FF5FD2969E51E45A105E15EE11A33B21E
+  35CC2500F0E11387BEBDD9EF5D16D9BB244E49CED7D63F6B6FF83E3634B65A677F96A628F241805487355D861AE2B6
+  DCE39555F31E0901961ED1FA6F7B9CBE41297260301CA11A037FC0ED1CDDFAC6EF6B2FC506B7CCFAC40C815B45081A
+  A9420D619D5533B06E9E2925E5E82A2A2A2A2E448ED083DB3BCB9DDDAE9F7D572521368C55312384257F5305233448
+  35003294A09219EBE3752CCA5EB128338A742BAD56EB9700C6DE017E38D055E83CE93A39D83D62A4CA749B33B652CB
+  12306BB5D9A3310AAB44513C1CD6632F01E8EFEF575DFAE99F1D4367BD2F0F9D756B7C4E7FAC2552829E43EAEC4498
+  1F4A0924CFD27EC171DCE6F2F2F22BD19E71806890CBE5AAF70D4ACBBDD7A4B9F2A86C0E8E2A3A5EC732AC8AF5AA8D
+  FC9584FBD4BF2A508ECBB27CB8B2B2D23951CE7F1E84995B8AC93CB90000000049454E44AE426082
+  :)
+<ONE-LONG-LINE-WITH-NO-SPACES-OR-NEWLINES:Loremipsumdolorsitamet,consecteturadipiscingelit.Vi> &
+<vamuseleifendvestibulumaugueeumaximus.Doneccommodoamiidrhoncus.Sednonsollicitudintortor.Null> &
+<amtinciduntnullaaauguescelerisque,eucommodonislconsectetur.Integercursusmagnaaugue,maximusim> &
+<perdietipsumauctoreu.Praesentplaceratfermentumporttitor.Praesentidjustovolutpat,eleifendmiac> &
+<,dignissimjusto.Phasellusdapibusvelittortor,etfringillaauguetinciduntsitamet.Suspendissepote> &
+<nti.Aeneansollicitudinestquisdignissimvehicula.Duismagnasapien,ultricesutelitut,consequatluc> &
+<tuslorem.Aliquaminturpisrisus.Seddapibus,lacussitametvestibulumultrices,antepurusvehiculaneq> &
+<ue,egetullamcorpererosexutquam.Utvelmollisarcu.Praesentsedmetustellus.Praesentpharetraelemen> &
+<tumnunc,neccondimentumenimeuismodvitae.Sedtortorneque,pretiumaexquis,gravidaconsequatdiam.Su> &
+<spendisseeuorciest.Sedetexetipsumconvalliscommodoacineros.Namrisusquam,rhoncusvitaeturpisac,> &
+<condimentumultricesnunc.Quisquecommodo,tortoregetmollisconsectetur,urnaexsuscipitjusto,inult> &
+<riciesjustonislnonleo.Sedleopurus,blanditatlacussitamet,tristiquepellentesquelectus.Aliquamv> &
+<elitrisus,ornareegetsuscipitnon,tempussitametlorem.Sedfinibusodiomauris,tristiqueimperdietju> &
+<stofringillaquis.Sedutturpissitamettortordictumdapibussitametnecrisus.Suspendissepotenti.Nul> &
+<lascelerisqueanibhquissollicitudin.Donecmaximusmiidelitrhoncus,inpellentesqueligulaviverra.P> &
+<raesentsedfermentumpurus.Nullamsollicitudinultriciesfinibus.Nullanonmolestielectus,velhendre> &
+<rittellus.Proinullamcorperurnainrutrumfaucibus.Integermollisauctordiamvitaevarius.Morbieuves> &
+<tibulumipsum.Nullamornaremagnanisl,egetvulputatediamtempusvitae.Pellentesqueenimfelis,gravid> &
+<ainaccumsanut,luctusegetjusto.Fusceplaceratipsumtemporjustoconsequatdignissim.Nullaseddiameu> &
+<exfermentumegestasineuante.Maecenasconsecteturpellentesqueleoeuismodpretium.Inmalesuadasapie> &
+<nmi,mattispulvinarlectussollicitudinvel.Nuncimperdietquamaugue,eusollicitudinturpismolestief> &
+<ringilla.Praesenttempussitametpurussediaculis.Pellentesquefinibusturpisdolor,ideleifendleoel> &
+<eifendsed.Praesentacturpisultricies,condimentumurnanec,vehiculanisl.Maurissuscipitjustovitae> &
+<mivenenatisposuere.Phasellusefficiturdictummagna,sitametmalesuadasemfinibussitamet.Nuncutaug> &
+<uequisrisusdictumdictumeusedmetus.Nullapellentesquerhoncusleo.Sedrhoncus,arcuutporttitorrhon> &
+<cus,nequeauguemolestienisi,afacilisismetusnullaeuturpis.Etiametultriceslibero,egetcommodonib> &
+<h.Sedpulvinarconsecteturjusto,atvenenatisrisusvariusa.Curabiturutgravidasem.Morbidictumegetm> &
+<aurisatfaucibus.Phasellusnecaccumsanelit,atauctorlacus.Namdignissimeratadignissimsuscipit.Cr> &
+<assollicitudin,magnavelgravidablandit,estnullaaliquettortor,aimperdietquammetusnecdui.Insemp> &
+<erturpistortor,egetfaucibusipsumfaucibusat.Classaptenttacitisociosquadlitoratorquentperconub> &
+<ianostra,perinceptoshimenaeos.Orcivariusnatoquepenatibusetmagnisdisparturientmontes,nascetur> &
+<ridiculusmus.Maecenasauguemauris,convallisidhendreritin,variusegetleo.Pellentesquesitametsus> &
+<cipitlibero.Inatporttitorest.Curabiturfringillaturpiseumolestiedignissim.Nullamasemperdolor.>
 ]

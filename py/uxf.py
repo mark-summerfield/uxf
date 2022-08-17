@@ -2377,8 +2377,8 @@ class _PrettyPrinter(_EventMixin): # Functor that can be used as a visitor
                                        depth=self.depth,
                                        num_records=num_records))
 
-    def put_line(self, s):
-        self.tokens.append(_PrintToken(_PrintKind.STRING, s, depth=1))
+    def put_line(self, s, depth=0):
+        self.tokens.append(_PrintToken(_PrintKind.STRING, s, depth=depth))
 
 
     def rws(self): # Don't need duplicate RWS; don't need RWS if RNL present
@@ -2589,47 +2589,21 @@ class _PrettyPrinter(_EventMixin): # Functor that can be used as a visitor
         if not too_wide:
             self.puts(f'{prefix}<{text}>{suffix}')
         else:
-            self.handle_long_str(text, prefix)
+            self._handle_long_str(text, prefix)
 
 
-    def handle_long_str(self, text, prefix):
-        # TODO This doesn't produce nice output
-        # NOTE alg should iterate by line & for each line if < span,
-        # output with put_line() else split & again use put_line() for
-        # each part
-        ampersand = False
-        span = self.wrap_width - 4
-        # Try to split on words or newlines first
+    def _handle_long_str(self, text, prefix): # assumes text is escaped
+        span = self.wrap_width - (4 + len(prefix))
         while text:
-            i = text.rfind(' ', 0, span)
-            if i == -1:
-                i = text.rfind('\n', 0, span)
-            if i > -1:
-                i += 1 # include the found whitespace
-                if ampersand:
-                    self.ampersand()
-                self.puts(f'{prefix}<{text[:i]}>')
-                prefix = ''
-                text = text[i:]
-                ampersand = True
-            else:
-                break
-        # if we can't split on words, split anywhere
-        while text:
-            chunk = text[:span]
-            text = text[span:]
+            i = text.rfind(' ', 0, span) # find last space within span
+            i = i + 1 if i != -1 else span # if no space, split at span
+            chunk = text[:i]
+            text = text[i:]
             if chunk:
-                if ampersand:
-                    self.ampersand()
-                self.puts(f'{prefix}<{chunk}>')
+                end = ' &' if text else ''
+                self.put_line(f'{prefix}<{chunk}>{end}')
                 prefix = ''
-                ampersand = True
-        self.rnl() # newline always follows multiline bytes or str
-
-
-    def ampersand(self):
-        self.puts('&')
-        self.rnl()
+                self.rnl()
 
 
     def handle_bytes(self, value):
@@ -2642,7 +2616,7 @@ class _PrettyPrinter(_EventMixin): # Functor that can be used as a visitor
                 chunk = text[:span]
                 text = text[span:]
                 if chunk:
-                    self.put_line(chunk)
+                    self.put_line(chunk, depth=1)
                     self.rnl()
             self.puts(':)')
             self.rnl() # newline always follows multiline bytes or str
