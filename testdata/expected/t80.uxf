@@ -2,12 +2,12 @@ uxf 1.0
 #<last modified 1 April 2001 by John Doe>
 {
   <database> {#<use IP address in case network name resolution is not working>
-      <file> <payroll.dat>
-      <port> 143
-      <server> <192.0.2.62>
-    }
+    <file> <payroll.dat>
+    <port> 143
+    <server> <192.0.2.62>
+  }
   <owner> {
-      <name> <John Doe>
-      <organization> <Acme Widgets Inc.>
-    }
+    <name> <John Doe>
+    <organization> <Acme Widgets Inc.>
+  }
 }

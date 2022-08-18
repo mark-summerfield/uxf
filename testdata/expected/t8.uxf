@@ -5,62 +5,62 @@ before evertthing else.>
 =Files Kind Filename
 {
   <General> {
-      <autosave> yes
-      <files> (Files
-          <current> </home/mark/app/rs/tlm/PlaylistsTest.tlm>
-          <recent1> </home/mark/app/rs/tlm/PlaylistsTest.tlm>
-          <recent2> </home/mark/data/playlists-all.tlm>
-        )
-      <historysize> -35
-      <saved> 2022-03-21
-      <volume> 0.7
-    }
+    <autosave> yes
+    <files> (Files
+      <current> </home/mark/app/rs/tlm/PlaylistsTest.tlm>
+      <recent1> </home/mark/app/rs/tlm/PlaylistsTest.tlm>
+      <recent2> </home/mark/data/playlists-all.tlm>
+    )
+    <historysize> -35
+    <saved> 2022-03-21
+    <volume> 0.7
+  }
   <Magic> (:1F8B:)
   <Nested Dict> {
-      <Classical> [
-          5
-          yes
-        ]
-      <Modern Instrumental> [
-          4
-          no
-        ]
-      <Nested List of Lists> [
-          [
-            5
-            <Classical>
-            yes
-          ]
-          [
-            4
-            <Modern Instrumental>
-            no
-          ]
-          [
-            1
-            <New Acquistions>
-            no
-          ]
-        ]
-      <Nested Table> (Categories
-          5 <Classical> yes
-          4 <Modern Instrumental> no
-          1 <New Acquistions> no
-          2 <Pop> no
-          3 <Punk> ?
-          ? ? no
-          6 <Unpopular Pop> no
-        )
-      <New Acquistions> [
-          1
-          no
-        ]
-    }
+    <Classical> [
+      5
+      yes
+    ]
+    <Modern Instrumental> [
+      4
+      no
+    ]
+    <Nested List of Lists> [
+      [
+        5
+        <Classical>
+        yes
+      ]
+      [
+        4
+        <Modern Instrumental>
+        no
+      ]
+      [
+        1
+        <New Acquistions>
+        no
+      ]
+    ]
+    <Nested Table> (Categories
+      5 <Classical> yes
+      4 <Modern Instrumental> no
+      1 <New Acquistions> no
+      2 <Pop> no
+      3 <Punk> ?
+      ? ? no
+      6 <Unpopular Pop> no
+    )
+    <New Acquistions> [
+      1
+      no
+    ]
+  }
   <Window> {
-      <height> 536
-      <scale> 1.1
-      <width> 590
-      <x> 383
-      <y> 124
-    }
+    <height> 536
+    <scale> 1.1
+    <width> 590
+    <x> 383
+    <y> 124
+  }
 }

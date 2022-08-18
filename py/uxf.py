@@ -2533,13 +2533,9 @@ class _PrettyPrinter(_EventMixin): # Functor that can be used as a visitor
 
     def handle_item_begin(self):
         self.begin()
-        if self.item_counts[-1] > 1:
-            self.depth += 1
 
 
     def handle_item_end(self):
-        if self.item_counts[-1] > 1:
-            self.depth -= 1
         self.end()
         if self.item_counts[-1] > 1:
             self.rnl()

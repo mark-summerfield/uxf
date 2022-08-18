@@ -3,32 +3,32 @@ uxf 1.0 MyApp 1.2.0 Config
 =#<nonnegative &amp; &gt; 0> size width:int height:int
 {#<Notes on this configuration file format> str map
   <General> {#<Miscellaneous settings> str
-      <Files> {str
-          <current> <test1.uxf>
-          <recent> [#<From most to least recent> str
-              </tmp/test2.uxf>
-              <C:\Users\mark\test3.uxf>
-            ]
-        }
-      <shapename> <Hexagon>
-      <showtoolbar> no
-      <zoom> 150
+    <Files> {str
+      <current> <test1.uxf>
+      <recent> [#<From most to least recent> str
+        </tmp/test2.uxf>
+        <C:\Users\mark\test3.uxf>
+      ]
     }
+    <shapename> <Hexagon>
+    <showtoolbar> no
+    <zoom> 150
+  }
   <Windows> {#<Window dimensions and scales>
-      <pos> (pos
-          615 252
-          28 42
-          57 98
-        )
-      <scale> [
-          1.1
-          1.0
-          0.5
-        ]
-      <size> (size
-          592 636
-          140 81
-          89 22
-        )
-    }
+    <pos> (pos
+      615 252
+      28 42
+      57 98
+    )
+    <scale> [
+      1.1
+      1.0
+      0.5
+    ]
+    <size> (size
+      592 636
+      140 81
+      89 22
+    )
+  }
 }

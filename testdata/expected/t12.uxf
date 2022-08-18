@@ -8,100 +8,100 @@ uxf 1.0 TLM Config
 =RGBA Red:int Green:int Blue:int Alpha:int
 {
   <General> {#<Various configuration items>
-      <autosave> yes
-      <files> (#<Another little comment> Files
-          <current> </home/mark/app/rs/tlm/PlaylistsTest.tlm>
-          <recent1> </home/mark/app/rs/tlm/PlaylistsTest.tlm>
-          <recent2> </home/mark/data/playlists-all.tlm>
-        )
-      <historysize> -35
-      <saved> 2022-03-21
-      <volume> 0.7
-    }
+    <autosave> yes
+    <files> (#<Another little comment> Files
+      <current> </home/mark/app/rs/tlm/PlaylistsTest.tlm>
+      <recent1> </home/mark/app/rs/tlm/PlaylistsTest.tlm>
+      <recent2> </home/mark/data/playlists-all.tlm>
+    )
+    <historysize> -35
+    <saved> 2022-03-21
+    <volume> 0.7
+  }
   <Magic> (:1F8B:)
   <Nested Map> {#<Another comment this time in a nested map>
-      <Classical> [
-          5
-          yes
-        ]
-      <Modern Instrumental> [
-          4
-          no
-        ]
-      <Nested List of Lists> [#<Just a little list>
-          [
-            5
-            <Classical>
-            yes
-          ]
-          [
-            4
-            <Modern Instrumental &amp; &lt;Experimental&gt;>
-            no
-          ]
-          [
-            1
-            <New Acquistions>
-            no
-          ]
-        ]
-      <Nested List of Tables> [#<Yet another comment in a list>
-          (Categories
-            5 <Classical> yes
-            4 <Modern Instrumental> no
-            1 <New Acquistions> no
-            2 <Pop> no
-            3 <Punk> no
-            7 <Uncategorized> no
-            6 <Unpopular Pop> no
-          )
-          (#<Comments may appear at the beginning of any list, map or table> Playlists
-            4 <ABBA> 2 no
-            38 <Bach> 5 no
-            39 <Bartok> 5 no
-            5 <Beatles> 2 no
-            40 <Beethoven> 5 no
-            6 <Blondie> 2 no
-            52 <Bob Marley> 6 yes
-            7 <Bruce Springsteen> 2 no
-            41 <Chopin> 5 yes
-            37 <Classical> 5 no
-            8 <David Bowie> 2 no
-            9 <Dire Straits> 2 no
-          )
-        ]
-      <Nested Table> (#<A table with a rather long comment just to
-show what can be done.> Categories
-          5 <Classical> yes
-          4 <Modern Instrumental> no
-          1 <New Acquistions> no
-          2 <Pop> no
-          3 <Punk> no
-          7 <Uncategorized> no
-          6 <Unpopular Pop> no
-        )
-      <New Acquistions> [
-          1
-          no
-        ]
-    }
-  <UXF Type Tests> [
-      <one>
-      (IPv4 141 179 19 9)
-      <many>
-      (IPv4
-        172 16 254 1
-        192 0 2 235
-        127 0 0 1
-      )
-      <red>
-      (RGB 255 0 0)
-      <semi-transparent blue>
-      (RGBA 0 0 255 80)
+    <Classical> [
+      5
+      yes
     ]
+    <Modern Instrumental> [
+      4
+      no
+    ]
+    <Nested List of Lists> [#<Just a little list>
+      [
+        5
+        <Classical>
+        yes
+      ]
+      [
+        4
+        <Modern Instrumental &amp; &lt;Experimental&gt;>
+        no
+      ]
+      [
+        1
+        <New Acquistions>
+        no
+      ]
+    ]
+    <Nested List of Tables> [#<Yet another comment in a list>
+      (Categories
+        5 <Classical> yes
+        4 <Modern Instrumental> no
+        1 <New Acquistions> no
+        2 <Pop> no
+        3 <Punk> no
+        7 <Uncategorized> no
+        6 <Unpopular Pop> no
+      )
+      (#<Comments may appear at the beginning of any list, map or table> Playlists
+        4 <ABBA> 2 no
+        38 <Bach> 5 no
+        39 <Bartok> 5 no
+        5 <Beatles> 2 no
+        40 <Beethoven> 5 no
+        6 <Blondie> 2 no
+        52 <Bob Marley> 6 yes
+        7 <Bruce Springsteen> 2 no
+        41 <Chopin> 5 yes
+        37 <Classical> 5 no
+        8 <David Bowie> 2 no
+        9 <Dire Straits> 2 no
+      )
+    ]
+    <Nested Table> (#<A table with a rather long comment just to
+show what can be done.> Categories
+      5 <Classical> yes
+      4 <Modern Instrumental> no
+      1 <New Acquistions> no
+      2 <Pop> no
+      3 <Punk> no
+      7 <Uncategorized> no
+      6 <Unpopular Pop> no
+    )
+    <New Acquistions> [
+      1
+      no
+    ]
+  }
+  <UXF Type Tests> [
+    <one>
+    (IPv4 141 179 19 9)
+    <many>
+    (IPv4
+      172 16 254 1
+      192 0 2 235
+      127 0 0 1
+    )
+    <red>
+    (RGB 255 0 0)
+    <semi-transparent blue>
+    (RGBA 0 0 255 80)
+  ]
   <Window> {#<Some numbers>
-      <pos> (IntPair 383 124)
-      <scale> 1.1
-      <size> (IntPair 590 536)
-    }
+    <pos> (IntPair 383 124)
+    <scale> 1.1
+    <size> (IntPair 590 536)
+  }
 }

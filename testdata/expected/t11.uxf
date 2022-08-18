@@ -7,105 +7,105 @@ uxf 1.0 TLM Config
 =#<0-255 per component> rgba red:int green:int blue:int alpha:int
 {
   <General> {
-      <autosave> yes
-      <files> (Files
-          <current> </home/mark/app/rs/tlm/PlaylistsTest.tlm>
-          <recent1> </home/mark/app/rs/tlm/PlaylistsTest.tlm>
-          <recent2> </home/mark/data/playlists-all.tlm>
-        )
-      <historysize> -35
-      <saved> 2022-03-21
-      <volume> 0.7
-    }
+    <autosave> yes
+    <files> (Files
+      <current> </home/mark/app/rs/tlm/PlaylistsTest.tlm>
+      <recent1> </home/mark/app/rs/tlm/PlaylistsTest.tlm>
+      <recent2> </home/mark/data/playlists-all.tlm>
+    )
+    <historysize> -35
+    <saved> 2022-03-21
+    <volume> 0.7
+  }
   <Magic> (:1F8B:)
   <More Tests> [#<A list of name value pairs; normally would be a map>
-      <one>
-      (IPv4 141 179 19 9)
-      <many>
-      (IPv4
-        172 16 254 1
-        192 0 2 235
-        127 0 0 1
-      )
-      <red>
-      (rgb 255 0 0)
-      <semi-transparent blue>
-      (rgba 0 0 255 80)
-    ]
+    <one>
+    (IPv4 141 179 19 9)
+    <many>
+    (IPv4
+      172 16 254 1
+      192 0 2 235
+      127 0 0 1
+    )
+    <red>
+    (rgb 255 0 0)
+    <semi-transparent blue>
+    (rgba 0 0 255 80)
+  ]
   <Nested Map> {
-      <Classical> [
-          5
-          yes
-        ]
-      <Modern Instrumental> [
-          4
-          no
-        ]
-      <Nested List of Lists> [
-          [
-            5
-            <Classical>
-            yes
-          ]
-          [
-            4
-            <Modern Instrumental>
-            no
-          ]
-          [
-            1
-            <New Acquistions>
-            no
-          ]
-        ]
-      <Nested List of Tables> [
-          (Categories
-            5 <Classical> yes
-            4 <Modern Instrumental> no
-            1 <New Acquistions> no
-            2 <Pop> no
-            3 <Punk> no
-            7 <Uncategorized> no
-            6 <Unpopular Pop> no
-          )
-          (Playlists
-            4 <ABBA> 2 no
-            38 <Bach> 5 no
-            39 <Bartok> 5 no
-            5 <Beatles> 2 no
-            40 <Beethoven> 5 no
-            6 <Blondie> 2 no
-            52 <Bob Marley> 6 yes
-            7 <Bruce Springsteen> 2 no
-            41 <Chopin> 5 yes
-            37 <Classical> 5 no
-            8 <David Bowie> 2 no
-            9 <Dire Straits> 2 no
-          )
-        ]
-      <Nested Table> (Categories
-          5 <Classical> yes
-          4 <Modern Instrumental> no
-          1 <New Acquistions> no
-          2 <Pop> no
-          3 <Punk> no
-          7 <Uncategorized> no
-          6 <Unpopular Pop> no
-        )
-      <New Acquistions> [
-          1
-          no
-        ]
-    }
+    <Classical> [
+      5
+      yes
+    ]
+    <Modern Instrumental> [
+      4
+      no
+    ]
+    <Nested List of Lists> [
+      [
+        5
+        <Classical>
+        yes
+      ]
+      [
+        4
+        <Modern Instrumental>
+        no
+      ]
+      [
+        1
+        <New Acquistions>
+        no
+      ]
+    ]
+    <Nested List of Tables> [
+      (Categories
+        5 <Classical> yes
+        4 <Modern Instrumental> no
+        1 <New Acquistions> no
+        2 <Pop> no
+        3 <Punk> no
+        7 <Uncategorized> no
+        6 <Unpopular Pop> no
+      )
+      (Playlists
+        4 <ABBA> 2 no
+        38 <Bach> 5 no
+        39 <Bartok> 5 no
+        5 <Beatles> 2 no
+        40 <Beethoven> 5 no
+        6 <Blondie> 2 no
+        52 <Bob Marley> 6 yes
+        7 <Bruce Springsteen> 2 no
+        41 <Chopin> 5 yes
+        37 <Classical> 5 no
+        8 <David Bowie> 2 no
+        9 <Dire Straits> 2 no
+      )
+    ]
+    <Nested Table> (Categories
+      5 <Classical> yes
+      4 <Modern Instrumental> no
+      1 <New Acquistions> no
+      2 <Pop> no
+      3 <Punk> no
+      7 <Uncategorized> no
+      6 <Unpopular Pop> no
+    )
+    <New Acquistions> [
+      1
+      no
+    ]
+  }
   <Window> {
-      <pos> [
-          383
-          124
-        ]
-      <scale> 1.1
-      <size> [
-          590
-          536
-        ]
-    }
+    <pos> [
+      383
+      124
+    ]
+    <scale> 1.1
+    <size> [
+      590
+      536
+    ]
+  }
 }

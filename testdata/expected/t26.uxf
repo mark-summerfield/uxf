@@ -2,34 +2,34 @@ uxf 1.0 MyApp 1.2.0 Config
 =Files Kind Filename
 {
   <Files> (Files
-      <current> <test1.uxf>
-      <recent1> </tmp/test2.uxf>
-      <recent2> <C:\Users\mark\test3.uxf>
-    )
+    <current> <test1.uxf>
+    <recent1> </tmp/test2.uxf>
+    <recent2> <C:\Users\mark\test3.uxf>
+  )
   <General> {
-      <shapename> <Hexagon>
-      <showtoolbar> no
-      <zoom> 150
-    }
+    <shapename> <Hexagon>
+    <showtoolbar> no
+    <zoom> 150
+  }
   <Window1> {
-      <height> 636
-      <scale> 1.1
-      <width> 592
-      <x> 615
-      <y> 252
-    }
+    <height> 636
+    <scale> 1.1
+    <width> 592
+    <x> 615
+    <y> 252
+  }
   <Window2> {
-      <height> 81
-      <scale> 1.0
-      <width> 140
-      <x> 28
-      <y> 42
-    }
+    <height> 81
+    <scale> 1.0
+    <width> 140
+    <x> 28
+    <y> 42
+  }
   <Window3> {
-      <height> 22
-      <scale> 0.5
-      <width> 89
-      <x> 57
-      <y> 98
-    }
+    <height> 22
+    <scale> 0.5
+    <width> 89
+    <x> 57
+    <y> 98
+  }
 }

@@ -2,53 +2,53 @@ uxf 1.0
 =Files Kind Filename
 {str
   <General> {#<Map comment> str
-      <autosave> yes
-      <files> (#<Table comment> Files
-          <current> </home/mark/app/rs/tlm/PlaylistsTest.tlm>
-          <recent1> </home/mark/app/rs/tlm/PlaylistsTest.tlm>
-          <recent2> </home/mark/data/playlists-all.tlm>
-        )
-      <historysize> -35
-      <saved> 2022-03-21
-      <volume> 0.7
-    }
+    <autosave> yes
+    <files> (#<Table comment> Files
+      <current> </home/mark/app/rs/tlm/PlaylistsTest.tlm>
+      <recent1> </home/mark/app/rs/tlm/PlaylistsTest.tlm>
+      <recent2> </home/mark/data/playlists-all.tlm>
+    )
+    <historysize> -35
+    <saved> 2022-03-21
+    <volume> 0.7
+  }
   <Magic> (:1F8B11FF0C:)
   <Nested Map> {str list
-      <Classical> [
-          5
-          yes
-        ]
-      <Modern Instrumental> [
-          4
-          no
-        ]
-      <Nested List of Lists> [#<List comment> list
-          [
-            5
-            <Classical &amp; &lt;Special&gt;>
-            yes
-          ]
-          [
-            4
-            <Modern Instrumental>
-            ?
-          ]
-          [
-            1
-            <New Acquistions>
-            no
-          ]
-        ]
-      <New Acquistions> [
-          1
-          no
-        ]
-    }
+    <Classical> [
+      5
+      yes
+    ]
+    <Modern Instrumental> [
+      4
+      no
+    ]
+    <Nested List of Lists> [#<List comment> list
+      [
+        5
+        <Classical &amp; &lt;Special&gt;>
+        yes
+      ]
+      [
+        4
+        <Modern Instrumental>
+        ?
+      ]
+      [
+        1
+        <New Acquistions>
+        no
+      ]
+    ]
+    <New Acquistions> [
+      1
+      no
+    ]
+  }
   <Window> {str
-      <height> 536
-      <scale> 1.1
-      <width> 590
-      <x> 383
-      <y> 124
-    }
+    <height> 536
+    <scale> 1.1
+    <width> 590
+    <x> 383
+    <y> 124
+  }
 }

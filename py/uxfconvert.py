@@ -518,6 +518,15 @@ def _uxf_to_xml(uxo, outfile, indent):
         file.write(tree.toprettyxml(indent=indent))
 
 
+def _xml_add_comment(root, comment):
+    element = tree.createElement('comment')
+    if '\n' in comment and ']]>' not in comment:
+        text_element = tree.createCDATASection(comment)
+    else:
+        text_element = tree.createTextNode(comment)
+    root.appendChild(text_element)
+
+
 def _xml_add_imports(tree, root, import_filenames):
     imports_element = tree.createElement('imports')
     for filename in import_filenames: # don't sort!
