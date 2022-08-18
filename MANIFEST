@@ -1,5 +1,5 @@
 rs/src/lib.rs # add docs at the end
-rs/src/value.rs # TODO (0) visit: make API match Python visit API
+rs/src/value.rs
 rs/src/key.rs
 rs/src/list.rs
 rs/src/map.rs
@@ -73,6 +73,7 @@ st.sh
 # - create geo.uxi based on GeoJSON and if successful create:
 #   uxfgeo.py <infile.{json,geojson,uxf,uxg}>
 #	      <outfile.{json,geojson,uxf,uxg}>
+# - article(s) on replacing csv with uxf & ini/json/toml with uxf
 # - uxfdiff.py
 # - uxfedit (GUI) applications
 # - rs: noncopy nonowned versions: UxfBuf ValueBuf ... FieldBuf

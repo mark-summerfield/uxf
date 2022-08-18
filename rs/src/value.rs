@@ -23,13 +23,16 @@ pub enum Visit {
     UxfEnd,
     ListBegin,
     ListEnd,
+    ValueBegin,
+    ValueEnd,
     MapBegin,
-    MapKey,
     MapEnd,
+    ItemBegin,
+    ItemEnd,
     TableBegin,
+    TableEnd,
     RecordBegin,
     RecordEnd,
-    TableEnd,
     Value,
 }
 
@@ -288,17 +291,21 @@ impl Value {
             Value::List(lst) => {
                 (Rc::clone(&visitor))(Visit::ListBegin, self);
                 for value in lst.iter() {
+                    (Rc::clone(&visitor))(Visit::ValueBegin, &Value::Null);
                     value.visit(Rc::clone(&visitor));
+                    (Rc::clone(&visitor))(Visit::ValueEnd, &Value::Null);
                 }
                 (Rc::clone(&visitor))(Visit::ListEnd, &Value::Null);
             }
             Value::Map(m) => {
                 (Rc::clone(&visitor))(Visit::MapBegin, self);
                 for key in m.sorted_keys() {
+                    (Rc::clone(&visitor))(Visit::ItemBegin, &Value::Null);
                     // A key is never a collection
                     let key_value = Value::from(key.clone());
-                    (Rc::clone(&visitor))(Visit::MapKey, &key_value);
+                    (Rc::clone(&visitor))(Visit::Value, &key_value);
                     m.get(key).unwrap().visit(Rc::clone(&visitor));
+                    (Rc::clone(&visitor))(Visit::ItemEnd, &Value::Null);
                 }
                 (Rc::clone(&visitor))(Visit::MapEnd, &Value::Null);
             }

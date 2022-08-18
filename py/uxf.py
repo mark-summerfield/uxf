@@ -31,7 +31,7 @@ from xml.sax.saxutils import escape, unescape
 
 import editabletuple
 
-__version__ = '2.4.0' # uxf module version
+__version__ = '2.4.1' # uxf module version
 VERSION = 1.0 # UXF file format version
 
 UTF8 = 'utf-8'
@@ -132,8 +132,8 @@ class VisitKind(enum.Enum):
     UXF_END = enum.auto()
     LIST_BEGIN = enum.auto()
     LIST_END = enum.auto()
-    LIST_VALUE_BEGIN = enum.auto()
-    LIST_VALUE_END = enum.auto()
+    VALUE_BEGIN = enum.auto()
+    VALUE_END = enum.auto()
     MAP_BEGIN = enum.auto()
     MAP_END = enum.auto()
     ITEM_BEGIN = enum.auto()
@@ -938,13 +938,13 @@ class List(collections.UserList, _CommentMixin):
         value is a value or None.'''
         visitor(VisitKind.LIST_BEGIN, self)
         for value in self.data:
-            visitor(VisitKind.LIST_VALUE_BEGIN, None)
+            visitor(VisitKind.VALUE_BEGIN, None)
             value = _maybe_to_uxf_collection(value)
             if _is_uxf_collection(value):
                 value.visit(visitor)
             else:
                 visitor(VisitKind.VALUE, value)
-            visitor(VisitKind.LIST_VALUE_END, None)
+            visitor(VisitKind.VALUE_END, None)
         visitor(VisitKind.LIST_END, None)
 
 
@@ -2310,9 +2310,9 @@ class _PrettyPrinter(_EventMixin): # Functor that can be used as a visitor
             self.handle_list_begin(value)
         elif kind is VisitKind.LIST_END:
             self.handle_list_end()
-        elif kind is VisitKind.LIST_VALUE_BEGIN:
+        elif kind is VisitKind.VALUE_BEGIN:
             pass
-        elif kind is VisitKind.LIST_VALUE_END:
+        elif kind is VisitKind.VALUE_END:
             self.handle_list_value_end()
         elif kind is VisitKind.MAP_BEGIN:
             self.handle_map_begin(value)
