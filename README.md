@@ -21,8 +21,8 @@ UXF-based formats are very easy to adapt to future requirements
     - [Terminology](#terminology)
     - [Minimal empty UXF](#minimal-empty-uxf)
     - [Built-in Types](#built-in-types)
-    - [Wrap Width](#wrap-width)
     - [Custom Types](#custom-types)
+    - [Wrap Width](#wrap-width)
 - [Examples](#examples)
     - [CSV](#csv)
     - [INI](#ini)
@@ -122,61 +122,6 @@ spaces, tabs, or newlines in any combination.
 If you don't want to be committed to a particular UXF type, just use a `str`
 and do whatever conversion you want, or use a [Custom Type](#custom-types).
 
-### Wrap Width
-
-A UXF file's header must always occupy its own line (i.e., end with a
-newline). The rest of the file could in theory be a single line no matter
-how long. In practice and for human readability it is normal to limit the
-width of lines, for example, to 76, 80, or the UXF default of 96 characters.
-
-UXF `bytes` and ``str``s can be of any length, but nonetheless they can be
-width-limited without changing their semantics.
-
-#### Bytes
-
-Any `bytes` value may be written with any amount of whitespace including
-newlines—with all the whitespace ignored. For example:
-
-    (:AB DE 01 57:) ≣ (:ABDE0157:)
-
-This makes it is easy to convert a `bytes` that is too long into chunks,
-e.g.,
-
-    (:20 AC 40 41 ... lots more ... FF FE:)
-
-to, say:
-
-    (:20 AC 40 41
-    ... some more ...
-    ... some more ...
-    FF FE:)
-
-#### Strings
-
-Because UXF strings respect any whitespace they contain they cannot be split
-into chunks like `bytes`. However, UXF supports a string concatenation
-operator such that:
-
-    <This is one string> ≣ <This > & <is one > & <string>
-
-Which means, of course, that given a long string that might not contain
-newlines or whose lines are too long, we can easily split it into chunks,
-e.g.,
-
-    <Imagine this is a really long string...>
-
-to, say:
-
-    <Imagine > &
-    <this is a > &
-    <really long > &
-    <string...>
-
-Comments work the same way, but note that the comment marker must only
-precede the _first_ fragment.
-
-    #<This is a comment in one or more strings.> ≣ #<This is a > & <comment in > & <one or more> & < strings.>
-
 ### Custom Types
 
 There are two common approaches to handling custom types in UXF. Both
@@ -238,6 +183,61 @@ return these as custom class instances—as “editable tuples”.)
 If many applications need to use the same _ttypes_, it _may_ make sense to
 create some shared _ttype_ definitions. See [Imports](#imports) for how to
 do this.
+
+### Wrap Width
+
+A UXF file's header must always occupy its own line (i.e., end with a
+newline). The rest of the file could in theory be a single line no matter
+how long. In practice and for human readability it is normal to limit the
+width of lines, for example, to 76, 80, or the UXF default of 96 characters.
+
+UXF `bytes` and ``str``s can be of any length, but nonetheless they can be
+width-limited without changing their semantics.
+
+#### Bytes
+
+Any `bytes` value may be written with any amount of whitespace including
+newlines—with all the whitespace ignored. For example:
+
+    (:AB DE 01 57:) ≣ (:ABDE0157:)
+
+This makes it is easy to convert a `bytes` that is too long into chunks,
+e.g.,
+
+    (:20 AC 40 41 ... lots more ... FF FE:)
+
+to, say:
+
+    (:20 AC 40 41
+    ... some more ...
+    ... some more ...
+    FF FE:)
+
+#### Strings
+
+Because UXF strings respect any whitespace they contain they cannot be split
+into chunks like `bytes`. However, UXF supports a string concatenation
+operator such that:
+
+    <This is one string> ≣ <This > & <is one > & <string>
+
+Which means, of course, that given a long string that might not contain
+newlines or whose lines are too long, we can easily split it into chunks,
+e.g.,
+
+    <Imagine this is a really long string...>
+
+to, say:
+
+    <Imagine > &
+    <this is a > &
+    <really long > &
+    <string...>
+
+Comments work the same way, but note that the comment marker must only
+precede the _first_ fragment.
+
+    #<This is a comment in one or more strings.> ≣ #<This is a > & <comment in > & <one or more> & < strings.>
 
 ## Examples
 
