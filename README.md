@@ -311,7 +311,7 @@ The most _appropriate_ UXF equivalent is to use a UXF `table`:
 
 When one or more tables are used each one's _ttype_ (table type) must be
 defined at the start of the `.uxf` file. A _ttype_ definition begins with an
-`=` sign followed by the _ttype_ (i.e., the table name), followed by one or
+`=` sign followed by the _ttype_ (i.e., the table name), followed by zero or
 more fields. A field consists of a name optionally followed by a `:` and
 then a type (here only names are given).
 
@@ -536,8 +536,8 @@ placed at the start of a list before the optional _vtype_ or the first
 value, or at the start of a map before the optional _ktype_ or the first
 key, or at the start of a table before the _ttype_ name.
 
-This version probably provides the best balance between human readability
-and programming convenience. But it is possible to go further.
+This version probably provides a reasonable balance between human
+readability and programming convenience. But it is possible to go further.
 
     uxf 1.0 MyApp 1.2.0 Config
     =pos x:int y:int
@@ -557,11 +557,11 @@ and programming convenience. But it is possible to go further.
       }
     }
 
-Here we've added some types. The outermost map must have `str` keys and
-`map` values, and the _General_, _Files_, and _Window_ maps must all have
-`str` keys and _any_ values. For ``map``s we may specify the key and
-value types, or just the key type, or neither. We've also specified that the
-_recent_ files ``list``'s values must be ``str``s.
+The outermost map must have `str` keys and `map` values, and the _General_,
+_Files_, and _Window_ maps must all have `str` keys and _any_ values. For
+``map``s we may specify the key and value types, or just the key type, or
+neither. We've also specified that the _recent_ files ``list``'s values must
+be ``str``s.
 
 Notice that instead of individual “Windows” entries we've just used one.
 Since “pos” and “size” are tables they can have as many rows as we like, in
@@ -574,7 +574,7 @@ version.
 
     uxf 1.0 MyApp 1.3.0 Config
     =#<Window dimensions> Geometry x:int y:int width:int height:int scale:real
-    {#<Notes on this configuration file format> str map
+    {#<Notes on this configuration file format> str
       <General> {#<Miscellaneous settings> str
         <shapename> <Hexagon> <zoom> 150 <showtoolbar> no <Files> {str
           <current> <test1.uxf>
