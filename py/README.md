@@ -796,10 +796,12 @@ or
 
 - 2.4.0
   - `dump()` and `dumps()` now use the pretty printing algorithm which
-    produces much neater and more consistent output than prefer. It also
+    produces much neater and more consistent output than before. It also
     means that `wrap_width` is properly respected even for `bytes` and for
     long ``str``s.
   - List, Map, and Table comments are no longer immutable.
+  - The UXF XML format now stores comments as tags rather than attributes to
+    ensure that whitespace is correctly preserved.
 - 2.3.1 When ``str``s and `bytes` are output they now respect the
   `wrap_width`. The formatting is still unsatisfactory though: a proper
   pretty printing algorithm needs to be used.
