@@ -22,12 +22,14 @@
       <field name="CID"/>
       <field name="Selected"/>
     </ttype>
-    <ttype name="rgb" comment="0-255 per component">
+    <ttype name="rgb">
+      <comment>0-255 per component</comment>
       <field name="red" vtype="int"/>
       <field name="green" vtype="int"/>
       <field name="blue" vtype="int"/>
     </ttype>
-    <ttype name="rgba" comment="0-255 per component">
+    <ttype name="rgba">
+      <comment>0-255 per component</comment>
       <field name="red" vtype="int"/>
       <field name="green" vtype="int"/>
       <field name="blue" vtype="int"/>
@@ -95,7 +97,8 @@
       <str>More Tests</str>
     </key>
     <value>
-      <list comment="A list of name value pairs; normally would be a map">
+      <list>
+        <comment>A list of name value pairs; normally would be a map</comment>
         <str>one</str>
         <table name="IPv4">
           <row>

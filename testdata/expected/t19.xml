@@ -1,5 +1,6 @@
 <?xml version="1.0" ?>
-<uxf version="1.0" comment="Suitable for SQLite conversion">
+<uxf version="1.0">
+  <comment>Suitable for SQLite conversion</comment>
   <ttypes>
     <ttype name="PriceList">
       <field name="Date"/>

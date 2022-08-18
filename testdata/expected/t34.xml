@@ -5,7 +5,8 @@
       <str>Map Test #1</str>
     </key>
     <value>
-      <map comment="Map with different types of key">
+      <map>
+        <comment>Map with different types of key</comment>
         <key>
           <bytes>757866</bytes>
         </key>
@@ -42,7 +43,8 @@
       <str>Map Test #2</str>
     </key>
     <value>
-      <map ktype="int" comment="Map same type of non-str keys">
+      <map ktype="int">
+        <comment>Map same type of non-str keys</comment>
         <key>
           <int v="1"/>
         </key>
@@ -73,7 +75,8 @@
       <str>Map Test #3</str>
     </key>
     <value>
-      <map ktype="int" vtype="date" comment="Map same type of non-str keys and values">
+      <map ktype="int" vtype="date">
+        <comment>Map same type of non-str keys and values</comment>
         <key>
           <int v="1"/>
         </key>

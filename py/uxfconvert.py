@@ -508,7 +508,7 @@ def _uxf_to_xml(uxo, outfile, indent):
     if uxo.custom:
         root.setAttribute('custom', uxo.custom)
     if uxo.comment:
-        root.setAttribute('comment', uxo.comment)
+        _xml_add_comment(tree, root, uxo.comment)
     if uxo.imports:
         _xml_add_imports(tree, root, uxo.import_filenames)
     if uxo.tclasses:
@@ -518,13 +518,14 @@ def _uxf_to_xml(uxo, outfile, indent):
         file.write(tree.toprettyxml(indent=indent))
 
 
-def _xml_add_comment(root, comment):
+def _xml_add_comment(tree, root, comment):
     element = tree.createElement('comment')
     if '\n' in comment and ']]>' not in comment:
         text_element = tree.createCDATASection(comment)
     else:
         text_element = tree.createTextNode(comment)
-    root.appendChild(text_element)
+    element.appendChild(text_element)
+    root.appendChild(element)
 
 
 def _xml_add_imports(tree, root, import_filenames):
@@ -542,7 +543,7 @@ def _xml_add_tclasses(tree, root, tclasses):
         tclass_element = tree.createElement('ttype')
         tclass_element.setAttribute('name', tclass.ttype)
         if tclass.comment:
-            tclass_element.setAttribute('comment', tclass.comment)
+            _xml_add_comment(tree, tclass_element, tclass.comment)
         for field in tclass.fields:
             field_element = tree.createElement('field')
             field_element.setAttribute('name', field.name)
@@ -574,7 +575,7 @@ def _xml_add_list(tree, root, lst, *, tag='list'):
         list_element.setAttribute('vtype', vtype)
     comment = getattr(lst, 'comment', None)
     if comment is not None:
-        list_element.setAttribute('comment', comment)
+        _xml_add_comment(tree, list_element, comment)
     for value in lst:
         _xml_add_value(tree, list_element, value)
     root.appendChild(list_element)
@@ -590,7 +591,7 @@ def _xml_add_map(tree, root, map):
         map_element.setAttribute('vtype', vtype)
     comment = getattr(map, 'comment', None)
     if comment is not None:
-        map_element.setAttribute('comment', comment)
+        _xml_add_comment(tree, map_element, comment)
     for key, value in map.items():
         key_element = tree.createElement('key')
         _xml_add_value(tree, key_element, key)
@@ -605,7 +606,7 @@ def _xml_add_table(tree, root, table):
     table_element = tree.createElement('table')
     table_element.setAttribute('name', table.ttype)
     if table.comment is not None:
-        table_element.setAttribute('comment', table.comment)
+        _xml_add_comment(tree, table_element, table.comment)
     for value in table:
         _xml_add_value(tree, table_element, value)
     root.appendChild(table_element)
@@ -670,8 +671,11 @@ class _UxfSaxHandler(xml.sax.handler.ContentHandler):
         self.stack = None
         self.tclass = None
         self.imports_list = []
+        self.incomment = False
         self.instr = False
         self.inbytes = False
+        self.intclass = False
+        self.comment = ''
         self.string = ''
         self.bytes = ''
         self.uxo = uxf.Uxf()
@@ -681,30 +685,30 @@ class _UxfSaxHandler(xml.sax.handler.ContentHandler):
         d = {key: value for key, value in attributes.items()}
         if name == 'uxf':
             self.uxo.custom = d.get('custom', '')
-            self.uxo.comment = d.get('comment')
         elif name in {'imports', 'ttypes'}:
             pass
         elif name == 'import':
             self.imports_list.append(d['filename'])
         elif name == 'ttype':
-            self.tclass = uxf.TClassBuilder(d['name'],
-                                            comment=d.get('comment'))
+            self.tclass = uxf.TClassBuilder(d['name'])
+            self.intclass = True
         elif name == 'field':
             self.tclass.append(uxf.Field(d['name'], d.get('vtype')))
         elif name == 'map':
-            container = uxf.Map(ktype=d.get('ktype'), vtype=d.get('vtype'),
-                                comment=d.get('comment'))
+            container = uxf.Map(ktype=d.get('ktype'), vtype=d.get('vtype'))
             self.start_container(container)
         elif name == 'list':
-            container = uxf.List(vtype=d.get('vtype'),
-                                 comment=d.get('comment'))
+            container = uxf.List(vtype=d.get('vtype'))
             self.start_container(container)
         elif name == 'table':
             tclass = self.uxo.tclasses[d['name']]
-            container = uxf.Table(tclass, comment=d.get('comment'))
+            container = uxf.Table(tclass)
             self.start_container(container)
         elif name in {'key', 'value'}:
             pass # container.append() doesn't need this distinction
+        elif name == 'comment':
+            self.incomment = True
+            self.comment = ''
         elif name == 'str':
             self.instr = True
             self.string = ''
@@ -737,8 +741,18 @@ class _UxfSaxHandler(xml.sax.handler.ContentHandler):
         elif name == 'ttype':
             self.uxo.tclasses[self.tclass.ttype] = self.tclass.build()
             self.tclass = None
+            self.intclass = False
         elif name in {'map', 'list', 'table'}:
             self.stack.pop()
+        elif name == 'comment':
+            if self.intclass:
+                self.tclass.comment = self.comment
+            elif self.stack:
+                self.stack[-1].comment = self.comment
+            else:
+                self.uxo.comment = self.comment
+            self.comment = ''
+            self.incomment = False
         elif name == 'str':
             _append_to_parent(self.stack, self.string)
             self.string = ''
@@ -754,6 +768,8 @@ class _UxfSaxHandler(xml.sax.handler.ContentHandler):
             self.bytes += text
         elif self.instr:
             self.string += text
+        elif self.incomment:
+            self.comment += text
 
 
     def start_container(self, container):

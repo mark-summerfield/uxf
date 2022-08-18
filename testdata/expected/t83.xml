@@ -1,5 +1,6 @@
 <?xml version="1.0" ?>
-<uxf version="1.0" comment="UXF version of TOML Example">
+<uxf version="1.0">
+  <comment>UXF version of TOML Example</comment>
   <ttypes>
     <ttype name="Clients">
       <field name="a"/>

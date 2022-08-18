@@ -43,7 +43,8 @@
       <str>General</str>
     </key>
     <value>
-      <map comment="Various configuration items">
+      <map>
+        <comment>Various configuration items</comment>
         <key>
           <str>autosave</str>
         </key>
@@ -54,7 +55,8 @@
           <str>files</str>
         </key>
         <value>
-          <table name="Files" comment="Another little comment">
+          <table name="Files">
+            <comment>Another little comment</comment>
             <row>
               <str>current</str>
               <str>/home/mark/app/rs/tlm/PlaylistsTest.tlm</str>
@@ -99,7 +101,8 @@
       <str>Nested Map</str>
     </key>
     <value>
-      <map comment="Another comment this time in a nested map">
+      <map>
+        <comment>Another comment this time in a nested map</comment>
         <key>
           <str>Classical</str>
         </key>
@@ -122,7 +125,8 @@
           <str>Nested List of Lists</str>
         </key>
         <value>
-          <list comment="Just a little list">
+          <list>
+            <comment>Just a little list</comment>
             <list>
               <int v="5"/>
               <str>Classical</str>
@@ -144,7 +148,8 @@
           <str>Nested List of Tables</str>
         </key>
         <value>
-          <list comment="Yet another comment in a list">
+          <list>
+            <comment>Yet another comment in a list</comment>
             <table name="Categories">
               <row>
                 <int v="5"/>
@@ -182,7 +187,8 @@
                 <no/>
               </row>
             </table>
-            <table name="Playlists" comment="Comments may appear at the beginning of any list, map or table">
+            <table name="Playlists">
+              <comment>Comments may appear at the beginning of any list, map or table</comment>
               <row>
                 <int v="4"/>
                 <str>ABBA</str>
@@ -262,8 +268,9 @@
           <str>Nested Table</str>
         </key>
         <value>
-          <table name="Categories" comment="A table with a rather long comment just to
-show what can be done.">
+          <table name="Categories">
+            <comment><![CDATA[A table with a rather long comment just to
+show what can be done.]]></comment>
             <row>
               <int v="5"/>
               <str>Classical</str>
@@ -370,7 +377,8 @@ show what can be done.">
       <str>Window</str>
     </key>
     <value>
-      <map comment="Some numbers">
+      <map>
+        <comment>Some numbers</comment>
         <key>
           <str>pos</str>
         </key>

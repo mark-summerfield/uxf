@@ -331,8 +331,7 @@ The `seq` can be a `list`, `tuple`, or any iterable acceptable to the
 built-in `list()` type. The _vtype_ is a `str` signifying the type of value
 this list may hold; `None` means values may be of _any_ UXF-compatible type
 (see [Python UXF Types](#python-uxf-types)). A `str` may be passed as the
-`comment`. Both the `vtype` and `comment` properties are immutable after
-construction.
+`comment`. The `vtype` property is immutable after construction.
 
 See [Python UXF Types](#python-uxf-types) for more about _vtypes_.
 
@@ -341,8 +340,8 @@ See [Python UXF Types](#python-uxf-types) for more about _vtypes_.
 
 A class used to represent a UXF map. It is a `collections.UserDict` subclass
 that holds its dict in the `.data` attribute and that also has `.comment`,
-`.ktype`, and `.vtype` attributes. The `ktype, `vtype`, and `comment`
-properties are immutable after construction.
+`.ktype`, and `.vtype` attributes. The `ktype and `vtype` properties are
+immutable after construction.
 
 Although Python ``dict``s are insertion-ordered, UXF ``Map``s are
 key-ordered. To access keys, values, or items in UXF order use the
@@ -386,8 +385,8 @@ A `Table` can be created using the constructor, passing a
 [TClass](#tclass-class), and optionally, records (a list of lists, where
 each sublist has `len(tclass.fields)` values), and a comment (a `str`).
 Alternativvely, use the [table()](#table-def) convenience function which
-takes a _ttype_ (a `str`), and fields. Both the `tclass` (i.e., the `ttype`)
-and `comment` properties are immutable after construction.
+takes a _ttype_ (a `str`), and fields. The `tclass` (i.e., the `ttype`)
+property is immutable after construction.
 
 See [Python UXF Types](#python-uxf-types) for more about and _ttypes_.
 
@@ -795,10 +794,12 @@ or
 
 ## Changes
 
-- 2.4.0 `dump()` and `dumps()` now use the pretty printing algorithm which
-  produces much neater and more consistent output than prefer. It also means
-  that `wrap_width` is properly respected even for `bytes` and for long
-  ``str``s.
+- 2.4.0
+  - `dump()` and `dumps()` now use the pretty printing algorithm which
+    produces much neater and more consistent output than prefer. It also
+    means that `wrap_width` is properly respected even for `bytes` and for
+    long ``str``s.
+  - List, Map, and Table comments are no longer immutable.
 - 2.3.1 When ``str``s and `bytes` are output they now respect the
   `wrap_width`. The formatting is still unsatisfactory though: a proper
   pretty printing algorithm needs to be used.

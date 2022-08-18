@@ -1,5 +1,6 @@
 <?xml version="1.0" ?>
-<uxf version="1.0" custom="Map comparison test" comment="t77.uxf == t78.uxf even though maps have different orders">
+<uxf version="1.0" custom="Map comparison test">
+  <comment>t77.uxf == t78.uxf even though maps have different orders</comment>
   <ttypes>
     <ttype name="IPv4">
       <field name="A" vtype="int"/>
@@ -7,12 +8,14 @@
       <field name="C" vtype="int"/>
       <field name="D" vtype="int"/>
     </ttype>
-    <ttype name="rgb" comment="0-255 per component">
+    <ttype name="rgb">
+      <comment>0-255 per component</comment>
       <field name="red" vtype="int"/>
       <field name="green" vtype="int"/>
       <field name="blue" vtype="int"/>
     </ttype>
-    <ttype name="rgba" comment="0-255 per component">
+    <ttype name="rgba">
+      <comment>0-255 per component</comment>
       <field name="red" vtype="int"/>
       <field name="green" vtype="int"/>
       <field name="blue" vtype="int"/>

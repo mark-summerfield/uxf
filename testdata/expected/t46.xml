@@ -113,7 +113,8 @@
       <str>More Tests</str>
     </key>
     <value>
-      <list comment="A list of name value pairs; normally would be a map">
+      <list>
+        <comment>A list of name value pairs; normally would be a map</comment>
         <str>empty table 0</str>
         <table name="RGBA"/>
         <str>one</str>

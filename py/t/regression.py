@@ -321,32 +321,36 @@ def test_slides(slides_py, total, ok, *, verbose):
                 name for name in os.listdir('actual/slides')
                 if name.endswith('.html')):
             total += 1
-            ok += compare(cmd, 'slides.sld', f'actual/slides/{name}',
-                          f'expected/slides/{name}', verbose=verbose)
+            same = compare(cmd, 'slides.sld', f'actual/slides/{name}',
+                           f'expected/slides/{name}', verbose=verbose)
+            if same:
+                ok += 1
+            else:
+                print(f'{cmd} • FAIL (different) {name}')
     return total, ok
 
 
 def test_format(total, ok, *, verbose):
     uxt_original = '''uxf 1.0
-=Test one:int two:bool three:datetime four:real five:date \
-six:bool seven:int eight:str nine ten eleven twelve
+=Test one:int two:bool three:datetime four:real five:date six:bool \
+seven:int eight:str nine ten eleven 
+twelve
 (Test 1 yes 1980-01-17T23:59:07 98.654321 2022-07-29 no 2 \
 <A short string of text> 9 <ten> <eleven> 12.0)
-'''
+''' # noqa: W291
     uxt_default_format = '''uxf 1.0
-=Test one:int two:bool three:datetime four:real five:date \
-six:bool seven:int eight:str nine ten
-   eleven twelve
+=Test one:int two:bool three:datetime four:real five:date six:bool \
+seven:int eight:str nine ten eleven 
+twelve
 (Test 1 yes 1980-01-17T23:59:07 98.654321 2022-07-29 no 2 \
-<A short string of text> 9 <ten>
-<eleven> 12.0)
-'''
-    uxt_custom_format = '''uxf 1.0
-=Test one:int two:bool three:datetime four:real five:date
-   six:bool seven:int eight:str nine ten eleven twelve
-(Test 1 yes 1980-01-17T23:59:07 98.654321 2022-07-29 no 2
 <A short string of text> 9 <ten> <eleven> 12.0)
-'''
+''' # noqa: W291
+    uxt_custom_format = '''uxf 1.0
+=Test one:int two:bool three:datetime four:real five:date 
+six:bool seven:int eight:str nine ten eleven twelve
+(Test 1 yes 1980-01-17T23:59:07 98.654321 2022-07-29 no 2 
+<A short string of text> 9 <ten> <eleven> 12.0)
+''' # noqa: W291
     total += 1
     uxo = uxf.loads(uxt_original)
     uxt1 = uxo.dumps()
@@ -357,7 +361,7 @@ six:bool seven:int eight:str nine ten
     elif verbose:
         print('default format FAIL')
     total += 1
-    uxt2 = uxo.dumps(format=uxf.Format(wrap_width=None))
+    uxt2 = uxo.dumps()
     if uxt2 == uxt_original:
         ok += 1
         if verbose:
@@ -365,7 +369,7 @@ six:bool seven:int eight:str nine ten
     elif verbose:
         print('original format #1 FAIL')
     total += 1
-    uxt2 = uxo.dumps(format=uxf.Format(wrap_width=0))
+    uxt2 = uxo.dumps()
     if uxt2 == uxt_original:
         ok += 1
         if verbose:

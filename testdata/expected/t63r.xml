@@ -18,14 +18,17 @@
       <field name="numerator" vtype="int"/>
       <field name="denominator" vtype="int"/>
     </ttype>
-    <ttype name="i" comment="italic">
+    <ttype name="i">
+      <comment>italic</comment>
       <field name="content"/>
     </ttype>
-    <ttype name="img" comment="image">
+    <ttype name="img">
+      <comment>image</comment>
       <field name="content"/>
       <field name="image" vtype="bytes"/>
     </ttype>
-    <ttype name="pair" comment="a pair of any two values">
+    <ttype name="pair">
+      <comment>a pair of any two values</comment>
       <field name="first"/>
       <field name="second"/>
     </ttype>
@@ -34,7 +37,8 @@
       <field name="y" vtype="int"/>
       <field name="z" vtype="int"/>
     </ttype>
-    <ttype name="rgb" comment="0-255 per component">
+    <ttype name="rgb">
+      <comment>0-255 per component</comment>
       <field name="red" vtype="int"/>
       <field name="green" vtype="int"/>
       <field name="blue" vtype="int"/>

@@ -1,5 +1,6 @@
 <?xml version="1.0" ?>
-<uxf version="1.0" custom="Custom text" comment="File level comment">
+<uxf version="1.0" custom="Custom text">
+  <comment>File level comment</comment>
   <ttypes>
     <ttype name="IPv4">
       <field name="A" vtype="int"/>
@@ -7,12 +8,14 @@
       <field name="C" vtype="int"/>
       <field name="D" vtype="int"/>
     </ttype>
-    <ttype name="rgb" comment="0-255 per component">
+    <ttype name="rgb">
+      <comment>0-255 per component</comment>
       <field name="red" vtype="int"/>
       <field name="green" vtype="int"/>
       <field name="blue" vtype="int"/>
     </ttype>
-    <ttype name="rgba" comment="0-255 per component">
+    <ttype name="rgba">
+      <comment>0-255 per component</comment>
       <field name="red" vtype="int"/>
       <field name="green" vtype="int"/>
       <field name="blue" vtype="int"/>
@@ -24,7 +27,8 @@
       <str>General</str>
     </key>
     <value>
-      <map comment="Map comment">
+      <map>
+        <comment>Map comment</comment>
         <key>
           <str>autosave</str>
         </key>
@@ -91,7 +95,8 @@
           <str>many</str>
         </key>
         <value>
-          <table name="IPv4" comment="Table comment">
+          <table name="IPv4">
+            <comment>Table comment</comment>
             <row>
               <int v="172"/>
               <int v="16"/>
@@ -170,7 +175,8 @@
           <str>Modern Instrumental</str>
         </key>
         <value>
-          <list comment="List comment">
+          <list>
+            <comment>List comment</comment>
             <int v="4"/>
             <no/>
           </list>

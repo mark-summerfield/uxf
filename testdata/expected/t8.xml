@@ -1,6 +1,7 @@
 <?xml version="1.0" ?>
-<uxf version="1.0" custom="TLM Config" comment="A single comment may be placed at the start after the uxf header and
-before evertthing else.">
+<uxf version="1.0" custom="TLM Config">
+  <comment><![CDATA[A single comment may be placed at the start after the uxf header and
+before evertthing else.]]></comment>
   <ttypes>
     <ttype name="Categories">
       <field name="CID"/>

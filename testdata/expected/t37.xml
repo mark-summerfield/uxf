@@ -1,5 +1,6 @@
 <?xml version="1.0" ?>
-<uxf version="1.0" custom="MyApp Data" comment="Suitable for SQLite conversion">
+<uxf version="1.0" custom="MyApp Data">
+  <comment>Suitable for SQLite conversion</comment>
   <ttypes>
     <ttype name="Customers">
       <field name="CID" vtype="int"/>
@@ -25,7 +26,8 @@
       <field name="Description" vtype="str"/>
     </ttype>
   </ttypes>
-  <list comment="There is a 1:M relationship between the Invoices and Items tables">
+  <list>
+    <comment>There is a 1:M relationship between the Invoices and Items tables</comment>
     <table name="Customers">
       <row>
         <int v="50"/>

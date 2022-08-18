@@ -11,7 +11,8 @@
       <str>General</str>
     </key>
     <value>
-      <map ktype="str" comment="Map comment">
+      <map ktype="str">
+        <comment>Map comment</comment>
         <key>
           <str>autosave</str>
         </key>
@@ -22,7 +23,8 @@
           <str>files</str>
         </key>
         <value>
-          <table name="Files" comment="Table comment">
+          <table name="Files">
+            <comment>Table comment</comment>
             <row>
               <str>current</str>
               <str>/home/mark/app/rs/tlm/PlaylistsTest.tlm</str>
@@ -90,7 +92,8 @@
           <str>Nested List of Lists</str>
         </key>
         <value>
-          <list vtype="list" comment="List comment">
+          <list vtype="list">
+            <comment>List comment</comment>
             <list>
               <int v="5"/>
               <str>Classical &amp; &lt;Special&gt;</str>

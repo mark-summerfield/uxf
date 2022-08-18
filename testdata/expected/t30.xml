@@ -15,7 +15,8 @@
       <str>General</str>
     </key>
     <value>
-      <map comment="Miscellaneous settings">
+      <map>
+        <comment>Miscellaneous settings</comment>
         <key>
           <str>Files</str>
         </key>
@@ -31,7 +32,8 @@
               <str>recent</str>
             </key>
             <value>
-              <list comment="From most to least recent">
+              <list>
+                <comment>From most to least recent</comment>
                 <str>/tmp/test2.uxf</str>
                 <str>C:\Users\mark\test3.uxf</str>
               </list>
@@ -62,7 +64,8 @@
       <str>Window1</str>
     </key>
     <value>
-      <map ktype="str" comment="Window dimensions and scales">
+      <map ktype="str">
+        <comment>Window dimensions and scales</comment>
         <key>
           <str>pos</str>
         </key>

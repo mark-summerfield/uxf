@@ -1,5 +1,6 @@
 <?xml version="1.0" ?>
-<uxf version="1.0" custom="PrettyPrint Test" comment="This file is for quick visual tests of the PrettyPrint experiment.">
+<uxf version="1.0" custom="PrettyPrint Test">
+  <comment>This file is for quick visual tests of the PrettyPrint experiment.</comment>
   <imports>
     <import filename="numeric"/>
   </imports>
@@ -35,12 +36,14 @@
       <field name="Selected"/>
       <field name="DateTime" vtype="datetime"/>
     </ttype>
-    <ttype name="rgb" comment="0-255 for 3 components">
+    <ttype name="rgb">
+      <comment>0-255 for 3 components</comment>
       <field name="red" vtype="int"/>
       <field name="green" vtype="int"/>
       <field name="blue" vtype="int"/>
     </ttype>
-    <ttype name="rgba" comment="0-255 per 3 components 0.0-1.0 for 1 component">
+    <ttype name="rgba">
+      <comment>0-255 per 3 components 0.0-1.0 for 1 component</comment>
       <field name="red" vtype="int"/>
       <field name="green" vtype="int"/>
       <field name="blue" vtype="int"/>
@@ -121,7 +124,8 @@
       <str>Map Test #1</str>
     </key>
     <value>
-      <map comment="Map with different types of key">
+      <map>
+        <comment>Map with different types of key</comment>
         <key>
           <bytes>757866</bytes>
         </key>
@@ -144,7 +148,8 @@
           <int v="5"/>
         </key>
         <value>
-          <table name="Complex" comment="From !numeric import">
+          <table name="Complex">
+            <comment>From !numeric import</comment>
             <row>
               <real v="1.0"/>
               <real v="-3.8"/>
@@ -175,7 +180,8 @@
       <str>Map Test #2</str>
     </key>
     <value>
-      <map ktype="int" comment="Map same type of non-str keys">
+      <map ktype="int">
+        <comment>Map same type of non-str keys</comment>
         <key>
           <int v="1"/>
         </key>
@@ -206,7 +212,8 @@
       <str>More Tests</str>
     </key>
     <value>
-      <list comment="A list of name value pairs; normally would be a map">
+      <list>
+        <comment>A list of name value pairs; normally would be a map</comment>
         <str>one</str>
         <table name="IPv4">
           <row>
@@ -217,7 +224,8 @@
           </row>
         </table>
         <str>many</str>
-        <table name="IPv4" comment="A list of IPv4 addresses">
+        <table name="IPv4">
+          <comment>A list of IPv4 addresses</comment>
           <row>
             <int v="172"/>
             <int v="16"/>
@@ -268,7 +276,8 @@
           <str>Nested List of Lists</str>
         </key>
         <value>
-          <list comment="A list of lists">
+          <list>
+            <comment>A list of lists</comment>
             <list>
               <int v="5"/>
               <str>Classical</str>
@@ -291,7 +300,8 @@
         </key>
         <value>
           <list>
-            <table name="Categories" comment="These categories are just to show nesting">
+            <table name="Categories">
+              <comment>These categories are just to show nesting</comment>
               <row>
                 <int v="5"/>
                 <str>Classical</str>

@@ -17,8 +17,9 @@
       <field name="Blue" vtype="int"/>
     </ttype>
   </ttypes>
-  <list comment="Unused TTypes produce warnings when converting from uxf to uxf.
-One way to avoid the warnings is to use them for empty tables.">
+  <list>
+    <comment><![CDATA[Unused TTypes produce warnings when converting from uxf to uxf.
+One way to avoid the warnings is to use them for empty tables.]]></comment>
     <table name="IntPair"/>
     <table name="IP4">
       <row>
@@ -34,9 +35,11 @@ One way to avoid the warnings is to use them for empty tables.">
         <int v="27"/>
       </row>
     </table>
-    <table name="RGB" comment="This is a very long comment just to check that long comments work the same as for long strings, i.e., they are
-split using the &amp; string concatenation oprator as needed. Notice that this long comment has some newlines of its
-own which the UXF processor is expected to use to make nicer line breaks."/>
+    <table name="RGB">
+      <comment><![CDATA[This is a very long comment just to check that long comments work the same as for long strings, i.e., they are
+split using the & string concatenation oprator as needed. Notice that this long comment has some newlines of its
+own which the UXF processor is expected to use to make nicer line breaks.]]></comment>
+    </table>
     <str><![CDATA[This is a very long string that has some
 newlines but even so,
 also has at least one line that exceeds the default pretty print wrap width of ninety six characters and so will

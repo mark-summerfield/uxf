@@ -1,12 +1,16 @@
 <?xml version="1.0" ?>
-<uxf version="1.0" comment="File level comment for testing string concatenation with the &amp; operator.">
+<uxf version="1.0">
+  <comment>File level comment for testing string concatenation with the &amp; operator.</comment>
   <ttypes>
-    <ttype name="A" comment="ttype comment for tests">
+    <ttype name="A">
+      <comment>ttype comment for tests</comment>
       <field name="a"/>
     </ttype>
   </ttypes>
-  <list comment="list comment for a list long comment test">
-    <table name="A" comment="table comment as another test">
+  <list>
+    <comment>list comment for a list long comment test</comment>
+    <table name="A">
+      <comment>table comment as another test</comment>
       <row>
         <str>an imaginary very long string to test string concatenation</str>
       </row>
@@ -14,6 +18,8 @@
         <bytes>AB0154708140485899F065202122</bytes>
       </row>
     </table>
-    <map comment="map comment to test map comments"/>
+    <map>
+      <comment>map comment to test map comments</comment>
+    </map>
   </list>
 </uxf>

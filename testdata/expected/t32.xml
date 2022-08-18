@@ -1,21 +1,25 @@
 <?xml version="1.0" ?>
 <uxf version="1.0" custom="MyApp 1.2.0 Config">
   <ttypes>
-    <ttype name="pos" comment="nonnegative">
+    <ttype name="pos">
+      <comment>nonnegative</comment>
       <field name="x" vtype="int"/>
       <field name="y" vtype="int"/>
     </ttype>
-    <ttype name="size" comment="nonnegative &amp; &gt; 0">
+    <ttype name="size">
+      <comment>nonnegative &amp; &gt; 0</comment>
       <field name="width" vtype="int"/>
       <field name="height" vtype="int"/>
     </ttype>
   </ttypes>
-  <map ktype="str" vtype="map" comment="Notes on this configuration file format">
+  <map ktype="str" vtype="map">
+    <comment>Notes on this configuration file format</comment>
     <key>
       <str>General</str>
     </key>
     <value>
-      <map ktype="str" comment="Miscellaneous settings">
+      <map ktype="str">
+        <comment>Miscellaneous settings</comment>
         <key>
           <str>Files</str>
         </key>
@@ -31,7 +35,8 @@
               <str>recent</str>
             </key>
             <value>
-              <list vtype="str" comment="From most to least recent">
+              <list vtype="str">
+                <comment>From most to least recent</comment>
                 <str>/tmp/test2.uxf</str>
                 <str>C:\Users\mark\test3.uxf</str>
               </list>
@@ -62,7 +67,8 @@
       <str>Windows</str>
     </key>
     <value>
-      <map comment="Window dimensions and scales">
+      <map>
+        <comment>Window dimensions and scales</comment>
         <key>
           <str>pos</str>
         </key>

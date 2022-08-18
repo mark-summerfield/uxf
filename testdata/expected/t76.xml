@@ -1,5 +1,6 @@
 <?xml version="1.0" ?>
-<uxf version="1.0" comment="typed empties">
+<uxf version="1.0">
+  <comment>typed empties</comment>
   <ttypes>
     <ttype name="Contact">
       <field name="name" vtype="str"/>
@@ -8,13 +9,27 @@
     </ttype>
   </ttypes>
   <list>
-    <table name="Contact" comment="empty table"/>
-    <map ktype="int" vtype="Contact" comment="empty map with ktype and vtype"/>
-    <map ktype="str" vtype="datetime" comment="empty map with ktype and vtype"/>
-    <map ktype="date" comment="empty map with ktype"/>
-    <map comment="empty map"/>
-    <list vtype="date" comment="empty list with vtype"/>
-    <list comment="empty list"/>
+    <table name="Contact">
+      <comment>empty table</comment>
+    </table>
+    <map ktype="int" vtype="Contact">
+      <comment>empty map with ktype and vtype</comment>
+    </map>
+    <map ktype="str" vtype="datetime">
+      <comment>empty map with ktype and vtype</comment>
+    </map>
+    <map ktype="date">
+      <comment>empty map with ktype</comment>
+    </map>
+    <map>
+      <comment>empty map</comment>
+    </map>
+    <list vtype="date">
+      <comment>empty list with vtype</comment>
+    </list>
+    <list>
+      <comment>empty list</comment>
+    </list>
     <table name="Contact"/>
     <map ktype="int" vtype="Contact"/>
     <map ktype="str" vtype="datetime"/>
@@ -22,14 +37,16 @@
     <map/>
     <list vtype="date"/>
     <list/>
-    <table name="Contact" comment="singleton table">
+    <table name="Contact">
+      <comment>singleton table</comment>
       <row>
         <str>Jane Doe</str>
         <str>555 1234 5668</str>
         <int v="498"/>
       </row>
     </table>
-    <map ktype="int" vtype="Contact" comment="singleton map with ktype and vtype">
+    <map ktype="int" vtype="Contact">
+      <comment>singleton map with ktype and vtype</comment>
       <key>
         <int v="300"/>
       </key>
@@ -43,7 +60,8 @@
         </table>
       </value>
     </map>
-    <map ktype="str" vtype="datetime" comment="singleton map with ktype and vtype">
+    <map ktype="str" vtype="datetime">
+      <comment>singleton map with ktype and vtype</comment>
       <key>
         <str>When</str>
       </key>
@@ -51,7 +69,8 @@
         <datetime v="1948-11-21T18:06:00"/>
       </value>
     </map>
-    <map ktype="date" comment="singleton map with ktype">
+    <map ktype="date">
+      <comment>singleton map with ktype</comment>
       <key>
         <date v="1952-02-24"/>
       </key>
@@ -59,7 +78,8 @@
         <real v="3.85"/>
       </value>
     </map>
-    <map comment="singleton map">
+    <map>
+      <comment>singleton map</comment>
       <key>
         <int v="15"/>
       </key>
@@ -67,10 +87,12 @@
         <int v="19"/>
       </value>
     </map>
-    <list vtype="date" comment="singleton list with vtype">
+    <list vtype="date">
+      <comment>singleton list with vtype</comment>
       <date v="1963-05-15"/>
     </list>
-    <list comment="singleton list">
+    <list>
+      <comment>singleton list</comment>
       <str>One</str>
     </list>
     <table name="Contact">
@@ -124,7 +146,8 @@
     <list>
       <str>One</str>
     </list>
-    <table name="Contact" comment="two element table">
+    <table name="Contact">
+      <comment>two element table</comment>
       <row>
         <str>Jane Doe</str>
         <str>555 1234 5668</str>
@@ -136,7 +159,8 @@
         <int v="571"/>
       </row>
     </table>
-    <map ktype="int" vtype="Contact" comment="two element map with ktype and vtype">
+    <map ktype="int" vtype="Contact">
+      <comment>two element map with ktype and vtype</comment>
       <key>
         <int v="300"/>
       </key>
@@ -162,7 +186,8 @@
         </table>
       </value>
     </map>
-    <map ktype="str" vtype="datetime" comment="two element map with ktype and vtype">
+    <map ktype="str" vtype="datetime">
+      <comment>two element map with ktype and vtype</comment>
       <key>
         <str>Then</str>
       </key>
@@ -176,7 +201,8 @@
         <datetime v="1948-11-21T18:06:00"/>
       </value>
     </map>
-    <map ktype="date" comment="two element map with ktype">
+    <map ktype="date">
+      <comment>two element map with ktype</comment>
       <key>
         <date v="1952-02-24"/>
       </key>
@@ -190,7 +216,8 @@
         <real v="14.71"/>
       </value>
     </map>
-    <map comment="two element map">
+    <map>
+      <comment>two element map</comment>
       <key>
         <int v="15"/>
       </key>
@@ -204,11 +231,13 @@
         <int v="23"/>
       </value>
     </map>
-    <list vtype="date" comment="two element list with vtype">
+    <list vtype="date">
+      <comment>two element list with vtype</comment>
       <date v="1963-05-15"/>
       <date v="1964-08-11"/>
     </list>
-    <list comment="two element list">
+    <list>
+      <comment>two element list</comment>
       <str>One</str>
       <str>Two</str>
     </list>

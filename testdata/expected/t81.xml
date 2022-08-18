@@ -1,7 +1,9 @@
 <?xml version="1.0" ?>
-<uxf version="1.0" comment="last modified 1 April 2001 by John Doe">
+<uxf version="1.0">
+  <comment>last modified 1 April 2001 by John Doe</comment>
   <ttypes>
-    <ttype name="Database" comment="use IP address in case network name resolution is not working">
+    <ttype name="Database">
+      <comment>use IP address in case network name resolution is not working</comment>
       <field name="server" vtype="str"/>
       <field name="port" vtype="int"/>
       <field name="file" vtype="str"/>

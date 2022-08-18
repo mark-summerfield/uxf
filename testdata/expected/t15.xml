@@ -1,5 +1,6 @@
 <?xml version="1.0" ?>
-<uxf version="1.0" custom="Test (list of tables with dates and datetimes)" comment="Suitable for SQLite conversion">
+<uxf version="1.0" custom="Test (list of tables with dates and datetimes)">
+  <comment>Suitable for SQLite conversion</comment>
   <ttypes>
     <ttype name="Categories">
       <field name="CID"/>

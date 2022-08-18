@@ -11,7 +11,8 @@
       <field name="Third"/>
     </ttype>
   </ttypes>
-  <list comment="Nested tables">
+  <list>
+    <comment>Nested tables</comment>
     <table name="Pair">
       <row>
         <table name="Pair">

@@ -1,11 +1,13 @@
 <?xml version="1.0" ?>
-<uxf version="1.0" comment="last modified 1 April 2001 by John Doe">
+<uxf version="1.0">
+  <comment>last modified 1 April 2001 by John Doe</comment>
   <map>
     <key>
       <str>database</str>
     </key>
     <value>
-      <map comment="use IP address in case network name resolution is not working">
+      <map>
+        <comment>use IP address in case network name resolution is not working</comment>
         <key>
           <str>file</str>
         </key>

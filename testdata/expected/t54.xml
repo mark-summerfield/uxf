@@ -1,5 +1,6 @@
 <?xml version="1.0" ?>
-<uxf version="1.0" comment="File-level comment">
+<uxf version="1.0">
+  <comment>File-level comment</comment>
   <ttypes>
     <ttype name="Pair">
       <field name="first" vtype="str"/>

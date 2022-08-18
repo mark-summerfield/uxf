@@ -1,5 +1,6 @@
 <?xml version="1.0" ?>
-<uxf version="1.0" comment=" A little note.">
+<uxf version="1.0">
+  <comment> A little note.</comment>
   <list vtype="list">
     <list>
       <int v="5"/>

@@ -145,7 +145,21 @@ class VisitKind(enum.Enum):
     VALUE = enum.auto()
 
 
-class Uxf:
+class _CommentMixin:
+
+    @property
+    def comment(self):
+        if self._comment == '':
+            self._comment = None
+        return self._comment
+
+
+    @comment.setter
+    def comment(self, comment):
+        self._comment = comment
+
+
+class Uxf(_CommentMixin):
 
     def __init__(self, value=None, *, custom='', tclasses=None,
                  comment=None, on_event=on_event):
@@ -897,12 +911,12 @@ class _Kind(enum.Enum):
                         _Kind.DATE, _Kind.DATE_TIME, _Kind.STR, _Kind.BYTES}
 
 
-class List(collections.UserList):
+class List(collections.UserList, _CommentMixin):
 
     def __init__(self, seq=None, *, vtype=None, comment=None):
         '''Takes an optional sequence (list, tuple, iterable)
         .data holds the actual list
-        .comment holds an optional read-only comment
+        .comment holds an optional comment
         .vtype holds a read-only UXF type name ('int', 'real', …)'''
         super().__init__(seq)
         if vtype is not None:
@@ -916,13 +930,6 @@ class List(collections.UserList):
         if self._vtype == '':
             self._vtype = None
         return self._vtype
-
-
-    @property
-    def comment(self):
-        if self._comment == '':
-            self._comment = None
-        return self._comment
 
 
     def visit(self, visitor):
@@ -1001,7 +1008,7 @@ def _maybe_to_uxf_collection(value):
     return value
 
 
-class Map(collections.UserDict):
+class Map(collections.UserDict, _CommentMixin):
 
     def __init__(self, d=None, *, ktype=None, vtype=None, comment=None):
         '''Takes an optional dict
@@ -1039,13 +1046,6 @@ class Map(collections.UserDict):
         if self._vtype == '':
             self._vtype = None
         return self._vtype
-
-
-    @property
-    def comment(self):
-        if self._comment == '':
-            self._comment = None
-        return self._comment
 
 
     def _append(self, value):
@@ -1196,7 +1196,7 @@ def _check_type_name(name, callback=None):
                             f'or underscores, got {name}')
 
 
-class TClass:
+class TClass(_CommentMixin):
 
     def __init__(self, ttype, fields=None, *, comment=None):
         '''The type of a Table
@@ -1205,7 +1205,7 @@ class TClass:
         constant
         .fields holds a read-only sequence of Fields which may be supplied
         as field names (so their vtype's are None) or Field objects
-        .comment holds an optional read-only comment
+        .comment holds an optional comment
 
         This is best to use when you want to pass a sequence of fields:
 
@@ -1249,12 +1249,6 @@ class TClass:
     def fields(self):
         return self._fields
 
-
-    @property
-    def comment(self):
-        if self._comment == '':
-            self._comment = None
-        return self._comment
 
     @property
     def RecordClass(self):
@@ -1326,7 +1320,7 @@ class TClass:
                 f'comment={self.comment!r})')
 
 
-class TClassBuilder:
+class TClassBuilder(_CommentMixin):
 
     def __init__(self, ttype, fields=None, *, comment=None):
         self._ttype = ttype
@@ -1340,13 +1334,6 @@ class TClassBuilder:
     @property
     def ttype(self):
         return self._ttype
-
-
-    @property
-    def comment(self):
-        if self._comment == '':
-            self._comment = None
-        return self._comment
 
 
     @property
@@ -1420,7 +1407,7 @@ def table(ttype, fields=(), *, comment=None, tclass_comment=None):
                  comment=comment)
 
 
-class Table:
+class Table(_CommentMixin):
     '''Used to store a UXF table.
 
     A Table has an optional list of fields (name, optional type) and (if it
@@ -1453,7 +1440,7 @@ class Table:
         lists in which case each list is _assumed_ to be len(fields) i.e.,
         len(tclass.fields), long
 
-        .comment is an optional read-only str.
+        .comment is an optional str.
 
         .RecordClass is a read-only property holding a dynamically created
         custom class that is used when accessing a single record via [] or
@@ -1480,13 +1467,6 @@ class Table:
     @property
     def tclass(self):
         return self._tclass
-
-
-    @property
-    def comment(self):
-        if self._comment == '':
-            self._comment = None
-        return self._comment
 
 
     @property
@@ -2339,7 +2319,7 @@ class _PrettyPrinter(_EventMixin): # Functor that can be used as a visitor
         elif kind is VisitKind.MAP_END:
             self.handle_map_end()
         elif kind is VisitKind.ITEM_BEGIN:
-            self.handle_item_begin()
+            self.begin()
         elif kind is VisitKind.ITEM_END:
             self.handle_item_end()
         elif kind is VisitKind.TABLE_BEGIN:
@@ -2529,10 +2509,6 @@ class _PrettyPrinter(_EventMixin): # Functor that can be used as a visitor
         self.puts('}')
         self.end()
         self.item_counts.pop()
-
-
-    def handle_item_begin(self):
-        self.begin()
 
 
     def handle_item_end(self):

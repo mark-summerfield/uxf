@@ -1,5 +1,5 @@
 rs/src/lib.rs # add docs at the end
-rs/src/value.rs
+rs/src/value.rs # TODO (0) visit: make API match Python visit API
 rs/src/key.rs
 rs/src/list.rs
 rs/src/map.rs
@@ -24,11 +24,8 @@ rs/tests/test_uxf.rs # TODO more, incl. == and is_equivalent()
 rs/Cargo.toml
 rs/README.md
 
-# TODO subtle bug if item_begin ... item_end doesn't fit on the line and
-# value isn't a collection they are split over two lines but the key is
-# over-indented one level of depth
 py/uxf.py
-py/uxfconvert.py # TODO (0) XML bug: comments must be in tags not attrs
+py/uxfconvert.py
 py/uxflint.py
 py/uxfcompare.py
 py/README.md

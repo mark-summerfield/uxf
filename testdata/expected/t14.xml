@@ -43,7 +43,8 @@
       <str>General</str>
     </key>
     <value>
-      <map comment="Map comment">
+      <map>
+        <comment>Map comment</comment>
         <key>
           <str>autosave</str>
         </key>
@@ -54,7 +55,8 @@
           <str>files</str>
         </key>
         <value>
-          <table name="Files" comment="Table comment">
+          <table name="Files">
+            <comment>Table comment</comment>
             <row>
               <str>current</str>
               <str>/home/mark/app/rs/tlm/PlaylistsTest.tlm</str>
@@ -113,7 +115,8 @@
           <str>Map Test #1</str>
         </key>
         <value>
-          <map comment="Map with different types of key">
+          <map>
+            <comment>Map with different types of key</comment>
             <key>
               <bytes>757866</bytes>
             </key>
@@ -150,7 +153,8 @@
           <str>Map Test #2</str>
         </key>
         <value>
-          <map comment="Map same type of non-str keys">
+          <map>
+            <comment>Map same type of non-str keys</comment>
             <key>
               <int v="1"/>
             </key>
@@ -190,7 +194,8 @@
           <str>Nested List of Lists</str>
         </key>
         <value>
-          <list comment="List comment">
+          <list>
+            <comment>List comment</comment>
             <list>
               <int v="5"/>
               <str>Classical &amp; &lt;Special&gt;</str>

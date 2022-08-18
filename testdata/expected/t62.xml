@@ -14,7 +14,8 @@
       <field name="C" vtype="int"/>
       <field name="D" vtype="int"/>
     </ttype>
-    <ttype name="pair" comment="a pair of any two values">
+    <ttype name="pair">
+      <comment>a pair of any two values</comment>
       <field name="first"/>
       <field name="second"/>
     </ttype>
@@ -23,12 +24,14 @@
       <field name="y" vtype="int"/>
       <field name="z" vtype="int"/>
     </ttype>
-    <ttype name="rgb" comment="0-255 per component">
+    <ttype name="rgb">
+      <comment>0-255 per component</comment>
       <field name="red" vtype="int"/>
       <field name="green" vtype="int"/>
       <field name="blue" vtype="int"/>
     </ttype>
-    <ttype name="rgba" comment="0-255 per component">
+    <ttype name="rgba">
+      <comment>0-255 per component</comment>
       <field name="red" vtype="int"/>
       <field name="green" vtype="int"/>
       <field name="blue" vtype="int"/>
@@ -59,7 +62,8 @@
       <str>More Tests</str>
     </key>
     <value>
-      <list comment="A list of name value pairs; normally would be a map">
+      <list>
+        <comment>A list of name value pairs; normally would be a map</comment>
         <str>one</str>
         <table name="IPv4">
           <row>

@@ -1,5 +1,6 @@
 <?xml version="1.0" ?>
-<uxf version="1.0" custom="TLM Config" comment="This is a file-level comment.">
+<uxf version="1.0" custom="TLM Config">
+  <comment>This is a file-level comment.</comment>
   <ttypes>
     <ttype name="Categories">
       <field name="CID"/>
@@ -43,7 +44,8 @@
       <str>General</str>
     </key>
     <value>
-      <map comment="Map comment #1">
+      <map>
+        <comment>Map comment #1</comment>
         <key>
           <str>autosave</str>
         </key>
@@ -54,7 +56,8 @@
           <str>files</str>
         </key>
         <value>
-          <table name="Files" comment="Table comment #2">
+          <table name="Files">
+            <comment>Table comment #2</comment>
             <row>
               <str>current</str>
               <str>/home/mark/app/rs/tlm/PlaylistsTest.tlm</str>
@@ -107,12 +110,14 @@ even in UXF ↔ XML conversions.]]></str>
       <str>Nested Map</str>
     </key>
     <value>
-      <map comment="Map comment #3">
+      <map>
+        <comment>Map comment #3</comment>
         <key>
           <str>Classical</str>
         </key>
         <value>
-          <list comment="List comment #4">
+          <list>
+            <comment>List comment #4</comment>
             <int v="5"/>
             <yes/>
           </list>
@@ -121,7 +126,8 @@ even in UXF ↔ XML conversions.]]></str>
           <str>Modern Instrumental</str>
         </key>
         <value>
-          <list comment="List comment #5">
+          <list>
+            <comment>List comment #5</comment>
             <int v="4"/>
             <no/>
           </list>
@@ -130,8 +136,10 @@ even in UXF ↔ XML conversions.]]></str>
           <str>Nested List of Lists</str>
         </key>
         <value>
-          <list comment="List comment #6">
-            <list comment="List comment #7">
+          <list>
+            <comment>List comment #6</comment>
+            <list>
+              <comment>List comment #7</comment>
               <int v="5"/>
               <str>Classical</str>
               <yes/>
@@ -152,7 +160,8 @@ even in UXF ↔ XML conversions.]]></str>
           <str>Nested Table</str>
         </key>
         <value>
-          <table name="Categories" comment="Table comment #8">
+          <table name="Categories">
+            <comment>Table comment #8</comment>
             <row>
               <int v="5"/>
               <str>Classical</str>

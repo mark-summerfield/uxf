@@ -8,7 +8,8 @@
     <import filename="t63.uxt"/>
   </imports>
   <ttypes>
-    <ttype name="B" comment="bullet item">
+    <ttype name="B">
+      <comment>bullet item</comment>
       <field name="content"/>
     </ttype>
     <ttype name="cmyk">
@@ -28,16 +29,20 @@
       <field name="numerator" vtype="int"/>
       <field name="denominator" vtype="int"/>
     </ttype>
-    <ttype name="h1" comment="title">
+    <ttype name="h1">
+      <comment>title</comment>
       <field name="content"/>
     </ttype>
-    <ttype name="h2" comment="subtitle">
+    <ttype name="h2">
+      <comment>subtitle</comment>
       <field name="content"/>
     </ttype>
-    <ttype name="i" comment="italic">
+    <ttype name="i">
+      <comment>italic</comment>
       <field name="content"/>
     </ttype>
-    <ttype name="img" comment="image">
+    <ttype name="img">
+      <comment>image</comment>
       <field name="content"/>
       <field name="image" vtype="bytes"/>
     </ttype>
@@ -47,14 +52,19 @@
       <field name="C" vtype="int"/>
       <field name="D" vtype="int"/>
     </ttype>
-    <ttype name="m" comment="monospace inline">
+    <ttype name="m">
+      <comment>monospace inline</comment>
       <field name="content"/>
     </ttype>
-    <ttype name="nl" comment="newline with no content"/>
-    <ttype name="p" comment="para">
+    <ttype name="nl">
+      <comment>newline with no content</comment>
+    </ttype>
+    <ttype name="p">
+      <comment>para</comment>
       <field name="content"/>
     </ttype>
-    <ttype name="pair" comment="a pair of any two values">
+    <ttype name="pair">
+      <comment>a pair of any two values</comment>
       <field name="first"/>
       <field name="second"/>
     </ttype>
@@ -67,15 +77,18 @@
       <field name="y" vtype="int"/>
       <field name="z" vtype="int"/>
     </ttype>
-    <ttype name="pre" comment="monospace block">
+    <ttype name="pre">
+      <comment>monospace block</comment>
       <field name="content"/>
     </ttype>
-    <ttype name="rgb" comment="0-255 per component">
+    <ttype name="rgb">
+      <comment>0-255 per component</comment>
       <field name="red" vtype="int"/>
       <field name="green" vtype="int"/>
       <field name="blue" vtype="int"/>
     </ttype>
-    <ttype name="rgba" comment="0-255 per component">
+    <ttype name="rgba">
+      <comment>0-255 per component</comment>
       <field name="red" vtype="int"/>
       <field name="green" vtype="int"/>
       <field name="blue" vtype="int"/>
