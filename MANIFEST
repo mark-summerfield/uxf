@@ -1,3 +1,4 @@
+# TODO (0) uxf.py __str__ same algo as rust; xref to/from dump(s)
 rs/src/lib.rs # add docs at the end
 rs/src/value.rs
 rs/src/key.rs
