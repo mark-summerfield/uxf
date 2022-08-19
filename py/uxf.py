@@ -1299,8 +1299,8 @@ class TClass(_CommentMixin):
 
 
     def __lt__(self, other): # case-insensitive when possible
-        uttype = self.ttype.upper()
-        uother = other.ttype.upper()
+        uttype = self.ttype.lower()
+        uother = other.ttype.lower()
         if uttype != uother:
             return uttype < uother
         return self.ttype < other.ttype
@@ -1728,6 +1728,8 @@ def _parse(tokens, filename='-', *, on_event=on_event, drop_unused=False,
     return data, comment, parser.tclasses, parser.imports
 
 
+# Inspired by the parsers in the book Crafting Interpreters
+# by Robert Nystrom.
 class _Parser(_EventMixin):
 
     def __init__(self, filename, *, on_event=on_event, drop_unused=False,
@@ -1878,7 +1880,7 @@ class _Parser(_EventMixin):
 
 
     def _handle_incorrect_identifier(self, token):
-        if token.value.upper() in {'TRUE', 'FALSE'}:
+        if token.value.lower() in {'true', 'false'}:
             self.error(458, 'boolean values are represented by yes or no')
         else:
             self.error(460, 'ttypes may only appear at the start of a '
@@ -2222,8 +2224,8 @@ def dump(filename_or_filelike, data, *, on_event=on_event, format=Format()):
     close = False
     if isinstance(filename_or_filelike, (str, pathlib.Path)):
         filename_or_filelike = str(filename_or_filelike)
-        opener = (gzip.open if filename_or_filelike[-3:].upper().endswith(
-                  '.GZ') else open)
+        opener = (gzip.open if filename_or_filelike[-3:].lower().endswith(
+                  '.gz') else open)
         out = opener(filename_or_filelike, 'wt', encoding=UTF8)
         close = True
     else:
@@ -2270,8 +2272,8 @@ class _PrettyPrinter(_EventMixin): # Functor that can be used as a visitor
         self.lino = 0 # for on_event
         self.tokens = []
         self.depth = 0
-        self.table_row_counts = []
-        self.item_counts = []
+        self.table_record_counts = []
+        self.map_item_counts = []
         self.list_value_counts = []
 
 
@@ -2284,7 +2286,7 @@ class _PrettyPrinter(_EventMixin): # Functor that can be used as a visitor
     def wrap_width(self, value):
         if value is not None and 40 <= value <= 240:
             self._wrap_width = value # only allow 40-240
-        else:
+        else: # None or out of range → default
             self._wrap_width = 96 # default
 
 
@@ -2353,7 +2355,7 @@ class _PrettyPrinter(_EventMixin): # Functor that can be used as a visitor
             if (token.kind is _PrintKind.STRING and
                     not token.is_multiline and
                     not token.text.endswith('\n')):
-                token.text += s
+                token.text += s # absorb this string into the previous one
                 if num_records is not None and token.num_records is None:
                     token.num_records = num_records
                 return
@@ -2421,7 +2423,7 @@ class _PrettyPrinter(_EventMixin): # Functor that can be used as a visitor
     def handle_tclasses(self, tclasses, imports):
         widest = 0
         for ttype, tclass in sorted(tclasses.items(),
-                                    key=lambda t: t[0].upper()):
+                                    key=lambda t: t[0].lower()):
             if imports and ttype in imports:
                 continue # defined in an import
             self.depth = 0
@@ -2484,7 +2486,7 @@ class _PrettyPrinter(_EventMixin): # Functor that can be used as a visitor
 
 
     def handle_map_begin(self, value):
-        self.item_counts.append(len(value))
+        self.map_item_counts.append(len(value))
         self.begin()
         self.puts('{')
         if value.comment:
@@ -2511,17 +2513,17 @@ class _PrettyPrinter(_EventMixin): # Functor that can be used as a visitor
         self.depth -= 1
         self.puts('}')
         self.end()
-        self.item_counts.pop()
+        self.map_item_counts.pop()
 
 
     def handle_item_end(self):
         self.end()
-        if self.item_counts[-1] > 1:
+        if self.map_item_counts[-1] > 1:
             self.rnl()
 
 
     def handle_table_begin(self, value):
-        self.table_row_counts.append(len(value))
+        self.table_record_counts.append(len(value))
         self.begin()
         self.puts('(')
         if value.comment:
@@ -2538,20 +2540,20 @@ class _PrettyPrinter(_EventMixin): # Functor that can be used as a visitor
     def handle_table_end(self):
         if self.tokens[-1].kind is _PrintKind.RWS:
             self.tokens.pop() # Don't need RWS before closer
-        if self.table_row_counts[-1] > 1:
+        if self.table_record_counts[-1] > 1:
             self.depth -= 1
         self.puts(')')
         self.end()
-        if self.table_row_counts[-1] > 1:
+        if self.table_record_counts[-1] > 1:
             self.rnl()
         else:
             self.rws()
-        self.table_row_counts.pop()
+        self.table_record_counts.pop()
 
 
     def handle_record_end(self):
         self.end()
-        if self.table_row_counts[-1] > 1:
+        if self.table_record_counts[-1] > 1:
             self.rnl()
 
 
@@ -2753,7 +2755,6 @@ class _Writer:
 
 
     def string(self, token):
-        tab = self.indent * token.depth
         if token.is_multiline:
             self.multiline(token)
         else:
@@ -2764,6 +2765,7 @@ class _Writer:
                     return
                 else:
                     self.write('\n')
+            tab = self.indent * token.depth
             if len(tab) + len(token.text) < self.width:
                 self.write(tab) # fits after indent
             self.write(token.text)
@@ -2803,18 +2805,6 @@ class _Writer:
     def rnl(self):
         self.pending_rws = False
         self.write('\n')
-
-
-    def prev(self):
-        return self.peek(self.tp - 1)
-
-
-    def next(self):
-        return self.peek(self.tp + 1)
-
-
-    def peek(self, i):
-        return self.tokens[i] if 0 <= i < len(self.tokens) else None
 
 
     def peek_len(self, i):
