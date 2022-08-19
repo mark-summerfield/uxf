@@ -60,9 +60,9 @@ def visitor(kind, value, *, state):
         handle_table(state, value)
     elif kind is uxf.VisitKind.TABLE_END:
         state.in_categories = state.in_playlists = state.in_tracks = False
-    elif kind is uxf.VisitKind.RECORD_BEGIN:
+    elif kind is uxf.VisitKind.TABLE_RECORD_BEGIN:
         state.record.clear()
-    elif kind is uxf.VisitKind.RECORD_END:
+    elif kind is uxf.VisitKind.TABLE_RECORD_END:
         if state.in_categories:
             handle_category(state)
         elif state.in_playlists:

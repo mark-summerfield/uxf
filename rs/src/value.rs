@@ -23,16 +23,16 @@ pub enum Visit {
     UxfEnd,
     ListBegin,
     ListEnd,
-    ValueBegin,
-    ValueEnd,
+    ListValueBegin,
+    ListValueEnd,
     MapBegin,
     MapEnd,
-    ItemBegin,
-    ItemEnd,
+    MapItemBegin,
+    MapItemEnd,
     TableBegin,
     TableEnd,
-    RecordBegin,
-    RecordEnd,
+    TableRecordBegin,
+    TableRecordEnd,
     Value,
 }
 
@@ -291,32 +291,47 @@ impl Value {
             Value::List(lst) => {
                 (Rc::clone(&visitor))(Visit::ListBegin, self);
                 for value in lst.iter() {
-                    (Rc::clone(&visitor))(Visit::ValueBegin, &Value::Null);
+                    (Rc::clone(&visitor))(
+                        Visit::ListValueBegin,
+                        &Value::Null,
+                    );
                     value.visit(Rc::clone(&visitor));
-                    (Rc::clone(&visitor))(Visit::ValueEnd, &Value::Null);
+                    (Rc::clone(&visitor))(
+                        Visit::ListValueEnd,
+                        &Value::Null,
+                    );
                 }
                 (Rc::clone(&visitor))(Visit::ListEnd, &Value::Null);
             }
             Value::Map(m) => {
                 (Rc::clone(&visitor))(Visit::MapBegin, self);
                 for key in m.sorted_keys() {
-                    (Rc::clone(&visitor))(Visit::ItemBegin, &Value::Null);
+                    (Rc::clone(&visitor))(
+                        Visit::MapItemBegin,
+                        &Value::Null,
+                    );
                     // A key is never a collection
                     let key_value = Value::from(key.clone());
                     (Rc::clone(&visitor))(Visit::Value, &key_value);
                     m.get(key).unwrap().visit(Rc::clone(&visitor));
-                    (Rc::clone(&visitor))(Visit::ItemEnd, &Value::Null);
+                    (Rc::clone(&visitor))(Visit::MapItemEnd, &Value::Null);
                 }
                 (Rc::clone(&visitor))(Visit::MapEnd, &Value::Null);
             }
             Value::Table(t) => {
                 (Rc::clone(&visitor))(Visit::TableBegin, self);
                 for record in t.iter() {
-                    (Rc::clone(&visitor))(Visit::RecordBegin, &Value::Null);
+                    (Rc::clone(&visitor))(
+                        Visit::TableRecordBegin,
+                        &Value::Null,
+                    );
                     for value in record.iter() {
                         value.visit(Rc::clone(&visitor));
                     }
-                    (Rc::clone(&visitor))(Visit::RecordEnd, &Value::Null);
+                    (Rc::clone(&visitor))(
+                        Visit::TableRecordEnd,
+                        &Value::Null,
+                    );
                 }
                 (Rc::clone(&visitor))(Visit::TableEnd, &Value::Null);
             }

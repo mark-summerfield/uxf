@@ -70,10 +70,14 @@ st.sh
 
 # TODO port tlm to use rust uxf
 # NOTE IDEAS:
+# - try regression.py & benchmark.py with pypy to compare speeds
 # - create geo.uxi based on GeoJSON and if successful create:
 #   uxfgeo.py <infile.{json,geojson,uxf,uxg}>
 #	      <outfile.{json,geojson,uxf,uxg}>
 # - article(s) on replacing csv with uxf & ini/json/toml with uxf
+# - uxformat.py [-o|--out outfile] [<]infile
+#   . reads stdin or infile and writes to stdout or outfile
+#   . add UxfFmt() to .gvimrc
 # - uxfdiff.py
 # - uxfedit (GUI) applications
 # - rs: noncopy nonowned versions: UxfBuf ValueBuf ... FieldBuf
