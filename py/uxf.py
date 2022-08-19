@@ -1728,7 +1728,7 @@ def _parse(tokens, filename='-', *, on_event=on_event, drop_unused=False,
     return data, comment, parser.tclasses, parser.imports
 
 
-# Inspired by the parsers in the book Crafting Interpreters
+# Inspired by the parsers in the book Crafting Interpreters (2021)
 # by Robert Nystrom.
 class _Parser(_EventMixin):
 
