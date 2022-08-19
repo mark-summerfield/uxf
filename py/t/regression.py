@@ -333,23 +333,24 @@ def test_slides(slides_py, total, ok, *, verbose):
 def test_format(total, ok, *, verbose):
     uxt_original = '''uxf 1.0
 =Test one:int two:bool three:datetime four:real five:date six:bool \
-seven:int eight:str nine ten eleven 
-twelve
+seven:int eight:str nine ten eleven twelve
 (Test 1 yes 1980-01-17T23:59:07 98.654321 2022-07-29 no 2 \
 <A short string of text> 9 <ten> <eleven> 12.0)
 ''' # noqa: W291
     uxt_default_format = '''uxf 1.0
 =Test one:int two:bool three:datetime four:real five:date six:bool \
 seven:int eight:str nine ten eleven 
-twelve
+  twelve
 (Test 1 yes 1980-01-17T23:59:07 98.654321 2022-07-29 no 2 \
 <A short string of text> 9 <ten> <eleven> 12.0)
 ''' # noqa: W291
     uxt_custom_format = '''uxf 1.0
-=Test one:int two:bool three:datetime four:real five:date 
-six:bool seven:int eight:str nine ten eleven twelve
-(Test 1 yes 1980-01-17T23:59:07 98.654321 2022-07-29 no 2 
-<A short string of text> 9 <ten> <eleven> 12.0)
+=Test one:int two:bool three:datetime 
+  four:real five:date six:bool seven:int 
+  eight:str nine ten eleven twelve
+(Test 1 yes 1980-01-17T23:59:07 98.654321 
+2022-07-29 no 2 <A short string of text> 9 
+<ten> <eleven> 12.0)
 ''' # noqa: W291
     total += 1
     uxo = uxf.loads(uxt_original)
@@ -358,31 +359,31 @@ six:bool seven:int eight:str nine ten eleven twelve
         ok += 1
         if verbose:
             print('default format OK')
-    elif verbose:
+    else:
         print('default format FAIL')
     total += 1
     uxt2 = uxo.dumps()
-    if uxt2 == uxt_original:
+    if uxt2 == uxt1:
         ok += 1
         if verbose:
-            print('original format #1 OK')
-    elif verbose:
-        print('original format #1 FAIL')
+            print('default format #1 OK')
+    else:
+        print('default format #1 FAIL')
     total += 1
     uxt2 = uxo.dumps()
-    if uxt2 == uxt_original:
+    if uxt2 == uxt1:
         ok += 1
         if verbose:
-            print('original format #2 OK')
-    elif verbose:
-        print('original format #2 FAIL')
+            print('default format #2 OK')
+    else:
+        print('default format #2 FAIL')
     total += 1
-    uxt2 = uxo.dumps(format=uxf.Format(wrap_width=60))
+    uxt2 = uxo.dumps(format=uxf.Format(wrap_width=40))
     if uxt2 == uxt_custom_format:
         ok += 1
         if verbose:
             print('custom format #3 OK')
-    elif verbose:
+    else:
         print('custom format #3 FAIL')
     return total, ok
 

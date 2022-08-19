@@ -2303,7 +2303,7 @@ class _PrettyPrinter(_EventMixin): # Functor that can be used as a visitor
 
     def __call__(self, kind, value):
         if kind is VisitKind.UXF_BEGIN:
-            self.handle_header(value)
+            self.handle_uxf_begin(value)
         elif kind is VisitKind.UXF_END:
             self.eof()
         elif kind is VisitKind.LIST_BEGIN:
@@ -2392,7 +2392,7 @@ class _PrettyPrinter(_EventMixin): # Functor that can be used as a visitor
         self.tokens.append(_PrintToken(_PrintKind.EOF, depth=self.depth))
 
 
-    def handle_header(self, value):
+    def handle_uxf_begin(self, value):
         header = 'uxf 1.0'
         if value.custom:
             header += f' {value.custom}'
@@ -2424,6 +2424,7 @@ class _PrettyPrinter(_EventMixin): # Functor that can be used as a visitor
                                     key=lambda t: t[0].upper()):
             if imports and ttype in imports:
                 continue # defined in an import
+            self.depth = 0
             self.puts('=')
             if tclass.comment:
                 self.handle_comment(tclass.comment)
@@ -2431,6 +2432,7 @@ class _PrettyPrinter(_EventMixin): # Functor that can be used as a visitor
             self.puts(tclass.ttype)
             if len(tclass.ttype) > widest:
                 widest = len(tclass.ttype)
+            self.depth = 1 # to indent any wrapped fields
             for field in tclass.fields:
                 self.rws()
                 self.puts(field.name)
@@ -2439,6 +2441,7 @@ class _PrettyPrinter(_EventMixin): # Functor that can be used as a visitor
                 if len(field.name) > widest:
                     widest = len(field.name)
             self.rnl()
+        self.depth = 0
         widest += 1 # to allow for '='
         if widest > self.wrap_width:
             self.wrap_width = widest
