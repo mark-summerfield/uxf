@@ -63,7 +63,8 @@ def _get_converter():
     parser.add_argument('file', nargs='+',
                         help='infile(s) and outfile as shown above')
     config = parser.parse_args()
-    config.indent = ' ' * config.indent # change to spaces
+    if 0 <= config.indent <= 9:
+        config.indent = (' ' * config.indent) if config.indent < 9 else '\t'
     return _prepare_converter(parser, config)
 
 
@@ -852,7 +853,7 @@ Use -d or --dropunused to drop unused ttype definitions and imports.
 Use -r or --replaceimports to replace imports with ttype definitions
 to make the outfile standalone (i.e., not dependent on any imports).
 
-Indent defaults to 2 and accepts a range of 0-8.
+Indent spaces defaults to 2 and accepts a range of 0-9 (9 means use a tab).
 
 Wrapwidth defaults to 96 and accepts a range of 40-240.
 

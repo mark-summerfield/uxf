@@ -31,7 +31,7 @@ from xml.sax.saxutils import escape, unescape
 
 import editabletuple
 
-__version__ = '2.4.1' # uxf module version
+__version__ = '2.4.2' # uxf module version
 VERSION = 1.0 # UXF file format version
 
 UTF8 = 'utf-8'
@@ -3039,7 +3039,7 @@ to make the outfile standalone (i.e., not dependent on any imports).
 
 (-d, -l, and -r may be grouped, e.g., -ldr, -dl, etc.)
 
-Indent defaults to 2 and accepts a range of 0-8.
+Indent spaces defaults to 2 and accepts a range of 0-9 (9 means use a tab).
 
 Wrapwidth defaults to 96 and accepts a range of 40-240.
 
@@ -3063,14 +3063,16 @@ to allow later imports to override earlier ones.
                         help='drop unused imports and ttypes')
     parser.add_argument('-r', '--replaceimports', action='store_true',
                         help='replace imports with their used ttypes')
-    parser.add_argument('-i', '--indent', type=int, default=2,
-                        help='indent (0-8; default 2)')
+    parser.add_argument(
+        '-i', '--indent', type=int, default=2,
+        help='indent spaces (0-9; 9 means use a tab; default 2)')
     parser.add_argument('-w', '--wrapwidth', type=int, default=96,
                         help='wrapwidth (40-240; default 96)')
     parser.add_argument('infile', nargs=1, help='required UXF infile')
     parser.add_argument('outfile', nargs='?', help='optional UXF outfile')
     config = parser.parse_args()
-    config.indent = ' ' * config.indent # change to spaces
+    if 0 <= config.indent <= 9:
+        config.indent = (' ' * config.indent) if config.indent < 9 else '\t'
     infile = config.infile[0]
     outfile = config.outfile
     if outfile is not None:
