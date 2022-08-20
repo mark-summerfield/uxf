@@ -76,7 +76,7 @@ st.sh
 #	      <outfile.{json,geojson,uxf,uxg}>
 # - article(s) on replacing csv with uxf & ini/json/toml with uxf
 # - uxformat.py [-d|--dropunused] [-r|--replaceimports] [-i|--indent I]
-#     [-w|--wrapwidth W] [-o|--out outfile] [<]infile
+#     [-w|--wrapwidth W] [-c|--compact] [-o|--out outfile] [<]infile
 #   . reads stdin or infile and writes to stdout or outfile
 #   . add UxfFmt() to .gvimrc
 # - uxfdiff.py

@@ -183,6 +183,18 @@ ordered links:
 [TClass](#tclass-class),
 [Uxf](#uxf-class).
 
+The classes
+[Field](#field-class),
+[List](#list-class),
+[Map](#map-class),
+[Table](#table-class),
+[TClass](#tclass-class), and
+[Uxf](#uxf-class)
+all support `str()` (via `__str__()`) which in all cases produces a valid
+UXF fragment. Note though, that this is in compact (not human-friendly)
+form. For human-friendly UXF use [dumps()](#dumps-def) or
+[dump()](#dump-def).
+
 <a name="uxf-class"></a>
 #### Uxf
 
@@ -794,6 +806,8 @@ or
 
 ## Changes
 
+- 2.4.3 Added `str()` support for `Field`, `List`, `Map`, `Table`
+  (improved), `TClass`, and `Uxf` (improved).
 - 2.4.2 implemented `Uxf.__str__()`.
 - 2.4.1 Minor improvements and tweaks.
 - 2.4.0

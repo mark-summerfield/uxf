@@ -31,7 +31,7 @@ from xml.sax.saxutils import escape, unescape
 
 import editabletuple
 
-__version__ = '2.4.2' # uxf module version
+__version__ = '2.4.3' # uxf module version
 VERSION = 1.0 # UXF file format version
 
 UTF8 = 'utf-8'
@@ -307,7 +307,7 @@ class Uxf(_CommentMixin):
         for filename in self.import_filenames:
             parts.append(f'!{filename}\n')
         parts.append(self._stringify_tclasses())
-        parts.append(self._stringify(self.value))
+        parts.append(_str_for_value(self.value))
         parts.append('\n')
         return ''.join(parts)
 
@@ -318,14 +318,7 @@ class Uxf(_CommentMixin):
                                     key=lambda t: t[0].lower()):
             if ttype in self.imports:
                 continue # defined in an import
-            parts.append('=')
-            if tclass.comment:
-                parts.append(f'#<{escape(tclass.comment)}> ')
-            parts.append(ttype)
-            for field in tclass.fields:
-                parts.append(f' {field.name}')
-                if field.vtype:
-                    parts.append(f':{field.vtype}')
+            parts.append(str(tclass))
             parts.append('\n')
         return ''.join(parts)
 
@@ -1082,6 +1075,25 @@ class List(collections.UserList, _CommentMixin):
         visitor(VisitKind.LIST_END, None)
 
 
+    def __str__(self):
+        parts = ['[']
+        if self.comment:
+            parts.append(f'#<{escape(self.comment)}>')
+        if self.vtype:
+            if self.comment:
+                parts.append(' ')
+            parts.append(self.vtype)
+        if (self.comment or self.vtype) and self.data:
+            parts.append(' ')
+        sep = ''
+        for value in self:
+            parts.append(sep)
+            parts.append(_str_for_value(value))
+            sep = ' '
+        parts.append(']')
+        return ''.join(parts)
+
+
     def is_equivalent(self, other, compare=Compare.EXACT):
         '''Returns True if this List is equivalent to the other List;
         otherwise returns False.
@@ -1239,6 +1251,29 @@ class Map(collections.UserDict, _CommentMixin):
     def values(self):
         for _, value in self.items():
             yield value
+
+
+    def __str__(self):
+        parts = ['{']
+        if self.comment:
+            parts.append(f'#<{escape(self.comment)}>')
+        if self.ktype:
+            if self.comment:
+                parts.append(' ')
+            parts.append(self.ktype)
+            if self.vtype:
+                parts.append(self.vtype)
+        if (self.comment or self.ktype) and self.data:
+            parts.append(' ')
+        sep = ''
+        for key, value in self.items():
+            parts.append(sep)
+            parts.append(_str_for_value(key))
+            parts.append(' ')
+            parts.append(_str_for_value(value))
+            sep = ' '
+        parts.append('}')
+        return ''.join(parts)
 
 
     def is_equivalent(self, other, compare=Compare.EXACT):
@@ -1454,6 +1489,16 @@ class TClass(_CommentMixin):
                 f'comment={self.comment!r})')
 
 
+    def __str__(self):
+        parts = ['=']
+        if self.comment:
+            parts.append(f'#<{escape(self.comment)}> ')
+        parts.append(self.ttype)
+        for field in self.fields:
+            parts.append(f' {field}')
+        return ''.join(parts)
+
+
 class TClassBuilder(_CommentMixin):
 
     def __init__(self, ttype, fields=None, *, comment=None):
@@ -1532,6 +1577,13 @@ class Field:
 
     def __repr__(self):
         return f'{self.__class__.__name__}({self.name!r}, {self.vtype!r})'
+
+
+    def __str__(self):
+        text = self.name
+        if self.vtype:
+            text += f':{self.vtype}'
+        return text
 
 
 def table(ttype, fields=(), *, comment=None, tclass_comment=None):
@@ -1835,17 +1887,23 @@ class Table(_CommentMixin):
 
 
     def __str__(self):
-        parts = []
-        if self.tclass is not None:
-            parts.append(f'ttype={self.ttype!r}')
-            if self.fields:
-                parts.append(f'fields={self.fields!r}')
-        else:
-            parts.append('(no fields)')
+        parts = ['(']
         if self.comment:
-            parts.append(f'comment={self.comment!r}')
-        parts.append(f'({len(self.records)} records)')
-        return ' '.join(parts)
+            parts.append(f'#<{escape(self.comment)}> ')
+        parts.append(self.ttype)
+        if len(self):
+            parts.append(' ')
+        nl = ''
+        for record in self:
+            parts.append(nl)
+            sep = ''
+            for value in record:
+                parts.append(sep)
+                parts.append(_str_for_value(value))
+                sep = ' '
+            nl = '\n'
+        parts.append(')')
+        return ''.join(parts)
 
 
     def __repr__(self):
@@ -3034,6 +3092,27 @@ def _by_key(item):
     if isinstance(key, int):
         return (4, key)
     return (5, key.lower())
+
+
+def _str_for_value(value):
+    if value is None:
+        return '?'
+    elif isinstance(value, bool):
+        return 'yes' if value else 'no'
+    elif isinstance(value, int):
+        return str(value)
+    elif isinstance(value, float):
+        text = str(value)
+        if '.' not in text and 'e' not in text and 'E' not in text:
+            text += '.0'
+        return text
+    elif isinstance(value, (datetime.date, datetime.datetime)):
+        return value.isoformat()[:19]
+    elif isinstance(value, str):
+        return f'<{escape(value)}>'
+    elif isinstance(value, (bytes, bytearray)):
+        return f'(:{value.hex().upper()}:)'
+    return str(_maybe_to_uxf_collection(value))
 
 
 class _AlreadyImported(Exception):

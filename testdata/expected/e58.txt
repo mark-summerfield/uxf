@@ -60,7 +60,7 @@ uxf:E500:l58.uxf:34:expected int, got date 1990-01-11
 uxf:E500:l58.uxf:35:expected int, got datetime 1995-03-15 22:30:00
 uxf:E500:l58.uxf:35:expected int, got datetime 1998-10-17 20:18:45
 uxf:E500:l58.uxf:36:expected int, got bytes b'UXF 1.0'
-uxf:E506:l58.uxf:36:expected int, got Table ttype='p' fields=[Field('a', 'int'), Field('b', 'int')] (0 records)
+uxf:E506:l58.uxf:36:expected int, got Table (p)
 uxf:E488:l58.uxf:36:expected int, got str a
 uxf:E488:l58.uxf:36:expected int, got str b
 uxf:W422:l58.uxf:39:unused ttype: 'by'
