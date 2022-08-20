@@ -806,6 +806,7 @@ or
 
 ## Changes
 
+- 2.4.4 Removed redundant code left over from 2.4.3 plus more docs.
 - 2.4.3 Added `str()` support for `Field`, `List`, `Map`, `Table`
   (improved), `TClass`, and `Uxf` (improved).
 - 2.4.2 implemented `Uxf.__str__()`.

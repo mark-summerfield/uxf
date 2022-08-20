@@ -31,7 +31,7 @@ from xml.sax.saxutils import escape, unescape
 
 import editabletuple
 
-__version__ = '2.4.3' # uxf module version
+__version__ = '2.4.4' # uxf module version
 VERSION = 1.0 # UXF file format version
 
 UTF8 = 'utf-8'
@@ -320,101 +320,6 @@ class Uxf(_CommentMixin):
                 continue # defined in an import
             parts.append(str(tclass))
             parts.append('\n')
-        return ''.join(parts)
-
-
-    def _stringify(self, value):
-        if value is None:
-            return '?'
-        elif isinstance(value, bool):
-            return 'yes' if value else 'no'
-        elif isinstance(value, int):
-            return str(value)
-        elif isinstance(value, float):
-            text = str(value)
-            if '.' not in text and 'e' not in text and 'E' not in text:
-                text += '.0'
-            return text
-        elif isinstance(value, (datetime.date, datetime.datetime)):
-            return value.isoformat()[:19]
-        elif isinstance(value, str):
-            return f'<{escape(value)}>'
-        elif isinstance(value, (bytes, bytearray)):
-            return f'(:{value.hex().upper()}:)'
-        value = _maybe_to_uxf_collection(value)
-        if isinstance(value, List):
-            return self._stringify_list(value)
-        elif isinstance(value, Map):
-            return self._stringify_map(value)
-        elif isinstance(value, Table):
-            return self._stringify_table(value)
-        self.on_event(
-            Event.FATAL, 699,
-            f'cannot use str() on {value.__class__.__name__}: {value!r}')
-
-
-    def _stringify_list(self, lst):
-        parts = ['[']
-        if lst.comment:
-            parts.append(f'#<{escape(lst.comment)}>')
-        if lst.vtype:
-            if lst.comment:
-                parts.append(' ')
-            parts.append(lst.vtype)
-        if (lst.comment or lst.vtype) and lst.data:
-            parts.append(' ')
-        sep = ''
-        for value in lst:
-            parts.append(sep)
-            value = _maybe_to_uxf_collection(value)
-            parts.append(self._stringify(value))
-            sep = ' '
-        parts.append(']')
-        return ''.join(parts)
-
-
-    def _stringify_map(self, m):
-        parts = ['{']
-        if m.comment:
-            parts.append(f'#<{escape(m.comment)}>')
-        if m.ktype:
-            if m.comment:
-                parts.append(' ')
-            parts.append(m.ktype)
-            if m.vtype:
-                parts.append(m.vtype)
-        if (m.comment or m.ktype) and m.data:
-            parts.append(' ')
-        sep = ''
-        for key, value in m.items():
-            parts.append(sep)
-            parts.append(self._stringify(key))
-            parts.append(' ')
-            value = _maybe_to_uxf_collection(value)
-            parts.append(self._stringify(value))
-            sep = ' '
-        parts.append('}')
-        return ''.join(parts)
-
-
-    def _stringify_table(self, table):
-        parts = ['(']
-        if table.comment:
-            parts.append(f'#<{escape(table.comment)}> ')
-        parts.append(table.ttype)
-        if len(table):
-            parts.append(' ')
-        nl = ''
-        for record in table:
-            parts.append(nl)
-            sep = ''
-            for value in record:
-                parts.append(sep)
-                value = _maybe_to_uxf_collection(value)
-                parts.append(self._stringify(value))
-                sep = ' '
-            nl = '\n'
-        parts.append(')')
         return ''.join(parts)
 
 
@@ -1076,6 +981,9 @@ class List(collections.UserList, _CommentMixin):
 
 
     def __str__(self):
+        '''Returns a UXF fragment with minimal newlines and indentation.
+        If you want human readability or to control the output, use dumps()
+        (or dump()).'''
         parts = ['[']
         if self.comment:
             parts.append(f'#<{escape(self.comment)}>')
@@ -1254,6 +1162,9 @@ class Map(collections.UserDict, _CommentMixin):
 
 
     def __str__(self):
+        '''Returns a UXF fragment with minimal newlines and indentation.
+        If you want human readability or to control the output, use dumps()
+        (or dump()).'''
         parts = ['{']
         if self.comment:
             parts.append(f'#<{escape(self.comment)}>')
@@ -1490,6 +1401,9 @@ class TClass(_CommentMixin):
 
 
     def __str__(self):
+        '''Returns a UXF fragment with minimal newlines and indentation.
+        If you want human readability or to control the output, use dumps()
+        (or dump()).'''
         parts = ['=']
         if self.comment:
             parts.append(f'#<{escape(self.comment)}> ')
@@ -1580,6 +1494,9 @@ class Field:
 
 
     def __str__(self):
+        '''Returns a UXF fragment with minimal newlines and indentation.
+        If you want human readability or to control the output, use dumps()
+        (or dump()).'''
         text = self.name
         if self.vtype:
             text += f':{self.vtype}'
@@ -1887,6 +1804,9 @@ class Table(_CommentMixin):
 
 
     def __str__(self):
+        '''Returns a UXF fragment with minimal newlines and indentation.
+        If you want human readability or to control the output, use dumps()
+        (or dump()).'''
         parts = ['(']
         if self.comment:
             parts.append(f'#<{escape(self.comment)}> ')
@@ -3312,7 +3232,7 @@ to allow later imports to override earlier ones.
             if config.compact:
                 opener = (gzip.open if outfile[-3:].lower().endswith('.gz')
                           else open)
-                with opener(outfile, 'wt', encoding='utf-8') as file:
+                with opener(outfile, 'wt', encoding=UTF8) as file:
                     file.write(str(uxo))
             else:
                 format = Format(indent=config.indent,
