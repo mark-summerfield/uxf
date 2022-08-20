@@ -251,13 +251,16 @@ class Uxf(_CommentMixin):
 
     def dump(self, filename_or_filelike, *, on_event=on_event,
              format=Format()):
-        '''Convenience method that wraps the module-level dump() function'''
+        '''Convenience method that wraps the module-level dump() function.
+        See also dumps() and __str__().'''
         dump(filename_or_filelike, self, on_event=on_event, format=format)
 
 
     def dumps(self, *, on_event=on_event, format=Format()):
         '''Convenience method that wraps the module-level dumps()
-        function'''
+        function.
+        Use str() if you don't care about human readability and just want
+        speed.'''
         return dumps(self, on_event=on_event, format=format)
 
 
@@ -289,6 +292,137 @@ class Uxf(_CommentMixin):
         self._tclasses = tclasses
         self.imports = imports
         self.comment = comment
+
+
+    def __str__(self):
+        '''Returns a valid UXF file with minimal newlines and indentation.
+        If you want human readability or to control the output, use dumps()
+        (or dump()).'''
+        parts = [f'uxf {VERSION}']
+        if self.custom:
+            parts.append(f' {self.custom}')
+        parts.append('\n')
+        if self.comment:
+            parts.append(f'#<{escape(self.comment)}>\n')
+        for filename in self.import_filenames:
+            parts.append(f'!{filename}\n')
+        parts.append(self._stringify_tclasses())
+        parts.append(self._stringify(self.value))
+        parts.append('\n')
+        return ''.join(parts)
+
+
+    def _stringify_tclasses(self):
+        parts = []
+        for ttype, tclass in sorted(self.tclasses.items(),
+                                    key=lambda t: t[0].lower()):
+            if ttype in self.imports:
+                continue # defined in an import
+            parts.append('=')
+            if tclass.comment:
+                parts.append(f'#<{escape(tclass.comment)}> ')
+            parts.append(ttype)
+            for field in tclass.fields:
+                parts.append(f' {field.name}')
+                if field.vtype:
+                    parts.append(f':{field.vtype}')
+            parts.append('\n')
+        return ''.join(parts)
+
+
+    def _stringify(self, value):
+        if value is None:
+            return '?'
+        elif isinstance(value, bool):
+            return 'yes' if value else 'no'
+        elif isinstance(value, int):
+            return str(value)
+        elif isinstance(value, float):
+            text = str(value)
+            if '.' not in text and 'e' not in text and 'E' not in text:
+                text += '.0'
+            return text
+        elif isinstance(value, (datetime.date, datetime.datetime)):
+            return value.isoformat()[:19]
+        elif isinstance(value, str):
+            return f'<{escape(value)}>'
+        elif isinstance(value, (bytes, bytearray)):
+            return f'(:{value.hex().upper()}:)'
+        value = _maybe_to_uxf_collection(value)
+        if isinstance(value, List):
+            return self._stringify_list(value)
+        elif isinstance(value, Map):
+            return self._stringify_map(value)
+        elif isinstance(value, Table):
+            return self._stringify_table(value)
+        self.on_event(
+            Event.FATAL, 699,
+            f'cannot use str() on {value.__class__.__name__}: {value!r}')
+
+
+    def _stringify_list(self, lst):
+        parts = ['[']
+        if lst.comment:
+            parts.append(f'#<{escape(lst.comment)}>')
+        if lst.vtype:
+            if lst.comment:
+                parts.append(' ')
+            parts.append(lst.vtype)
+        if (lst.comment or lst.vtype) and lst.data:
+            parts.append(' ')
+        sep = ''
+        for value in lst:
+            parts.append(sep)
+            value = _maybe_to_uxf_collection(value)
+            parts.append(self._stringify(value))
+            sep = ' '
+        parts.append(']')
+        return ''.join(parts)
+
+
+    def _stringify_map(self, m):
+        parts = ['{']
+        if m.comment:
+            parts.append(f'#<{escape(m.comment)}>')
+        if m.ktype:
+            if m.comment:
+                parts.append(' ')
+            parts.append(m.ktype)
+            if m.vtype:
+                parts.append(m.vtype)
+        if (m.comment or m.ktype) and m.data:
+            parts.append(' ')
+        sep = ''
+        for key, value in m.items():
+            parts.append(sep)
+            parts.append(self._stringify(key))
+            parts.append(' ')
+            value = _maybe_to_uxf_collection(value)
+            parts.append(self._stringify(value))
+            sep = ' '
+        parts.append('}')
+        return ''.join(parts)
+
+
+    def _stringify_table(self, table):
+        parts = ['(']
+        if table.comment:
+            parts.append(f'#<{escape(table.comment)}> ')
+        parts.append(table.ttype)
+        if len(table):
+            parts.append(' ')
+        nl = ''
+        for record in table:
+            parts.append(nl)
+            sep = ''
+            for value in record:
+                parts.append(sep)
+                value = _maybe_to_uxf_collection(value)
+                parts.append(self._stringify(value))
+                sep = ' '
+            nl = '\n'
+        parts.append(')')
+        return ''.join(parts)
 
 
     def is_equivalent(self, other, compare=Compare.EXACT):
@@ -2395,7 +2529,7 @@ class _PrettyPrinter(_EventMixin): # Functor that can be used as a visitor
 
 
     def handle_uxf_begin(self, value):
-        header = 'uxf 1.0'
+        header = f'uxf {VERSION}'
         if value.custom:
             header += f' {value.custom}'
         self.puts(f'{header}\n')
@@ -2988,7 +3122,7 @@ _ComplexTClass = TClass('Complex', (Field('Real', 'real'),
 _FractionTClass = TClass('Fraction', (Field('numerator', 'int'),
                                       Field('denominator', 'int')))
 
-_TTYPE_EG_UXF = '''uxf 1.0 Slides 0.1.0
+_TTYPE_EG_UXF = f'''uxf {VERSION} Slides 0.1.0
 #<This is a simple example of an application-specific use of UXF.
 See slides[12].py for examples of converting this format to HTML.>
 = Slide title body
