@@ -806,6 +806,9 @@ or
 
 ## Changes
 
+- 2.4.5 Tweaked `__str__()` support to output more newlines instead of
+  spaces—this makes it slightly more human-friendly without increasing the
+  output size.
 - 2.4.4 Removed redundant code left over from 2.4.3 plus more docs.
 - 2.4.3 Added `str()` support for `Field`, `List`, `Map`, `Table`
   (improved), `TClass`, and `Uxf` (improved).

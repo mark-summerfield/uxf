@@ -31,7 +31,7 @@ from xml.sax.saxutils import escape, unescape
 
 import editabletuple
 
-__version__ = '2.4.4' # uxf module version
+__version__ = '2.4.5' # uxf module version
 VERSION = 1.0 # UXF file format version
 
 UTF8 = 'utf-8'
@@ -997,7 +997,7 @@ class List(collections.UserList, _CommentMixin):
         for value in self:
             parts.append(sep)
             parts.append(_str_for_value(value))
-            sep = ' '
+            sep = '\n'
         parts.append(']')
         return ''.join(parts)
 
@@ -1182,7 +1182,7 @@ class Map(collections.UserDict, _CommentMixin):
             parts.append(_str_for_value(key))
             parts.append(' ')
             parts.append(_str_for_value(value))
-            sep = ' '
+            sep = '\n'
         parts.append('}')
         return ''.join(parts)
 
