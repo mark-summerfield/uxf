@@ -3157,7 +3157,8 @@ if __name__ == '__main__':
 
     parser = argparse.ArgumentParser(usage=get_usage('''\
 usage: uxf.py [-l|--lint] [-d|--dropunused] [-r|--replaceimports]
-[-iI|--indent=I] [-wW|--wrapwidth=W] <infile.uxf[.gz]> [<outfile.uxf[.gz]>]
+[-iI|--indent=I] [-wW|--wrapwidth=W] [-c|--compact] <infile.uxf[.gz]> \
+[<outfile.uxf[.gz]>]
 
 or: python3 -m uxf ...same options as above...
 
@@ -3174,8 +3175,10 @@ to make the outfile standalone (i.e., not dependent on any imports).
 (-d, -l, and -r may be grouped, e.g., -ldr, -dl, etc.)
 
 Indent spaces defaults to 2 and accepts a range of 0-9 (9 means use a tab).
+(Ignored if -c or --compact is used.)
 
 Wrapwidth defaults to 96 and accepts a range of 40-240.
+(Ignored if -c or --compact is used.)
 
 For indent and wrapwidth the default is silently used if an out of range
 value is given.
@@ -3183,8 +3186,8 @@ value is given.
 To get an uncompressed .uxf file run: `uxf.py infile.uxf.gz outfile.uxf` or
 simply `gunzip infile.uxf.gz`.
 
-To produce a compressed and compact .uxf file run:
-`uxf.py -i0 -w240 infile.uxf outfile.uxf.gz`
+To produce a compressed and compact (but not human-friendly) .uxf file run:
+`uxf.py -c infile.uxf outfile.uxf.gz`
 
 Converting uxf to uxf will alphabetically order any ttypes and will order
 map items by key (bytes < date < datetime < int < case-insensitive str).
@@ -3197,6 +3200,9 @@ to allow later imports to override earlier ones.
                         help='drop unused imports and ttypes')
     parser.add_argument('-r', '--replaceimports', action='store_true',
                         help='replace imports with their used ttypes')
+    parser.add_argument(
+        '-c', '--compact', action='store_true',
+        help='use compact output format (not human friendly)')
     parser.add_argument(
         '-i', '--indent', type=int, default=2,
         help='indent spaces (0-9; 9 means use a tab; default 2)')
@@ -3224,9 +3230,15 @@ to allow later imports to override earlier ones.
         on_event = functools.partial(on_event, verbose=config.lint,
                                      filename=outfile)
         if do_dump:
-            format = Format(indent=config.indent,
-                            wrap_width=config.wrapwidth)
-            dump(outfile, uxo, on_event=on_event, format=format)
+            if config.compact:
+                opener = (gzip.open if outfile[-3:].lower().endswith('.gz')
+                          else open)
+                with opener(outfile, 'wt', encoding='utf-8') as file:
+                    file.write(str(uxo))
+            else:
+                format = Format(indent=config.indent,
+                                wrap_width=config.wrapwidth)
+                dump(outfile, uxo, on_event=on_event, format=format)
     except (OSError, Error) as err:
         message = str(err)
         if not message.startswith('uxf.py'):

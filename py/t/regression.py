@@ -56,8 +56,8 @@ def main():
     total, ok = test_uxf_files(uxffiles, verbose=verbose,
                                max_total=max_total)
     print('1', end='', flush=True)
-    total, ok = test_uxf_loads_dumps(uxffiles, total, ok, verbose=verbose,
-                                     max_total=max_total)
+    total, ok = test_uxf_loads_dumps_str(
+        uxffiles, total, ok, verbose=verbose, max_total=max_total)
     print('2', end='', flush=True)
     total, ok = test_uxf_equal(uxffiles, total, ok, verbose=verbose,
                                max_total=max_total)
@@ -131,7 +131,7 @@ def test_uxf_files(uxffiles, *, verbose, max_total):
     return total, ok
 
 
-def test_uxf_loads_dumps(uxffiles, total, ok, *, verbose, max_total):
+def test_uxf_loads_dumps_str(uxffiles, total, ok, *, verbose, max_total):
     temp_uxo = uxf.Uxf()
     for name in uxffiles:
         if name.startswith('l'):
@@ -153,27 +153,30 @@ def test_uxf_loads_dumps(uxffiles, total, ok, *, verbose, max_total):
                 temp_uxo.loads(uxt, on_event=on_event)
                 uxo = temp_uxo
         except uxf.Error as err:
-            print(f'loads()/dumps() • {name} FAIL #1: {err}')
-        if random.choice((0, 1)):
+            print(f'loads()/dumps()/str() • {name} FAIL #1: {err}')
+        which = random.choice((0, 1, 2))
+        if which == 0:
             new_uxt = uxo.dumps(on_event=on_event)
-        else:
+        elif which == 1:
             new_uxt = uxf.dumps(uxo, on_event=on_event)
+        elif which == 2:
+            new_uxt = str(uxo)
         try:
             new_uxo = uxf.loads(new_uxt, on_event=on_event)
         except uxf.Error as err:
-            print(f'{name} • FAIL (loads()/dumps()) #2: {err}')
+            print(f'{name} • FAIL (loads()/dumps()/str()) #2: {err}')
             continue
         try:
             if uxo == new_uxo:
                 ok += 1
                 if verbose:
-                    print(f'loads()/dumps() • {name} OK')
+                    print(f'loads()/dumps()/str() • {name} OK')
                 elif not ok % 10:
                     print('.', end='', flush=True)
             else:
-                print(f'{name} • FAIL #3 (loads()/dumps())')
+                print(f'{name} • FAIL #3 (loads()/dumps()/str())')
         except uxf.Error as err:
-            print(f'{name} • FAIL (loads()/dumps()) #4: {err}')
+            print(f'{name} • FAIL (loads()/dumps()/str()) #4: {err}')
     return total, ok
 
 

@@ -794,6 +794,8 @@ or
 
 ## Changes
 
+- 2.4.2 implemented `Uxf.__str__()`.
+- 2.4.1 Minor improvements and tweaks.
 - 2.4.0
   - `dump()` and `dumps()` now use the pretty printing algorithm which
     produces much neater and more consistent output than before. It also
