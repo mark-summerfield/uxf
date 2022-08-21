@@ -187,7 +187,7 @@ impl fmt::Display for List {
         for value in self.iter() {
             parts.push(sep.to_string());
             parts.push(value.to_string());
-            sep = " ";
+            sep = "\n";
         }
         parts.push("]".to_string());
         write!(f, "{}", parts.join(""))

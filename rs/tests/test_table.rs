@@ -34,11 +34,11 @@ mod tests {
         let _ = t.push(vec![0.into(), 0.into()]);
         assert_eq!(t.to_string(), "(Point 0 0)");
         let _ = t.push(t.tclass().record_of_nulls().unwrap());
-        assert_eq!(t.to_string(), "(Point 0 0 ? ?)");
+        assert_eq!(t.to_string(), "(Point 0 0\n? ?)");
         t[1] = vec![(-11).into(), 14.into()];
-        assert_eq!(t.to_string(), "(Point 0 0 -11 14)");
+        assert_eq!(t.to_string(), "(Point 0 0\n-11 14)");
         let _ = t.push_empty();
-        assert_eq!(t.to_string(), "(Point 0 0 -11 14 ? ?)");
+        assert_eq!(t.to_string(), "(Point 0 0\n-11 14\n? ?)");
         assert_eq!(t.ttype(), "Point");
         assert!(t.comment().is_empty());
         assert_eq!(t.len(), 3);

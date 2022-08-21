@@ -221,7 +221,7 @@ impl fmt::Display for Map {
             parts.push(key.to_string());
             parts.push(" ".to_string());
             parts.push(self.items.get(key).unwrap().to_string());
-            sep = " ";
+            sep = "\n";
         }
         parts.push("}".to_string());
         write!(f, "{}", parts.join(""))

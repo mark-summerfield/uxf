@@ -35,7 +35,7 @@ mod tests {
         assert!(!m.is_empty());
         assert_eq!(m.len(), 1);
         m.insert(vec![0x55, 0x58, 0x46].into(), 1854.into());
-        assert_eq!(m.to_string(), "{(:555846:) 1854 99 ?}");
+        assert_eq!(m.to_string(), "{(:555846:) 1854\n99 ?}");
         assert_eq!(m.len(), 2);
         m.insert(
             NaiveDate::from_ymd(2022, 7, 26).into(),
@@ -43,8 +43,8 @@ mod tests {
         );
         assert_eq!(
             m.to_string(),
-            "{(:555846:) 1854 2022-07-26 <don't &lt;blink&gt; &amp; see!> \
-        99 ?}"
+            "{(:555846:) 1854\n2022-07-26 <don't &lt;blink&gt; &amp; \
+            see!>\n99 ?}"
         );
         assert_eq!(m.len(), 3);
     }
@@ -66,7 +66,7 @@ mod tests {
         m.insert(152.into(), 18.into());
         assert_eq!(
             m.to_string(),
-            "{#<Int keys> int -17 ? 5 <Five> 99 ? 100 ? 101 ? 152 18}"
+            "{#<Int keys> int -17 ?\n5 <Five>\n99 ?\n100 ?\n101 ?\n152 18}"
         );
     }
 
@@ -77,13 +77,13 @@ mod tests {
         m.insert(5.into(), Value::Null);
         m.insert(3.into(), (-3).into());
         m.insert(1.into(), (-1).into());
-        assert_eq!(m.to_string(), "{1 -1 3 -3 5 ?}");
+        assert_eq!(m.to_string(), "{1 -1\n3 -3\n5 ?}");
         let mut m = Map::new("", "", "a comment").unwrap();
         assert_eq!(m.to_string(), "{#<a comment>}");
         m.insert(5.into(), Value::Null);
         m.insert(3.into(), (-3).into());
         m.insert(1.into(), (-1).into());
-        assert_eq!(m.to_string(), "{#<a comment> 1 -1 3 -3 5 ?}");
+        assert_eq!(m.to_string(), "{#<a comment> 1 -1\n3 -3\n5 ?}");
         let m = Map::new("", "str", "str values");
         assert!(m.is_err());
         let mut m = Map::new("int", "", "int keys").unwrap();
@@ -91,14 +91,15 @@ mod tests {
         m.insert(Key::Int(5), Value::Null);
         m.insert(Key::Int(3), Value::Int(-3));
         m.insert(Key::Int(1), Value::Int(-1));
-        assert_eq!(m.to_string(), "{#<int keys> int 1 -1 3 -3 5 ?}");
+        assert_eq!(m.to_string(), "{#<int keys> int 1 -1\n3 -3\n5 ?}");
         let mut m = Map::new("int", "date", "int x date").unwrap();
         assert_eq!(m.to_string(), "{#<int x date> int date}");
         m.insert(5.into(), NaiveDate::from_ymd(2022, 7, 16).into());
         m.insert(3.into(), NaiveDate::from_ymd(2023, 5, 30).into());
         m.insert(1.into(), NaiveDate::from_ymd(2024, 8, 1).into());
         assert_eq!(m.to_string(),
-        "{#<int x date> int date 1 2024-08-01 3 2023-05-30 5 2022-07-16}");
+        "{#<int x date> int date 1 2024-08-01\n3 2023-05-30\n\
+        5 2022-07-16}");
     }
 
     #[test]
@@ -118,8 +119,8 @@ mod tests {
         m.insert(23.into(), lst.into());
         assert_eq!(
             m.to_string(),
-            "{int str -4 ? 19 5.0 23 [real 8.0 0.7 ? -3.21 22] \
-        97 <&amp;closed&amp;> 917 <&lt;open&gt;>}"
+            "{int str -4 ?\n19 5.0\n23 [real 8.0\n0.7\n?\n-3.21\n22]\n\
+        97 <&amp;closed&amp;>\n917 <&lt;open&gt;>}"
         );
     }
 
@@ -138,7 +139,7 @@ mod tests {
         m.insert(9.into(), Value::Null);
         assert_eq!(
             m.to_string(),
-            "{4 ? 5 <five> 6 <six> 7 <seven> 8 <eight> 9 ?}"
+            "{4 ?\n5 <five>\n6 <six>\n7 <seven>\n8 <eight>\n9 ?}"
         );
         let k8 = Key::Int(8);
         assert_eq!(m.get(&k8).unwrap().as_str().unwrap(), "eight");
@@ -149,17 +150,17 @@ mod tests {
         assert!(m.get(&(-9).into()).is_none());
         assert_eq!(
             m.to_string(),
-            "{4 ? 5 <five> 6 <six> 7 <seven> 8 <VIII> 9 ?}"
+            "{4 ?\n5 <five>\n6 <six>\n7 <seven>\n8 <VIII>\n9 ?}"
         );
         let v = m.remove(&4.into());
         assert!(v.unwrap().is_null());
         assert_eq!(
             m.to_string(),
-            "{5 <five> 6 <six> 7 <seven> 8 <VIII> 9 ?}"
+            "{5 <five>\n6 <six>\n7 <seven>\n8 <VIII>\n9 ?}"
         );
         let v = m.remove(&7.into());
         assert_eq!(v.unwrap().as_str().unwrap(), "seven");
-        assert_eq!(m.to_string(), "{5 <five> 6 <six> 8 <VIII> 9 ?}");
+        assert_eq!(m.to_string(), "{5 <five>\n6 <six>\n8 <VIII>\n9 ?}");
         assert_eq!(m.len(), 4);
         assert!(!m.is_empty());
         m.clear();
@@ -178,7 +179,7 @@ mod tests {
                 items.insert(n.into(), s.into());
             }
         }
-        assert_eq!(m.to_string(), "{1 <I> 5 <V> 10 <X> 50 <L>}");
+        assert_eq!(m.to_string(), "{1 <I>\n5 <V>\n10 <X>\n50 <L>}");
         {
             let mut counts = HashMap::new();
             let items = m.inner();
@@ -205,11 +206,11 @@ mod tests {
                 lst.push((-16).into());
             }
         }
-        assert_eq!(m.to_string(), "{str <alpha> [int 391 9870 -16]}");
+        assert_eq!(m.to_string(), "{str <alpha> [int 391\n9870\n-16]}");
         m.insert("bravo".into(), Map::default().into());
         assert_eq!(
             m.to_string(),
-            "{str <alpha> [int 391 9870 -16] <bravo> {}}"
+            "{str <alpha> [int 391\n9870\n-16]\n<bravo> {}}"
         );
         if let Some(value) = m.get_mut(&"bravo".into()) {
             if let Some(bm) = value.as_map_mut() {
@@ -221,8 +222,8 @@ mod tests {
         }
         assert_eq!(
             m.to_string(),
-            "{str <alpha> [int 391 9870 -16] <bravo> {1 <one> 10 <ten> \
-        <charlie> [] <delta> {}}}"
+            "{str <alpha> [int 391\n9870\n-16]\n<bravo> {1 <one>\n\
+            10 <ten>\n<charlie> []\n<delta> {}}}"
         );
         if let Some(value) = m.get_mut(&"bravo".into()) {
             if let Some(bm) = value.as_map_mut() {
@@ -237,8 +238,8 @@ mod tests {
         }
         assert_eq!(
             m.to_string(),
-            "{str <alpha> [int 391 9870 -16] <bravo> {1 <one> 10 <ten> \
-        <charlie> [<I> <V> <X>] <delta> {}}}"
+            "{str <alpha> [int 391\n9870\n-16]\n<bravo> {1 <one>\n\
+            10 <ten>\n<charlie> [<I>\n<V>\n<X>]\n<delta> {}}}"
         );
         if let Some(value) = m.get_mut(&"bravo".into()) {
             if let Some(bm) = value.as_map_mut() {
@@ -254,8 +255,9 @@ mod tests {
         }
         assert_eq!(
             m.to_string(),
-            "{str <alpha> [int 391 9870 -16] <bravo> {1 <one> 10 <ten> \
-        <charlie> [<I> <V> <X>] <delta> {<C> 100 <D> 500 <L> 50 <M> 1000}}}"
+            "{str <alpha> [int 391\n9870\n-16]\n<bravo> {1 <one>\n\
+            10 <ten>\n<charlie> [<I>\n<V>\n<X>]\n<delta> {<C> 100\n\
+            <D> 500\n<L> 50\n<M> 1000}}}"
         );
     }
 
@@ -280,8 +282,8 @@ mod tests {
         }
         assert_eq!(
             m.to_string(),
-            "{1 <I> 5 <V> 10 <X> 50 <L> 100 <C> 500 <D> 1000 <M> \
-          <C> 100 <D> 500 <I> 1 <L> 50 <M> 1000 <V> 5 <X> 10}"
+            "{1 <I>\n5 <V>\n10 <X>\n50 <L>\n100 <C>\n500 <D>\n1000 <M>\n\
+          <C> 100\n<D> 500\n<I> 1\n<L> 50\n<M> 1000\n<V> 5\n<X> 10}"
         );
         m.clear();
         {
@@ -312,10 +314,10 @@ mod tests {
             }
         }
         assert_eq!(m.to_string(),
-        "{(:4364:) 0 (:4445:) 1 (:6162:) 2 (:6D6E:) 3 \
-        1901-12-24 0 1999-11-08 1 2024-01-17 2 \
-        2022-10-22T00:01:02 0 2022-10-22T00:02:02 1 2022-10-22T01:00:00 2 \
-        -7 0 0 1 15 2 20 3 381 4 \
-        <art> 0 <Cane> 1 <zed> 2 <Zone> 3}");
+        "{(:4364:) 0\n(:4445:) 1\n(:6162:) 2\n(:6D6E:) 3\n\
+        1901-12-24 0\n1999-11-08 1\n2024-01-17 2\n\
+        2022-10-22T00:01:02 0\n2022-10-22T00:02:02 1\n\
+        2022-10-22T01:00:00 2\n-7 0\n0 1\n15 2\n20 3\n381 4\n\
+        <art> 0\n<Cane> 1\n<zed> 2\n<Zone> 3}");
     }
 }

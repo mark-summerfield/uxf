@@ -65,7 +65,8 @@ mod tests {
         lst.push(t2.into());
         lst.push(t3.into());
         assert_eq!(lst.to_string(), 
-        "[(ReadyState) (#<enum> WaitState) (Point 0 0 -7 11 ? ? 19 -23)]");
+        "[(ReadyState)\n(#<enum> WaitState)\n(Point 0 0\n-7 11\n? ?\n\
+        19 -23)]");
         let mut uxo = Uxf::default();
         assert_eq!(uxo.to_string(), "uxf 1.0\n[]\n");
         assert!(uxo.set_value(lst.into()).is_ok());
@@ -75,7 +76,8 @@ mod tests {
         =Point x:int y:int\n\
         =#<enum> ReadyState\n\
         =WaitState\n\
-        [(ReadyState) (#<enum> WaitState) (Point 0 0 -7 11 ? ? 19 -23)]\n"
+        [(ReadyState)\n(#<enum> WaitState)\n(Point 0 0\n-7 11\n? ?\n\
+        19 -23)]\n"
         );
     }
 
@@ -116,11 +118,11 @@ mod tests {
         let mut m = Map::default();
         m.insert(1.into(), "one".into());
         m.insert(2.into(), "two".into());
-        assert_eq!(m.to_string(), "{1 <one> 2 <two>}");
+        assert_eq!(m.to_string(), "{1 <one>\n2 <two>}");
         assert!(uxo.set_value(m.into()).is_ok());
         assert_eq!(
             uxo.to_string(),
-            "uxf 1.0 MyUXF\n#<No comment>\n{1 <one> 2 <two>}\n"
+            "uxf 1.0 MyUXF\n#<No comment>\n{1 <one>\n2 <two>}\n"
         );
         assert!(&events.borrow().is_empty());
         assert_eq!(*&events.borrow().len(), 0);
@@ -163,11 +165,11 @@ mod tests {
         let mut m = Map::default();
         m.insert(1.into(), "one".into());
         m.insert(2.into(), "two".into());
-        assert_eq!(m.to_string(), "{1 <one> 2 <two>}");
+        assert_eq!(m.to_string(), "{1 <one>\n2 <two>}");
         assert!(uxo.set_value(m.into()).is_ok());
         assert_eq!(
             uxo.to_string(),
-            "uxf 1.0 MyUXF\n#<No comment>\n{1 <one> 2 <two>}\n"
+            "uxf 1.0 MyUXF\n#<No comment>\n{1 <one>\n2 <two>}\n"
         );
         assert!(&events.borrow().is_empty());
         assert_eq!(*&events.borrow().len(), 0);

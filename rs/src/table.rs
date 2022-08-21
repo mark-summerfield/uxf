@@ -200,11 +200,19 @@ impl fmt::Display for Table {
             parts.push(format!("#<{}> ", escape(self.comment())));
         }
         parts.push(self.ttype().to_string());
+        if self.len() > 0 {
+            parts.push(" ".to_string());
+        }
+        let mut nl = "";
         for record in self.iter() {
+            parts.push(nl.to_string());
+            let mut sep = "";
             for value in record.iter() {
-                parts.push(" ".to_string());
+                parts.push(sep.to_string());
                 parts.push(value.to_string());
+                sep = " ";
             }
+            nl = "\n";
         }
         parts.push(")".to_string());
         write!(f, "{}", parts.join(""))

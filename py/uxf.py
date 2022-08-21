@@ -31,7 +31,7 @@ from xml.sax.saxutils import escape, unescape
 
 import editabletuple
 
-__version__ = '2.4.5' # uxf module version
+__version__ = '2.4.6' # uxf module version
 VERSION = 1.0 # UXF file format version
 
 UTF8 = 'utf-8'
@@ -995,8 +995,7 @@ class List(collections.UserList, _CommentMixin):
             parts.append(' ')
         sep = ''
         for value in self:
-            parts.append(sep)
-            parts.append(_str_for_value(value))
+            parts.append(f'{sep}{_str_for_value(value)}')
             sep = '\n'
         parts.append(']')
         return ''.join(parts)
@@ -3225,18 +3224,21 @@ to allow later imports to override earlier ones.
         uxo = load(infile, on_event=on_event, drop_unused=config.dropunused,
                    replace_imports=config.replaceimports)
         do_dump = outfile is not None
-        outfile = sys.stdout if outfile == '-' else outfile
         on_event = functools.partial(on_event, verbose=config.lint,
                                      filename=outfile)
         if do_dump:
             if config.compact:
-                opener = (gzip.open if outfile[-3:].lower().endswith('.gz')
-                          else open)
-                with opener(outfile, 'wt', encoding=UTF8) as file:
-                    file.write(str(uxo))
+                if outfile == '-':
+                    print(uxo)
+                else:
+                    opener = (gzip.open if outfile[-3:].lower().endswith(
+                              '.gz') else open)
+                    with opener(outfile, 'wt', encoding=UTF8) as file:
+                        file.write(str(uxo))
             else:
                 format = Format(indent=config.indent,
                                 wrap_width=config.wrapwidth)
+                outfile = sys.stdout if outfile == '-' else outfile
                 dump(outfile, uxo, on_event=on_event, format=format)
     except (OSError, Error) as err:
         message = str(err)

@@ -21,7 +21,7 @@ mod tests {
         }
         assert_eq!(
             lst.to_string(),
-            "[yes -919 ? <elephant &lt;ears&gt;> 0.0000173]"
+            "[yes\n-919\n?\n<elephant &lt;ears&gt;>\n0.0000173]"
         );
         lst.push(Value::Null);
         lst.push(false.into());
@@ -31,8 +31,8 @@ mod tests {
         lst.push((-2.11e4).into());
         assert_eq!(
             lst.to_string(),
-            "[yes -919 ? <elephant &lt;ears&gt;> 0.0000173 ? no 7831 ? \
-        <giraffe neck> -21100.0]"
+            "[yes\n-919\n?\n<elephant &lt;ears&gt;>\n0.0000173\n?\nno\n\
+            7831\n?\n<giraffe neck>\n-21100.0]"
         );
         assert!(!lst.is_empty());
         assert_eq!(lst.len(), 11);
@@ -66,8 +66,8 @@ mod tests {
         assert_eq!(lst[i].as_int().unwrap(), 4);
         assert_eq!(
             lst.to_string(),
-            "[7070 ? ? <elephant &lt;ears&gt;> 0.0000173 ? no 7831 ? \
-        <giraffe neck> -21100.0 <dog &amp; tail> 4]"
+            "[7070\n?\n?\n<elephant &lt;ears&gt;>\n0.0000173\n?\nno\n\
+            7831\n?\n<giraffe neck>\n-21100.0\n<dog &amp; tail>\n4]"
         );
     }
 
@@ -78,7 +78,7 @@ mod tests {
         lst.push(5.into());
         lst.push(17.into());
         lst.push(Value::Null);
-        assert_eq!(lst.to_string(), "[#<Test of int> int ? 5 17 ?]");
+        assert_eq!(lst.to_string(), "[#<Test of int> int ?\n5\n17\n?]");
         assert_eq!(lst.len(), 4);
         assert!(!lst.is_empty());
         assert!(lst[0].is_null());
@@ -111,10 +111,10 @@ mod tests {
         assert_eq!(lst.len(), 5);
         assert_eq!(
             lst.to_string(),
-            "[#<Test of int> int 100 -55 917 400 8888]"
+            "[#<Test of int> int 100\n-55\n917\n400\n8888]"
         );
         lst.truncate(3);
-        assert_eq!(lst.to_string(), "[#<Test of int> int 100 -55 917]");
+        assert_eq!(lst.to_string(), "[#<Test of int> int 100\n-55\n917]");
         assert_eq!(lst.len(), 3);
         lst.clear();
         assert_eq!(lst.len(), 0);
@@ -161,7 +161,7 @@ mod tests {
             values.push(8888.into());
             assert_eq!(values.len(), 5);
         }
-        assert_eq!(lst.to_string(), "[int 100 -55 917 400 8888]");
+        assert_eq!(lst.to_string(), "[int 100\n-55\n917\n400\n8888]");
         assert_eq!(lst.len(), 5);
         for (index, value) in
             [(0, 100), (1, -55), (2, 917), (3, 400), (4, 8888)]
@@ -188,7 +188,7 @@ mod tests {
         lst.push(Value::Null);
         assert_eq!(lst.to_string(), "[#<A &lt;comment&gt; &amp;tc.> ?]");
         lst.push(Value::Null);
-        assert_eq!(lst.to_string(), "[#<A &lt;comment&gt; &amp;tc.> ? ?]");
+        assert_eq!(lst.to_string(), "[#<A &lt;comment&gt; &amp;tc.> ?\n?]");
     }
 
     #[test]
@@ -202,9 +202,9 @@ mod tests {
         lst.push(Value::Null); // 0
         lst.push(Value::Null); // 1
         lst.push(Value::Null); // 2
-        assert_eq!(lst.to_string(), "[? ? ?]");
+        assert_eq!(lst.to_string(), "[?\n?\n?]");
         lst.push(List::default().into()); // 3
-        assert_eq!(lst.to_string(), "[? ? ? []]");
+        assert_eq!(lst.to_string(), "[?\n?\n?\n[]]");
         if let Some(sublist) = lst[0].as_list() {
             assert_eq!(sublist.len(), 0);
             assert!(sublist.is_empty());
@@ -212,7 +212,7 @@ mod tests {
         assert_eq!(lst.len(), 4);
         assert!(!lst.is_empty());
         lst.push(998877.into()); // 4
-        assert_eq!(lst.to_string(), "[? ? ? [] 998877]");
+        assert_eq!(lst.to_string(), "[?\n?\n?\n[]\n998877]");
         if let Some(sublist) = lst[3].as_list_mut() {
             sublist.push("this & that".into());
             sublist.push("is <bold> &tc.!".into());
@@ -222,7 +222,8 @@ mod tests {
             assert!(!sublist.is_empty());
         }
         assert_eq!(lst.to_string(),
-        "[? ? ? [<this &amp; that> <is &lt;bold&gt; &amp;tc.!>] 998877]");
+        "[?\n?\n?\n[<this &amp; that>\n<is &lt;bold&gt; \
+        &amp;tc.!>]\n998877]");
         if let Some(sublist) = lst[3].as_list_mut() {
             sublist.push(List::new("real", "<Totals>").unwrap().into());
             if let Some(subsublist) = sublist[2].as_list_mut() {
@@ -233,8 +234,8 @@ mod tests {
         }
         assert_eq!(
             lst.to_string(),
-            "[? ? ? [<this &amp; that> <is &lt;bold&gt; &amp;tc.!> \
-        [#<&lt;Totals&gt;> real 7.9 100.0 -19.357]] 998877]"
+            "[?\n?\n?\n[<this &amp; that>\n<is &lt;bold&gt; &amp;tc.!>\n\
+        [#<&lt;Totals&gt;> real 7.9\n100.0\n-19.357]]\n998877]"
         );
     }
 
@@ -293,8 +294,8 @@ mod tests {
         }
         assert_eq!(
             lst.to_string(),
-            "[str <one> <two> <&lt;three&gt;> \
-                   <four &amp; five> <six> <seven>]"
+            "[str <one>\n<two>\n<&lt;three&gt;>\n\
+            <four &amp; five>\n<six>\n<seven>]"
         );
     }
 

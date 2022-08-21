@@ -806,6 +806,7 @@ or
 
 ## Changes
 
+- 2.4.6 Bugfix: `-c|--compact` now works correctly if output is stdout.
 - 2.4.5 Tweaked `__str__()` support to output more newlines instead of
   spaces—this makes it slightly more human-friendly without increasing the
   output size.
