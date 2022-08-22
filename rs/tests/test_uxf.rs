@@ -196,9 +196,11 @@ mod tests {
 
     #[test]
     fn t_uxf_parse() {
-        if let Ok(uxo) = uxf::parse("uxf 1.0\n[]") {
-            assert_eq!(uxo.to_string(), "uxf 1.0\n[]\n");
-        }
+        let uxo = uxf::parse("uxf 1.0\n[]").unwrap();
+        assert_eq!(uxo.to_string(), "uxf 1.0\n[]\n");
+        let uxo = uxf::parse("uxf 1.0 My Custom Format 5.8\n[]").unwrap();
+        assert_eq!(uxo.to_string(), "uxf 1.0 My Custom Format 5.8\n[]\n");
+        // TODO
     }
 
     #[test]

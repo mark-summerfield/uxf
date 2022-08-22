@@ -26,6 +26,16 @@ pub fn isclose64(a: f64, b: f64) -> bool {
     (a..=(a + f64::EPSILON)).contains(&b)
 }
 
+/// Returns a string of an f64 which is guaranteed to contain an 'e' or 'E'
+/// or to end with ".0".
+pub fn realstr64(x: f64) -> String {
+    let mut s = x.to_string();
+    if !s.contains(&['.', 'e', 'E']) {
+        s.push_str(".0");
+    }
+    s
+}
+
 /// Returns `Ok(())` if `ktype` is a valid ktype; otherwise `Err`.
 pub(crate) fn check_ktype(ktype: &str) -> Result<()> {
     if KTYPES.contains(&ktype) {
@@ -116,7 +126,7 @@ pub(crate) fn check_vtype(name: &str) -> Result<()> {
 /// Returns the text of the given file which is either plain text or
 /// gzipped plain text (UTF-8 encoded).
 pub(crate) fn read_file(filename: &str) -> Result<String> {
-    let compressed = is_compressed(&filename)?;
+    let compressed = is_compressed(filename)?;
     let mut text = String::new();
     let file = File::open(&filename)?;
     if compressed {

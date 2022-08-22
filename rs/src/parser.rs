@@ -13,8 +13,10 @@ pub(crate) fn parse(
     options: ParseOptions,
     on_event: OnEventFn,
 ) -> Result<Uxf> {
-    let mut lexer = Lexer::new(&uxt, &filename, Rc::clone(&on_event));
-    let tokens = lexer.lex()?;
-    // TODO parse tokens
-    bail!("TODO: parser::parse()") // TODO
+    let mut lexer = Lexer::new(uxt, filename, Rc::clone(&on_event));
+    let tokens = lexer.tokenize()?;
+    let mut uxo = Uxf::new_on_event(Rc::clone(&on_event));
+    uxo.set_custom(lexer.custom);
+    // TODO parse tokens and populate uxo
+    Ok(uxo)
 }

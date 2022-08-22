@@ -31,7 +31,7 @@ from xml.sax.saxutils import escape, unescape
 
 import editabletuple
 
-__version__ = '2.4.6' # uxf module version
+__version__ = '2.4.7' # uxf module version
 VERSION = 1.0 # UXF file format version
 
 UTF8 = 'utf-8'
@@ -502,8 +502,7 @@ class _Lexer(_EventMixin):
         try:
             version = float(parts[1])
             if version > VERSION:
-                self.warning(141,
-                             f'version ({version}) > current ({VERSION})')
+                self.warning(141, f'version {version} > current {VERSION}')
         except ValueError:
             self.error(151, 'failed to read UXF file version number')
         if len(parts) > 2:

@@ -8,7 +8,7 @@ pub type Tokens = Vec<Token>;
 
 #[derive(Clone, Debug)]
 pub struct Token {
-    pub kind: Kind,
+    pub kind: TokenKind,
     pub value: Value,
     pub lino: i32,
     pub comment: String,
@@ -18,7 +18,7 @@ pub struct Token {
 }
 
 impl Token {
-    pub fn new(kind: Kind) -> Self {
+    pub fn new(kind: TokenKind) -> Self {
         Token {
             kind,
             value: Value::Null,
@@ -54,7 +54,7 @@ impl fmt::Display for Token {
 }
 
 #[derive(Clone, Debug, PartialEq, Eq)]
-pub enum Kind {
+pub enum TokenKind {
     Import,
     TClassBegin,
     TClassEnd,
@@ -79,7 +79,7 @@ pub enum Kind {
     Eof,
 }
 
-impl fmt::Display for Kind {
+impl fmt::Display for TokenKind {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         write!(f, "{:?}", self)
     }

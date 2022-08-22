@@ -35,6 +35,30 @@ pub struct Event {
 }
 
 impl Event {
+    pub fn new_warning(code: i16, message: &str) -> Self {
+        Event {
+            kind: EventKind::Warning,
+            code,
+            message: message.to_string(),
+            filename: "-".to_string(),
+            lino: 0,
+            verbose: true,
+            prefix: "uxf".to_string(),
+        }
+    }
+
+    pub fn new_fatal(code: i16, message: &str) -> Self {
+        Event {
+            kind: EventKind::Fatal,
+            code,
+            message: message.to_string(),
+            filename: "-".to_string(),
+            lino: 0,
+            verbose: true,
+            prefix: "uxf".to_string(),
+        }
+    }
+
     pub fn new(kind: EventKind, code: i16, message: &str) -> Self {
         Event {
             kind,

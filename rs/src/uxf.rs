@@ -7,7 +7,7 @@ use crate::format::Format;
 use crate::list::List;
 use crate::parser;
 use crate::tclass::TClass;
-use crate::util::{escape, read_file};
+use crate::util::{escape, read_file, realstr64};
 use crate::value::{Value, Visit, Visitor};
 use anyhow::{bail, Result};
 use bitflags::bitflags;
@@ -256,7 +256,7 @@ impl fmt::Display for Uxf {
     /// output formatting and event handling.
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         const NL: &str = "\n";
-        let mut parts = vec![format!("uxf {}", UXF_VERSION)];
+        let mut parts = vec![format!("uxf {}", realstr64(UXF_VERSION))];
         if !self.custom().is_empty() {
             parts.push(" ".to_string());
             parts.push(self.custom().to_string());
@@ -316,14 +316,14 @@ pub fn parse_options(
     let uxt: &str;
     let text: String;
     if !uxt_or_filename.contains('\n') {
-        text = read_file(&uxt_or_filename)?;
+        text = read_file(uxt_or_filename)?;
         uxt = &text;
         filename = uxt_or_filename;
     } else {
         uxt = uxt_or_filename;
         filename = "-";
     }
-    parser::parse(&uxt, &filename, options, Rc::clone(&on_event))
+    parser::parse(uxt, filename, options, Rc::clone(&on_event))
 }
 
 bitflags! {

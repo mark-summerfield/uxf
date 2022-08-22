@@ -7,7 +7,7 @@ use crate::list::List;
 use crate::map::Map;
 use crate::table::Table;
 use crate::tclass::TClass;
-use crate::util::{escape, isclose64};
+use crate::util::{escape, isclose64, realstr64};
 use crate::uxf::Compare;
 use chrono::prelude::*;
 use std::fmt::Write as _;
@@ -403,14 +403,7 @@ impl fmt::Display for Value {
                 Value::Int(i) => i.to_string(),
                 Value::List(lst) => lst.to_string(),
                 Value::Map(m) => m.to_string(),
-                Value::Real(r) => {
-                    // Must have . or e to it is parsed as real not int
-                    let mut s = r.to_string();
-                    if !s.contains(&['.', 'e', 'E']) {
-                        s.push_str(".0");
-                    }
-                    s
-                }
+                Value::Real(r) => realstr64(*r),
                 Value::Str(s) => format!("<{}>", escape(s)),
                 Value::Table(t) => t.to_string(),
             }

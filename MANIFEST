@@ -13,6 +13,7 @@ rs/src/event.rs
 rs/src/constants.rs
 rs/src/parser.rs # TODO (2) parse()
 rs/src/lexer.rs # TODO (1) lex()
+rs/src/lex_token.rs
 rs/src/prettyprint.rs # TODO see (9) above
 rs/src/test_utils.rs
 rs/tests/test_value.rs # TODO visit()
