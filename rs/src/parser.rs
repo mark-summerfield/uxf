@@ -4,16 +4,16 @@
 use crate::event::OnEventFn;
 use crate::lexer::Lexer;
 use crate::uxf::{ParseOptions, Uxf};
-use anyhow::{bail, Result};
+use anyhow::Result;
 use std::rc::Rc;
 
 pub(crate) fn parse(
-    uxt: &str,
+    raw: &Vec<u8>,
     filename: &str,
     options: ParseOptions,
     on_event: OnEventFn,
 ) -> Result<Uxf> {
-    let mut lexer = Lexer::new(uxt, filename, Rc::clone(&on_event));
+    let mut lexer = Lexer::new(raw, filename, Rc::clone(&on_event));
     let tokens = lexer.tokenize()?;
     let mut uxo = Uxf::new_on_event(Rc::clone(&on_event));
     uxo.set_custom(lexer.custom);

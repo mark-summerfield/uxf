@@ -7,7 +7,7 @@ use crate::format::Format;
 use crate::list::List;
 use crate::parser;
 use crate::tclass::TClass;
-use crate::util::{escape, read_file, realstr64};
+use crate::util::{escape, read_raw_file, realstr64};
 use crate::value::{Value, Visit, Visitor};
 use anyhow::{bail, Result};
 use bitflags::bitflags;
@@ -313,17 +313,15 @@ pub fn parse_options(
 ) -> Result<Uxf> {
     let on_event = on_event.unwrap_or_else(|| Rc::new(event::on_event));
     let filename: &str;
-    let uxt: &str;
-    let text: String;
+    let raw: Vec<u8>;
     if !uxt_or_filename.contains('\n') {
-        text = read_file(uxt_or_filename)?;
-        uxt = &text;
+        raw = read_raw_file(uxt_or_filename)?;
         filename = uxt_or_filename;
     } else {
-        uxt = uxt_or_filename;
+        raw = uxt_or_filename.as_bytes().to_vec();
         filename = "-";
     }
-    parser::parse(uxt, filename, options, Rc::clone(&on_event))
+    parser::parse(&raw, filename, options, Rc::clone(&on_event))
 }
 
 bitflags! {

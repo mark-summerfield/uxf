@@ -8,7 +8,7 @@ use anyhow::{bail, Result};
 use std::rc::Rc;
 
 pub struct Lexer<'a> {
-    pub raw: Vec<u8>,
+    pub raw: &'a Vec<u8>,
     pub filename: &'a str,
     pub custom: &'a str,
     on_event: OnEventFn,
@@ -21,12 +21,12 @@ pub struct Lexer<'a> {
 
 impl<'a> Lexer<'a> {
     pub fn new(
-        uxt: &'a str,
+        raw: &'a Vec<u8>,
         filename: &'a str,
         on_event: OnEventFn,
     ) -> Self {
         Lexer {
-            raw: uxt.as_bytes().to_vec(),
+            raw,
             filename,
             on_event: Rc::clone(&on_event),
             pos: 0,

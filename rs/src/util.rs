@@ -5,10 +5,7 @@ use crate::constants::*;
 use crate::event::fatal;
 use anyhow::Result;
 use flate2::read::GzDecoder;
-use std::{
-    fs::File,
-    io::{prelude::*, BufReader},
-};
+use std::{fs::File, io::prelude::*};
 
 /// Returns a clone of `s` with replacements & → &amp; < → &lt; > → &gt;
 pub fn escape(s: &str) -> String {
@@ -123,20 +120,20 @@ pub(crate) fn check_vtype(name: &str) -> Result<()> {
     Ok(())
 }
 
-/// Returns the text of the given file which is either plain text or
+/// Returns the raw bytes of the given file which is either plain text or
 /// gzipped plain text (UTF-8 encoded).
-pub(crate) fn read_file(filename: &str) -> Result<String> {
+pub(crate) fn read_raw_file(filename: &str) -> Result<Vec<u8>> {
     let compressed = is_compressed(filename)?;
-    let mut text = String::new();
+    let mut raw: Vec<u8>;
     let file = File::open(&filename)?;
     if compressed {
         let mut gz = GzDecoder::new(file);
-        gz.read_to_string(&mut text)?;
+        gz.read_to_end(&mut raw)?;
     } else {
-        let mut buffer = BufReader::new(file);
-        buffer.read_to_string(&mut text)?;
+        raw = vec![];
+        file.read_to_end(&mut raw)?;
     }
-    Ok(text)
+    Ok(raw)
 }
 
 /// Returns true if the given file is gzip compressed; otherwise false.
