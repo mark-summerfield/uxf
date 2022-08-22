@@ -138,7 +138,7 @@ impl fmt::Display for TClass {
         s.push_str(&self.ttype);
         if !self.is_fieldless() {
             for field in &self.fields {
-                s.push_str(&format!(" {}", &field));
+                let _ = write!(s, " {}", &field);
             }
         }
         write!(f, "{}", s)

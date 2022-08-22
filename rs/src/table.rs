@@ -200,7 +200,7 @@ impl fmt::Display for Table {
             parts.push(format!("#<{}> ", escape(self.comment())));
         }
         parts.push(self.ttype().to_string());
-        if self.len() > 0 {
+        if !self.is_empty() {
             parts.push(" ".to_string());
         }
         let mut nl = "";

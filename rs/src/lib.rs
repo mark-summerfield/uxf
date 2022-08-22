@@ -26,9 +26,12 @@ pub mod event;
 pub mod field;
 pub mod format;
 pub mod key;
+pub mod lex_token;
+pub mod lexer;
 pub mod list;
 pub mod map;
 pub mod parser;
+pub mod prettyprint;
 pub mod table;
 pub mod tclass;
 pub mod test_utils;
@@ -36,4 +39,4 @@ pub mod util;
 pub mod uxf;
 pub mod value;
 
-pub use crate::uxf::Uxf;
+pub use crate::uxf::{parse, parse_options, Uxf};

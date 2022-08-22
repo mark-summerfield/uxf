@@ -5,7 +5,7 @@
 // t_list_err() test.
 
 use anyhow::{bail, Result};
-use std::{rc::Rc, fmt};
+use std::{fmt, rc::Rc};
 
 pub type OnEventFn = Rc<dyn Fn(&Event) -> Result<()>>;
 
@@ -104,7 +104,7 @@ impl fmt::Display for Event {
 
 impl std::error::Error for Event {}
 
-#[derive(Clone, Debug, PartialEq)]
+#[derive(Clone, Debug, Eq, PartialEq)]
 pub enum EventKind {
     Warning,
     Repair,

@@ -64,9 +64,11 @@ mod tests {
         lst.push(t1.into());
         lst.push(t2.into());
         lst.push(t3.into());
-        assert_eq!(lst.to_string(), 
-        "[(ReadyState)\n(#<enum> WaitState)\n(Point 0 0\n-7 11\n? ?\n\
-        19 -23)]");
+        assert_eq!(
+            lst.to_string(),
+            "[(ReadyState)\n(#<enum> WaitState)\n(Point 0 0\n-7 11\n? ?\n\
+        19 -23)]"
+        );
         let mut uxo = Uxf::default();
         assert_eq!(uxo.to_string(), "uxf 1.0\n[]\n");
         assert!(uxo.set_value(lst.into()).is_ok());
@@ -190,5 +192,17 @@ mod tests {
             100,
             "Uxf value must be a List, Map, or Table, got str",
         );
+    }
+
+    #[test]
+    fn t_uxf_parse() {
+        if let Ok(uxo) = uxf::parse("uxf 1.0\n[]") {
+            assert_eq!(uxo.to_string(), "uxf 1.0\n[]\n");
+        }
+    }
+
+    #[test]
+    fn t_uxf_parse_options() {
+        // TODO
     }
 }

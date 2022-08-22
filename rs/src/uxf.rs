@@ -5,8 +5,9 @@ use crate::constants::*;
 use crate::event::{self, Event, EventKind, OnEventFn};
 use crate::format::Format;
 use crate::list::List;
+use crate::parser;
 use crate::tclass::TClass;
-use crate::util::escape;
+use crate::util::{escape, read_file};
 use crate::value::{Value, Visit, Visitor};
 use anyhow::{bail, Result};
 use bitflags::bitflags;
@@ -311,13 +312,18 @@ pub fn parse_options(
     on_event: Option<OnEventFn>,
 ) -> Result<Uxf> {
     let on_event = on_event.unwrap_or_else(|| Rc::new(event::on_event));
-    let uxt = if !uxt_or_filename.contains('\n') {
-        read_file(uxt_or_filename, Rc::clone(&on_event))?
+    let filename: &str;
+    let uxt: &str;
+    let text: String;
+    if !uxt_or_filename.contains('\n') {
+        text = read_file(&uxt_or_filename)?;
+        uxt = &text;
+        filename = uxt_or_filename;
     } else {
-        uxt_or_filename
-    };
-    // TODO parser/reader:
-    bail!("TODO: from_str_options") // TODO
+        uxt = uxt_or_filename;
+        filename = "-";
+    }
+    parser::parse(&uxt, &filename, options, Rc::clone(&on_event))
 }
 
 bitflags! {
@@ -328,13 +334,4 @@ bitflags! {
         const AS_STANDALONE = Self::DROP_UNUSED_TTYPES.bits |
             Self::REPLACE_IMPORTS.bits;
     }
-}
-
-fn read_file(filename: &str, on_event: OnEventFn) -> Result<&str> {
-    if filename.ends_with(".gz") {
-        // TODO
-    } else {
-        // TODO
-    }
-    Ok("uxf 1.0\n[]\n")
 }
