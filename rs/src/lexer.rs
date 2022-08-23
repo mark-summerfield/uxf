@@ -3,7 +3,7 @@
 
 use crate::constants::*;
 use crate::event::{Event, EventKind, OnEventFn};
-use crate::lex_token::{Token, TokenKind, Tokens};
+use crate::token::{Token, TokenKind, Tokens};
 use crate::util::{count_bytes, escape_raw, realstr64};
 use crate::value::Value;
 use anyhow::{bail, Result};
@@ -18,7 +18,7 @@ pub struct Lexer<'a> {
     lino: usize,
     in_tclass: bool,
     concatenate: bool,
-    tokens: Tokens,
+    tokens: Tokens<'a>,
 }
 
 impl<'a> Lexer<'a> {
@@ -108,7 +108,7 @@ impl<'a> Lexer<'a> {
                 let raw =
                     self.match_to_byte(b'>', "file comment string")?;
                 let value = Value::Str(escape_raw(raw));
-                self.add_token(TokenKind::FileComment, value);
+                self.add_token(TokenKind::FileComment, value)?;
             } else {
                 let c = if let Some(c) = char::from_u32(self.peek() as u32)
                 {
@@ -165,8 +165,65 @@ impl<'a> Lexer<'a> {
         bail!("E270:{}:{}:unterminated {}", self.filename, self.lino, what)
     }
 
-    fn add_token(&mut self, kind: TokenKind, value: Value) {
+    fn add_token(&mut self, kind: TokenKind, value: Value) -> Result<()> {
+        if !self.in_tclass
+            && !self.tokens.is_empty()
+            && self.subsumed(kind.clone(), &value)?
+        {
+            return Ok(());
+        }
+        self.tokens.push(Token::new(kind, value, self.filename, self.lino));
+        Ok(())
+    }
+
+    fn subsumed(&mut self, kind: TokenKind, value: &Value) -> Result<bool> {
+        if matches!(kind, TokenKind::Identifier | TokenKind::Type) {
+            // safe because we only call when self.tokens is nonempty
+            let top = self.tokens.last().unwrap();
+            return match top.kind {
+                TokenKind::ListBegin => {
+                    self.subsume_list_vtype(kind, value)
+                }
+                TokenKind::MapBegin => self.subsume_map_type(kind, value),
+                TokenKind::TableBegin if kind == TokenKind::Identifier => {
+                    self.subsume_table_ttype(kind, value)
+                }
+                _ => Ok(false),
+            };
+        }
+        Ok(false)
+    }
+
+    fn subsume_list_vtype(
+        &mut self,
+        kind: TokenKind,
+        value: &Value,
+    ) -> Result<bool> {
+        // safe because we only call when self.tokens is nonempty
+        let top = self.tokens.last_mut().unwrap();
         // TODO maybe subsume
-        // TODO else append to tokens
+        Ok(false)
+    }
+
+    fn subsume_map_type(
+        &mut self,
+        kind: TokenKind,
+        value: &Value,
+    ) -> Result<bool> {
+        // safe because we only call when self.tokens is nonempty
+        let top = self.tokens.last_mut().unwrap();
+        // TODO maybe subsume
+        Ok(false)
+    }
+
+    fn subsume_table_ttype(
+        &mut self,
+        kind: TokenKind,
+        value: &Value,
+    ) -> Result<bool> {
+        // safe because we only call when self.tokens is nonempty
+        let top = self.tokens.last_mut().unwrap();
+        // TODO maybe subsume
+        Ok(false)
     }
 }

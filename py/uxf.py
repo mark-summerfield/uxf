@@ -816,8 +816,8 @@ class _Lexer(_EventMixin):
 
 
     def subsumed(self, kind, value):
-        top = self.tokens[-1]
         if kind in {_Kind.IDENTIFIER, _Kind.TYPE}:
+            top = self.tokens[-1]
             if top.kind is _Kind.LIST_BEGIN:
                 return self.subsume_list_vtype(top, value)
             elif top.kind is _Kind.MAP_BEGIN:

@@ -4,25 +4,32 @@
 use crate::value::Value;
 use std::fmt;
 
-pub type Tokens = Vec<Token>;
+pub type Tokens<'a> = Vec<Token<'a>>;
 
 #[derive(Clone, Debug)]
-pub struct Token {
+pub struct Token<'a> {
     pub kind: TokenKind,
     pub value: Value,
-    pub lino: i32,
+    pub filename: &'a str,
+    pub lino: usize,
     pub comment: String,
     pub ttype: String,
     pub ktype: String,
     pub vtype: String,
 }
 
-impl Token {
-    pub fn new(kind: TokenKind) -> Self {
+impl<'a> Token<'a> {
+    pub fn new(
+        kind: TokenKind,
+        value: Value,
+        filename: &'a str,
+        lino: usize,
+    ) -> Self {
         Token {
             kind,
-            value: Value::Null,
-            lino: 0,
+            value,
+            filename,
+            lino,
             comment: "".to_string(),
             ttype: "".to_string(),
             ktype: "".to_string(),
@@ -31,9 +38,14 @@ impl Token {
     }
 }
 
-impl fmt::Display for Token {
+impl<'a> fmt::Display for Token<'a> {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         let comment = if !self.comment.is_empty() { " #" } else { "" };
+        let filename = if self.filename.is_empty() {
+            "".to_string()
+        } else {
+            format!(" {}", self.filename)
+        };
         let lino = if self.lino > 0 {
             format!(" {}", self.lino)
         } else {
@@ -41,14 +53,15 @@ impl fmt::Display for Token {
         };
         write!(
             f,
-            "Token={} value={} ttype={} ktype={} vtype={}{}{}",
+            "Token={} value={} ttype={} ktype={} vtype={}{}{}{}",
             &self.kind,
             &self.value,
             &self.ttype,
             &self.ktype,
             &self.vtype,
             comment,
-            lino
+            self.filename,
+            lino,
         )
     }
 }
