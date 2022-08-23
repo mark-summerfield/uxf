@@ -107,7 +107,7 @@ impl<'a> Lexer<'a> {
                 self.pos += 1; // skip the leading <
                 let raw =
                     self.match_to_byte(b'>', "file comment string")?;
-                let value = Value::Str(escape_raw(&raw));
+                let value = Value::Str(escape_raw(raw));
                 self.add_token(TokenKind::FileComment, value);
             } else {
                 let c = if let Some(c) = char::from_u32(self.peek() as u32)
@@ -157,7 +157,7 @@ impl<'a> Lexer<'a> {
                 self.raw[self.pos..].iter().position(|&c| c == b)
             {
                 let raw = &self.raw[self.pos..i];
-                self.lino += count_bytes(b, &raw);
+                self.lino += count_bytes(b, raw);
                 self.pos = i + 1; // skip past byte b
                 return Ok(raw);
             }
