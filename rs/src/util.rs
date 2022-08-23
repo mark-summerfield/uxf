@@ -23,6 +23,13 @@ pub fn escape_raw(raw: &[u8]) -> String {
     escape(&String::from_utf8_lossy(raw))
 }
 
+/// Returns a clone of `s` with replacements & → &amp; < → &lt; > → &gt;
+/// Invalid UTF-8 will be replaced with the Unicode replacement character
+/// U+FFFD so this always succeeds.
+pub fn unescape_raw(raw: &[u8]) -> String {
+    unescape(&String::from_utf8_lossy(raw))
+}
+
 /// Returns `true` if `a` and `b` are close enough to be considered equal
 /// for all practical purposes; otherwise returns `false`.
 pub fn isclose64(a: f64, b: f64) -> bool {

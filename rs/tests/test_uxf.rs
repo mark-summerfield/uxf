@@ -239,8 +239,16 @@ mod tests {
     fn t_uxf_parse_ok() {
         let uxo = uxf::parse("uxf 1.0\n[]").unwrap();
         assert_eq!(uxo.to_string(), "uxf 1.0\n[]\n");
-        let uxo = uxf::parse("uxf 1.0 My Custom Format 5.8\n[]").unwrap();
-        assert_eq!(uxo.to_string(), "uxf 1.0 My Custom Format 5.8\n[]\n");
+        let uxo = uxf::parse("uxf 1.0 My <Custom> Format 5.8\n[]").unwrap();
+        assert_eq!(uxo.to_string(), "uxf 1.0 My <Custom> Format 5.8\n[]\n");
+        assert_eq!(uxo.custom(), "My <Custom> Format 5.8");
+        let uxo =
+            uxf::parse("uxf 1.0\n#<A &lt;Big&gt; comment!>\n[]").unwrap();
+        assert_eq!(
+            uxo.to_string(),
+            "uxf 1.0\n#<A &lt;Big&gt; comment!>\n[]"
+        );
+        assert_eq!(uxo.comment(), "A <Big> comment!");
         // TODO
     }
 
