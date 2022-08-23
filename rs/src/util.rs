@@ -124,8 +124,8 @@ pub(crate) fn check_vtype(name: &str) -> Result<()> {
 /// gzipped plain text (UTF-8 encoded).
 pub(crate) fn read_raw_file(filename: &str) -> Result<Vec<u8>> {
     let compressed = is_compressed(filename)?;
-    let mut raw: Vec<u8>;
-    let file = File::open(&filename)?;
+    let mut raw = vec![];
+    let mut file = File::open(&filename)?;
     if compressed {
         let mut gz = GzDecoder::new(file);
         gz.read_to_end(&mut raw)?;

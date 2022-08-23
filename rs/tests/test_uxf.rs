@@ -10,7 +10,7 @@ mod tests {
     use uxf::map::Map;
     use uxf::table::Table;
     use uxf::tclass::TClass;
-    use uxf::test_utils::assert_fatal;
+    use uxf::test_utils::{assert_fatal, assert_warning};
     use uxf::value::Value;
     use uxf::Uxf;
 
@@ -195,7 +195,88 @@ mod tests {
     }
 
     #[test]
-    fn t_uxf_parse() {
+    fn t_uxf_parse110() {
+        let events = Rc::new(RefCell::new(Vec::<Event>::new()));
+        assert!(&events.borrow().is_empty());
+        let uxo = uxf::parse_options(
+            "uxf 1.0", // invalid since no data
+            uxf::ParseOptions::default(),
+            Some(Rc::new({
+                let events = Rc::clone(&events);
+                move |event| {
+                    let mut events = events.borrow_mut();
+                    events.push(event.clone());
+                    Ok(())
+                }
+            })),
+        );
+        assert!(uxo.is_err());
+        let event = &events.borrow()[0].clone();
+        match uxo.unwrap_err().downcast_ref::<Event>() {
+            Some(event) => assert_fatal(
+                &event,
+                110,
+                "missing UXF file header or missing data or empty file",
+            ),
+            None => panic!("expected error code 110"),
+        }
+    }
+
+    /*
+    #[test]
+    fn t_uxf_parse3() {
+        let events = Rc::new(RefCell::new(Vec::<Event>::new()));
+        assert!(&events.borrow().is_empty());
+        let uxo = uxf::parse_options(
+            "UXF 1.0\n[]", // invalid since uxf is case-sensitive
+            uxf::ParseOptions::default(),
+            Some(Rc::new({
+                let events = Rc::clone(&events);
+                move |event| {
+                    let mut events = events.borrow_mut();
+                    events.push(event.clone());
+                    Ok(())
+                }
+            })),
+        );
+        assert!(uxo.is_err());
+        match uxo.unwrap_err().downcast_ref::<Event>() {
+            Some(event) => assert_fatal(
+                &event,
+                336,
+                "can't have duplicate table tclass \
+                         field names, got \"size\" twice",
+            ),
+            None => panic!("expected error code 336"),
+        }
+    }
+    */
+
+    #[test]
+    fn t_uxf_parse141() {
+        let events = Rc::new(RefCell::new(Vec::<Event>::new()));
+        assert!(&events.borrow().is_empty());
+        let _uxo = uxf::parse_options(
+            "uxf 99\n[]",
+            uxf::ParseOptions::default(),
+            Some(Rc::new({
+                let events = Rc::clone(&events);
+                move |event| {
+                    let mut events = events.borrow_mut();
+                    events.push(event.clone());
+                    Ok(())
+                }
+            })),
+        )
+        .unwrap();
+        assert!(!&events.borrow().is_empty());
+        assert_eq!(*&events.borrow().len(), 1);
+        let event = &events.borrow()[0].clone();
+        assert_warning(&event, 141, "version 99.0 > current 1.0");
+    }
+
+    #[test]
+    fn t_uxf_parse9() {
         let uxo = uxf::parse("uxf 1.0\n[]").unwrap();
         assert_eq!(uxo.to_string(), "uxf 1.0\n[]\n");
         let uxo = uxf::parse("uxf 1.0 My Custom Format 5.8\n[]").unwrap();

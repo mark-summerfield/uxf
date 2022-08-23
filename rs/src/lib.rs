@@ -39,4 +39,4 @@ pub mod util;
 pub mod uxf;
 pub mod value;
 
-pub use crate::uxf::{parse, parse_options, Uxf};
+pub use crate::uxf::{parse, parse_options, ParseOptions, Uxf};

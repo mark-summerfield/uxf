@@ -4,8 +4,9 @@
 use crate::constants::*;
 use crate::event::{Event, OnEventFn};
 use crate::lex_token::Tokens;
+use crate::util::realstr64;
 use anyhow::{bail, Result};
-use std::rc::Rc;
+use std::{rc::Rc, str};
 
 pub struct Lexer<'a> {
     pub raw: &'a Vec<u8>,
@@ -47,18 +48,19 @@ impl<'a> Lexer<'a> {
 
     fn scan_header(&mut self) -> Result<()> {
         self.lino = 1;
-        self.pos = if let Some(i) = self.raw.find('\n') {
-            i
-        } else {
-            let event = Event::new_fatal(
-                110,
-                "missing UXF file header or empty file",
-            );
-            (self.on_event)(&event)?;
-            bail!(event); // in case user on_event doesn't bail
-        };
-        let parts: Vec<&str> =
-            self.raw[..self.pos].splitn(3, &[' ', '\t']).collect();
+        self.pos =
+            if let Some(i) = self.raw.iter().position(|&c| c == b'\n') {
+                i
+            } else {
+                let event = Event::new_fatal(
+                    110,
+                    "missing UXF file header or missing data or empty file",
+                );
+                (self.on_event)(&event)?;
+                bail!(event); // in case user on_event doesn't bail
+            };
+        let line = str::from_utf8(&self.raw[..self.pos]).unwrap();
+        let parts: Vec<&str> = line.splitn(3, &[' ', '\t']).collect();
         if parts.len() < 2 {
             let event = Event::new_fatal(120, "invalid UXF file header");
             (self.on_event)(&event)?;
@@ -69,13 +71,14 @@ impl<'a> Lexer<'a> {
             (self.on_event)(&event)?;
             bail!(event); // in case user on_event doesn't bail
         }
-        if let Ok(version) = parts[1].parse::<f64>() {
+        if let Ok(version) = parts[1].trim().parse::<f64>() {
             if version > UXF_VERSION {
                 let event = Event::new_warning(
                     141,
                     &format!(
                         "version {} > current {}",
-                        version, UXF_VERSION
+                        realstr64(version),
+                        realstr64(UXF_VERSION)
                     ),
                 );
                 (self.on_event)(&event)?;
@@ -95,10 +98,8 @@ impl<'a> Lexer<'a> {
     }
 
     fn maybe_read_file_comment(&mut self) -> Result<()> {
-
         Ok(())
     }
 
-    fn skip_ws(&mut self) {
-    }
+    fn skip_ws(&mut self) {}
 }

@@ -8,6 +8,10 @@ pub fn assert_fatal(event: &Event, code: i16, message: &str) {
     assert_event(event, "uxf", EventKind::Fatal, code, "-", 0, message);
 }
 
+pub fn assert_warning(event: &Event, code: i16, message: &str) {
+    assert_event(event, "uxf", EventKind::Warning, code, "-", 0, message);
+}
+
 pub fn assert_event(
     event: &Event,
     prefix: &str,
