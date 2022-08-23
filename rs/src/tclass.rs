@@ -1,11 +1,10 @@
 // Copyright © 2022 Mark Summerfield. All rights reserved.
 // License: GPLv3
 
-use crate::event::fatal;
 use crate::field::{check_fields, Field};
 use crate::util::{check_ttype, escape};
 use crate::value::{Record, Value};
-use anyhow::Result;
+use anyhow::{bail, Result};
 use std::fmt::Write as _;
 use std::{cmp::Ordering, fmt};
 
@@ -88,11 +87,10 @@ impl TClass {
     /// This is a helper for adding new rows to ``Table``s.
     pub fn record_of_nulls(&self) -> Result<Record> {
         if self.is_fieldless() {
-            fatal(
-                732,
-                "can't create a record of nulls for a \
-                       fieldless table's tclass",
-            )?;
+            bail!(
+                "E732:-:0:can't create a record of nulls for a \
+                fieldless table's tclass",
+            )
         }
         let mut record = Record::new();
         record.resize(self.len(), Value::Null);

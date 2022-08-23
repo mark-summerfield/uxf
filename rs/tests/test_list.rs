@@ -3,8 +3,8 @@
 
 #[cfg(test)]
 mod tests {
-    use uxf::event::{Event, EventKind};
     use uxf::list::List;
+    use uxf::test_utils::check_error;
     use uxf::util::isclose64;
     use uxf::value::{Value, Values};
 
@@ -221,9 +221,11 @@ mod tests {
             assert_eq!(sublist.len(), 2);
             assert!(!sublist.is_empty());
         }
-        assert_eq!(lst.to_string(),
-        "[?\n?\n?\n[<this &amp; that>\n<is &lt;bold&gt; \
-        &amp;tc.!>]\n998877]");
+        assert_eq!(
+            lst.to_string(),
+            "[?\n?\n?\n[<this &amp; that>\n<is &lt;bold&gt; \
+        &amp;tc.!>]\n998877]"
+        );
         if let Some(sublist) = lst[3].as_list_mut() {
             sublist.push(List::new("real", "<Totals>").unwrap().into());
             if let Some(subsublist) = sublist[2].as_list_mut() {
@@ -242,48 +244,17 @@ mod tests {
     #[test]
     fn t_list_err() {
         assert!(List::new("$1", "").is_err());
-        let lst = List::new("-x", "");
-        assert!(lst.is_err());
-        if let Some(event) = lst.unwrap_err().downcast_ref::<Event>() {
-            assert_eq!(event.prefix, "uxf");
-            assert_eq!(event.kind, EventKind::Fatal);
-            assert_eq!(event.code, 300);
-            assert_eq!(event.filename, "-");
-            assert_eq!(event.lino, 0);
-            assert_eq!(
-                event.message,
-                "names must start with a letter or underscore, got -x"
-            );
-        }
-        let lst = List::new(&"y".repeat(61), "");
-        assert!(lst.is_err());
-        if let Some(event) = lst.unwrap_err().downcast_ref::<Event>() {
-            assert_eq!(event.prefix, "uxf");
-            assert_eq!(event.kind, EventKind::Fatal);
-            assert_eq!(event.code, 306);
-            assert_eq!(event.filename, "-");
-            assert_eq!(event.lino, 0);
-            assert_eq!(
-                event.message,
-                "names may be at most 60 characters long, got \
-                yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy\
-                yyyyyyyyyyyyyyy (61 characters)",
-            );
-        }
-        let lst = List::new("alpha_b=", "");
-        assert!(lst.is_err());
-        if let Some(event) = lst.unwrap_err().downcast_ref::<Event>() {
-            assert_eq!(event.prefix, "uxf");
-            assert_eq!(event.kind, EventKind::Fatal);
-            assert_eq!(event.code, 310);
-            assert_eq!(event.filename, "-");
-            assert_eq!(event.lino, 0);
-            assert_eq!(
-                event.message,
-                "names may only contain letters, digits, or \
-                underscores, got alpha_b=",
-            );
-        }
+        let err = List::new("-x", "").unwrap_err();
+        check_error(&err.to_string(), 300, "-x");
+        let err = List::new(&"y".repeat(61), "").unwrap_err();
+        check_error(
+            &err.to_string(),
+            306,
+            "yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy\
+            yyyyyyyyyyyyyyy",
+        );
+        let err = List::new("alpha_b=", "").unwrap_err();
+        check_error(&err.to_string(), 310, "alpha_b=");
     }
 
     #[test]

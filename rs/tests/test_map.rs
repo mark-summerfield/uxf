@@ -320,4 +320,9 @@ mod tests {
         2022-10-22T01:00:00 2\n-7 0\n0 1\n15 2\n20 3\n381 4\n\
         <art> 0\n<Cane> 1\n<zed> 2\n<Zone> 3}");
     }
+
+    #[test]
+    fn t_map_err() {
+        // TODO
+    }
 }

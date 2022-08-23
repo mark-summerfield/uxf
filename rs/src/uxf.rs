@@ -2,7 +2,7 @@
 // License: GPLv3
 
 use crate::constants::*;
-use crate::event::{self, Event, EventKind, OnEventFn};
+use crate::event::{self, OnEventFn};
 use crate::format::Format;
 use crate::list::List;
 use crate::parser;
@@ -84,18 +84,14 @@ impl Uxf {
     }
 
     /// Sets the collection value which must be a List, Map, or Table.
-    /// Normally the Uxf is populated using from_str().
+    /// Normally the Uxf is populated using from_str(), parse(), or
+    /// parse_options().
     pub fn set_value(&mut self, value: Value) -> Result<()> {
         if !value.is_collection() {
-            (self.on_event)(&Event::new(
-                EventKind::Fatal,
-                100,
-                &format!(
-                    "Uxf value must be a List, Map, or Table, got {}",
-                    value.typename()
-                ),
-            ))?;
-            return Ok(()); // in case user on_event doesn't bail!
+            bail!(
+                "E100:-:0:Uxf value must be a List, Map, or Table, got {}",
+                value.typename()
+            )
         }
         self.import_index_for_ttype.clear();
         self.imports.clear();
@@ -153,7 +149,7 @@ impl Uxf {
         on_event: Option<OnEventFn>,
     ) -> Result<()> {
         // TODO writer (in addition to Display/to_string()
-        bail!("TODO: to_string_options") // TODO
+        bail!("TODO: to_string_options") // TODO prettyprint
     }
 
     /// Returns `true` if this `Uxf` and the `other` `Uxf` have the same

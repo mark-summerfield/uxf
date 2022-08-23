@@ -5,7 +5,7 @@
 mod tests {
     use uxf::constants::*;
     use uxf::field::Field;
-    use uxf::test_utils::check_error_code;
+    use uxf::test_utils::check_error;
 
     #[test]
     fn t_field() {
@@ -43,8 +43,7 @@ mod tests {
             // With vtype None
             let name = format!("{}{}", vtype, i + 1);
             let h = Field::new(&name, "").unwrap();
-            assert_eq!(h.to_string(), format!("{}", name)
-            );
+            assert_eq!(h.to_string(), format!("{}", name));
             assert_eq!(h.name(), name);
             assert!(&h.vtype().is_none());
             let i = Field::new(&name, "").unwrap();
@@ -105,13 +104,13 @@ mod tests {
                 Field::new(name, if code == 304 { name } else { "str" });
             assert!(f.is_err(), "expected err of #{} on {}", code, name);
             let e = f.unwrap_err();
-            check_error_code(&e.to_string(), code, name);
+            check_error(&e.to_string(), code, name);
 
             // With vtype None
             let f = Field::new(name, "");
             assert!(f.is_err(), "expected err of #{} on {}", code, name);
             let e = f.unwrap_err();
-            check_error_code(&e.to_string(), code, name);
+            check_error(&e.to_string(), code, name);
         }
     }
 
@@ -129,7 +128,7 @@ mod tests {
             (
                 306,
                 "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\
-                   xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxy",
+                xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxy",
             ),
             (310, "My.Type"),
             (310, "_9.9"),
@@ -142,7 +141,7 @@ mod tests {
             let f = Field::new("test", vtype);
             assert!(f.is_err(), "expected err of #{} on {}", code, vtype);
             let e = f.unwrap_err();
-            check_error_code(&e.to_string(), code, vtype);
+            check_error(&e.to_string(), code, vtype);
         }
     }
 }

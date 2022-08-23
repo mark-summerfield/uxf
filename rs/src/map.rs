@@ -1,12 +1,11 @@
 // Copyright © 2022 Mark Summerfield. All rights reserved.
 // License: GPLv3
 
-use crate::event::fatal;
 use crate::key::Key;
 use crate::util::{check_ktype, check_vtype, escape};
 use crate::uxf::Compare;
 use crate::value::Value;
-use anyhow::Result;
+use anyhow::{bail, Result};
 use std::collections::HashMap;
 use std::fmt;
 
@@ -36,10 +35,10 @@ impl Map {
         }
         if !vtype.is_empty() {
             if ktype.is_empty() {
-                fatal(
-                    299,
-                    "a map may only have a vtype if it has a ktype",
-                )?;
+                bail!(
+                    "E299:-:0:a map may only have a vtype if it has \
+                      a ktype",
+                )
             }
             check_vtype(vtype)?;
         }

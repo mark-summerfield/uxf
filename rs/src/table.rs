@@ -1,12 +1,11 @@
 // Copyright © 2022 Mark Summerfield. All rights reserved.
 // License: GPLv3
 
-use crate::event::fatal;
 use crate::tclass::TClass;
 use crate::util::escape;
 use crate::uxf::Compare;
 use crate::value::Record;
-use anyhow::Result;
+use anyhow::{bail, Result};
 use std::fmt;
 use std::ops::{Index, IndexMut};
 
@@ -83,16 +82,13 @@ impl Table {
     /// or if this is a fieldless table.
     pub fn push(&mut self, record: Record) -> Result<()> {
         if record.len() != self.tclass.len() {
-            fatal(
-                736,
-                &format!(
-                    "rows for table of ttype {} must have exactly {} \
+            bail!(
+                "E736:-:0:rows for table of ttype {} must have exactly {} \
                            values, got {}",
-                    self.ttype(),
-                    self.tclass.len(),
-                    record.len()
-                ),
-            )?;
+                self.ttype(),
+                self.tclass.len(),
+                record.len()
+            )
         }
         self.records.push(record);
         Ok(())

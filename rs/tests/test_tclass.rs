@@ -4,10 +4,9 @@
 #[cfg(test)]
 mod tests {
     use uxf::constants::*;
-    use uxf::event::Event;
     use uxf::field::{make_fields, Field};
     use uxf::tclass::{TClass, TClassBuilder};
-    use uxf::test_utils::{assert_fatal, check_error_code};
+    use uxf::test_utils::check_error;
     use uxf::value::Value;
 
     #[test]
@@ -113,16 +112,12 @@ mod tests {
     fn t_tclass_duplicate_field() {
         let mut fields = valid_fields();
         fields.push(Field::new("size", "").unwrap());
-        let tclass = TClass::new("General", fields, "");
-        match tclass.unwrap_err().downcast_ref::<Event>() {
-            Some(event) => assert_fatal(
-                &event,
-                336,
-                "can't have duplicate table tclass \
-                         field names, got \"size\" twice",
-            ),
-            None => panic!("expected error code 336"),
-        }
+        let err = TClass::new("General", fields, "").unwrap_err();
+        assert_eq!(
+            err.to_string(),
+            "E336:-:0:can't have duplicate table tclass field names, \
+            got \"size\" twice"
+        );
     }
 
     #[test]
@@ -163,7 +158,7 @@ mod tests {
                 name
             );
             let e = tclass.unwrap_err();
-            check_error_code(&e.to_string(), code, name);
+            check_error(&e.to_string(), code, name);
             // Fieldless
             let tclass = TClass::new_fieldless(name, "");
             assert!(
@@ -173,7 +168,7 @@ mod tests {
                 name
             );
             let e = tclass.unwrap_err();
-            check_error_code(&e.to_string(), code, name);
+            check_error(&e.to_string(), code, name);
         }
     }
 
@@ -207,32 +202,16 @@ mod tests {
     #[test]
     fn t_tclassbuilder_invalid() {
         let b = TClassBuilder::new("New Builder", "");
-        let tclass = b.build();
-        match tclass.unwrap_err().downcast_ref::<Event>() {
-            Some(event) => assert_fatal(
-                &event,
-                310,
-                "names may only contain letters, digits, or underscores, \
-                got New Builder",
-            ),
-            None => panic!("expected error code 310"),
-        };
+        let err = b.build().unwrap_err();
+        check_error(&err.to_string(), 310, "New Builder");
         let mut b = TClassBuilder::new("New_Builder", "");
         let fields = valid_fields();
         for field in &fields {
             b.append(field);
         }
         b.append(&Field::new("Filename", "str").unwrap());
-        let tclass = b.build();
-        match tclass.unwrap_err().downcast_ref::<Event>() {
-            Some(event) => assert_fatal(
-                &event,
-                336,
-                "can't have duplicate table tclass \
-                         field names, got \"Filename\" twice",
-            ),
-            None => panic!("expected error code 336"),
-        };
+        let err = b.build().unwrap_err();
+        check_error(&err.to_string(), 336, "Filename");
     }
 
     fn valid_fields() -> Vec<Field> {

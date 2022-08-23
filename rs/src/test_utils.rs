@@ -4,24 +4,22 @@
 use crate::constants::*;
 use crate::event::{Event, EventKind};
 
-pub fn assert_fatal(event: &Event, code: i16, message: &str) {
-    assert_event(event, "uxf", EventKind::Fatal, code, "-", 0, message);
+pub fn assert_warning(event: &Event, code: i16, message: &str) {
+    assert_event(event, EventKind::Warning, code, "-", 0, message);
 }
 
-pub fn assert_warning(event: &Event, code: i16, message: &str) {
-    assert_event(event, "uxf", EventKind::Warning, code, "-", 0, message);
+pub fn assert_repair(event: &Event, code: i16, message: &str) {
+    assert_event(event, EventKind::Repair, code, "-", 0, message);
 }
 
 pub fn assert_event(
     event: &Event,
-    prefix: &str,
     kind: EventKind,
     code: i16,
     filename: &str,
-    lino: u32,
+    lino: usize,
     message: &str,
 ) {
-    assert_eq!(event.prefix, prefix);
     assert_eq!(event.kind, kind);
     assert_eq!(event.code, code);
     assert_eq!(event.filename, filename);
@@ -29,56 +27,73 @@ pub fn assert_event(
     assert_eq!(event.message, message);
 }
 
-pub fn check_error_code(error: &str, code: i32, name: &str) {
+pub fn check_error(err: &str, code: i32, name: &str) {
     match code {
+        110 => assert_eq!(
+            err,
+            "E110:-:0:missing UXF file header or missing data \
+            or empty file"
+        ),
+        120 => assert_eq!(err, "E120:-:1:invalid UXF file header"),
+        130 => assert_eq!(err, "E130:-:1:not a UXF file"),
+        151 => assert_eq!(
+            err,
+            "E151:-:1:failed to read UXF file version number"
+        ),
+        160 => assert_eq!(
+            err,
+            format!(
+                "E160:-:2:invalid comment syntax: expected '<', got '{}'",
+                name
+            )
+        ),
         304 => {
-            assert_eq!(code, 304, "code={} name={}", code, name);
             assert_eq!(
-                error,
+                err,
                 format!(
-                    "uxf:F304:-:0:table names (ttypes) and fieldnames \
+                    "E304:-:0:table names (ttypes) and fieldnames \
                     cannot be the same as built-in type names or \
                     constants, got {}",
                     name
                 )
             );
         }
-        298 => assert_eq!(error, "uxf:F298:-:0:names must be nonempty"),
+        298 => assert_eq!(err, "E298:-:0:names must be nonempty"),
         300 => assert_eq!(
-            error,
+            err,
             format!(
-                "uxf:F300:-:0:names must start \
-                                  with a letter or underscore, got {}",
+                "E300:-:0:names must start with a letter or underscore, \
+                got {}",
                 name
             )
         ),
         302 => assert_eq!(
-            error,
-            format!("uxf:F302:-:0:names may not be yes or no got {}", name)
+            err,
+            format!("E302:-:0:names may not be yes or no got {}", name)
         ),
         306 => {
             let n = name.len(); // byte count is fine: all ASCII
             assert_eq!(
-                error,
+                err,
                 format!(
-                    "uxf:F306:-:0:names may be at most \
-                               {} characters long, got {} ({} characters)",
+                    "E306:-:0:names may be at most {} characters long, \
+                    got {} ({} characters)",
                     MAX_IDENTIFIER_LEN, name, n
                 )
             );
         }
         310 => assert_eq!(
-            error,
+            err,
             format!(
-                "uxf:F310:-:0:names may only contain letters, digits, or \
-                                  underscores, got {}",
+                "E310:-:0:names may only contain letters, digits, or \
+                underscores, got {}",
                 name
             )
         ),
         336 => assert_eq!(
-            error,
+            err,
             format!(
-                "uxf:F336:-:0:can't have duplicate table tclass field \
+                "E336:-:0:can't have duplicate table tclass field \
                 names, got {:?} twice",
                 name
             )

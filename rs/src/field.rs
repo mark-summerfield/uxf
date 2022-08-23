@@ -1,9 +1,8 @@
 // Copyright © 2022 Mark Summerfield. All rights reserved.
 // License: GPLv3
 
-use crate::event::fatal;
 use crate::util::{check_fieldname, check_vtype};
-use anyhow::Result;
+use anyhow::{bail, Result};
 use std::{cmp::Ordering, collections::HashSet, fmt};
 
 /// Returns a vector of fields which when unwrapped is suitable for
@@ -35,14 +34,11 @@ pub(crate) fn check_fields(fields: &Vec<Field>) -> Result<()> {
     for field in fields {
         let name = field.name();
         if seen.contains(&name) {
-            fatal(
-                336,
-                &format!(
-                    "can't have duplicate table tclass \
+            bail!(
+                "E336:-:0:can't have duplicate table tclass \
                 field names, got {:?} twice",
-                    &name
-                ),
-            )?;
+                &name
+            )
         } else {
             seen.insert(name);
         }

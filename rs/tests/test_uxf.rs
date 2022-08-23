@@ -4,13 +4,13 @@
 #[cfg(test)]
 mod tests {
     use std::{cell::RefCell, rc::Rc};
-    use uxf::event::Event;
+    use uxf::event::{Event, EventKind};
     use uxf::field::make_fields;
     use uxf::list::List;
     use uxf::map::Map;
     use uxf::table::Table;
     use uxf::tclass::TClass;
-    use uxf::test_utils::{assert_fatal, assert_warning};
+    use uxf::test_utils::{assert_event, check_error};
     use uxf::value::Value;
     use uxf::Uxf;
 
@@ -88,15 +88,11 @@ mod tests {
         // using default on_event() handler
         let mut uxo = Uxf::default();
         assert_eq!(uxo.to_string(), "uxf 1.0\n[]\n");
-        let event = uxo.set_value(0.into());
-        assert!(event.is_err());
-        if let Some(event) = event.unwrap_err().downcast_ref::<Event>() {
-            assert_fatal(
-                &event,
-                100,
-                "Uxf value must be a List, Map, or Table, got int",
-            );
-        }
+        let err = uxo.set_value(0.into()).unwrap_err();
+        assert_eq!(
+            err.to_string(),
+            "E100:-:0:Uxf value must be a List, Map, or Table, got int",
+        );
     }
 
     #[test]
@@ -106,17 +102,16 @@ mod tests {
         assert!(&events.borrow().is_empty());
         let mut uxo = Uxf::new(
             "MyUXF",
-            "No comment",
+            "A comment",
             Some(Rc::new({
                 let events = Rc::clone(&events);
                 move |event| {
                     let mut events = events.borrow_mut();
                     events.push(event.clone());
-                    Ok(())
                 }
             })),
         );
-        assert_eq!(uxo.to_string(), "uxf 1.0 MyUXF\n#<No comment>\n[]\n");
+        assert_eq!(uxo.to_string(), "uxf 1.0 MyUXF\n#<A comment>\n[]\n");
         let mut m = Map::default();
         m.insert(1.into(), "one".into());
         m.insert(2.into(), "two".into());
@@ -124,27 +119,10 @@ mod tests {
         assert!(uxo.set_value(m.into()).is_ok());
         assert_eq!(
             uxo.to_string(),
-            "uxf 1.0 MyUXF\n#<No comment>\n{1 <one>\n2 <two>}\n"
+            "uxf 1.0 MyUXF\n#<A comment>\n{1 <one>\n2 <two>}\n"
         );
         assert!(&events.borrow().is_empty());
         assert_eq!(*&events.borrow().len(), 0);
-        assert!(uxo.set_value(1.into()).is_ok());
-        assert!(!&events.borrow().is_empty());
-        assert_eq!(*&events.borrow().len(), 1);
-        let event = &events.borrow()[0].clone();
-        assert_fatal(
-            &event,
-            100,
-            "Uxf value must be a List, Map, or Table, got int",
-        );
-        assert!(uxo.set_value("x".into()).is_ok());
-        assert_eq!(*&events.borrow().len(), 2);
-        let event = &events.borrow()[1].clone();
-        assert_fatal(
-            &event,
-            100,
-            "Uxf value must be a List, Map, or Table, got str",
-        );
     }
 
     #[test]
@@ -157,13 +135,12 @@ mod tests {
             move |event| {
                 let mut events = events.borrow_mut();
                 events.push(event.clone());
-                Ok(())
             }
         }));
         assert_eq!(uxo.to_string(), "uxf 1.0\n[]\n");
         uxo.set_custom("MyUXF");
-        uxo.set_comment("No comment");
-        assert_eq!(uxo.to_string(), "uxf 1.0 MyUXF\n#<No comment>\n[]\n");
+        uxo.set_comment("A comment");
+        assert_eq!(uxo.to_string(), "uxf 1.0 MyUXF\n#<A comment>\n[]\n");
         let mut m = Map::default();
         m.insert(1.into(), "one".into());
         m.insert(2.into(), "two".into());
@@ -171,86 +148,51 @@ mod tests {
         assert!(uxo.set_value(m.into()).is_ok());
         assert_eq!(
             uxo.to_string(),
-            "uxf 1.0 MyUXF\n#<No comment>\n{1 <one>\n2 <two>}\n"
+            "uxf 1.0 MyUXF\n#<A comment>\n{1 <one>\n2 <two>}\n"
         );
         assert!(&events.borrow().is_empty());
         assert_eq!(*&events.borrow().len(), 0);
-        assert!(uxo.set_value(1.into()).is_ok());
-        assert!(!&events.borrow().is_empty());
-        assert_eq!(*&events.borrow().len(), 1);
-        let event = &events.borrow()[0].clone();
-        assert_fatal(
-            &event,
-            100,
-            "Uxf value must be a List, Map, or Table, got int",
-        );
-        assert!(uxo.set_value("x".into()).is_ok());
-        assert_eq!(*&events.borrow().len(), 2);
-        let event = &events.borrow()[1].clone();
-        assert_fatal(
-            &event,
-            100,
-            "Uxf value must be a List, Map, or Table, got str",
+    }
+
+    #[test]
+    fn t_uxf_parse_os2() {
+        let events = Rc::new(RefCell::new(Vec::<Event>::new()));
+        assert!(&events.borrow().is_empty());
+        let err = uxf::parse_options(
+            "uxf 1.0", // invalid since no data: interpreted as filename!
+            uxf::ParseOptions::default(),
+            Some(Rc::new({
+                let events = Rc::clone(&events);
+                move |event| {
+                    let mut events = events.borrow_mut();
+                    events.push(event.clone());
+                }
+            })),
+        )
+        .unwrap_err();
+        assert_eq!(
+            err.to_string(),
+            "No such file or directory (os error 2)"
         );
     }
 
     #[test]
     fn t_uxf_parse110() {
-        let events = Rc::new(RefCell::new(Vec::<Event>::new()));
-        assert!(&events.borrow().is_empty());
-        let uxo = uxf::parse_options(
-            "uxf 1.0", // invalid since no data
-            uxf::ParseOptions::default(),
-            Some(Rc::new({
-                let events = Rc::clone(&events);
-                move |event| {
-                    let mut events = events.borrow_mut();
-                    events.push(event.clone());
-                    Ok(())
-                }
-            })),
-        );
-        assert!(uxo.is_err());
-        let event = &events.borrow()[0].clone();
-        match uxo.unwrap_err().downcast_ref::<Event>() {
-            Some(event) => assert_fatal(
-                &event,
-                110,
-                "missing UXF file header or missing data or empty file",
-            ),
-            None => panic!("expected error code 110"),
-        }
+        let err = uxf::parse("uxf 1.0\n").unwrap_err(); // invalid: no data
+        check_error(&err.to_string(), 110, "");
     }
 
-    /*
     #[test]
-    fn t_uxf_parse3() {
-        let events = Rc::new(RefCell::new(Vec::<Event>::new()));
-        assert!(&events.borrow().is_empty());
-        let uxo = uxf::parse_options(
-            "UXF 1.0\n[]", // invalid since uxf is case-sensitive
-            uxf::ParseOptions::default(),
-            Some(Rc::new({
-                let events = Rc::clone(&events);
-                move |event| {
-                    let mut events = events.borrow_mut();
-                    events.push(event.clone());
-                    Ok(())
-                }
-            })),
-        );
-        assert!(uxo.is_err());
-        match uxo.unwrap_err().downcast_ref::<Event>() {
-            Some(event) => assert_fatal(
-                &event,
-                336,
-                "can't have duplicate table tclass \
-                         field names, got \"size\" twice",
-            ),
-            None => panic!("expected error code 336"),
-        }
+    fn t_uxf_parse120() {
+        let err = uxf::parse("uxf1.0\n").unwrap_err(); // invalid
+        check_error(&err.to_string(), 120, "");
     }
-    */
+
+    #[test]
+    fn t_uxf_parse130() {
+        let err = uxf::parse("Uxf 1.0\n").unwrap_err(); // invalid
+        check_error(&err.to_string(), 130, "");
+    }
 
     #[test]
     fn t_uxf_parse141() {
@@ -264,7 +206,6 @@ mod tests {
                 move |event| {
                     let mut events = events.borrow_mut();
                     events.push(event.clone());
-                    Ok(())
                 }
             })),
         )
@@ -272,11 +213,30 @@ mod tests {
         assert!(!&events.borrow().is_empty());
         assert_eq!(*&events.borrow().len(), 1);
         let event = &events.borrow()[0].clone();
-        assert_warning(&event, 141, "version 99.0 > current 1.0");
+        assert_event(
+            &event,
+            EventKind::Warning,
+            141,
+            "-",
+            1,
+            "version 99.0 > current 1.0",
+        );
     }
 
     #[test]
-    fn t_uxf_parse9() {
+    fn t_uxf_parse151() {
+        let err = uxf::parse("uxf 1.0x\n").unwrap_err(); // invalid version
+        check_error(&err.to_string(), 151, "");
+    }
+
+    #[test]
+    fn t_uxf_parse160() {
+        let err = uxf::parse("uxf 1.0\n#comment\n").unwrap_err();
+        check_error(&err.to_string(), 160, "c");
+    }
+
+    #[test]
+    fn t_uxf_parse_ok() {
         let uxo = uxf::parse("uxf 1.0\n[]").unwrap();
         assert_eq!(uxo.to_string(), "uxf 1.0\n[]\n");
         let uxo = uxf::parse("uxf 1.0 My Custom Format 5.8\n[]").unwrap();
@@ -285,7 +245,7 @@ mod tests {
     }
 
     #[test]
-    fn t_uxf_parse_options() {
+    fn t_uxf_parse_options_ok() {
         // TODO
     }
 }

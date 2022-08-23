@@ -2,9 +2,10 @@
 // License: GPLv3
 
 use crate::constants::*;
-use crate::event::{Event, OnEventFn};
-use crate::lex_token::Tokens;
-use crate::util::realstr64;
+use crate::event::{Event, EventKind, OnEventFn};
+use crate::lex_token::{Token, TokenKind, Tokens};
+use crate::util::{count_bytes, escape_raw, realstr64};
+use crate::value::Value;
 use anyhow::{bail, Result};
 use std::{rc::Rc, str};
 
@@ -52,54 +53,120 @@ impl<'a> Lexer<'a> {
             if let Some(i) = self.raw.iter().position(|&c| c == b'\n') {
                 i
             } else {
-                let event = Event::new_fatal(
-                    110,
-                    "missing UXF file header or missing data or empty file",
-                );
-                (self.on_event)(&event)?;
-                bail!(event); // in case user on_event doesn't bail
+                bail!(
+                    "E110:{}:{}:missing UXF file header or missing data \
+                    or empty file",
+                    self.filename,
+                    self.lino,
+                )
             };
         let line = str::from_utf8(&self.raw[..self.pos]).unwrap();
         let parts: Vec<&str> = line.splitn(3, &[' ', '\t']).collect();
         if parts.len() < 2 {
-            let event = Event::new_fatal(120, "invalid UXF file header");
-            (self.on_event)(&event)?;
-            bail!(event); // in case user on_event doesn't bail
+            bail!(
+                "E120:{}:{}:invalid UXF file header",
+                self.filename,
+                self.lino,
+            )
         }
         if parts[0] != "uxf" {
-            let event = Event::new_fatal(130, "not a UXF file");
-            (self.on_event)(&event)?;
-            bail!(event); // in case user on_event doesn't bail
+            bail!("E130:{}:{}:not a UXF file", self.filename, self.lino)
         }
         if let Ok(version) = parts[1].trim().parse::<f64>() {
             if version > UXF_VERSION {
-                let event = Event::new_warning(
+                (self.on_event)(&Event::new(
+                    EventKind::Warning,
                     141,
                     &format!(
                         "version {} > current {}",
                         realstr64(version),
                         realstr64(UXF_VERSION)
                     ),
-                );
-                (self.on_event)(&event)?;
+                    self.filename,
+                    self.lino,
+                ));
             }
         } else {
-            let event = Event::new_fatal(
-                151,
-                "failed to read UXF file version number",
-            );
-            (self.on_event)(&event)?;
-            bail!(event); // in case user on_event doesn't bail
+            bail!(
+                "E151:{}:{}:failed to read UXF file version number",
+                self.filename,
+                self.lino,
+            )
         }
         if parts.len() > 2 {
-            self.custom = parts[2];
+            self.custom = parts[2].trim();
         }
         Ok(())
     }
 
     fn maybe_read_file_comment(&mut self) -> Result<()> {
+        self.skip_ws();
+        if !self.at_end() && self.raw[self.pos] == b'#' {
+            self.pos += 1; // skip the #
+            if self.peek() == b'<' {
+                self.pos += 1; // skip the leading <
+                let raw =
+                    self.match_to_byte(b'>', "file comment string")?;
+                let value = Value::Str(escape_raw(&raw));
+                self.add_token(TokenKind::FileComment, value);
+            } else {
+                let c = if let Some(c) = char::from_u32(self.peek() as u32)
+                {
+                    c
+                } else {
+                    '\u{FFFD}'
+                };
+                bail!(
+                    "E160:{}:{}:invalid comment syntax: expected '<', \
+                    got '{}'",
+                    self.filename,
+                    self.lino,
+                    c.to_string()
+                )
+            }
+        }
         Ok(())
     }
 
-    fn skip_ws(&mut self) {}
+    fn at_end(&self) -> bool {
+        self.pos >= self.raw.len()
+    }
+
+    fn peek(&self) -> u8 {
+        if self.at_end() {
+            0
+        } else {
+            self.raw[self.pos]
+        }
+    }
+
+    fn skip_ws(&mut self) {
+        while self.pos < self.raw.len()
+            && self.raw[self.pos].is_ascii_whitespace()
+        {
+            if self.raw[self.pos] == b'\n' {
+                self.lino += 1;
+            }
+            self.pos += 1;
+        }
+    }
+
+    fn match_to_byte(&mut self, b: u8, what: &str) -> Result<&[u8]> {
+        if !self.at_end() {
+            if let Some(i) =
+                self.raw[self.pos..].iter().position(|&c| c == b)
+            {
+                let raw = &self.raw[self.pos..i];
+                self.lino += count_bytes(b, &raw);
+                self.pos = i + 1; // skip past byte b
+                return Ok(raw);
+            }
+        }
+        bail!("E270:{}:{}:unterminated {}", self.filename, self.lino, what)
+    }
+
+    fn add_token(&mut self, kind: TokenKind, value: Value) {
+        // TODO maybe subsume
+        // TODO else append to tokens
+    }
 }

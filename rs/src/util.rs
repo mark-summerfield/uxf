@@ -2,8 +2,7 @@
 // License: GPLv3
 
 use crate::constants::*;
-use crate::event::fatal;
-use anyhow::Result;
+use anyhow::{bail, Result};
 use flate2::read::GzDecoder;
 use std::{fs::File, io::prelude::*};
 
@@ -15,6 +14,13 @@ pub fn escape(s: &str) -> String {
 /// Returns a clone of `s` with replacements &amp; → & &lt; → < &gt; → >
 pub fn unescape(s: &str) -> String {
     s.replace("&gt;", ">").replace("&lt;", "<").replace("&amp;", "&")
+}
+
+/// Returns an XML-escaped string for raw bytes.
+/// Invalid UTF-8 will be replaced with the Unicode replacement character
+/// U+FFFD so this always succeeds.
+pub fn escape_raw(raw: &[u8]) -> String {
+    escape(&String::from_utf8_lossy(raw))
 }
 
 /// Returns `true` if `a` and `b` are close enough to be considered equal
@@ -33,15 +39,17 @@ pub fn realstr64(x: f64) -> String {
     s
 }
 
+/// Count the number of occurrences of byte b in raw
+pub fn count_bytes(b: u8, raw: &[u8]) -> usize {
+    raw.iter().fold(0, |n, c| n + (*c == b) as u32) as usize
+}
+
 /// Returns `Ok(())` if `ktype` is a valid ktype; otherwise `Err`.
 pub(crate) fn check_ktype(ktype: &str) -> Result<()> {
     if KTYPES.contains(&ktype) {
         Ok(())
     } else {
-        fatal(
-            308,
-            &format!("a ktype must be one of {:?}, got {}", KTYPES, ktype),
-        )
+        bail!("E308:-:0:a ktype must be one of {:?}, got {}", KTYPES, ktype)
     }
 }
 
@@ -60,14 +68,11 @@ pub(crate) fn check_fieldname(fieldname: &str) -> Result<()> {
 
 fn check_name(name: &str) -> Result<()> {
     if RESERVED_WORDS.contains(&name) {
-        fatal(
-            304,
-            &format!(
-                "table names (ttypes) and fieldnames cannot be the same \
-                as built-in type names or constants, got {}",
-                name
-            ),
-        )?;
+        bail!(
+            "E304:-:0:table names (ttypes) and fieldnames cannot be the \
+            same as built-in type names or constants, got {}",
+            name
+        )
     }
     check_vtype(name)?;
     Ok(())
@@ -78,43 +83,34 @@ fn check_name(name: &str) -> Result<()> {
 /// acceptable; so for these, only check the vtype if it is nonempty.
 pub(crate) fn check_vtype(name: &str) -> Result<()> {
     if name.is_empty() {
-        fatal(298, "names must be nonempty")?;
+        bail!("E298:-:0:names must be nonempty")
     }
     let first = name.chars().next().unwrap(); // safe because nonempty
     if !(first == '_' || first.is_alphabetic()) {
-        fatal(
-            300,
-            &format!(
-                "names must start with a letter or underscore, got {}",
-                name
-            ),
-        )?;
+        bail!(
+            "E300:-:0:names must start with a letter or underscore, got {}",
+            name
+        )
     }
     if name == BOOL_TRUE || name == BOOL_FALSE {
-        fatal(302, &format!("names may not be yes or no got {}", name))?;
+        bail!("E302:-:0:names may not be yes or no got {}", name)
     }
     for (i, c) in name.chars().enumerate() {
         if i == MAX_IDENTIFIER_LEN {
-            fatal(
-                306,
-                &format!(
-                    "names may be at most {} characters long, \
+            bail!(
+                "E306:-:0:names may be at most {} characters long, \
                   got {} ({} characters)",
-                    MAX_IDENTIFIER_LEN,
-                    name,
-                    i + 1
-                ),
-            )?;
+                MAX_IDENTIFIER_LEN,
+                name,
+                i + 1
+            )
         }
         if !(c == '_' || c.is_alphanumeric()) {
-            fatal(
-                310,
-                &format!(
-                    "names may only contain letters, digits, or \
+            bail!(
+                "E310:-:0:names may only contain letters, digits, or \
                   underscores, got {}",
-                    name
-                ),
-            )?;
+                name
+            )
         }
     }
     Ok(())
