@@ -78,7 +78,6 @@ pub enum TokenKind {
     ListEnd,
     MapBegin,
     MapEnd,
-    FileComment,
     Null,
     Bool,
     Int,

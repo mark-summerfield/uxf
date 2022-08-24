@@ -5,6 +5,7 @@ use crate::constants::*;
 use crate::event::{Event, EventKind, OnEventFn};
 use crate::token::{Token, TokenKind, Tokens};
 use crate::util::{count_bytes, realstr64, unescape_raw};
+use crate::uxf::Uxf;
 use crate::value::Value;
 use anyhow::{bail, Result};
 use std::{rc::Rc, str};
@@ -12,8 +13,8 @@ use std::{rc::Rc, str};
 pub struct Lexer<'a> {
     pub raw: &'a Vec<u8>,
     pub filename: &'a str,
-    pub custom: &'a str,
     on_event: OnEventFn,
+    uxo: &'a mut Uxf,
     pos: usize,
     lino: usize,
     in_tclass: bool,
@@ -26,14 +27,15 @@ impl<'a> Lexer<'a> {
         raw: &'a Vec<u8>,
         filename: &'a str,
         on_event: OnEventFn,
+        uxo: &'a mut Uxf,
     ) -> Self {
         Lexer {
             raw,
             filename,
             on_event: Rc::clone(&on_event),
+            uxo,
             pos: 0,
             lino: 0,
-            custom: "",
             in_tclass: false,
             concatenate: false,
             tokens: vec![],
@@ -94,7 +96,7 @@ impl<'a> Lexer<'a> {
             )
         }
         if parts.len() > 2 {
-            self.custom = parts[2].trim();
+            self.uxo.set_custom(parts[2].trim());
         }
         Ok(())
     }
@@ -107,8 +109,8 @@ impl<'a> Lexer<'a> {
                 self.pos += 1; // skip the leading <
                 let raw =
                     self.match_to_byte(b'>', "file comment string")?;
-                let value = Value::Str(unescape_raw(raw));
-                self.add_token(TokenKind::FileComment, value)?;
+                let comment = unescape_raw(raw);
+                self.uxo.set_comment(&comment);
             } else {
                 let c = if let Some(c) = char::from_u32(self.peek() as u32)
                 {

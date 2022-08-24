@@ -102,8 +102,8 @@ st.sh
 #   language/library-neutral scripts for validating a UXF processor's
 #   conformance.
 # - Experiment with using UXF format to store various kinds of data,
-#   e.g., spreadsheet, graphics, etc., & equivalents to other formats,
-#   e.g., geojson, etc.
+#   e.g., typesetting language, spreadsheet, graphics, etc., &
+#   equivalents to other formats, e.g., geojson, etc.
 # - Language: allow '.' in identifiers (excl. first char)?
 # - Python: load(), loads(), etc., accept listclass=List, mapclass=Map,
 #   tableclass=Table, & uses these rather than List, Map, and Table, so
