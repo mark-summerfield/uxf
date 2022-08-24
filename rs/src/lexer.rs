@@ -5,8 +5,8 @@ use crate::constants::*;
 use crate::event::{Event, EventKind, OnEventFn};
 use crate::token::{Token, TokenKind, Tokens};
 use crate::util::{
-    check_ktype, check_ttype, check_vtype, count_bytes, realstr64,
-    unescape_raw,
+    check_ktype, check_ttype, check_vtype, realstr64, str_for_chars,
+    unescape,
 };
 use crate::uxf::Uxf;
 use crate::value::Value;
@@ -14,7 +14,7 @@ use anyhow::{bail, Result};
 use std::{rc::Rc, str};
 
 pub struct Lexer<'a> {
-    pub raw: &'a Vec<u8>,
+    pub text: &'a Vec<char>,
     pub filename: &'a str,
     on_event: OnEventFn,
     uxo: &'a mut Uxf,
@@ -27,13 +27,13 @@ pub struct Lexer<'a> {
 
 impl<'a> Lexer<'a> {
     pub fn new(
-        raw: &'a Vec<u8>,
+        text: &'a Vec<char>,
         filename: &'a str,
         on_event: OnEventFn,
         uxo: &'a mut Uxf,
     ) -> Self {
         Lexer {
-            raw,
+            text,
             filename,
             on_event: Rc::clone(&on_event),
             uxo,
@@ -58,7 +58,7 @@ impl<'a> Lexer<'a> {
     fn scan_header(&mut self) -> Result<()> {
         self.lino = 1;
         self.pos =
-            if let Some(i) = self.raw.iter().position(|&c| c == b'\n') {
+            if let Some(i) = self.text.iter().position(|&c| c == '\n') {
                 i
             } else {
                 bail!(
@@ -68,7 +68,7 @@ impl<'a> Lexer<'a> {
                     self.lino,
                 )
             };
-        let line = str::from_utf8(&self.raw[..self.pos]).unwrap();
+        let line = str_for_chars(&self.text[..self.pos]);
         let parts: Vec<&str> = line.splitn(3, &[' ', '\t']).collect();
         if parts.len() < 2 {
             bail!(
@@ -109,13 +109,13 @@ impl<'a> Lexer<'a> {
 
     fn maybe_read_file_comment(&mut self) -> Result<()> {
         self.skip_ws();
-        if !self.at_end() && self.raw[self.pos] == b'#' {
+        if !self.at_end() && self.text[self.pos] == '#' {
             self.pos += 1; // skip the #
-            if self.peek() == b'<' {
+            if self.peek() == '<' {
                 self.pos += 1; // skip the leading <
-                let raw =
-                    self.match_to_byte(b'>', "file comment string")?;
-                let comment = unescape_raw(raw);
+                let text =
+                    self.match_to_char('>', "file comment string")?;
+                let comment = unescape(&text);
                 self.uxo.set_comment(&comment);
             } else {
                 let c = if let Some(c) = char::from_u32(self.peek() as u32)
@@ -140,27 +140,27 @@ impl<'a> Lexer<'a> {
         let c = self.getch();
         if c.is_ascii_whitespace() {
             // ignore insignificant whitespace
-            if c == b'\n' {
+            if c == '\n' {
                 self.lino += 1;
             }
             Ok(())
         } else {
             match c {
-                b'(' => bail!("TODO scan_next ("),  // TODO
-                b')' => bail!("TODO scan_next )"),  // TODO
-                b'[' => bail!("TODO scan_next ["),  // TODO
-                b'=' => bail!("TODO scan_next ="),  // TODO
-                b']' => bail!("TODO scan_next ]"),  // TODO
-                b'{' => bail!("TODO scan_next {{"), // TODO
-                b'}' => bail!("TODO scan_next }}"), // TODO
-                b'?' => bail!("TODO scan_next ?"),  // TODO
-                b'!' => bail!("TODO scan_next !"),  // TODO
-                b'#' => bail!("TODO scan_next #"),  // TODO
-                b'<' => bail!("TODO scan_next <"),  // TODO
-                b'&' => bail!("TODO scan_next &"),  // TODO
-                b':' => bail!("TODO scan_next :"),  // TODO
+                '(' => bail!("TODO scan_next ("),  // TODO
+                ')' => bail!("TODO scan_next )"),  // TODO
+                '[' => bail!("TODO scan_next ["),  // TODO
+                '=' => bail!("TODO scan_next ="),  // TODO
+                ']' => bail!("TODO scan_next ]"),  // TODO
+                '{' => bail!("TODO scan_next {{"), // TODO
+                '}' => bail!("TODO scan_next }}"), // TODO
+                '?' => bail!("TODO scan_next ?"),  // TODO
+                '!' => bail!("TODO scan_next !"),  // TODO
+                '#' => bail!("TODO scan_next #"),  // TODO
+                '<' => bail!("TODO scan_next <"),  // TODO
+                '&' => bail!("TODO scan_next &"),  // TODO
+                ':' => bail!("TODO scan_next :"),  // TODO
                 _ => {
-                    if c == b'-' && self.peek().is_ascii_digit() {
+                    if c == '-' && self.peek().is_ascii_digit() {
                         bail!("TODO scan_next -[0-9]") // TODO
                     } else if c.is_ascii_digit() {
                         bail!("TODO scan_next-[0-9]") // TODO
@@ -174,7 +174,6 @@ impl<'a> Lexer<'a> {
 
     fn read_name(&mut self) -> Result<()> {
         if let Some(word) = self.match_any_of(&BARE_WORDS) {
-            let word = String::from_utf8_lossy(word);
             if word == BOOL_FALSE {
                 return self.add_token(TokenKind::Bool, Value::Bool(false));
             } else if word == BOOL_TRUE {
@@ -199,44 +198,43 @@ impl<'a> Lexer<'a> {
     }
 
     fn at_end(&self) -> bool {
-        self.pos >= self.raw.len()
+        self.pos >= self.text.len()
     }
 
-    fn getch(&mut self) -> u8 {
+    fn getch(&mut self) -> char {
         // advance
-        let c = self.raw[self.pos];
+        let c = self.text[self.pos];
         self.pos += 1;
         c
     }
 
-    fn peek(&self) -> u8 {
+    fn peek(&self) -> char {
         if self.at_end() {
-            0
+            '\0'
         } else {
-            self.raw[self.pos]
+            self.text[self.pos]
         }
     }
 
     fn skip_ws(&mut self) {
-        while self.pos < self.raw.len()
-            && self.raw[self.pos].is_ascii_whitespace()
+        while self.pos < self.text.len()
+            && self.text[self.pos].is_ascii_whitespace()
         {
-            if self.raw[self.pos] == b'\n' {
+            if self.text[self.pos] == '\n' {
                 self.lino += 1;
             }
             self.pos += 1;
         }
     }
 
-    fn match_any_of(&mut self, targets: &[&'a str]) -> Option<&'a [u8]> {
+    fn match_any_of(&mut self, targets: &[&'a str]) -> Option<&'a str> {
         let start = self.pos - 1; // rewind since we went one byte to far
-        let mut targets: Vec<&[u8]> =
-            targets.iter().map(|&s| s.as_bytes()).collect();
+        let mut targets = targets.to_vec();
         targets.sort_by(|a, b| b.len().cmp(&a.len())); // long to short
         for target in targets {
             let end = self.pos + target.len();
-            if end < self.raw.len() && &self.raw[start..end] == target {
-                // TODO do I need the + 1 ???
+            let chars: Vec<char> = target.chars().collect();
+            if end < self.text.len() && &self.text[start..end] == chars {
                 self.pos = end + 1; // skip past target
                 return Some(target);
             }
@@ -244,15 +242,15 @@ impl<'a> Lexer<'a> {
         None
     }
 
-    fn match_to_byte(&mut self, b: u8, what: &str) -> Result<&[u8]> {
+    fn match_to_char(&mut self, c: char, what: &str) -> Result<String> {
         if !self.at_end() {
             if let Some(i) =
-                self.raw[self.pos..].iter().position(|&c| c == b)
+                self.text[self.pos..].iter().position(|&x| x == c)
             {
-                let raw = &self.raw[self.pos..i];
-                self.lino += count_bytes(b, raw);
-                self.pos = i + 1; // skip past byte b
-                return Ok(raw);
+                let text = &self.text[self.pos..i];
+                self.lino += text.iter().filter(|&c| *c == '\n').count();
+                self.pos = i + 1; // skip past char c
+                return Ok(str_for_chars(text));
             }
         }
         bail!("E270:{}:{}:unterminated {}", self.filename, self.lino, what)

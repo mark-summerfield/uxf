@@ -8,14 +8,15 @@ use anyhow::Result;
 use std::rc::Rc;
 
 pub(crate) fn parse(
-    raw: &Vec<u8>,
+    text: &str,
     filename: &str,
     options: ParseOptions,
     on_event: OnEventFn,
 ) -> Result<Uxf> {
     let mut uxo = Uxf::new_on_event(Rc::clone(&on_event));
+    let data: Vec<char> = text.chars().collect();
     let mut lexer =
-        Lexer::new(raw, filename, Rc::clone(&on_event), &mut uxo);
+        Lexer::new(&data, filename, Rc::clone(&on_event), &mut uxo);
     let tokens = lexer.tokenize()?;
     // TODO parse tokens and populate rest of uxo
     Ok(uxo)

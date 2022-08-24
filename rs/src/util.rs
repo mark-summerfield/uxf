@@ -4,7 +4,10 @@
 use crate::constants::*;
 use anyhow::{bail, Result};
 use flate2::read::GzDecoder;
-use std::{fs::File, io::prelude::*};
+use std::{
+    fs::File,
+    io::{prelude::*, BufReader},
+};
 
 /// Returns a clone of `s` with replacements & → &amp; < → &lt; > → &gt;
 pub fn escape(s: &str) -> String {
@@ -16,19 +19,11 @@ pub fn unescape(s: &str) -> String {
     s.replace("&gt;", ">").replace("&lt;", "<").replace("&amp;", "&")
 }
 
-/// Returns an XML-escaped string for raw bytes.
-/// Invalid UTF-8 will be replaced with the Unicode replacement character
-/// U+FFFD so this always succeeds.
-pub fn escape_raw(raw: &[u8]) -> String {
-    escape(&String::from_utf8_lossy(raw))
+/// Returns a String for the given Vec<char>
+pub fn str_for_chars(data: &[char]) -> String {
+    data.iter().collect::<String>()
 }
-
-/// Returns a clone of `s` with replacements & → &amp; < → &lt; > → &gt;
-/// Invalid UTF-8 will be replaced with the Unicode replacement character
-/// U+FFFD so this always succeeds.
-pub fn unescape_raw(raw: &[u8]) -> String {
-    unescape(&String::from_utf8_lossy(raw))
-}
+///
 
 /// Returns `true` if `a` and `b` are close enough to be considered equal
 /// for all practical purposes; otherwise returns `false`.
@@ -44,11 +39,6 @@ pub fn realstr64(x: f64) -> String {
         s.push_str(".0");
     }
     s
-}
-
-/// Count the number of occurrences of byte b in raw
-pub fn count_bytes(b: u8, raw: &[u8]) -> usize {
-    raw.iter().fold(0, |n, c| n + (*c == b) as u32) as usize
 }
 
 /// Returns `Ok(())` if `ktype` is a valid ktype; otherwise `Err`.
@@ -123,20 +113,20 @@ pub(crate) fn check_vtype(name: &str) -> Result<()> {
     Ok(())
 }
 
-/// Returns the raw bytes of the given file which is either plain text or
-/// gzipped plain text (UTF-8 encoded).
-pub(crate) fn read_raw_file(filename: &str) -> Result<Vec<u8>> {
+/// Returns the entire text of the given file which is either plain text
+/// or gzipped plain text (UTF-8 encoded).
+pub(crate) fn read_file(filename: &str) -> Result<String> {
     let compressed = is_compressed(filename)?;
-    let mut raw = vec![];
-    let mut file = File::open(&filename)?;
+    let mut text = String::new();
+    let file = File::open(&filename)?;
     if compressed {
         let mut gz = GzDecoder::new(file);
-        gz.read_to_end(&mut raw)?;
+        gz.read_to_string(&mut text)?;
     } else {
-        raw = vec![];
-        file.read_to_end(&mut raw)?;
+        let mut buffer = BufReader::new(file);
+        buffer.read_to_string(&mut text)?;
     }
-    Ok(raw)
+    Ok(text)
 }
 
 /// Returns true if the given file is gzip compressed; otherwise false.
