@@ -4,7 +4,10 @@
 use crate::constants::*;
 use crate::event::{Event, EventKind, OnEventFn};
 use crate::token::{Token, TokenKind, Tokens};
-use crate::util::{count_bytes, realstr64, unescape_raw};
+use crate::util::{
+    check_ktype, check_ttype, check_vtype, count_bytes, realstr64,
+    unescape_raw,
+};
 use crate::uxf::Uxf;
 use crate::value::Value;
 use anyhow::{bail, Result};
@@ -45,7 +48,10 @@ impl<'a> Lexer<'a> {
     pub fn tokenize(&mut self) -> Result<&Tokens> {
         self.scan_header()?;
         self.maybe_read_file_comment()?;
-        // TODO
+        while !self.at_end() {
+            self.scan_next()?;
+        }
+        self.add_token(TokenKind::Eof, Value::Null)?;
         Ok(&self.tokens)
     }
 
@@ -130,8 +136,77 @@ impl<'a> Lexer<'a> {
         Ok(())
     }
 
+    fn scan_next(&mut self) -> Result<()> {
+        let c = self.getch();
+        if c.is_ascii_whitespace() {
+            // ignore insignificant whitespace
+            if c == b'\n' {
+                self.lino += 1;
+            }
+            Ok(())
+        } else {
+            match c {
+                b'(' => bail!("TODO scan_next ("),  // TODO
+                b')' => bail!("TODO scan_next )"),  // TODO
+                b'[' => bail!("TODO scan_next ["),  // TODO
+                b'=' => bail!("TODO scan_next ="),  // TODO
+                b']' => bail!("TODO scan_next ]"),  // TODO
+                b'{' => bail!("TODO scan_next {{"), // TODO
+                b'}' => bail!("TODO scan_next }}"), // TODO
+                b'?' => bail!("TODO scan_next ?"),  // TODO
+                b'!' => bail!("TODO scan_next !"),  // TODO
+                b'#' => bail!("TODO scan_next #"),  // TODO
+                b'<' => bail!("TODO scan_next <"),  // TODO
+                b'&' => bail!("TODO scan_next &"),  // TODO
+                b':' => bail!("TODO scan_next :"),  // TODO
+                _ => {
+                    if c == b'-' && self.peek().is_ascii_digit() {
+                        bail!("TODO scan_next -[0-9]") // TODO
+                    } else if c.is_ascii_digit() {
+                        bail!("TODO scan_next-[0-9]") // TODO
+                    } else {
+                        self.read_name()
+                    }
+                }
+            }
+        }
+    }
+
+    fn read_name(&mut self) -> Result<()> {
+        if let Some(word) = self.match_any_of(&BARE_WORDS) {
+            let word = String::from_utf8_lossy(word);
+            if word == BOOL_FALSE {
+                return self.add_token(TokenKind::Bool, Value::Bool(false));
+            } else if word == BOOL_TRUE {
+                return self.add_token(TokenKind::Bool, Value::Bool(true));
+            }
+            for vtype in VTYPES {
+                if word == vtype {
+                    return self.add_token(
+                        TokenKind::Type,
+                        Value::Str(word.to_string()),
+                    );
+                }
+            }
+        }
+        // TODO if ! first char.is_alphabetic:
+        bail!(
+            "E170:{}:{}:invalid character encountered {}",
+            self.filename,
+            self.lino,
+            "?" // TODO use first char found
+        )
+    }
+
     fn at_end(&self) -> bool {
         self.pos >= self.raw.len()
+    }
+
+    fn getch(&mut self) -> u8 {
+        // advance
+        let c = self.raw[self.pos];
+        self.pos += 1;
+        c
     }
 
     fn peek(&self) -> u8 {
@@ -151,6 +226,22 @@ impl<'a> Lexer<'a> {
             }
             self.pos += 1;
         }
+    }
+
+    fn match_any_of(&mut self, targets: &[&'a str]) -> Option<&'a [u8]> {
+        let start = self.pos - 1; // rewind since we went one byte to far
+        let mut targets: Vec<&[u8]> =
+            targets.iter().map(|&s| s.as_bytes()).collect();
+        targets.sort_by(|a, b| b.len().cmp(&a.len())); // long to short
+        for target in targets {
+            let end = self.pos + target.len();
+            if end < self.raw.len() && &self.raw[start..end] == target {
+                // TODO do I need the + 1 ???
+                self.pos = end + 1; // skip past target
+                return Some(target);
+            }
+        }
+        None
     }
 
     fn match_to_byte(&mut self, b: u8, what: &str) -> Result<&[u8]> {
@@ -203,8 +294,28 @@ impl<'a> Lexer<'a> {
     ) -> Result<bool> {
         // safe because we only call when self.tokens is nonempty
         let top = self.tokens.last_mut().unwrap();
-        // TODO maybe subsume
-        Ok(false)
+        if top.vtype.is_empty() {
+            if let Some(vtype) = value.as_str() {
+                assert!(!vtype.is_empty());
+                check_vtype(vtype)?;
+                top.vtype = value.to_string();
+            } else {
+                bail!(
+                    "E271:{}:{}:invalid vtype, got {}",
+                    self.filename,
+                    self.lino,
+                    value
+                )
+            }
+        } else {
+            bail!(
+                "E272:{}:{}:expected value, got type {}",
+                self.filename,
+                self.lino,
+                value
+            )
+        }
+        Ok(true)
     }
 
     fn subsume_map_type(
@@ -214,8 +325,49 @@ impl<'a> Lexer<'a> {
     ) -> Result<bool> {
         // safe because we only call when self.tokens is nonempty
         let top = self.tokens.last_mut().unwrap();
-        // TODO maybe subsume
-        Ok(false)
+        if top.ktype.is_empty() {
+            if kind == TokenKind::Identifier {
+                bail!(
+                    "E273:{}:{}:expected ktype, got {}",
+                    self.filename,
+                    self.lino,
+                    value
+                )
+            }
+            if let Some(ktype) = value.as_str() {
+                assert!(!ktype.is_empty());
+                check_ktype(ktype)?;
+                top.ktype = ktype.to_string();
+            } else {
+                bail!(
+                    "E275:{}:{}:invalid ktype, got {}",
+                    self.filename,
+                    self.lino,
+                    value
+                )
+            }
+        } else if top.vtype.is_empty() {
+            if let Some(vtype) = value.as_str() {
+                assert!(!vtype.is_empty());
+                check_vtype(vtype)?;
+                top.vtype = vtype.to_string();
+            } else {
+                bail!(
+                    "E277:{}:{}:invalid vtype, got {}",
+                    self.filename,
+                    self.lino,
+                    value
+                )
+            }
+        } else {
+            bail!(
+                "E276:{}:{}:expected first map key, got type {}",
+                self.filename,
+                self.lino,
+                value
+            )
+        }
+        Ok(true)
     }
 
     fn subsume_table_ttype(
@@ -225,7 +377,27 @@ impl<'a> Lexer<'a> {
     ) -> Result<bool> {
         // safe because we only call when self.tokens is nonempty
         let top = self.tokens.last_mut().unwrap();
-        // TODO maybe subsume
-        Ok(false)
+        if top.ttype.is_empty() {
+            if let Some(ttype) = value.as_str() {
+                assert!(!ttype.is_empty());
+                check_ttype(ttype)?;
+                top.ttype = value.to_string();
+            } else {
+                bail!(
+                    "E278:{}:{}:invalid ttype, got {}",
+                    self.filename,
+                    self.lino,
+                    value
+                )
+            }
+        } else {
+            bail!(
+                "E274:{}:{}:expected value, got type {}",
+                self.filename,
+                self.lino,
+                value
+            )
+        }
+        Ok(true)
     }
 }

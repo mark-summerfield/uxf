@@ -87,6 +87,7 @@ st.sh
 # - UXF libraries:
 #   . for .js use Dart or TypeScript or similar that can output JS?
 #   . uxf.cpp uxf.java uxf.rb ... ?
+#   . rewrite uxf.py's lexer & parser to use raw bytes?
 # - Documentation:
 #   . Complete manual with egs and use cases
 #	. Part I Preliminaries

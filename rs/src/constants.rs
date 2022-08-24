@@ -23,6 +23,21 @@ pub static VTYPE_NAME_TABLE: &str = "table";
 pub static BOOL_FALSE: &str = "no";
 pub static BOOL_TRUE: &str = "yes";
 
+pub static BARE_WORDS: [&str; 12] = [
+    VTYPE_NAME_BOOL,
+    VTYPE_NAME_BYTES,
+    VTYPE_NAME_DATE,
+    VTYPE_NAME_DATETIME,
+    VTYPE_NAME_INT,
+    VTYPE_NAME_LIST,
+    VTYPE_NAME_MAP,
+    VTYPE_NAME_REAL,
+    VTYPE_NAME_STR,
+    VTYPE_NAME_TABLE,
+    BOOL_FALSE,
+    BOOL_TRUE,
+];
+
 pub static RESERVED_WORDS: [&str; 13] = [
     VALUE_NAME_NULL,
     VTYPE_NAME_BOOL,
