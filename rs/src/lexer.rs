@@ -159,13 +159,21 @@ impl<'a> Lexer<'a> {
                 '<' => bail!("TODO scan_next <"),  // TODO
                 '&' => bail!("TODO scan_next &"),  // TODO
                 ':' => bail!("TODO scan_next :"),  // TODO
+                'c' if self.peek().is_ascii_digit() => {
+                    bail!("TODO scan_next -[0-9]") // TODO
+                }
+                '0' | '1' | '2' | '3' | '4' | '5' | '6' | '7' | '8'
+                | '9' => bail!("TODO scan_next-[0-9]"), // TODO
                 _ => {
-                    if c == '-' && self.peek().is_ascii_digit() {
-                        bail!("TODO scan_next -[0-9]") // TODO
-                    } else if c.is_ascii_digit() {
-                        bail!("TODO scan_next-[0-9]") // TODO
-                    } else {
+                    if c.is_alphabetic() {
                         self.read_name()
+                    } else {
+                        bail!(
+                            "E170:{}:{}:invalid character encountered {}",
+                            self.filename,
+                            self.lino,
+                            "?" // TODO use first char found
+                        )
                     }
                 }
             }
@@ -179,22 +187,82 @@ impl<'a> Lexer<'a> {
             } else if word == BOOL_TRUE {
                 return self.add_token(TokenKind::Bool, Value::Bool(true));
             }
-            for vtype in VTYPES {
-                if word == vtype {
-                    return self.add_token(
-                        TokenKind::Type,
-                        Value::Str(word.to_string()),
-                    );
-                }
+            if VTYPES.contains(&word) {
+                return self.add_token(
+                    TokenKind::Type,
+                    Value::Str(word.to_string()),
+                );
             }
         }
-        // TODO if ! first char.is_alphabetic:
+        let start = self.pos - 1; // rewind since we went one byte to far
+        if self.text[start] == '_' || self.text[start].is_alphabetic() {
+            return self.read_ttype_or_identifier(start);
+        }
         bail!(
-            "E170:{}:{}:invalid character encountered {}",
+            "E250:{}:{}:expected const or identifier, got {:?}",
             self.filename,
             self.lino,
-            "?" // TODO use first char found
+            &self.peek_chunk(start)
         )
+    }
+
+    fn read_ttype_or_identifier(&mut self, start: usize) -> Result<()> {
+        let identifier = self.match_identifier(start, "identifier")?;
+        let identifier = Value::Str(identifier);
+        if self.in_tclass {
+            // safe because if in TClass there must have been a prev token
+            let top = self.tokens.last_mut().unwrap();
+            if top.kind == TokenKind::TClassBegin
+                && top.value == Value::Null
+            {
+                top.value = identifier;
+                Ok(())
+            } else {
+                self.add_token(TokenKind::Field, identifier)
+            }
+        } else {
+            self.add_token(TokenKind::Identifier, identifier)
+        }
+    }
+
+    fn match_identifier(
+        &mut self,
+        start: usize,
+        what: &str,
+    ) -> Result<String> {
+        while self.pos < self.text.len() {
+            if self.text[self.pos] != '_'
+                || !self.text[self.pos].is_alphanumeric()
+            {
+                break;
+            }
+            self.pos += 1;
+        }
+        let identifier = &self.text[start..self.pos][..MAX_IDENTIFIER_LEN];
+        if !identifier.is_empty() {
+            Ok(str_for_chars(&identifier))
+        } else {
+            bail!(
+                "E260:{}:{}:expected {}, got {:?}…",
+                self.filename,
+                self.lino,
+                what,
+                &self.peek_chunk(start)
+            )
+        }
+    }
+
+    fn peek_chunk(&self, start: usize) -> String {
+        let i = if let Some(i) =
+            self.text[start..].iter().position(|&x| x == '\n')
+        {
+            i
+        } else if start + 8 < self.text.len() {
+            8
+        } else {
+            1
+        };
+        str_for_chars(&self.text[start..start + i])
     }
 
     fn at_end(&self) -> bool {
@@ -232,10 +300,10 @@ impl<'a> Lexer<'a> {
         let mut targets = targets.to_vec();
         targets.sort_by(|a, b| b.len().cmp(&a.len())); // long to short
         for target in targets {
-            let end = self.pos + target.len();
+            let end = start + target.len();
             let chars: Vec<char> = target.chars().collect();
             if end < self.text.len() && &self.text[start..end] == chars {
-                self.pos = end + 1; // skip past target
+                self.pos = end - 1; // skip past target
                 return Some(target);
             }
         }
