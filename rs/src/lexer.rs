@@ -2,7 +2,7 @@
 // License: GPLv3
 
 use crate::constants::*;
-use crate::event::{Event, EventKind, OnEventFn};
+use crate::event::{Event, OnEventFn};
 use crate::token::{Token, TokenKind, Tokens};
 use crate::util::{
     check_ktype, check_ttype, check_vtype, realstr64, str_for_chars,
@@ -11,6 +11,7 @@ use crate::util::{
 use crate::uxf::Uxf;
 use crate::value::Value;
 use anyhow::{bail, Result};
+use hex;
 use std::{rc::Rc, str};
 
 pub struct Lexer<'a> {
@@ -82,8 +83,7 @@ impl<'a> Lexer<'a> {
         }
         if let Ok(version) = parts[1].trim().parse::<f64>() {
             if version > UXF_VERSION {
-                (self.on_event)(&Event::new(
-                    EventKind::Warning,
+                (self.on_event)(&Event::new_warning(
                     141,
                     &format!(
                         "version {} > current {}",
@@ -118,18 +118,12 @@ impl<'a> Lexer<'a> {
                 let comment = unescape(&text);
                 self.uxo.set_comment(&comment);
             } else {
-                let c = if let Some(c) = char::from_u32(self.peek() as u32)
-                {
-                    c
-                } else {
-                    '\u{FFFD}'
-                };
                 bail!(
                     "E160:{}:{}:invalid comment syntax: expected '<', \
                     got '{}'",
                     self.filename,
                     self.lino,
-                    c.to_string()
+                    self.peek()
                 )
             }
         }
@@ -146,24 +140,24 @@ impl<'a> Lexer<'a> {
             Ok(())
         } else {
             match c {
-                '(' => bail!("TODO scan_next ("),  // TODO
-                ')' => bail!("TODO scan_next )"),  // TODO
-                '[' => bail!("TODO scan_next ["),  // TODO
-                '=' => bail!("TODO scan_next ="),  // TODO
-                ']' => bail!("TODO scan_next ]"),  // TODO
-                '{' => bail!("TODO scan_next {{"), // TODO
-                '}' => bail!("TODO scan_next }}"), // TODO
-                '?' => bail!("TODO scan_next ?"),  // TODO
-                '!' => bail!("TODO scan_next !"),  // TODO
-                '#' => bail!("TODO scan_next #"),  // TODO
-                '<' => bail!("TODO scan_next <"),  // TODO
-                '&' => bail!("TODO scan_next &"),  // TODO
-                ':' => bail!("TODO scan_next :"),  // TODO
+                '(' => self.handle_table_begin(),
+                ')' => self.add_token(TokenKind::TableEnd, Value::Null),
+                '[' => self.handle_list_begin(),
+                '=' => self.handle_tclass_begin(),
+                ']' => self.add_token(TokenKind::ListEnd, Value::Null),
+                '{' => self.handle_map_begin(),
+                '}' => self.handle_map_end(),
+                '?' => self.add_token(TokenKind::Null, Value::Null),
+                '!' => self.read_imports(),
+                '#' => bail!("TODO scan_next #"), // TODO
+                '<' => bail!("TODO scan_next <"), // TODO
+                '&' => bail!("TODO scan_next &"), // TODO
+                ':' => bail!("TODO scan_next :"), // TODO
                 'c' if self.peek().is_ascii_digit() => {
                     bail!("TODO scan_next -[0-9]") // TODO
                 }
                 '0' | '1' | '2' | '3' | '4' | '5' | '6' | '7' | '8'
-                | '9' => bail!("TODO scan_next-[0-9]"), // TODO
+                | '9' => bail!("TODO scan_next [0-9]"), // TODO
                 _ => {
                     if c.is_alphabetic() {
                         self.read_name()
@@ -177,6 +171,61 @@ impl<'a> Lexer<'a> {
                     }
                 }
             }
+        }
+    }
+
+    fn handle_table_begin(&mut self) -> Result<()> {
+        if self.peek() == ':' {
+            self.pos += 1;
+            self.read_bytes()
+        } else {
+            self.check_in_tclass()?;
+            self.add_token(TokenKind::TableBegin, Value::Null)
+        }
+    }
+
+    fn handle_list_begin(&mut self) -> Result<()> {
+        self.check_in_tclass()?;
+        self.add_token(TokenKind::ListBegin, Value::Null)
+    }
+
+    fn handle_tclass_begin(&mut self) -> Result<()> {
+        self.check_in_tclass()?; // allow for fieldless TClasses
+        self.add_token(TokenKind::TClassBegin, Value::Null)?;
+        self.in_tclass = true;
+        Ok(())
+    }
+
+    fn handle_map_begin(&mut self) -> Result<()> {
+        self.check_in_tclass()?;
+        self.add_token(TokenKind::MapBegin, Value::Null)
+    }
+
+    fn handle_map_end(&mut self) -> Result<()> {
+        self.in_tclass = false;
+        self.add_token(TokenKind::MapEnd, Value::Null)
+    }
+
+    fn read_imports(&mut self) -> Result<()> {
+        bail!("TODO read_imports") // TODO
+    }
+
+    fn read_bytes(&mut self) -> Result<()> {
+        let i = self.match_to_chars_index(&[':', ')'], "bytes")?;
+        let text = self.text[self.pos..i]
+            .iter()
+            .filter(|c| !c.is_whitespace())
+            .collect::<String>();
+        let raw = hex::decode(text)?;
+        self.add_token(TokenKind::Bytes, Value::Bytes(raw))
+    }
+
+    fn check_in_tclass(&mut self) -> Result<()> {
+        if self.in_tclass {
+            self.in_tclass = false;
+            self.add_token(TokenKind::TClassEnd, Value::Null)
+        } else {
+            Ok(())
         }
     }
 
@@ -238,9 +287,11 @@ impl<'a> Lexer<'a> {
             }
             self.pos += 1;
         }
-        let identifier = &self.text[start..self.pos][..MAX_IDENTIFIER_LEN];
+        let identifier = &self.text[start..self.pos];
+        let end = std::cmp::min(identifier.len(), MAX_IDENTIFIER_LEN + 1);
+        let identifier = &identifier[..end];
         if !identifier.is_empty() {
-            Ok(str_for_chars(&identifier))
+            Ok(str_for_chars(identifier))
         } else {
             bail!(
                 "E260:{}:{}:expected {}, got {:?}…",
@@ -298,11 +349,11 @@ impl<'a> Lexer<'a> {
     fn match_any_of(&mut self, targets: &[&'a str]) -> Option<&'a str> {
         let start = self.pos - 1; // rewind since we went one byte to far
         let mut targets = targets.to_vec();
-        targets.sort_by(|a, b| b.len().cmp(&a.len())); // long to short
+        targets.sort_by_key(|x| std::cmp::Reverse(x.len())); // long → short
         for target in targets {
             let end = start + target.len();
             let chars: Vec<char> = target.chars().collect();
-            if end < self.text.len() && &self.text[start..end] == chars {
+            if end < self.text.len() && self.text[start..end] == chars {
                 self.pos = end - 1; // skip past target
                 return Some(target);
             }
@@ -322,6 +373,48 @@ impl<'a> Lexer<'a> {
             }
         }
         bail!("E270:{}:{}:unterminated {}", self.filename, self.lino, what)
+    }
+
+    fn match_to_chars_index(
+        &mut self,
+        cs: &[char],
+        what: &str,
+    ) -> Result<usize> {
+        if !self.at_end() {
+            for (i, x) in
+                self.text[self.pos..].windows(cs.len()).enumerate()
+            {
+                if x == cs {
+                    let text = &self.text[self.pos..i];
+                    self.lino +=
+                        text.iter().filter(|&c| *c == '\n').count();
+                    self.pos = i + cs.len(); // skip past terminator
+                    return Ok(i);
+                }
+            }
+        }
+        bail!("E280:{}:{}:unterminated {}", self.filename, self.lino, what)
+    }
+
+    fn match_to_chars(
+        &mut self,
+        cs: &[char],
+        what: &str,
+    ) -> Result<String> {
+        if !self.at_end() {
+            for (i, x) in
+                self.text[self.pos..].windows(cs.len()).enumerate()
+            {
+                if x == cs {
+                    let text = &self.text[self.pos..i];
+                    self.lino +=
+                        text.iter().filter(|&c| *c == '\n').count();
+                    self.pos = i + cs.len(); // skip past terminator
+                    return Ok(str_for_chars(text));
+                }
+            }
+        }
+        bail!("E279:{}:{}:unterminated {}", self.filename, self.lino, what)
     }
 
     fn add_token(&mut self, kind: TokenKind, value: Value) -> Result<()> {

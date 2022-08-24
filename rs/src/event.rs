@@ -38,23 +38,33 @@ impl Event {
             lino,
         }
     }
-    pub fn new_warning(code: i16, message: &str) -> Self {
+    pub fn new_warning(
+        code: i16,
+        message: &str,
+        filename: &str,
+        lino: usize,
+    ) -> Self {
         Event {
             kind: EventKind::Warning,
             code,
             message: message.to_string(),
-            filename: "-".to_string(),
-            lino: 0,
+            filename: filename.to_string(),
+            lino,
         }
     }
 
-    pub fn new_repair(code: i16, message: &str) -> Self {
+    pub fn new_repair(
+        code: i16,
+        message: &str,
+        filename: &str,
+        lino: usize,
+    ) -> Self {
         Event {
             kind: EventKind::Repair,
             code,
             message: message.to_string(),
-            filename: "-".to_string(),
-            lino: 0,
+            filename: filename.to_string(),
+            lino,
         }
     }
 
