@@ -1,7 +1,8 @@
 // Copyright © 2022 Mark Summerfield. All rights reserved.
 // License: GPLv3
 
-use anyhow::Result;
+use crate::constants::*;
+use anyhow::{bail, Result};
 use flate2::read::GzDecoder;
 use std::{
     fs::File,
@@ -62,4 +63,29 @@ pub(crate) fn is_compressed(filename: &str) -> Result<bool> {
     let mut buffer = [0; 2]; // 0x1F 0x8B gzip magic
     file.read_exact(&mut buffer)?;
     Ok(buffer[0] == 0x1F && buffer[1] == 0x8B)
+}
+
+/// Returns the bytes for the given slices of chars.
+/// Each char may be 0-9A-Fa-f or ASCII whitespace (which is ignored) and
+/// non-whitespace chars must come in pairs (even if separated by
+/// whitespace).
+pub(crate) fn hex_as_bytes(h: &[char]) -> Result<Vec<u8>> {
+    let mut raw = vec![];
+    let mut b = NUL;
+    for c in h {
+        if c.is_ascii_hexdigit() {
+            if b == NUL {
+                b = *c;
+            } else {
+                // safe to unwrap because of is_ascii_hexdigit()
+                let x = b.to_digit(16).unwrap() * 16;
+                let y = c.to_digit(16).unwrap();
+                raw.push((x | y) as u8);
+                b = NUL;
+            }
+        } else if !c.is_ascii_whitespace() {
+            bail!("E600:-:0:invalid hex char: {:?}", c)
+        }
+    }
+    Ok(raw)
 }

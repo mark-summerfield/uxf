@@ -5,11 +5,10 @@ use crate::check::{check_ktype, check_ttype, check_vtype};
 use crate::constants::*;
 use crate::event::{Event, OnEventFn};
 use crate::token::{Token, TokenKind, Tokens};
-use crate::util::{realstr64, str_for_chars, unescape};
+use crate::util::{hex_as_bytes, realstr64, str_for_chars, unescape};
 use crate::uxf::Uxf;
 use crate::value::Value;
 use anyhow::{bail, Result};
-use hex;
 use std::{rc::Rc, str};
 
 pub struct Lexer<'a> {
@@ -56,17 +55,17 @@ impl<'a> Lexer<'a> {
 
     fn scan_header(&mut self) -> Result<()> {
         self.lino = 1;
-        self.pos =
-            if let Some(i) = self.text.iter().position(|&c| c == NL) {
-                i
-            } else {
-                bail!(
-                    "E110:{}:{}:missing UXF file header or missing data \
+        self.pos = if let Some(i) = self.text.iter().position(|&c| c == NL)
+        {
+            i
+        } else {
+            bail!(
+                "E110:{}:{}:missing UXF file header or missing data \
                     or empty file",
-                    self.filename,
-                    self.lino,
-                )
-            };
+                self.filename,
+                self.lino,
+            )
+        };
         let line = str_for_chars(&self.text[..self.pos]);
         let parts: Vec<&str> = line.splitn(3, &[' ', '\t']).collect();
         if parts.len() < 2 {
@@ -114,7 +113,12 @@ impl<'a> Lexer<'a> {
                 let text =
                     self.match_to_char('>', "file comment string")?;
                 let comment = unescape(&text);
-                self.uxo.set_comment(&comment);
+                // Can't add direct to uxo because it could be a multi-part
+                // string that uses the UXF & string concatenation operator.
+                self.add_token(
+                    TokenKind::FileComment,
+                    Value::Str(comment),
+                )?;
             } else {
                 bail!(
                     "E160:{}:{}:invalid comment syntax: expected '<', \
@@ -147,10 +151,10 @@ impl<'a> Lexer<'a> {
                 '}' => self.handle_map_end(),
                 '?' => self.add_token(TokenKind::Null, Value::Null),
                 '!' => self.read_imports(),
-                '#' => bail!("TODO scan_next #"), // TODO
-                '<' => bail!("TODO scan_next <"), // TODO
-                '&' => bail!("TODO scan_next &"), // TODO
-                ':' => bail!("TODO scan_next :"), // TODO
+                '#' => self.read_comment(),
+                '<' => self.read_string(),
+                '&' => self.handle_string_concatenation_op(),
+                ':' => self.read_field_vtype(),
                 'c' if self.peek().is_ascii_digit() => {
                     bail!("TODO scan_next -[0-9]") // TODO
                 }
@@ -204,18 +208,107 @@ impl<'a> Lexer<'a> {
         self.add_token(TokenKind::MapEnd, Value::Null)
     }
 
+    fn read_bytes(&mut self) -> Result<()> {
+        let i = self.match_to_chars_index(&[':', ')'], "bytes")?;
+        let raw = hex_as_bytes(&self.text[self.pos..i])?;
+        self.add_token(TokenKind::Bytes, Value::Bytes(raw))
+    }
+
     fn read_imports(&mut self) -> Result<()> {
         bail!("TODO read_imports") // TODO
     }
 
-    fn read_bytes(&mut self) -> Result<()> {
-        let i = self.match_to_chars_index(&[':', ')'], "bytes")?;
-        let text = self.text[self.pos..i]
-            .iter()
-            .filter(|c| !c.is_whitespace())
-            .collect::<String>();
-        let raw = hex::decode(text)?;
-        self.add_token(TokenKind::Bytes, Value::Bytes(raw))
+    fn read_comment(&mut self) -> Result<()> {
+        let c = self.peek();
+        if let Some(top) = self.tokens.last() {
+            if matches!(
+                &top.kind,
+                TokenKind::ListBegin
+                    | TokenKind::MapBegin
+                    | TokenKind::TableBegin
+                    | TokenKind::TClassBegin
+            ) && c == '<'
+            {
+                self.pos += 1; // skip the leading <
+                let text = self.match_to_char('>', "comment string")?;
+                if !text.is_empty() {
+                    let top = self.tokens.last_mut().unwrap();
+                    top.comment = unescape(&text);
+                }
+                Ok(())
+            } else {
+                bail!(
+                    "E180:{}:{}:a str must follow the # comment \
+                     introducer, got {:?}",
+                    self.filename,
+                    self.lino,
+                    c
+                );
+            }
+        } else {
+            bail!(
+                "E190:{}:{}:comments may only occur at the start of \
+                 'Lists, Maps, Tables, and TClasses",
+                self.filename,
+                self.lino,
+            );
+        }
+    }
+
+    fn read_string(&mut self) -> Result<()> {
+        let text = unescape(&self.match_to_char('>', "string")?);
+        if self.concatenate {
+            // safe because we must already have had at least one token
+            let top = self.tokens.last_mut().unwrap();
+            if matches!(top.kind, TokenKind::Str | TokenKind::FileComment) {
+                let old = top.value.as_str().unwrap(); // should be safe
+                top.value = Value::Str(old.to_owned() + &text);
+            } else if matches!(
+                top.kind,
+                TokenKind::ListBegin
+                    | TokenKind::MapBegin
+                    | TokenKind::TableBegin
+                    | TokenKind::TClassBegin
+            ) {
+                top.comment += &text;
+            } else {
+                bail!(
+                    "E195:{}:{}:attempt to concatenate a str to a non-str",
+                    self.filename,
+                    self.lino,
+                );
+            }
+        } else {
+            self.add_token(TokenKind::Str, Value::Str(text))?;
+        }
+        self.concatenate = false;
+        Ok(())
+    }
+
+    fn handle_string_concatenation_op(&mut self) -> Result<()> {
+        self.skip_ws();
+        self.concatenate = true;
+        Ok(())
+    }
+
+    fn read_field_vtype(&mut self) -> Result<()> {
+        self.skip_ws();
+        let identifier = self.match_identifier(self.pos, "field vtype")?;
+        if self.in_tclass
+            && !self.tokens.is_empty()
+            && self.tokens.last().unwrap().kind == TokenKind::Field
+        {
+            let top = self.tokens.last_mut().unwrap(); // safe
+            top.vtype = identifier;
+            Ok(())
+        } else {
+            bail!(
+                "E248:{}:{}:expected field vtype, got {:?}",
+                self.filename,
+                self.lino,
+                identifier
+            );
+        }
     }
 
     fn check_in_tclass(&mut self) -> Result<()> {
@@ -384,8 +477,7 @@ impl<'a> Lexer<'a> {
             {
                 if x == cs {
                     let text = &self.text[self.pos..i];
-                    self.lino +=
-                        text.iter().filter(|&c| *c == NL).count();
+                    self.lino += text.iter().filter(|&c| *c == NL).count();
                     self.pos = i + cs.len(); // skip past terminator
                     return Ok(i);
                 }
@@ -405,8 +497,7 @@ impl<'a> Lexer<'a> {
             {
                 if x == cs {
                     let text = &self.text[self.pos..i];
-                    self.lino +=
-                        text.iter().filter(|&c| *c == NL).count();
+                    self.lino += text.iter().filter(|&c| *c == NL).count();
                     self.pos = i + cs.len(); // skip past terminator
                     return Ok(str_for_chars(text));
                 }

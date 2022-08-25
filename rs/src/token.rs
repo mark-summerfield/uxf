@@ -68,6 +68,7 @@ impl<'a> fmt::Display for Token<'a> {
 
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub enum TokenKind {
+    FileComment,
     Import,
     TClassBegin,
     TClassEnd,
