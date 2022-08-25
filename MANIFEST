@@ -1,4 +1,4 @@
-# TODO (0) add rs/src/bin/uxf.rs cli tool (see accelhints)
+rs/src/bin/uxf.rs # TODO (0) cli tool: same usage as uxf.py
 rs/src/lib.rs # add docs at the end
 rs/src/value.rs
 rs/src/key.rs
