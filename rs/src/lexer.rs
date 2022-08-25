@@ -9,6 +9,7 @@ use crate::util::{hex_as_bytes, realstr64, str_for_chars, unescape};
 use crate::uxf::Uxf;
 use crate::value::Value;
 use anyhow::{bail, Result};
+use chrono::{NaiveDate, NaiveDateTime};
 use std::{rc::Rc, str};
 
 pub struct Lexer<'a> {
@@ -155,13 +156,13 @@ impl<'a> Lexer<'a> {
                 '<' => self.read_string(),
                 '&' => self.handle_string_concatenation_op(),
                 ':' => self.read_field_vtype(),
-                'c' if self.peek().is_ascii_digit() => {
-                    bail!("TODO scan_next -[0-9]") // TODO
+                '-' if self.peek().is_ascii_digit() => {
+                    self.read_negative_number()
                 }
-                '0' | '1' | '2' | '3' | '4' | '5' | '6' | '7' | '8'
-                | '9' => bail!("TODO scan_next [0-9]"), // TODO
                 _ => {
-                    if c.is_alphabetic() {
+                    if c.is_ascii_digit() {
+                        self.read_positive_number_or_date()
+                    } else if c.is_alphabetic() {
                         self.read_name()
                     } else {
                         bail!(
@@ -311,6 +312,69 @@ impl<'a> Lexer<'a> {
         }
     }
 
+    /* We need the while loop to find the end of the number so may as well
+    find out if it is real or int (rather than trying int then real) */
+    fn read_negative_number(&mut self) -> Result<()> {
+        let start = self.pos; // We've already skipped the - sign
+        let mut is_real = false;
+        let mut c = self.text[start]; // safe because we peeked
+        while !self.at_end() && (".eE".contains(c) || c.is_ascii_digit()) {
+            if ".eE".contains(c) {
+                is_real = true;
+            }
+            c = self.text[self.pos];
+            self.pos += 1;
+        }
+        self.pos -= 1; // wind back to terminating non-numeric char
+        let text: String = self.text[start..self.pos].iter().collect();
+        if is_real {
+            let n: f64 = text.parse()?;
+            self.add_token(TokenKind::Real, Value::Real(-n))
+        } else {
+            let n: i64 = text.parse()?;
+            self.add_token(TokenKind::Int, Value::Int(-n))
+        }
+    }
+
+    fn read_positive_number_or_date(&mut self) -> Result<()> {
+        let start = self.pos - 1; // rewind for the first digit
+        let mut is_real = false;
+        let mut is_datetime = false;
+        let mut hyphens = 0;
+        let mut c = self.text[start]; // safe because we rewound
+        while !self.at_end()
+            && ("-+.:eET".contains(c) || c.is_ascii_digit())
+        {
+            if ".eE".contains(c) {
+                is_real = true;
+            } else if c == '-' {
+                hyphens += 1;
+            } else if ":T".contains(c) {
+                is_datetime = true;
+            }
+            c = self.text[self.pos];
+            self.pos += 1;
+        }
+        self.pos -= 1; // wind back to terminating non-numeric char
+        let text: String = self.text[start..self.pos].iter().collect();
+        if is_datetime {
+            let d = NaiveDateTime::parse_from_str(
+                &text[..19], // ignore any timezone text
+                ISO8601_DATETIME,
+            )?;
+            self.add_token(TokenKind::DateTime, Value::DateTime(d))
+        } else if hyphens == 2 {
+            let d = NaiveDate::parse_from_str(&text, ISO8601_DATE)?;
+            self.add_token(TokenKind::Date, Value::Date(d))
+        } else if is_real {
+            let n: f64 = text.parse()?;
+            self.add_token(TokenKind::Real, Value::Real(n))
+        } else {
+            let n: i64 = text.parse()?;
+            self.add_token(TokenKind::Int, Value::Int(n))
+        }
+    }
+
     fn check_in_tclass(&mut self) -> Result<()> {
         if self.in_tclass {
             self.in_tclass = false;
@@ -395,16 +459,16 @@ impl<'a> Lexer<'a> {
     }
 
     fn peek_chunk(&self, start: usize) -> String {
-        let i = if let Some(i) =
+        let offset = if let Some(offset) =
             self.text[start..].iter().position(|&x| x == NL)
         {
-            i
+            offset
         } else if start + 8 < self.text.len() {
             8
         } else {
             1
         };
-        str_for_chars(&self.text[start..start + i])
+        str_for_chars(&self.text[start..start + offset])
     }
 
     fn at_end(&self) -> bool {
@@ -454,9 +518,10 @@ impl<'a> Lexer<'a> {
 
     fn match_to_char(&mut self, c: char, what: &str) -> Result<String> {
         if !self.at_end() {
-            if let Some(i) =
+            if let Some(offset) =
                 self.text[self.pos..].iter().position(|&x| x == c)
             {
+                let i = self.pos + offset;
                 let text = &self.text[self.pos..i];
                 self.lino += text.iter().filter(|&c| *c == NL).count();
                 self.pos = i + 1; // skip past char c
@@ -472,34 +537,15 @@ impl<'a> Lexer<'a> {
         what: &str,
     ) -> Result<usize> {
         if !self.at_end() {
-            for (i, x) in
+            for (offset, x) in
                 self.text[self.pos..].windows(cs.len()).enumerate()
             {
                 if x == cs {
+                    let i = self.pos + offset;
                     let text = &self.text[self.pos..i];
                     self.lino += text.iter().filter(|&c| *c == NL).count();
                     self.pos = i + cs.len(); // skip past terminator
                     return Ok(i);
-                }
-            }
-        }
-        bail!("E280:{}:{}:unterminated {}", self.filename, self.lino, what)
-    }
-
-    fn match_to_chars(
-        &mut self,
-        cs: &[char],
-        what: &str,
-    ) -> Result<String> {
-        if !self.at_end() {
-            for (i, x) in
-                self.text[self.pos..].windows(cs.len()).enumerate()
-            {
-                if x == cs {
-                    let text = &self.text[self.pos..i];
-                    self.lino += text.iter().filter(|&c| *c == NL).count();
-                    self.pos = i + cs.len(); // skip past terminator
-                    return Ok(str_for_chars(text));
                 }
             }
         }

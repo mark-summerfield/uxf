@@ -569,8 +569,7 @@ class _Lexer(_EventMixin):
         elif c == ':':
             self.read_field_vtype()
         elif c == '-' and isasciidigit(self.peek()):
-            c = self.getch() # skip the - and get the first digit
-            self.read_negative_number(c)
+            self.read_negative_number()
         elif isasciidigit(c):
             self.read_positive_number_or_date(c)
         elif c.isalpha():
@@ -642,9 +641,10 @@ class _Lexer(_EventMixin):
             self.error(200, f'expected bytes, got {value!r}: {err}')
 
 
-    def read_negative_number(self, c):
+    def read_negative_number(self):
         is_real = False
-        start = self.pos - 1
+        start = self.pos
+        c = self.text[start] # safe because we peeked
         while not self.at_end() and (c in '.eE' or isasciidigit(c)):
             if c in '.eE':
                 is_real = True

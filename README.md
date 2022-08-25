@@ -848,6 +848,13 @@ _Implementations in additional languages are planned._
 |-----------|------------|-----------------------------|
 |uxf        | Python 3   | See the [Python UXF library](py/README.md).|
 
+### Implementation Notes
+
+Implmenting a UXF pretty printer whould be doable by a CS major as a final
+year project. Implementing a UXF parser—without support for imports or
+string concatenation—should be doable by a CS major as a _big_ final year
+project.
+
 ## Imports
 
 UXF files are normally completely self-contained. However, in some cases it

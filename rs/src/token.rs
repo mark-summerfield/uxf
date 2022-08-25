@@ -39,30 +39,40 @@ impl<'a> Token<'a> {
 }
 
 impl<'a> fmt::Display for Token<'a> {
+    /// Purely for debugging
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        let comment = if !self.comment.is_empty() { " #" } else { "" };
+        let comment = if !self.comment.is_empty() {
+            format!(" # {}", self.comment)
+        } else {
+            "".to_string()
+        };
         let filename = if self.filename.is_empty() {
             "".to_string()
         } else {
-            format!(" {}", self.filename)
+            format!(" {:?}", self.filename)
         };
         let lino = if self.lino > 0 {
             format!(" {}", self.lino)
         } else {
             "".to_string()
         };
-        write!(
-            f,
-            "Token={} value={} ttype={} ktype={} vtype={}{}{}{}",
-            &self.kind,
-            &self.value,
-            &self.ttype,
-            &self.ktype,
-            &self.vtype,
-            comment,
-            self.filename,
-            lino,
-        )
+        let value = if self.value == Value::Null {
+            "".to_string()
+        } else {
+            format!(" {:?}", self.value)
+        };
+        let xtype = if !self.ttype.is_empty() {
+            format!(" ttype={}", self.ttype)
+        } else if !self.ktype.is_empty() && !self.vtype.is_empty() {
+            format!(" ktype={} vtype={}", self.ktype, self.vtype)
+        } else if !self.ktype.is_empty() {
+            format!(" ktype={}", self.ktype)
+        } else if !self.vtype.is_empty() {
+            format!(" vtype={}", self.vtype)
+        } else {
+            "".to_string()
+        };
+        write!(f, "{}{}{}{}", &self.kind, value, xtype, comment)
     }
 }
 
