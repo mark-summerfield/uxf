@@ -1,3 +1,4 @@
+# TODO (0) add rs/src/bin/uxf.rs cli tool (see accelhints)
 rs/src/lib.rs # add docs at the end
 rs/src/value.rs
 rs/src/key.rs
@@ -88,7 +89,6 @@ st.sh
 # - UXF libraries:
 #   . for .js use Dart or TypeScript or similar that can output JS?
 #   . uxf.cpp uxf.java uxf.rb ... ?
-#   . rewrite uxf.py's lexer & parser to use raw bytes?
 # - Documentation:
 #   . Complete manual with egs and use cases
 #	. Part I Preliminaries
