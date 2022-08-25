@@ -5,6 +5,9 @@ pub const UXF_VERSION: f64 = 1.0;
 
 pub const MAX_IDENTIFIER_LEN: usize = 60;
 
+pub const NL: char = '\n';
+pub const NUL: char = '\0';
+
 pub static ISO8601_DATE: &str = "%Y-%m-%d";
 pub static ISO8601_DATETIME: &str = "%Y-%m-%dT%H:%M:%S";
 

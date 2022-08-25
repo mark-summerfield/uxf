@@ -1,8 +1,9 @@
 // Copyright © 2022 Mark Summerfield. All rights reserved.
 // License: GPLv3
 
+use crate::check::{check_ktype, check_vtype};
 use crate::key::Key;
-use crate::util::{check_ktype, check_vtype, escape};
+use crate::util::escape;
 use crate::uxf::Compare;
 use crate::value::Value;
 use anyhow::{bail, Result};

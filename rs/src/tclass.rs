@@ -1,8 +1,9 @@
 // Copyright © 2022 Mark Summerfield. All rights reserved.
 // License: GPLv3
 
+use crate::check::check_ttype;
 use crate::field::{check_fields, Field};
-use crate::util::{check_ttype, escape};
+use crate::util::escape;
 use crate::value::{Record, Value};
 use anyhow::{bail, Result};
 use std::fmt::Write as _;

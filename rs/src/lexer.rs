@@ -1,13 +1,11 @@
 // Copyright © 2022 Mark Summerfield. All rights reserved.
 // License: GPLv3
 
+use crate::check::{check_ktype, check_ttype, check_vtype};
 use crate::constants::*;
 use crate::event::{Event, OnEventFn};
 use crate::token::{Token, TokenKind, Tokens};
-use crate::util::{
-    check_ktype, check_ttype, check_vtype, realstr64, str_for_chars,
-    unescape,
-};
+use crate::util::{realstr64, str_for_chars, unescape};
 use crate::uxf::Uxf;
 use crate::value::Value;
 use anyhow::{bail, Result};
@@ -59,7 +57,7 @@ impl<'a> Lexer<'a> {
     fn scan_header(&mut self) -> Result<()> {
         self.lino = 1;
         self.pos =
-            if let Some(i) = self.text.iter().position(|&c| c == '\n') {
+            if let Some(i) = self.text.iter().position(|&c| c == NL) {
                 i
             } else {
                 bail!(
@@ -134,7 +132,7 @@ impl<'a> Lexer<'a> {
         let c = self.getch();
         if c.is_ascii_whitespace() {
             // ignore insignificant whitespace
-            if c == '\n' {
+            if c == NL {
                 self.lino += 1;
             }
             Ok(())
@@ -305,7 +303,7 @@ impl<'a> Lexer<'a> {
 
     fn peek_chunk(&self, start: usize) -> String {
         let i = if let Some(i) =
-            self.text[start..].iter().position(|&x| x == '\n')
+            self.text[start..].iter().position(|&x| x == NL)
         {
             i
         } else if start + 8 < self.text.len() {
@@ -329,7 +327,7 @@ impl<'a> Lexer<'a> {
 
     fn peek(&self) -> char {
         if self.at_end() {
-            '\0'
+            NUL
         } else {
             self.text[self.pos]
         }
@@ -339,7 +337,7 @@ impl<'a> Lexer<'a> {
         while self.pos < self.text.len()
             && self.text[self.pos].is_ascii_whitespace()
         {
-            if self.text[self.pos] == '\n' {
+            if self.text[self.pos] == NL {
                 self.lino += 1;
             }
             self.pos += 1;
@@ -367,7 +365,7 @@ impl<'a> Lexer<'a> {
                 self.text[self.pos..].iter().position(|&x| x == c)
             {
                 let text = &self.text[self.pos..i];
-                self.lino += text.iter().filter(|&c| *c == '\n').count();
+                self.lino += text.iter().filter(|&c| *c == NL).count();
                 self.pos = i + 1; // skip past char c
                 return Ok(str_for_chars(text));
             }
@@ -387,7 +385,7 @@ impl<'a> Lexer<'a> {
                 if x == cs {
                     let text = &self.text[self.pos..i];
                     self.lino +=
-                        text.iter().filter(|&c| *c == '\n').count();
+                        text.iter().filter(|&c| *c == NL).count();
                     self.pos = i + cs.len(); // skip past terminator
                     return Ok(i);
                 }
@@ -408,7 +406,7 @@ impl<'a> Lexer<'a> {
                 if x == cs {
                     let text = &self.text[self.pos..i];
                     self.lino +=
-                        text.iter().filter(|&c| *c == '\n').count();
+                        text.iter().filter(|&c| *c == NL).count();
                     self.pos = i + cs.len(); // skip past terminator
                     return Ok(str_for_chars(text));
                 }

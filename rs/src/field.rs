@@ -1,7 +1,7 @@
 // Copyright © 2022 Mark Summerfield. All rights reserved.
 // License: GPLv3
 
-use crate::util::{check_fieldname, check_vtype};
+use crate::check::{check_fieldname, check_vtype};
 use anyhow::{bail, Result};
 use std::{cmp::Ordering, collections::HashSet, fmt};
 

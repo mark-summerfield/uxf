@@ -310,7 +310,7 @@ pub fn parse_options(
     let on_event = on_event.unwrap_or_else(|| Rc::new(event::on_event));
     let filename: &str;
     let text: String;
-    if !uxt_or_filename.contains('\n') {
+    if !uxt_or_filename.contains(NL) {
         text = read_file(uxt_or_filename)?;
         filename = uxt_or_filename;
     } else {

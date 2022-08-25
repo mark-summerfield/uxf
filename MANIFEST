@@ -8,6 +8,7 @@ rs/src/tclass.rs
 rs/src/field.rs
 rs/src/uxf.rs # TODO (9) to_string_options()
 rs/src/format.rs
+rs/src/check.rs
 rs/src/util.rs
 rs/src/event.rs
 rs/src/constants.rs
