@@ -12,8 +12,8 @@ rs/src/check.rs
 rs/src/util.rs
 rs/src/event.rs
 rs/src/constants.rs
-rs/src/parser.rs # TODO (2) parse()
-rs/src/lexer.rs # TODO (1) lex() ###################
+rs/src/parser.rs # TODO (1) parse()
+rs/src/lexer.rs
 rs/src/token.rs
 rs/src/prettyprint.rs # TODO see (9) above
 rs/src/test_utils.rs

@@ -3,9 +3,9 @@
 
 use crate::event::OnEventFn;
 use crate::lexer::Lexer;
-use crate::token::{Token, TokenKind};
+use crate::token::{debug_tokens, Token, TokenKind, Tokens};
 use crate::uxf::{ParseOptions, Uxf};
-use anyhow::Result;
+use anyhow::{bail, Result};
 use std::rc::Rc;
 
 pub(crate) fn parse(
@@ -14,37 +14,58 @@ pub(crate) fn parse(
     options: ParseOptions,
     on_event: OnEventFn,
 ) -> Result<Uxf> {
-    let mut uxo = Uxf::new_on_event(Rc::clone(&on_event));
     let data: Vec<char> = text.chars().collect();
-    let mut lexer =
-        Lexer::new(&data, filename, Rc::clone(&on_event), &mut uxo);
-    let tokens = lexer.tokenize()?;
+    let mut lexer = Lexer::new(&data, filename, Rc::clone(&on_event));
+    let (custom, tokens) = lexer.tokenize()?;
+    let mut uxo = Uxf::new_on_event(Rc::clone(&on_event));
+    if !custom.is_empty() {
+        uxo.set_custom(&custom);
+    }
+    let mut parser = Parser::new(
+        text,
+        filename,
+        Rc::clone(&on_event),
+        &mut uxo,
+        options,
+        tokens,
+    );
+    parser.parse();
     debug_tokens(tokens); // TODO delete
-                          // TODO parse tokens and populate rest of uxo
     Ok(uxo)
 }
 
-fn debug_tokens(tokens: &[Token]) {
-    let mut indent = 0;
-    for token in tokens.iter() {
-        if matches!(
-            &token.kind,
-            TokenKind::ListEnd | TokenKind::MapEnd | TokenKind::TableEnd
-        ) {
-            indent -= 1;
-        }
-        if indent > 0 {
-            print!("{}", "  ".repeat(indent));
-        }
-        println!("{}", token);
-        if matches!(
-            &token.kind,
-            TokenKind::ListBegin
-                | TokenKind::MapBegin
-                | TokenKind::TableBegin
-        ) {
-            indent += 1;
+pub struct Parser<'a> {
+    text: &'a str,
+    filename: &'a str,
+    options: ParseOptions,
+    on_event: OnEventFn,
+    uxo: &'a mut Uxf,
+    had_root: bool,
+    tokens: &'a Tokens<'a>,
+    // TODO see uxf.py Parser clear()
+}
+
+impl<'a> Parser<'a> {
+    pub(crate) fn new(
+        text: &'a str,
+        filename: &'a str,
+        on_event: OnEventFn,
+        uxo: &'a mut Uxf,
+        options: ParseOptions,
+        tokens: &'a Tokens,
+    ) -> Self {
+        Parser {
+            text,
+            filename,
+            on_event: Rc::clone(&on_event),
+            uxo,
+            options,
+            tokens,
+            had_root: false,
         }
     }
-    println!("----------------------------------------");
+
+    pub(crate) fn parse(&mut self) -> Result<()> {
+        bail!("TODO Parser::parse()") // TODO parse tokens and populate rest of uxo
+    }
 }

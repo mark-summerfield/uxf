@@ -15,8 +15,8 @@ use std::{rc::Rc, str};
 pub struct Lexer<'a> {
     pub text: &'a Vec<char>,
     pub filename: &'a str,
+    pub custom: String,
     on_event: OnEventFn,
-    uxo: &'a mut Uxf,
     pos: usize,
     lino: usize,
     in_tclass: bool,
@@ -29,13 +29,12 @@ impl<'a> Lexer<'a> {
         text: &'a Vec<char>,
         filename: &'a str,
         on_event: OnEventFn,
-        uxo: &'a mut Uxf,
     ) -> Self {
         Lexer {
             text,
             filename,
+            custom: String::new(),
             on_event: Rc::clone(&on_event),
-            uxo,
             pos: 0,
             lino: 0,
             in_tclass: false,
@@ -44,14 +43,14 @@ impl<'a> Lexer<'a> {
         }
     }
 
-    pub fn tokenize(&mut self) -> Result<&Tokens> {
+    pub fn tokenize(&mut self) -> Result<(String, &Tokens)> {
         self.scan_header()?;
         self.maybe_read_file_comment()?;
         while !self.at_end() {
             self.scan_next()?;
         }
         self.add_token(TokenKind::Eof, Value::Null)?;
-        Ok(&self.tokens)
+        Ok((self.custom.clone(), &self.tokens))
     }
 
     fn scan_header(&mut self) -> Result<()> {
@@ -100,7 +99,7 @@ impl<'a> Lexer<'a> {
             )
         }
         if parts.len() > 2 {
-            self.uxo.set_custom(parts[2].trim());
+            self.custom = parts[2].trim().to_string();
         }
         Ok(())
     }

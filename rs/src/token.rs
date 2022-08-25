@@ -107,3 +107,28 @@ impl fmt::Display for TokenKind {
         write!(f, "{:?}", self)
     }
 }
+
+pub(crate) fn debug_tokens(tokens: &[Token]) {
+    let mut indent = 0;
+    for token in tokens.iter() {
+        if matches!(
+            &token.kind,
+            TokenKind::ListEnd | TokenKind::MapEnd | TokenKind::TableEnd
+        ) {
+            indent -= 1;
+        }
+        if indent > 0 {
+            print!("{}", "  ".repeat(indent));
+        }
+        println!("{}", token);
+        if matches!(
+            &token.kind,
+            TokenKind::ListBegin
+                | TokenKind::MapBegin
+                | TokenKind::TableBegin
+        ) {
+            indent += 1;
+        }
+    }
+    println!("----------------------------------------");
+}
