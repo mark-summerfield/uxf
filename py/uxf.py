@@ -3145,7 +3145,7 @@ if __name__ == '__main__':
 Provides linting and uxf to uxf conversion (to produce standardized
 human-friendly formatting or compact formatting).
 
-Converting uxf to uxf will alphabetically order any ttype definitionss and
+Converting uxf to uxf will alphabetically order any ttype definitions and
 will order map items by key (bytes < date < datetime < int <
 case-insensitive str). However, the order of imports is preserved (with any
 duplicates removed) to allow later imports to override earlier ones.''')
@@ -3169,7 +3169,7 @@ duplicates removed) to allow later imports to override earlier ones.''')
         'indent and wrapwidth)')
     parser.add_argument(
         '-i', '--indent', type=int, default=2,
-        help='indent spaces (0-8 spaces or 9 to use a tab; default 2; '
+        help='indent (0-8 spaces or 9 to use a tab; default 2; '
         'default is used if out of range; ignored if -c|--compact used)')
     parser.add_argument(
         '-w', '--wrapwidth', type=int, default=96,

@@ -1,4 +1,5 @@
-rs/src/bin/uxf.rs # TODO (0) cli tool: same usage as uxf.py
+# TODO (0) cli tool: same usage as uxf.py
+rs/src/bin/uxf.rs # manually set versions
 rs/src/lib.rs # add docs at the end
 rs/src/value.rs
 rs/src/key.rs
