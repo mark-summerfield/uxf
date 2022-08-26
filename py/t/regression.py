@@ -48,7 +48,8 @@ def main():
     util.check_server(SERVER_PATH)
     verbose, max_total, rust = get_config()
     print(f'testing {"rust" if rust else "python"}: ', end='', flush=True)
-    subprocess.run([UXF_RS_EXE if rust else UXF_PY_EXE, '-v'])
+    subprocess.run([UXF_RS_EXE if rust else UXF_PY_EXE,
+                    '-V' if rust else '-v'])
     cleanup()
     t = time.monotonic()
     uxffiles = sorted((name for name in next(os.walk('.'))[-1]
