@@ -3140,74 +3140,54 @@ See slides[12].py for examples of converting this format to HTML.>
 if __name__ == '__main__':
     import argparse
     import contextlib
-    import shutil
-    import textwrap
 
-    def get_usage(text):
-        try:
-            term_width = shutil.get_terminal_size()[0]
-        except AttributeError:
-            term_width = 80
-        return '\n\n'.join('\n'.join(
-            textwrap.wrap(para.strip(), term_width))
-            for para in text.strip().split('\n\n') if para.strip())
+    parser = argparse.ArgumentParser(description='''
+Provides linting and uxf to uxf conversion (to produce standardized
+human-friendly formatting or compact formatting).
 
-    parser = argparse.ArgumentParser(usage=get_usage('''\
-usage: uxf.py [-l|--lint] [-d|--dropunused] [-r|--replaceimports]
-[-iI|--indent=I] [-wW|--wrapwidth=W] [-c|--compact] <infile.uxf[.gz]> \
-[<outfile.uxf[.gz]>]
-
-or: python3 -m uxf ...same options as above...
-
-If an outfile is specified and ends .gz it will be gzip-compressed.
-If outfile is - output will be to stdout.
-If you just want linting either don't specify an outfile at all or
-use -l or --lint. Lint errors and fixes go to stderr.
-
-Use -d or --dropunused to drop unused ttype definitions and imports.
-
-Use -r or --replaceimports to replace imports with ttype definitions
-to make the outfile standalone (i.e., not dependent on any imports).
-
-(-d, -l, and -r may be grouped, e.g., -ldr, -dl, etc.)
-
-Indent spaces defaults to 2 and accepts a range of 0-9 (9 means use a tab).
-(Ignored if -c or --compact is used.)
-
-Wrapwidth defaults to 96 and accepts a range of 40-240.
-(Ignored if -c or --compact is used.)
-
-For indent and wrapwidth the default is silently used if an out of range
-value is given.
-
-To get an uncompressed .uxf file run: `uxf.py infile.uxf.gz outfile.uxf` or
-simply `gunzip infile.uxf.gz`.
-
-To produce a compressed and compact (but not human-friendly) .uxf file run:
-`uxf.py -c infile.uxf outfile.uxf.gz`
-
-Converting uxf to uxf will alphabetically order any ttypes and will order
-map items by key (bytes < date < datetime < int < case-insensitive str).
-However, the order of imports is preserved (with any duplicates removed)
-to allow later imports to override earlier ones.
-'''))
+Converting uxf to uxf will alphabetically order any ttype definitionss and
+will order map items by key (bytes < date < datetime < int <
+case-insensitive str). However, the order of imports is preserved (with any
+duplicates removed) to allow later imports to override earlier ones.''')
     parser.add_argument('-l', '--lint', action='store_true',
-                        help='show lint errors')
-    parser.add_argument('-d', '--dropunused', action='store_true',
-                        help='drop unused imports and ttypes')
-    parser.add_argument('-r', '--replaceimports', action='store_true',
-                        help='replace imports with their used ttypes')
+                        help='print lint warnings to stderr')
+    parser.add_argument(
+        '-d', '--dropunused', action='store_true',
+        help='drop unused imports and ttype definitions (best to use '
+        '-s|--standalone)')
+    parser.add_argument(
+        '-r', '--replaceimports', action='store_true',
+        help='replace imports with ttype definitions for ttypes that are '
+        'actually used to make the outfile standalone (best to use '
+        '-s|--standalone)')
+    parser.add_argument(
+        '-s', '--standalone', action='store_true',
+        help='same as -d|--dropunused and -r|--replaceimports together')
     parser.add_argument(
         '-c', '--compact', action='store_true',
-        help='use compact output format (not human friendly)')
+        help='use compact output format (not human friendly; ignores '
+        'indent and wrapwidth)')
     parser.add_argument(
         '-i', '--indent', type=int, default=2,
-        help='indent spaces (0-9; 9 means use a tab; default 2)')
-    parser.add_argument('-w', '--wrapwidth', type=int, default=96,
-                        help='wrapwidth (40-240; default 96)')
-    parser.add_argument('infile', nargs=1, help='required UXF infile')
-    parser.add_argument('outfile', nargs='?', help='optional UXF outfile')
+        help='indent spaces (0-8 spaces or 9 to use a tab; default 2; '
+        'default is used if out of range; ignored if -c|--compact used)')
+    parser.add_argument(
+        '-w', '--wrapwidth', type=int, default=96,
+        help='wrapwidth (40-240; default 96; default is used if out of '
+        'range; ignored if -c|--compact used)')
+    parser.add_argument('-v', '--version', action='version',
+                        version=f'%(prog)s v{__version__} (uxf {VERSION})')
+    parser.add_argument(
+        'infile', nargs=1,
+        help='required UXF infile (can have any suffix, i.e., not just '
+        '.uxf, and be gzip-compressed if it ends with .gz)')
+    parser.add_argument(
+        'outfile', nargs='?',
+        help='optional UXF outfile; use - to write to stdout; not needed '
+        'purely for linting; gzip-compressed if outfile ends .gz')
     config = parser.parse_args()
+    if config.standalone:
+        config.dropunused = config.replaceimports = config.standalone
     if 0 <= config.indent <= 9:
         config.indent = (' ' * config.indent) if config.indent < 9 else '\t'
     infile = config.infile[0]

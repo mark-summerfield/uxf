@@ -22,7 +22,8 @@ try:
     SERVER_PATH = os.path.abspath(PATH + '/../../misc')
     sys.path.append(os.path.abspath(os.path.join(PATH, '../')))
     import uxf
-    UXF_EXE = os.path.join(PATH, '../uxf.py')
+    UXF_PY_EXE = os.path.join(PATH, '../uxf.py')
+    UXF_RS_EXE = os.path.expanduser('~/opt/bin/uxf')
     UXFCONVERT_EXE = os.path.join(PATH, '../uxfconvert.py')
     SLIDES = os.path.join(PATH, '../eg/slides.py')
     SLIDES_SLD = os.path.join(PATH, '../eg/slides.sld')
@@ -44,9 +45,10 @@ finally:
 
 
 def main():
-    print(f'testing uxf.py {uxf.__version__} (UXF {uxf.VERSION})')
     util.check_server(SERVER_PATH)
-    max_total, verbose = get_config()
+    verbose, max_total, rust = get_config()
+    print(f'testing {"rust" if rust else "python"}: ', end='', flush=True)
+    subprocess.run([UXF_RS_EXE if rust else UXF_PY_EXE, '-v'])
     cleanup()
     t = time.monotonic()
     uxffiles = sorted((name for name in next(os.walk('.'))[-1]
@@ -54,33 +56,35 @@ def main():
     print('0', end='', flush=True)
     total = ok = 0
     total, ok = test_uxf_files(uxffiles, verbose=verbose,
-                               max_total=max_total)
+                               max_total=max_total, rust=rust)
     print('1', end='', flush=True)
-    total, ok = test_uxf_loads_dumps_str(
-        uxffiles, total, ok, verbose=verbose, max_total=max_total)
-    print('2', end='', flush=True)
-    total, ok = test_uxf_equal(uxffiles, total, ok, verbose=verbose,
-                               max_total=max_total)
-    print('3', end='', flush=True)
-    total, ok = test_uxfconvert(uxffiles, total, ok, verbose=verbose,
-                                max_total=max_total)
-    print('4', end='', flush=True)
-    total, ok = test_table_is_scalar(total, ok, verbose=verbose)
-    print('5', end='', flush=True)
-    if total < max_total:
-        total, ok = test_slides(SLIDES, total, ok, verbose=verbose)
-        print('6', end='', flush=True)
-    if total < max_total:
-        total, ok = test_format(total, ok, verbose=verbose)
-        print('7', end='', flush=True)
-    if total < max_total:
-        total, ok = test_externals(
-            (('A', TEST_TABLE), ('B', TEST_SQLITE), ('C', TEST_LINTS),
-             ('D', TEST_IMPORTS), ('E', TEST_MERGE), ('F', TEST_INCLUDE),
-             ('G', TEST_EDITABLETUPLE), ('H', TEST_TLM),
-             ('I', TEST_COMPARE), ('J', TEST_VISIT), ('Z', TEST_ERRORS)),
-            total, ok, verbose=verbose, max_total=max_total)
-        time.sleep(0.2) # allow Z to be visible
+    if not rust:
+        total, ok = test_uxf_loads_dumps_str(
+            uxffiles, total, ok, verbose=verbose, max_total=max_total)
+        print('2', end='', flush=True)
+        total, ok = test_uxf_equal(uxffiles, total, ok, verbose=verbose,
+                                   max_total=max_total)
+        print('3', end='', flush=True)
+        total, ok = test_uxfconvert(uxffiles, total, ok, verbose=verbose,
+                                    max_total=max_total)
+        print('4', end='', flush=True)
+        total, ok = test_table_is_scalar(total, ok, verbose=verbose)
+        print('5', end='', flush=True)
+        if total < max_total:
+            total, ok = test_slides(SLIDES, total, ok, verbose=verbose)
+            print('6', end='', flush=True)
+        if total < max_total:
+            total, ok = test_format(total, ok, verbose=verbose)
+            print('7', end='', flush=True)
+        if total < max_total:
+            total, ok = test_externals(
+                (('A', TEST_TABLE), ('B', TEST_SQLITE), ('C', TEST_LINTS),
+                 ('D', TEST_IMPORTS), ('E', TEST_MERGE),
+                 ('F', TEST_INCLUDE), ('G', TEST_EDITABLETUPLE),
+                 ('H', TEST_TLM), ('I', TEST_COMPARE), ('J', TEST_VISIT),
+                 ('Z', TEST_ERRORS)), total, ok, verbose=verbose,
+                max_total=max_total)
+            time.sleep(0.2) # allow Z to be visible
     if ok == total and os.isatty(sys.stdout.fileno()):
         span = min(1000, total // 10)
         for c in ('\b', ' ', '\b'):
@@ -88,8 +92,9 @@ def main():
     t = time.monotonic() - t
     if total == ok:
         print(f'{ok:,}/{total:,} All OK ({t:.3f} sec)')
-        cmd = prep_cmd([BENCHMARK, '--quiet', '1'])
-        subprocess.run(cmd)
+        if not rust:
+            cmd = prep_cmd([BENCHMARK, '--quiet', '1'])
+            subprocess.run(cmd)
         cleanup()
     else:
         print(f': {ok:,}/{total:,} • FAIL ({t:.3f} sec)')
@@ -97,18 +102,22 @@ def main():
 
 def get_config():
     verbose = False
+    rust = False
     max_total = 999999
     for arg in sys.argv[1:]:
         if arg in {'-h', '--help'}:
-            raise SystemExit('usage: regression.py [-v|--verbose] [max]')
+            raise SystemExit('usage: regression.py [-v|--verbose] '
+                             '[-r|--rust] [max]')
         elif arg in {'-v', '--verbose'}:
             verbose = True
+        elif arg in {'-r', '--rust'}:
+            rust = True
         elif isasciidigit(arg):
             max_total = int(arg)
-    return max_total, verbose
+    return verbose, max_total, rust
 
 
-def test_uxf_files(uxffiles, *, verbose, max_total):
+def test_uxf_files(uxffiles, *, verbose, max_total, rust):
     total = ok = 0
     for name in uxffiles:
         total += 1
@@ -118,7 +127,7 @@ def test_uxf_files(uxffiles, *, verbose, max_total):
         expected = f'expected/{name}'
         if expected.endswith('.gz'):
             expected = expected[:-3]
-        cmd = prep_cmd([UXF_EXE, name, actual])
+        cmd = prep_cmd([UXF_RS_EXE if rust else UXF_PY_EXE, name, actual])
         reply = subprocess.run(cmd, capture_output=True, text=True)
         cmd = ' '.join(cmd)
         if reply.returncode != 0:

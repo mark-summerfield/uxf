@@ -26,7 +26,10 @@ rs/tests/test_tclass.rs
 rs/tests/test_field.rs
 rs/tests/test_uxf.rs # TODO more, incl. == and is_equivalent()
 rs/Cargo.toml
+
 rs/README.md
+rs/deploy.sh
+rs/deploy.bat
 
 py/uxf.py
 py/uxfconvert.py
