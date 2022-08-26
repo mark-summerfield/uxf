@@ -3,7 +3,7 @@
 
 use crate::event::OnEventFn;
 use crate::lexer::Lexer;
-use crate::token::{debug_tokens, Token, TokenKind, Tokens};
+use crate::token::{debug_tokens, Tokens};
 use crate::uxf::{ParseOptions, Uxf};
 use anyhow::{bail, Result};
 use std::rc::Rc;
@@ -29,7 +29,7 @@ pub(crate) fn parse(
         options,
         tokens,
     );
-    parser.parse();
+    parser.parse()?;
     debug_tokens(tokens); // TODO delete
     Ok(uxo)
 }

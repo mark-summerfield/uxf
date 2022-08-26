@@ -177,12 +177,6 @@ mod tests {
     }
 
     #[test]
-    fn t_uxf_parse110() {
-        let err = uxf::parse("uxf 1.0\n").unwrap_err(); // invalid: no data
-        check_error(&err.to_string(), 110, "");
-    }
-
-    #[test]
     fn t_uxf_parse120() {
         let err = uxf::parse("uxf1.0\n").unwrap_err(); // invalid
         check_error(&err.to_string(), 120, "");

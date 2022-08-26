@@ -6,7 +6,6 @@ use crate::constants::*;
 use crate::event::{Event, OnEventFn};
 use crate::token::{Token, TokenKind, Tokens};
 use crate::util::{hex_as_bytes, realstr64, str_for_chars, unescape};
-use crate::uxf::Uxf;
 use crate::value::Value;
 use anyhow::{bail, Result};
 use chrono::{NaiveDate, NaiveDateTime};
@@ -58,7 +57,7 @@ impl<'a> Lexer<'a> {
         self.pos = if let Some(i) = self.text.iter().position(|&c| c == NL)
         {
             i
-        } else {
+        } else { // "impossible" because if no NL we assume it is a filename
             bail!(
                 "E110:{}:{}:missing UXF file header or missing data \
                     or empty file",
