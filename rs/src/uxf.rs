@@ -123,7 +123,7 @@ impl Uxf {
     /// needed.
     /// This is a convenience wrapper for
     /// `to_string_options(&Format::default(), None)`
-    pub fn to_str(&self) -> Result<()> {
+    pub fn to_str(&self) -> Result<String> {
         self.to_string_options(&Format::default(), None)
     }
 
@@ -133,7 +133,7 @@ impl Uxf {
     /// Use `to_string()` for compact output if human readability isn't
     /// needed.
     /// This is a convenience wrapper for `to_string_options(&format, None)`
-    pub fn to_string_format(&self, format: &Format) -> Result<()> {
+    pub fn to_string_format(&self, format: &Format) -> Result<String> {
         self.to_string_options(format, None)
     }
 
@@ -147,7 +147,7 @@ impl Uxf {
         &self,
         format: &Format,
         on_event: Option<OnEventFn>,
-    ) -> Result<()> {
+    ) -> Result<String> {
         // TODO writer (in addition to Display/to_string()
         bail!("TODO: to_string_options") // TODO prettyprint
     }
@@ -323,6 +323,7 @@ pub fn parse_options(
 bitflags! {
     #[derive(Default)]
     pub struct ParseOptions: u8 {
+        const AS_IS = 0b00;
         const DROP_UNUSED_TTYPES = 0b01;
         const REPLACE_IMPORTS = 0b10;
         const AS_STANDALONE = Self::DROP_UNUSED_TTYPES.bits |

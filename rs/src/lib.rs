@@ -40,4 +40,6 @@ pub mod util;
 pub mod uxf;
 pub mod value;
 
+pub use crate::event::on_event;
+pub use crate::format::Format;
 pub use crate::uxf::{parse, parse_options, ParseOptions, Uxf};

@@ -3,40 +3,90 @@
 
 use anyhow::{bail, Result};
 use clap::{AppSettings, Parser};
-use std::path::{Path, PathBuf};
+use std::{
+    env,
+    path::{Path, PathBuf},
+    rc::Rc,
+};
 
 fn main() -> Result<()> {
     let config = Config::parse();
-    // TODO delete
-    //println!("lint           {:?}", config.lint);
-    //println!("dropunused     {:?}", config.dropunused);
-    //println!("replaceimports {:?}", config.replaceimports);
-    //println!("standalone     {:?}", config.standalone);
-    //println!("compact        {:?}", config.compact);
-    //println!("indent         {:?}", config.indent);
-    //println!("wrapwidth      {:?}", config.wrapwidth);
-    //println!("infile         {:?}", config.infile);
-    //println!("outfile        {:?}", config.outfile);
-    // TODO end delete
-
-    if let Some(outfile) = config.outfile {
-        check_same_file(&config.infile, &outfile)?;
+    let inbuf = canonicalize_file(&config.infile)?;
+    let infile = inbuf.to_string_lossy().to_string();
+    let mut outfile = String::new();
+    if let Some(outbuf) = &config.outfile {
+        check_same_file(&inbuf, outbuf)?;
+        let outpath = canonicalize_file(outbuf)?;
+        outfile = outpath.to_string_lossy().to_string();
     }
-
+    let options = parse_options(&config);
+    let uxo = uxf::parse_options(
+        &infile,
+        options,
+        Some(Rc::new(if config.lint {
+            uxf::on_event
+        } else {
+            move |_event| {}
+        })),
+    )?;
+    if !outfile.is_empty() {
+        output(&outfile, &config, &uxo)?;
+    }
     Ok(())
+}
+
+fn output(outfile: &str, config: &Config, uxo: &uxf::Uxf) -> Result<()> {
+    let text = if config.compact {
+        uxo.to_string()
+    } else {
+        uxo.to_string_options(
+            &uxf::Format::new(config.indent, config.wrapwidth, None),
+            Some(Rc::new(if config.lint {
+                uxf::on_event
+            } else {
+                move |_event| {} // ignore lints
+            })),
+        )?
+    };
+    if outfile == "-" {
+        println!("{}", text);
+    } else {
+        // TODO write text to (possibly gzipped) file
+    }
+    Ok(())
+}
+
+fn parse_options(config: &Config) -> uxf::ParseOptions {
+    let mut options = uxf::ParseOptions::AS_IS;
+    if config.standalone || config.dropunused {
+        options |= uxf::ParseOptions::DROP_UNUSED_TTYPES;
+    }
+    if config.standalone || config.replaceimports {
+        options |= uxf::ParseOptions::REPLACE_IMPORTS;
+    }
+    options
 }
 
 fn check_same_file(a: &Path, b: &Path) -> Result<()> {
     if b != PathBuf::from("-") {
-        let b =
-            if let Ok(b) = b.canonicalize() { b } else { b.to_path_buf() };
-        let a =
-            if let Ok(a) = a.canonicalize() { a } else { a.to_path_buf() };
-        if b == a {
+        let a = canonicalize_file(a)?;
+        let b = canonicalize_file(b)?;
+        if a == b {
             bail!("won't overwrite {}", a.display());
         }
     }
     Ok(())
+}
+
+fn canonicalize_file(p: &Path) -> Result<PathBuf> {
+    let mut p =
+        if let Ok(p) = p.canonicalize() { p } else { p.to_path_buf() };
+    if p.is_relative() {
+        let mut cwd = env::current_dir()?;
+        cwd.push(p);
+        p = cwd;
+    }
+    Ok(p)
 }
 
 #[derive(Parser, Debug)]

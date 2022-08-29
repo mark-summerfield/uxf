@@ -5,7 +5,7 @@ use crate::check::{check_ktype, check_ttype, check_vtype};
 use crate::constants::*;
 use crate::event::{Event, OnEventFn};
 use crate::token::{Token, TokenKind, Tokens};
-use crate::util::{hex_as_bytes, realstr64, str_for_chars, unescape};
+use crate::util::{hex_as_bytes, str_for_chars, unescape};
 use crate::value::Value;
 use anyhow::{bail, Result};
 use chrono::{NaiveDate, NaiveDateTime};
