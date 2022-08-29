@@ -1,5 +1,4 @@
-# TODO (0.i) cli tool: complete so I can start black box testing
-# TODO (0.ii) make benchmark.py capable of using rust uxf
+# TODO (0) cli tool: complete so I can start black box testing
 rs/src/bin/uxf.rs
 rs/src/lib.rs # add docs at the end
 rs/src/value.rs

@@ -1,26 +1,41 @@
 // Copyright © 2022 Mark Summerfield. All rights reserved.
 // License: GPLv3
 
-use anyhow::Result;
+use anyhow::{bail, Result};
 use clap::{AppSettings, Parser};
-use std::path::PathBuf;
+use std::path::{Path, PathBuf};
 
 fn main() -> Result<()> {
     let config = Config::parse();
-    println!("lint           {:?}", config.lint);
-    println!("dropunused     {:?}", config.dropunused);
-    println!("replaceimports {:?}", config.replaceimports);
-    println!("standalone     {:?}", config.standalone);
-    println!("compact        {:?}", config.compact);
-    println!("indent         {:?}", config.indent);
-    println!("wrapwidth      {:?}", config.wrapwidth);
-    println!("infile         {:?}", config.infile);
-    println!("outfile        {:?}", config.outfile);
+    // TODO delete
+    //println!("lint           {:?}", config.lint);
+    //println!("dropunused     {:?}", config.dropunused);
+    //println!("replaceimports {:?}", config.replaceimports);
+    //println!("standalone     {:?}", config.standalone);
+    //println!("compact        {:?}", config.compact);
+    //println!("indent         {:?}", config.indent);
+    //println!("wrapwidth      {:?}", config.wrapwidth);
+    //println!("infile         {:?}", config.infile);
+    //println!("outfile        {:?}", config.outfile);
+    // TODO end delete
 
-    // TODO
-    let uxo = uxf::parse("uxf 1\n#<A Test>\n[]")?;
-    println!("uxf cli:\n\n{}", uxo);
+    if let Some(outfile) = config.outfile {
+        check_same_file(&config.infile, &outfile)?;
+    }
 
+    Ok(())
+}
+
+fn check_same_file(a: &Path, b: &Path) -> Result<()> {
+    if b != PathBuf::from("-") {
+        let b =
+            if let Ok(b) = b.canonicalize() { b } else { b.to_path_buf() };
+        let a =
+            if let Ok(a) = a.canonicalize() { a } else { a.to_path_buf() };
+        if b == a {
+            bail!("won't overwrite {}", a.display());
+        }
+    }
     Ok(())
 }
 
