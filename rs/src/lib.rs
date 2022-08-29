@@ -42,4 +42,4 @@ pub mod value;
 
 pub use crate::event::on_event;
 pub use crate::format::Format;
-pub use crate::uxf::{parse, parse_options, ParseOptions, Uxf};
+pub use crate::uxf::{parse, parse_options, ParserOptions, Uxf};

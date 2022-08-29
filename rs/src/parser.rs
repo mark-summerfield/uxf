@@ -4,14 +4,14 @@
 use crate::event::OnEventFn;
 use crate::lexer::Lexer;
 use crate::token::{debug_tokens, Tokens};
-use crate::uxf::{ParseOptions, Uxf};
+use crate::uxf::{ParserOptions, Uxf};
 use anyhow::{bail, Result};
 use std::rc::Rc;
 
 pub(crate) fn parse(
     text: &str,
     filename: &str,
-    options: ParseOptions,
+    options: ParserOptions,
     on_event: OnEventFn,
 ) -> Result<Uxf> {
     let data: Vec<char> = text.chars().collect();
@@ -37,7 +37,7 @@ pub(crate) fn parse(
 pub struct Parser<'a> {
     text: &'a str,
     filename: &'a str,
-    options: ParseOptions,
+    options: ParserOptions,
     on_event: OnEventFn,
     uxo: &'a mut Uxf,
     had_root: bool,
@@ -51,7 +51,7 @@ impl<'a> Parser<'a> {
         filename: &'a str,
         on_event: OnEventFn,
         uxo: &'a mut Uxf,
-        options: ParseOptions,
+        options: ParserOptions,
         tokens: &'a Tokens,
     ) -> Self {
         Parser {

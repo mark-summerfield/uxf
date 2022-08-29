@@ -160,7 +160,7 @@ mod tests {
         assert!(&events.borrow().is_empty());
         let err = uxf::parse_options(
             "uxf 1", // invalid since no data: interpreted as filename!
-            uxf::ParseOptions::default(),
+            uxf::ParserOptions::default(),
             Some(Rc::new({
                 let events = Rc::clone(&events);
                 move |event| {
@@ -194,7 +194,7 @@ mod tests {
         assert!(&events.borrow().is_empty());
         let _uxo = uxf::parse_options(
             "uxf 99\n[]",
-            uxf::ParseOptions::default(),
+            uxf::ParserOptions::default(),
             Some(Rc::new({
                 let events = Rc::clone(&events);
                 move |event| {

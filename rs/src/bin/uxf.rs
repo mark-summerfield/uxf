@@ -3,8 +3,11 @@
 
 use anyhow::{bail, Result};
 use clap::{AppSettings, Parser};
+use flate2::{write::GzEncoder, Compression};
 use std::{
     env,
+    fs::File,
+    io::Write,
     path::{Path, PathBuf},
     rc::Rc,
 };
@@ -19,15 +22,11 @@ fn main() -> Result<()> {
         let outpath = canonicalize_file(outbuf)?;
         outfile = outpath.to_string_lossy().to_string();
     }
-    let options = parse_options(&config);
+    let options = parser_options(&config);
     let uxo = uxf::parse_options(
         &infile,
         options,
-        Some(Rc::new(if config.lint {
-            uxf::on_event
-        } else {
-            move |_event| {}
-        })),
+        if config.lint { None } else { Some(Rc::new(move |_event| {})) },
     )?;
     if !outfile.is_empty() {
         output(&outfile, &config, &uxo)?;
@@ -41,28 +40,33 @@ fn output(outfile: &str, config: &Config, uxo: &uxf::Uxf) -> Result<()> {
     } else {
         uxo.to_string_options(
             &uxf::Format::new(config.indent, config.wrapwidth, None),
-            Some(Rc::new(if config.lint {
-                uxf::on_event
+            if config.lint {
+                None
             } else {
-                move |_event| {} // ignore lints
-            })),
+                Some(Rc::new(move |_event| {}))
+            },
         )?
     };
     if outfile == "-" {
         println!("{}", text);
+    } else if outfile.ends_with(".gz") {
+        let mut out = GzEncoder::new(Vec::new(), Compression::best());
+        out.write_all(text.as_bytes())?;
+        out.finish()?;
     } else {
-        // TODO write text to (possibly gzipped) file
+        let mut file = File::create(outfile)?;
+        file.write_all(text.as_bytes())?
     }
     Ok(())
 }
 
-fn parse_options(config: &Config) -> uxf::ParseOptions {
-    let mut options = uxf::ParseOptions::AS_IS;
+fn parser_options(config: &Config) -> uxf::ParserOptions {
+    let mut options = uxf::ParserOptions::DEFAULT;
     if config.standalone || config.dropunused {
-        options |= uxf::ParseOptions::DROP_UNUSED_TTYPES;
+        options |= uxf::ParserOptions::DROP_UNUSED_TTYPES;
     }
     if config.standalone || config.replaceimports {
-        options |= uxf::ParseOptions::REPLACE_IMPORTS;
+        options |= uxf::ParserOptions::REPLACE_IMPORTS;
     }
     options
 }
@@ -102,7 +106,7 @@ case-insensitive str). However, the order of imports is preserved (with \
 any duplicates removed) to allow later imports to override earlier ones."
 )]
 struct Config {
-    /// Print lint warnings to stderr
+    /// Print lints to stderr
     #[clap(short, long, action)]
     lint: bool,
 
@@ -141,7 +145,7 @@ struct Config {
     infile: PathBuf,
 
     /// Optional UXF outfile; use - to write to stdout; not needed purely
-    /// for linting; gzip-compressed if outfile ends .gz')
+    /// for linting; gzip-compressed if outfile ends with .gz)
     #[clap(value_parser)]
     outfile: Option<PathBuf>,
 }

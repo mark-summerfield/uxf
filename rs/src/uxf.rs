@@ -288,9 +288,9 @@ impl fmt::Display for Uxf {
 /// Then in either case the UXF text is parsed into a `Uxf` object if
 /// possible, using the default `on_event` event handler.
 /// This is just a convenience wrapper for
-/// `parse_options(uxt_or_filename, ParseOptions::default(), None)`
+/// `parse_options(uxt_or_filename, ParserOptions::default(), None)`
 pub fn parse(uxt_or_filename: &str) -> Result<Uxf> {
-    parse_options(uxt_or_filename, ParseOptions::default(), None)
+    parse_options(uxt_or_filename, ParserOptions::default(), None)
 }
 
 /// If `uxt_or_filename`' contains '\n` it is taken to be a UXF file
@@ -304,7 +304,7 @@ pub fn parse(uxt_or_filename: &str) -> Result<Uxf> {
 /// `on_event` event handler (or the default handler if `None`).
 pub fn parse_options(
     uxt_or_filename: &str,
-    options: ParseOptions,
+    options: ParserOptions,
     on_event: Option<OnEventFn>,
 ) -> Result<Uxf> {
     let on_event = on_event.unwrap_or_else(|| Rc::new(event::on_event));
@@ -322,8 +322,8 @@ pub fn parse_options(
 
 bitflags! {
     #[derive(Default)]
-    pub struct ParseOptions: u8 {
-        const AS_IS = 0b00;
+    pub struct ParserOptions: u8 {
+        const DEFAULT = 0b00;
         const DROP_UNUSED_TTYPES = 0b01;
         const REPLACE_IMPORTS = 0b10;
         const AS_STANDALONE = Self::DROP_UNUSED_TTYPES.bits |

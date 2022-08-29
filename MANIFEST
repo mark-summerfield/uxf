@@ -1,4 +1,3 @@
-# TODO (0) cli tool: output to (possibly gzipped) file
 rs/src/bin/uxf.rs
 rs/src/lib.rs # add docs at the end
 rs/src/value.rs
@@ -14,7 +13,7 @@ rs/src/check.rs
 rs/src/util.rs
 rs/src/event.rs
 rs/src/constants.rs
-rs/src/parser.rs # TODO (1) parse()
+rs/src/parser.rs # TODO (1) parse() (& test using py/t/regression.py -r)
 rs/src/lexer.rs
 rs/src/token.rs
 rs/src/prettyprint.rs # TODO see (9) above
