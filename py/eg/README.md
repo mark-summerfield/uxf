@@ -23,7 +23,7 @@ a hierarchy. Note that the pretty printer in `uxf.py` uses the visit API.
 This example shows how you might implement an “include” facility in a UXF
 file. For example, given:
 
-    uxf 1.0 UXF Include
+    uxf 1 UXF Include
     #<This is main.uxf>
     =include filename:str
     (include

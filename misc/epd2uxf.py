@@ -13,7 +13,7 @@ def main():
     with sqlite3.connect(os.path.expanduser('~/data/playlists.epd')) as db:
         cursor = db.cursor()
         with gzip.open(infile, 'wt', encoding='utf-8') as out:
-            out.write('uxf 1.0 EPD (SQLite)\n')
+            out.write('uxf 1 EPD (SQLite)\n')
             out.write('= Categories CID Title Selected\n')
             out.write('= Playlists PID Title CID Selected\n')
             out.write('= Tracks TID Title Seconds Filename Selected PID\n')

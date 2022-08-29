@@ -1,4 +1,4 @@
-uxf 1.0
+uxf 1
 #<last modified 1 April 2001 by John Doe>
 =Owner name:str organization:str
 =#<use IP address in case network name resolution is not working>

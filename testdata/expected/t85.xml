@@ -1,5 +1,5 @@
 <?xml version="1.0" ?>
-<uxf version="1.0" custom="PrettyPrint Test">
+<uxf version="1" custom="PrettyPrint Test">
   <comment>This file is for quick visual tests of the PrettyPrint experiment.</comment>
   <imports>
     <import filename="numeric"/>

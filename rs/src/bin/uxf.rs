@@ -18,7 +18,7 @@ fn main() -> Result<()> {
     println!("outfile        {:?}", config.outfile);
 
     // TODO
-    let uxo = uxf::parse("uxf 1.0\n#<A Test>\n[]")?;
+    let uxo = uxf::parse("uxf 1\n#<A Test>\n[]")?;
     println!("uxf cli:\n\n{}", uxo);
 
     Ok(())

@@ -1,4 +1,4 @@
-uxf 1.0
+uxf 1
 =Pair First:int Second:list
 (Pair
   1 []

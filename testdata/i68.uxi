@@ -1,4 +1,4 @@
-uxf 1.0 UXF Include
+uxf 1 UXF Include
 =include filename:str
 (include
     <t15.uxf>

@@ -1,5 +1,5 @@
 <?xml version="1.0" ?>
-<uxf version="1.0" custom="EPD (SQLite full list of tables)">
+<uxf version="1" custom="EPD (SQLite full list of tables)">
   <comment>Suitable for SQLite conversion</comment>
   <ttypes>
     <ttype name="Categories">

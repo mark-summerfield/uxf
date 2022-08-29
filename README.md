@@ -73,10 +73,10 @@ Note that it is also possible to represent [Custom Types](#custom-types).
 
 ### Minimal empty UXF
 
-    uxf 1.0
+    uxf 1
     []
 
-Every UXF file consists of a single header line (starting `uxf 1.0`,
+Every UXF file consists of a single header line (starting `uxf 1`,
 optionally followed by custom text). This may be followed by an optional
 file-level comment, then any _ttype_ (table type) imports, then any _ttype_
 definitions. After this comes the data in the form of a single `list`,
@@ -131,7 +131,7 @@ processors that aren't aware of the use of custom types as such.
 Here, we'll look at both approaches for two different custom types, a
 point and an enumeration.
 
-    uxf 1.0
+    uxf 1
     [
       {<Point> [1.4 9.8]} {<Point> [-0.7 3.0]} {<Point> [2.1 -6.3]}
       <TrafficLightGreen> <TrafficLightAmber> <TrafficLightRed>
@@ -142,7 +142,7 @@ This first approach shows three points, each represented by a `map` with a
 ``real``s for the _x_ and _y_ coordinates. The example also shows a traffic
 light enumeration each represented by a `str`.
 
-    uxf 1.0
+    uxf 1
     [
       {<Point> [1.4 9.8 -0.7 3.0 2.1 -6.3]}
       <TrafficLightGreen> <TrafficLightAmber> <TrafficLightRed>
@@ -158,7 +158,7 @@ represented in terms of built-in UXF types. Nonetheless, an application that
 reads such UXF data can recognize and convert to and from these
 representations to and from the actual types.
 
-    uxf 1.0
+    uxf 1
     =Point x:real y:real
     =TrafficLightGreen
     =TrafficLightAmber
@@ -243,13 +243,13 @@ precede the _first_ fragment.
 
 ### Minimal UXFs
 
-    uxf 1.0
+    uxf 1
     {}
 
 We saw earlier an example of a minimal UXF file with an empty list; here we
 have one with an empty map.
 
-    uxf 1.0
+    uxf 1
     =Pair first second
     (Pair)
 
@@ -257,7 +257,7 @@ Here is a UXF with a _ttype_ specifying a Pair that has two fields each of
 which can hold _any_ UXF value (including nested collections). In this case
 the data is a single _empty_ Pair table.
 
-    uxf 1.0
+    uxf 1
     =Pair first second
     (Pair (Pair 1 2) (Pair 3 (Pair 4 5)))
 
@@ -283,7 +283,7 @@ file.
 
 The most obvious translation would be to a `list` of ``list``s:
 
-    uxf 1.0
+    uxf 1
     [
       [<Price List> <Date> <Price> <Quantity> <ID> <Description>]
       [2022-09-21 3.99 2 <CH1-A2> <Chisels (pair), 1in &amp; 1¼in>]
@@ -301,7 +301,7 @@ concrete type (all ``str``s for the first row, and `date`, `real`, `int`,
 
 The most _appropriate_ UXF equivalent is to use a UXF `table`:
 
-    uxf 1.0
+    uxf 1
     =PriceList Date Price Quantity ID Description
     (PriceList
       2022-09-21 3.99 2 <CH1-A2> <Chisels (pair), 1in &amp; 1¼in> 
@@ -338,7 +338,7 @@ names, and could easily store two or more tables (as we'll see later).
 Although the UXF processor will correctly determine the field types, what if
 we want to constrain each field's value to a particular type?
 
-    uxf 1.0 Price List
+    uxf 1 Price List
     =PriceList Date:date Price:real Quantity:int ID:str Description:str
     (PriceList
       2022-09-21 3.99 2 <CH1-A2> <Chisels (pair), 1in &amp; 1¼in> 
@@ -352,7 +352,7 @@ UXF processor is expected to be able to check that each value is of the
 correct type. Omit the type altogether (as in the earliler examples) to
 indicate _any_ valid table type.
 
-    uxf 1.0 Price List
+    uxf 1 Price List
     =PriceList Date:date Price:real Quantity:int ID:str Description:str
     (PriceList)
 
@@ -381,7 +381,7 @@ Here is a `.ini` example from Wikipedia:
 
 And here is a simple UXF alternative:
 
-    uxf 1.0
+    uxf 1
     #<last modified 1 April 2001 by John Doe>
     {
      <owner> {<name> <John Doe> <organization> <Acme Widgets Inc.>}
@@ -400,7 +400,7 @@ list, map, or table (before any data).
 As it stands, this example doesn't appear to add much to the `.ini` version.
 Here's a version with types and tables.
 
-    uxf 1.0
+    uxf 1
     #<last modified 1 April 2001 by John Doe>
     =Owner name:str organization:str
     =#<use IP address in case network name resolution is not working>
@@ -445,7 +445,7 @@ In the following subsubsections we'll see a much more complex example.
 This first equivalent is a simplistic conversion that we'll improve in
 stages.
 
-    uxf 1.0 MyApp 1.0.0 Config
+    uxf 1 MyApp 1.0.0 Config
     =Files Kind Filename
     {
       <General> {
@@ -495,7 +495,7 @@ of two untyped fields.
 Of course, we can nest as deep as we like and mix ``list``s and ``map``s.
 For example, here's an alternative:
 
-    uxf 1.0 MyApp 1.1.0 Config
+    uxf 1 MyApp 1.1.0 Config
     =pos x:int y:int
     =size width:int height:int
     {
@@ -539,7 +539,7 @@ key, or at the start of a table before the _ttype_ name.
 This version probably provides a reasonable balance between human
 readability and programming convenience. But it is possible to go further.
 
-    uxf 1.0 MyApp 1.2.0 Config
+    uxf 1 MyApp 1.2.0 Config
     =pos x:int y:int
     =size width:int height:int
     {#<We want str keys and map values> str map
@@ -572,7 +572,7 @@ Programatically, this is easy to handle and has the virtue of compactness.
 But its human readability seems a bit less than the previous more verbose
 version.
 
-    uxf 1.0 MyApp 1.3.0 Config
+    uxf 1 MyApp 1.3.0 Config
     =#<Window dimensions> Geometry x:int y:int width:int height:int scale:real
     {#<Notes on this configuration file format> str
       <General> {#<Miscellaneous settings> str
@@ -652,7 +652,7 @@ Here's an example of GeoJSON data from Wikipedia:
 
 And here's a possible UXF alternative:
 
-    uxf 1.0
+    uxf 1
     =Feature geometry properties:map
     =LineString x:real y:real
     =Point x:real y:real
@@ -708,7 +708,7 @@ Here is a TOML example from the TOML website and Wikipedia:
 
 And here's a possible UXF alternative:
 
-    uxf 1.0
+    uxf 1
     #<UXF version of TOML Example>
     =Clients a b
     =Database server:str ports:list connection_max:int enabled:bool
@@ -744,7 +744,7 @@ viable alternative.
 A UXF equivalent to a database of tables can easily be created using a
 `list` of ``table``s:
 
-    uxf 1.0 MyApp Data
+    uxf 1 MyApp Data
     =Customers CID Company Address Contact Email
     =Invoices INUM CID Raised_Date Due_Date Paid Description
     =Items IID INUM Delivery_Date Unit_Price Quantity Description
@@ -770,7 +770,7 @@ The `list` begins with a comment.
 Notice that the second customer has a null (`?`) address and the second
 invoice has an empty description.
 
-    uxf 1.0 MyApp Data
+    uxf 1 MyApp Data
     #<It is also possible to have one overall comment at the beginning,
     after the uxf header and before any ttype definitions or the data.>
     =Customers CID:int Company:str Address:str Contact:str Email:str
@@ -797,7 +797,7 @@ Here, we've added types to each table's _ttype_.
 It is conventional in a database to have IDs and foreign keys. But these can
 often be avoided by using hierarchical data. For example:
 
-    uxf 1.0 MyApp Data
+    uxf 1 MyApp Data
     #<There is a 1:M relationship between the Invoices and Items tables>
     =Database customers:Customers invoices:Invoices
     =Customers CID:int Company:str Address:str Contact:str Email:str
@@ -903,7 +903,7 @@ distinguish it from a system import), and must have a `.gz` suffix if gzip
 compressed. Any custom string, comments, or data the imported file may
 contain are ignored: only the _ttype_ definitions are used.
 
-    uxf 1.0
+    uxf 1
     !complex
     !fraction
     [(Complex 5.1 7.2 8e-2 -9.1e6 0.1 -11.2) <a string> (Fraction 22 7 355 113)]
@@ -914,7 +914,7 @@ explicitly. The data represented is a list consisting of three Complex
 numbers each holding two ``real``s each, a `str`, and two Fractions holding
 two ``int``s each.
 
-    uxf 1.0
+    uxf 1
     !numeric
     [(Complex 5.1 7.2 8e-2 -9.1e6 0.1 -11.2) <a string> (Fraction 22 7 355 113)]
 
@@ -936,7 +936,7 @@ comment, optional imports, optional _ttype_ definitions, and then a single
 mandatory `list`, `map`, or `table` (which may be empty).
 
     UXF          ::= 'uxf' RWS VERSION CUSTOM? '\n' CONTENT
-    VERSION      ::= /\d+\.\d+/
+    VERSION      ::= /\d{1,3}/
     CUSTOM       ::= RWS [^\n]+ # user-defined data e.g. filetype and version
     CONTENT      ::= COMMENT? IMPORT* TTYPEDEF* (MAP | LIST | TABLE)
     IMPORT       ::= '!' /\s*/ IMPORT_FILE '\n' # See below for IMPORT_FILE

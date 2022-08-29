@@ -1,4 +1,4 @@
-uxf 1.0 MyApp 1.2.0 Config
+uxf 1 MyApp 1.2.0 Config
 = #<nonnegative> pos x:int y:int
 = #<nonnegative &amp; &gt; 0> size width:int height:int
 { #<Notes on this configuration file format> str map

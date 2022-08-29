@@ -1,5 +1,5 @@
 <?xml version="1.0" ?>
-<uxf version="1.0" custom="Price List">
+<uxf version="1" custom="Price List">
   <ttypes>
     <ttype name="PriceList">
       <field name="Date" vtype="date"/>

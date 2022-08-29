@@ -1,4 +1,4 @@
-uxf 1.0 Slides 0.1.0
+uxf 1 Slides 0.1.0
 #<This is a simple example of an application-specific use of UXF.
 See slides[12].py for examples of converting this format to HTML.>
 = Slide title body
@@ -60,7 +60,7 @@ See slides[12].py for examples of converting this format to HTML.>
   definitions, then a single list, map, or table containing the data. Since
   lists, maps, and tables can nest, this allows for any arbitrary data
   structure of any amount of data.>)
-  (m <uxf 1.0> (nl))
+  (m <uxf 1> (nl))
   (m <= #&lt;optional ttypes go here&gt; Point x y> (nl))
   (m <[ #&lt;data goes here&gt;> (nl))
   (m <(Point 5 9)> (nl))

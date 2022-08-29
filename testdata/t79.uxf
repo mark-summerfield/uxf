@@ -1,4 +1,4 @@
-uxf 1.0 Custom text
+uxf 1 Custom text
 #<File level comment>
 = IPv4 A:int B:int C:int D:int
 = #<0-255 per component> rgb red:int green:int blue:int

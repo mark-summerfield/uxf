@@ -1,4 +1,4 @@
-uxf 1.0
+uxf 1
 =p x:int y:int
 {str p
   <one> (#<ok> p 1 2 -3 4 5 6)

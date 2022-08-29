@@ -1,4 +1,4 @@
-uxf 1.0
+uxf 1
 = Playlists PID:int Title:str CID:int Selected:bool
 = Categories CID:int Title:str Selected:bool
 {

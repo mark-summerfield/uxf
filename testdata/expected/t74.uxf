@@ -1,4 +1,4 @@
-uxf 1.0 MyApp Data
+uxf 1 MyApp Data
 #<A hierarchical alternative to some foreign key IDs.
 We've kept Customers as-is because different invoices may be for the same
 customer.>

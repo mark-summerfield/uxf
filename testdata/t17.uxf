@@ -1,4 +1,4 @@
-uxf 1.0
+uxf 1
 = Categories CID Title Selected
 = Playlists PID:int Title:str CID:int Selected:bool
 [

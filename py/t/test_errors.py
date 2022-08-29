@@ -63,7 +63,7 @@ def main():
     try:
         total += 1
         e = 130
-        uxf.loads('UXF 1.0\n', on_event=on_event)
+        uxf.loads('UXF 1\n', on_event=on_event)
         fail(f'test_errors • #{e} FAIL', regression)
     except uxf.Error as err:
         ok += got_error(e, err, regression)
@@ -71,7 +71,7 @@ def main():
     try:
         total += 1
         e = 141
-        uxf.loads('uxf 9.0\n', on_event=on_event)
+        uxf.loads('uxf 9\n', on_event=on_event)
         fail(f'test_errors • #{e} FAIL', regression)
     except uxf.Error as err:
         ok += got_error(e, err, regression)
@@ -79,7 +79,7 @@ def main():
     try:
         total += 1
         e = 151
-        uxf.loads('uxf 1.0x\n', on_event=on_event)
+        uxf.loads('uxf 1x\n', on_event=on_event)
         fail(f'test_errors • #{e} FAIL', regression)
     except uxf.Error as err:
         ok += got_error(e, err, regression)
@@ -87,7 +87,7 @@ def main():
     try:
         total += 1
         e = 160
-        uxf.loads('uxf 1.0\n# Not a comment', on_event=on_event)
+        uxf.loads('uxf 1\n# Not a comment', on_event=on_event)
         fail(f'test_errors • #{e} FAIL', regression)
     except uxf.Error as err:
         ok += got_error(e, err, regression)
@@ -95,7 +95,7 @@ def main():
     try:
         total += 1
         e = 170
-        uxf.loads('uxf 1.0\n* invalid', on_event=on_event)
+        uxf.loads('uxf 1\n* invalid', on_event=on_event)
         fail(f'test_errors • #{e} FAIL', regression)
     except uxf.Error as err:
         ok += got_error(e, err, regression)
@@ -103,7 +103,7 @@ def main():
     try:
         total += 1
         e = 170
-        uxf.loads('uxf 1.0\n[1 2 5_invalid]', on_event=on_event)
+        uxf.loads('uxf 1\n[1 2 5_invalid]', on_event=on_event)
         fail(f'test_errors • #{e} FAIL', regression)
     except uxf.Error as err:
         ok += got_error(e, err, regression)
@@ -119,7 +119,7 @@ def main():
     try:
         total += 1
         e = 180
-        uxf.loads('uxf 1.0\n[# 123]', on_event=on_event)
+        uxf.loads('uxf 1\n[# 123]', on_event=on_event)
         fail(f'test_errors • #{e} FAIL', regression)
     except uxf.Error as err:
         ok += got_error(e, err, regression)
@@ -127,7 +127,7 @@ def main():
     try:
         total += 1
         e = 190
-        uxf.loads('uxf 1.0\n[123 #<comment>]', on_event=on_event)
+        uxf.loads('uxf 1\n[123 #<comment>]', on_event=on_event)
         fail(f'test_errors • #{e} FAIL', regression)
     except uxf.Error as err:
         ok += got_error(e, err, regression)
@@ -135,7 +135,7 @@ def main():
     try:
         total += 1
         e = 190
-        uxf.loads('uxf 1.0\n{1 2 #<3> 4}', on_event=on_event)
+        uxf.loads('uxf 1\n{1 2 #<3> 4}', on_event=on_event)
         fail(f'test_errors • #{e} FAIL', regression)
     except uxf.Error as err:
         ok += got_error(e, err, regression)
@@ -143,7 +143,7 @@ def main():
     try:
         total += 1
         e = 200
-        uxf.loads('uxf 1.0\n[(:AB CD EF GH:)]', on_event=on_event)
+        uxf.loads('uxf 1\n[(:AB CD EF GH:)]', on_event=on_event)
         fail(f'test_errors • #{e} FAIL', regression)
     except uxf.Error as err:
         ok += got_error(e, err, regression)
@@ -151,7 +151,7 @@ def main():
     try:
         total += 1
         e = 210
-        uxf.loads('uxf 1.0\n[-3e4e]', on_event=on_event)
+        uxf.loads('uxf 1\n[-3e4e]', on_event=on_event)
         fail(f'test_errors • #{e} FAIL', regression)
     except uxf.Error as err:
         ok += got_error(e, err, regression)
@@ -159,7 +159,7 @@ def main():
     try:
         total += 1
         e = 220
-        uxf.loads('uxf 1.0\n[7.8.9]', on_event=on_event)
+        uxf.loads('uxf 1\n[7.8.9]', on_event=on_event)
         fail(f'test_errors • #{e} FAIL', regression)
     except uxf.Error as err:
         ok += got_error(e, err, regression)
@@ -167,7 +167,7 @@ def main():
     try:
         total += 1
         e = 220
-        uxf.loads('uxf 1.0\n[2020-02-20T20e20]', on_event=on_event)
+        uxf.loads('uxf 1\n[2020-02-20T20e20]', on_event=on_event)
         fail(f'test_errors • #{e} FAIL', regression)
     except uxf.Error as err:
         ok += got_error(e, err, regression)
@@ -175,7 +175,7 @@ def main():
     try:
         total += 1
         e = 231
-        uxf.loads('uxf 1.0\n[2020-02-20T20:20:20-07:31T]',
+        uxf.loads('uxf 1\n[2020-02-20T20:20:20-07:31T]',
                   on_event=on_event)
         fail(f'test_errors • #{e} FAIL', regression)
     except uxf.Error as err:
@@ -184,7 +184,7 @@ def main():
     try:
         total += 1
         e = 270
-        uxf.loads('uxf 1.0\n[(:AB 12:]', on_event=on_event)
+        uxf.loads('uxf 1\n[(:AB 12:]', on_event=on_event)
         fail(f'test_errors • #{e} FAIL', regression)
     except uxf.Error as err:
         ok += got_error(e, err, regression)
@@ -192,7 +192,7 @@ def main():
     try:
         total += 1
         e = 272
-        uxf.loads('uxf 1.0\n[int real]', on_event=on_event)
+        uxf.loads('uxf 1\n[int real]', on_event=on_event)
         fail(f'test_errors • #{e} FAIL', regression)
     except uxf.Error as err:
         ok += got_error(e, err, regression)
@@ -200,7 +200,7 @@ def main():
     try:
         total += 1
         e = 273
-        uxf.loads('uxf 1.0\n{p}', on_event=on_event)
+        uxf.loads('uxf 1\n{p}', on_event=on_event)
         fail(f'test_errors • #{e} FAIL', regression)
     except uxf.Error as err:
         ok += got_error(e, err, regression)
@@ -208,7 +208,7 @@ def main():
     try:
         total += 1
         e = 274
-        uxf.loads('uxf 1.0\n=a b\n(a x)', on_event=on_event)
+        uxf.loads('uxf 1\n=a b\n(a x)', on_event=on_event)
         fail(f'test_errors • #{e} FAIL', regression)
     except uxf.Error as err:
         ok += got_error(e, err, regression)
@@ -216,7 +216,7 @@ def main():
     try:
         total += 1
         e = 276
-        uxf.loads('uxf 1.0\n{int real str}', on_event=on_event)
+        uxf.loads('uxf 1\n{int real str}', on_event=on_event)
         fail(f'test_errors • #{e} FAIL', regression)
     except uxf.Error as err:
         ok += got_error(e, err, regression)
@@ -224,7 +224,7 @@ def main():
     try:
         total += 1
         e = 290
-        uxf.loads('uxf 1.0\n=p q\n{(p 1) 8}', on_event=on_event)
+        uxf.loads('uxf 1\n=p q\n{(p 1) 8}', on_event=on_event)
         fail(f'test_errors • #{e} FAIL', regression)
     except uxf.Error as err:
         ok += got_error(e, err, regression)
@@ -244,7 +244,7 @@ def main():
     try:
         total += 1
         e = 294
-        uxf.loads('uxf 1.0\n{7.9 8}', on_event=on_event)
+        uxf.loads('uxf 1\n{7.9 8}', on_event=on_event)
         fail(f'test_errors • #{e} FAIL', regression)
     except uxf.Error as err:
         ok += got_error(e, err, regression)
@@ -365,7 +365,7 @@ def main():
     try:
         total += 1
         e = 308
-        uxf.loads('uxf 1.0\n[{map 1 2}', on_event=on_event)
+        uxf.loads('uxf 1\n[{map 1 2}', on_event=on_event)
         fail(f'test_errors • #{e} FAIL', regression)
     except uxf.Error as err:
         ok += got_error(e, err, regression)
@@ -429,7 +429,7 @@ def main():
 
     try:
         total += 1
-        uxf.loads('''uxf 1.0
+        uxf.loads('''uxf 1
 =Fieldless
 =Single field
 [
@@ -440,7 +440,7 @@ def main():
         ok += 1 # Should succeed
         total += 1
         e = 334
-        uxf.loads('''uxf 1.0
+        uxf.loads('''uxf 1
 =Fieldless
 =Single field
 [
@@ -510,7 +510,7 @@ def main():
     try:
         total += 1
         e = 402
-        uxf.loads('uxf 1.0\n(:AB:)', on_event=on_event)
+        uxf.loads('uxf 1\n(:AB:)', on_event=on_event)
         fail(f'test_errors • #{e} FAIL', regression)
     except uxf.Error as err:
         ok += got_error(e, err, regression)
@@ -518,7 +518,7 @@ def main():
     try:
         total += 1
         e = 402
-        uxf.loads('uxf 1.0\np a b\n(p 1 2)', on_event=on_event)
+        uxf.loads('uxf 1\np a b\n(p 1 2)', on_event=on_event)
         fail(f'test_errors • #{e} FAIL', regression)
     except uxf.Error as err:
         ok += got_error(e, err, regression)
@@ -526,7 +526,7 @@ def main():
     try:
         total += 1
         e = 402
-        uxf.loads('uxf 1.0\nA b c\n(A 1 2)', on_event=on_event)
+        uxf.loads('uxf 1\nA b c\n(A 1 2)', on_event=on_event)
         fail(f'test_errors • #{e} FAIL', regression)
     except uxf.Error as err:
         ok += got_error(e, err, regression)
@@ -534,7 +534,7 @@ def main():
     try:
         total += 1
         e = 402
-        uxf.loads('uxf 1.0\nint', on_event=on_event)
+        uxf.loads('uxf 1\nint', on_event=on_event)
         fail(f'test_errors • #{e} FAIL', regression)
     except uxf.Error as err:
         ok += got_error(e, err, regression)
@@ -558,7 +558,7 @@ def main():
     try:
         total += 1
         e = 446
-        uxf.loads('uxf 1.0\n{int T 5 <x>}', on_event=on_event)
+        uxf.loads('uxf 1\n{int T 5 <x>}', on_event=on_event)
         fail(f'test_errors • #{e} FAIL', regression)
     except uxf.Error as err:
         ok += got_error(e, err, regression)
@@ -566,7 +566,7 @@ def main():
     try:
         total += 1
         e = 446
-        uxf.loads('uxf 1.0\n{int p}', on_event=on_event)
+        uxf.loads('uxf 1\n{int p}', on_event=on_event)
         fail(f'test_errors • #{e} FAIL', regression)
     except uxf.Error as err:
         ok += got_error(e, err, regression)
@@ -574,7 +574,7 @@ def main():
     try:
         total += 1
         e = 446
-        uxf.loads('uxf 1.0\n[T 5]', on_event=on_event)
+        uxf.loads('uxf 1\n[T 5]', on_event=on_event)
         fail(f'test_errors • #{e} FAIL', regression)
     except uxf.Error as err:
         ok += got_error(e, err, regression)
@@ -582,7 +582,7 @@ def main():
     try:
         total += 1
         e = 446
-        uxf.loads('uxf 1.0\n[q]', on_event=on_event)
+        uxf.loads('uxf 1\n[q]', on_event=on_event)
         fail(f'test_errors • #{e} FAIL', regression)
     except uxf.Error as err:
         ok += got_error(e, err, regression)
@@ -590,7 +590,7 @@ def main():
     try:
         total += 1
         e = 450
-        uxf.loads('uxf 1.0\n(a)', on_event=on_event)
+        uxf.loads('uxf 1\n(a)', on_event=on_event)
         fail(f'test_errors • #{e} FAIL', regression)
     except uxf.Error as err:
         ok += got_error(e, err, regression)
@@ -598,7 +598,7 @@ def main():
     try:
         total += 1
         e = 450
-        uxf.loads('uxf 1.0\n(T 5)', on_event=on_event)
+        uxf.loads('uxf 1\n(T 5)', on_event=on_event)
         fail(f'test_errors • #{e} FAIL', regression)
     except uxf.Error as err:
         ok += got_error(e, err, regression)
@@ -606,7 +606,7 @@ def main():
     try:
         total += 1
         e = 450
-        uxf.loads('uxf 1.0\n=T a\n=U b\n(T (u 1))', on_event=on_event)
+        uxf.loads('uxf 1\n=T a\n=U b\n(T (u 1))', on_event=on_event)
         fail(f'test_errors • #{e} FAIL', regression)
     except uxf.Error as err:
         ok += got_error(e, err, regression)
@@ -614,7 +614,7 @@ def main():
     try:
         total += 1
         e = 450
-        uxf.loads('uxf 1.0\n(r)', on_event=on_event)
+        uxf.loads('uxf 1\n(r)', on_event=on_event)
         fail(f'test_errors • #{e} FAIL', regression)
     except uxf.Error as err:
         ok += got_error(e, err, regression)
@@ -622,7 +622,7 @@ def main():
     try:
         total += 1
         e = 450
-        uxf.loads('uxf 1.0\n(int 1)', on_event=on_event)
+        uxf.loads('uxf 1\n(int 1)', on_event=on_event)
         fail(f'test_errors • #{e} FAIL', regression)
     except uxf.Error as err:
         ok += got_error(e, err, regression)
@@ -630,7 +630,7 @@ def main():
     try:
         total += 1
         e = 454
-        uxf.loads('''uxf 1.0
+        uxf.loads('''uxf 1
 =p x:int y:int
 =q a:real b:real
 {str p
@@ -645,7 +645,7 @@ def main():
     try:
         total += 1
         e = 458
-        uxf.loads('uxf 1.0\n[1 FALSE]', on_event=on_event)
+        uxf.loads('uxf 1\n[1 FALSE]', on_event=on_event)
         fail(f'test_errors • #{e} FAIL', regression)
     except uxf.Error as err:
         ok += got_error(e, err, regression)
@@ -653,7 +653,7 @@ def main():
     try:
         total += 1
         e = 460
-        uxf.loads('uxf 1.0\n[-7F]', on_event=on_event)
+        uxf.loads('uxf 1\n[-7F]', on_event=on_event)
         fail(f'test_errors • #{e} FAIL', regression)
     except uxf.Error as err:
         ok += got_error(e, err, regression)
@@ -661,7 +661,7 @@ def main():
     try:
         total += 1
         e = 486
-        uxf.loads('''uxf 1.0
+        uxf.loads('''uxf 1
 =p x:int y:int
 {str p <one> (#<ok> p 1 2 -3 4 5 6)
 <three> (#<worse> p 11 -12 <-1> <13>)''', on_event=on_event)
@@ -672,7 +672,7 @@ def main():
     try:
         total += 1
         e = 496
-        uxf.loads('uxf 1.0\n=p x:real y:int\n(p 1 2.0)', on_event=on_event)
+        uxf.loads('uxf 1\n=p x:real y:int\n(p 1 2.0)', on_event=on_event)
         fail(f'test_errors • #{e} FAIL', regression)
     except uxf.Error as err:
         ok += got_error(e, err, regression)
@@ -680,7 +680,7 @@ def main():
     try:
         total += 1
         e = 498
-        uxf.loads('uxf 1.0\n=p x:int y:real\n(p 1.0 2)', on_event=on_event)
+        uxf.loads('uxf 1\n=p x:int y:real\n(p 1.0 2)', on_event=on_event)
         fail(f'test_errors • #{e} FAIL', regression)
     except uxf.Error as err:
         ok += got_error(e, err, regression)
@@ -688,7 +688,7 @@ def main():
     try:
         total += 1
         e = 498
-        uxf.loads('''uxf 1.0
+        uxf.loads('''uxf 1
 =p x:int y:int
 {str p <one> (#<ok> p 1 2 -3 4 5 6)
 <two> (#<bad> p 7 -8 9.0 10)}''', on_event=on_event)
@@ -699,7 +699,7 @@ def main():
     try:
         total += 1
         e = 498
-        uxf.loads('''uxf 1.0
+        uxf.loads('''uxf 1
 =p x:int y:int
 {str p <one> (#<ok> p 1 2 -3 4 5 6)
 <two> (#<bad> p 7 -8 9.0 10)}''', on_event=on_event)
@@ -710,7 +710,7 @@ def main():
     try:
         total += 1
         e = 500
-        uxf.loads('uxf 1.0\n=a b:x\n[(a 1)]', on_event=on_event)
+        uxf.loads('uxf 1\n=a b:x\n[(a 1)]', on_event=on_event)
         fail(f'test_errors • #{e} FAIL', regression)
     except uxf.Error as err:
         ok += got_error(e, err, regression)
@@ -718,7 +718,7 @@ def main():
     try:
         total += 1
         e = 510
-        uxo = uxf.loads('uxf 1.0\n{1 2 3 4}]', on_event=on_event)
+        uxo = uxf.loads('uxf 1\n{1 2 3 4}]', on_event=on_event)
         print(uxo.dumps(on_event=on_event))
         fail(f'test_errors • #{e} FAIL', regression)
     except uxf.Error as err:
@@ -727,7 +727,7 @@ def main():
     try:
         total += 1
         e = 512
-        uxo = uxf.loads('uxf 1.0\n[1 2 3}', on_event=on_event)
+        uxo = uxf.loads('uxf 1\n[1 2 3}', on_event=on_event)
         print(uxo.dumps(on_event=on_event))
         fail(f'test_errors • #{e} FAIL', regression)
     except uxf.Error as err:
@@ -736,7 +736,7 @@ def main():
     try:
         total += 1
         e = 528
-        uxf.loads('uxf 1.0\n!complex\n=Complex a b\n(Complex 1 2)',
+        uxf.loads('uxf 1\n!complex\n=Complex a b\n(Complex 1 2)',
                   on_event=on_event)
         fail(f'test_errors • #{e} FAIL', regression)
     except uxf.Error as err:
@@ -745,7 +745,7 @@ def main():
     try:
         total += 1
         e = 530
-        uxf.loads('uxf 1.0\n!http://localhost:5558/robots.txt\n[]',
+        uxf.loads('uxf 1\n!http://localhost:5558/robots.txt\n[]',
                   on_event=on_event)
         fail(f'test_errors • #{e} FAIL', regression)
     except uxf.Error as err:
@@ -754,7 +754,7 @@ def main():
     try:
         total += 1
         e = 550
-        uxf.loads('uxf 1.0\n!http://localhost:5558/missing.uxf\n[]',
+        uxf.loads('uxf 1\n!http://localhost:5558/missing.uxf\n[]',
                   on_event=on_event)
         fail(f'test_errors • #{e} FAIL', regression)
     except uxf.Error as err:
@@ -763,7 +763,7 @@ def main():
     try:
         total += 1
         e = 560
-        uxf.loads('uxf 1.0\n!system-missing\n[]', on_event=on_event)
+        uxf.loads('uxf 1\n!system-missing\n[]', on_event=on_event)
         fail(f'test_errors • #{e} FAIL', regression)
     except uxf.Error as err:
         ok += got_error(e, err, regression)
@@ -797,7 +797,7 @@ def main():
     try:
         total += 1
         e = 586
-        uxf.loads('uxf 1.0\n!missing.uxf\n[]', on_event=on_event)
+        uxf.loads('uxf 1\n!missing.uxf\n[]', on_event=on_event)
         fail(f'test_errors • #{e} FAIL', regression)
     except uxf.Error as err:
         ok += got_error(e, err, regression)
@@ -815,7 +815,7 @@ def main():
     try:
         total += 1
         e = 694
-        uxo = uxf.loads('uxf 1.0\n[]', on_event=on_event)
+        uxo = uxf.loads('uxf 1\n[]', on_event=on_event)
         uxo.tclasses = {'': uxf.TClass('one', ('a', 'b'))}
         fail(f'test_errors • #{e} FAIL', regression)
     except uxf.Error as err:

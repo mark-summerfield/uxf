@@ -1,4 +1,4 @@
-uxf 1.0
+uxf 1
 = Categories CID:int Title:str Selected:bool Date:date
 (Categories
 5 <Classical &amp; &lt;Special&gt;> yes 1999-07-21

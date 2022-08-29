@@ -1,5 +1,5 @@
 <?xml version="1.0" ?>
-<uxf version="1.0" custom="MyApp 1.2.0 Config">
+<uxf version="1" custom="MyApp 1.2.0 Config">
   <ttypes>
     <ttype name="pos">
       <comment>nonnegative</comment>

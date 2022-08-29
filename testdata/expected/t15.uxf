@@ -1,4 +1,4 @@
-uxf 1.0 Test (list of tables with dates and datetimes)
+uxf 1 Test (list of tables with dates and datetimes)
 #<Suitable for SQLite conversion>
 =Categories CID Title Selected Date:date
 =Playlists PID Title Cid Selected DateTime:datetime

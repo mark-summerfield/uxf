@@ -1,4 +1,4 @@
-uxf 1.0 Price List
+uxf 1 Price List
 = PriceList Date:date Price:real Quantity:int ID:str Description:str
 (PriceList
   2022-09-21 3.99 2 <CH1-A2> <Chisels (pair), 1in &amp; 1¼in> 

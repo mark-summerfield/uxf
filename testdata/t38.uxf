@@ -1,4 +1,4 @@
-uxf 1.0
+uxf 1
 = IP4 A:int B:int C:int D:int
 = RGB Red:int Green:int Blue:int
 = IntPair First:int Second:int

@@ -1,4 +1,4 @@
-uxf 1.0 Map comparison test
+uxf 1 Map comparison test
 #<t77.uxf == t78.uxf even though maps have different orders>
 =IPv4 A:int B:int C:int D:int
 =#<0-255 per component> rgb red:int green:int blue:int

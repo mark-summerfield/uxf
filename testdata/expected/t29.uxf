@@ -1,4 +1,4 @@
-uxf 1.0 TLM Config
+uxf 1 TLM Config
 =Categories CID:int Title:str Selected:bool
 =Playlists PID:int Title:str CID:int Selected:bool
 {str list <Nested List of Tables> [table

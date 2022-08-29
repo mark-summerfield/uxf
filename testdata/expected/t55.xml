@@ -1,5 +1,5 @@
 <?xml version="1.0" ?>
-<uxf version="1.0" custom="My Custom Format">
+<uxf version="1" custom="My Custom Format">
   <comment>Another file-level comment</comment>
   <ttypes>
     <ttype name="Pair">

@@ -51,7 +51,7 @@ with suffix .uxf) in the system's temp folder.
 
 
 def generate(*, scale=7):
-    uxt = ['uxf 1.0']
+    uxt = ['uxf 1']
     imports = ['!fraction', '! complex']
     random.shuffle(imports)
     uxt += imports

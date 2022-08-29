@@ -87,7 +87,7 @@ def get_timings():
     try:
         return filename, uxf.load(filename)
     except uxf.Error:
-        return filename, uxf.loads('''uxf 1.0 benchmark.py timings
+        return filename, uxf.loads('''uxf 1 benchmark.py timings
 =Result scale:int load:real dump:real when:datetime unix:bool
 (Result)
 ''')

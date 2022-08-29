@@ -118,7 +118,7 @@ def main():
     print(f'total={total} ok={ok}')
 
 
-UXT = '''uxf 1.0 Sudoku
+UXT = '''uxf 1 Sudoku
 =initiallyvisible min:int max:int
 =SymbolsDecimal
 =SymbolsRoman

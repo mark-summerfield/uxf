@@ -1,4 +1,4 @@
-uxf 1.0 TLM Config
+uxf 1 TLM Config
 =IntPair First:int Second:int
 =IntQuad First:IntPair Second:IntPair
 [

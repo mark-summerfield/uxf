@@ -1,5 +1,5 @@
 <?xml version="1.0" ?>
-<uxf version="1.0" custom="MyApp Data">
+<uxf version="1" custom="MyApp Data">
   <comment>Suitable for SQLite conversion</comment>
   <ttypes>
     <ttype name="Customers">

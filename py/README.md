@@ -226,7 +226,7 @@ optionally, some _ttypes_.
 
 An alternative is to do this:
 
-    uxo = uxf.loads('uxf 1.0\n=point x:real y:real\n[]')
+    uxo = uxf.loads('uxf 1\n=point x:real y:real\n[]')
     uxo.value = value
 
 ##### Properties
@@ -239,7 +239,7 @@ these classes can nest, a `Uxf` can represent any arbitrary data structure.
 **`.custom`**
 
 An opional `str` used for customizing the file format, i.e., the header text
-that follows the initial `uxf 1.0` on the first line.
+that follows the initial `uxf 1` on the first line.
 
 **`.tclasses`**
 
@@ -653,7 +653,7 @@ replace_imports=False)`**
 
 Returns a [Uxf](#uxf-class) object.
 
-`uxt` must be a `str` of UXF data, e.g., `uxf 1.0\n[1 2 3]`.
+`uxt` must be a `str` of UXF data, e.g., `uxf 1\n[1 2 3]`.
 
 If given, the `filename` is used for error messages.
 
@@ -806,6 +806,8 @@ or
 
 ## Changes
 
+- 2.5.0 Switched to new int UXF header version (i.e., `uxf 1` instead of
+  `uxf 1.0`); hopefully this breaking change won't affect anyone.
 - 2.4.6 Bugfix: `-c|--compact` now works correctly if output is stdout.
 - 2.4.5 Tweaked `__str__()` support to output more newlines instead of
   spaces—this makes it slightly more human-friendly without increasing the

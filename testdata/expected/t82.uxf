@@ -1,4 +1,4 @@
-uxf 1.0
+uxf 1
 =Feature geometry properties:map
 =LineString x:real y:real
 =Point x:real y:real

@@ -236,7 +236,7 @@ def strip_path(text):
             .replace('R:\\\\uxf\\\\testdata\\\\', 'testdata/'))
 
 
-EXPECTED_UXT63 = '''uxf 1.0
+EXPECTED_UXT63 = '''uxf 1
 =Slide title body
 =h1 content
 =h2 content

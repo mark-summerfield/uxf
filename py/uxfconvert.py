@@ -785,7 +785,7 @@ class _UxfSaxHandler(xml.sax.handler.ContentHandler):
 def _get_imports(imports_list):
     imports = None
     if imports_list:
-        uxt = ['uxf 1.0\n']
+        uxt = ['uxf 1\n']
         for import_filename in imports_list:
             uxt.append(f'!{import_filename}\n')
         uxt.append('[]\n')

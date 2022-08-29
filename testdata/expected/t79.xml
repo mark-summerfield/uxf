@@ -1,5 +1,5 @@
 <?xml version="1.0" ?>
-<uxf version="1.0" custom="Custom text">
+<uxf version="1" custom="Custom text">
   <comment>File level comment</comment>
   <ttypes>
     <ttype name="IPv4">

@@ -1,4 +1,4 @@
-uxf 1.0
+uxf 1
 #<typed empties>
 =Contact name:str phone:str id:int
 [

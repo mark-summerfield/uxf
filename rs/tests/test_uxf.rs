@@ -17,12 +17,12 @@ mod tests {
     #[test]
     fn t_uxf_strings() {
         let mut uxo = Uxf::default();
-        assert_eq!(uxo.to_string(), "uxf 1.0\n[]\n");
+        assert_eq!(uxo.to_string(), "uxf 1\n[]\n");
         uxo.set_custom("Geo 1.0.0");
         uxo.set_comment("A Geographical format");
         assert_eq!(
             uxo.to_string(),
-            "uxf 1.0 Geo 1.0.0\n#<A Geographical format>\n[]\n"
+            "uxf 1 Geo 1.0.0\n#<A Geographical format>\n[]\n"
         );
         let mut uxo = Uxf::new("custom 1", "comment 1", None);
         assert_eq!(
@@ -30,21 +30,21 @@ mod tests {
             "Uxf { custom: \"custom 1\", comment: \"comment 1\", value: \
         List(List { vtype: \"\", comment: \"\", values: [] }) }"
         );
-        assert_eq!(uxo.to_string(), "uxf 1.0 custom 1\n#<comment 1>\n[]\n");
+        assert_eq!(uxo.to_string(), "uxf 1 custom 1\n#<comment 1>\n[]\n");
         uxo.set_comment("New text");
         assert_eq!(
             format!("{:?}", uxo),
             "Uxf { custom: \"custom 1\", comment: \"New text\", value: \
         List(List { vtype: \"\", comment: \"\", values: [] }) }"
         );
-        assert_eq!(uxo.to_string(), "uxf 1.0 custom 1\n#<New text>\n[]\n");
+        assert_eq!(uxo.to_string(), "uxf 1 custom 1\n#<New text>\n[]\n");
         uxo.set_custom("Dummy format");
         assert_eq!(format!("{:?}", uxo),
         "Uxf { custom: \"Dummy format\", comment: \"New text\", value: \
         List(List { vtype: \"\", comment: \"\", values: [] }) }");
         assert_eq!(
             uxo.to_string(),
-            "uxf 1.0 Dummy format\n#<New text>\n[]\n"
+            "uxf 1 Dummy format\n#<New text>\n[]\n"
         );
     }
 
@@ -70,11 +70,11 @@ mod tests {
         19 -23)]"
         );
         let mut uxo = Uxf::default();
-        assert_eq!(uxo.to_string(), "uxf 1.0\n[]\n");
+        assert_eq!(uxo.to_string(), "uxf 1\n[]\n");
         assert!(uxo.set_value(lst.into()).is_ok());
         assert_eq!(
             uxo.to_string(),
-            "uxf 1.0\n\
+            "uxf 1\n\
         =Point x:int y:int\n\
         =#<enum> ReadyState\n\
         =WaitState\n\
@@ -87,7 +87,7 @@ mod tests {
     fn t_uxf_set_value_invalid() {
         // using default on_event() handler
         let mut uxo = Uxf::default();
-        assert_eq!(uxo.to_string(), "uxf 1.0\n[]\n");
+        assert_eq!(uxo.to_string(), "uxf 1\n[]\n");
         let err = uxo.set_value(0.into()).unwrap_err();
         assert_eq!(
             err.to_string(),
@@ -111,7 +111,7 @@ mod tests {
                 }
             })),
         );
-        assert_eq!(uxo.to_string(), "uxf 1.0 MyUXF\n#<A comment>\n[]\n");
+        assert_eq!(uxo.to_string(), "uxf 1 MyUXF\n#<A comment>\n[]\n");
         let mut m = Map::default();
         m.insert(1.into(), "one".into());
         m.insert(2.into(), "two".into());
@@ -119,7 +119,7 @@ mod tests {
         assert!(uxo.set_value(m.into()).is_ok());
         assert_eq!(
             uxo.to_string(),
-            "uxf 1.0 MyUXF\n#<A comment>\n{1 <one>\n2 <two>}\n"
+            "uxf 1 MyUXF\n#<A comment>\n{1 <one>\n2 <two>}\n"
         );
         assert!(&events.borrow().is_empty());
         assert_eq!(*&events.borrow().len(), 0);
@@ -137,10 +137,10 @@ mod tests {
                 events.push(event.clone());
             }
         }));
-        assert_eq!(uxo.to_string(), "uxf 1.0\n[]\n");
+        assert_eq!(uxo.to_string(), "uxf 1\n[]\n");
         uxo.set_custom("MyUXF");
         uxo.set_comment("A comment");
-        assert_eq!(uxo.to_string(), "uxf 1.0 MyUXF\n#<A comment>\n[]\n");
+        assert_eq!(uxo.to_string(), "uxf 1 MyUXF\n#<A comment>\n[]\n");
         let mut m = Map::default();
         m.insert(1.into(), "one".into());
         m.insert(2.into(), "two".into());
@@ -148,7 +148,7 @@ mod tests {
         assert!(uxo.set_value(m.into()).is_ok());
         assert_eq!(
             uxo.to_string(),
-            "uxf 1.0 MyUXF\n#<A comment>\n{1 <one>\n2 <two>}\n"
+            "uxf 1 MyUXF\n#<A comment>\n{1 <one>\n2 <two>}\n"
         );
         assert!(&events.borrow().is_empty());
         assert_eq!(*&events.borrow().len(), 0);
@@ -159,7 +159,7 @@ mod tests {
         let events = Rc::new(RefCell::new(Vec::<Event>::new()));
         assert!(&events.borrow().is_empty());
         let err = uxf::parse_options(
-            "uxf 1.0", // invalid since no data: interpreted as filename!
+            "uxf 1", // invalid since no data: interpreted as filename!
             uxf::ParseOptions::default(),
             Some(Rc::new({
                 let events = Rc::clone(&events);
@@ -184,7 +184,7 @@ mod tests {
 
     #[test]
     fn t_uxf_parse130() {
-        let err = uxf::parse("Uxf 1.0\n").unwrap_err(); // invalid
+        let err = uxf::parse("Uxf 1\n").unwrap_err(); // invalid
         check_error(&err.to_string(), 130, "");
     }
 
@@ -213,34 +213,40 @@ mod tests {
             141,
             "-",
             1,
-            "version 99.0 > current 1.0",
+            "version 99 > current 1",
         );
     }
 
     #[test]
-    fn t_uxf_parse151() {
-        let err = uxf::parse("uxf 1.0x\n").unwrap_err(); // invalid version
+    fn t_uxf_parse151a() {
+        let err = uxf::parse("uxf 1x\n").unwrap_err(); // invalid version
+        check_error(&err.to_string(), 151, "");
+    }
+
+    #[test]
+    fn t_uxf_parse151b() {
+        let err = uxf::parse("uxf 1.0\n").unwrap_err(); // invalid version
         check_error(&err.to_string(), 151, "");
     }
 
     #[test]
     fn t_uxf_parse160() {
-        let err = uxf::parse("uxf 1.0\n#comment\n").unwrap_err();
+        let err = uxf::parse("uxf 1\n#comment\n").unwrap_err();
         check_error(&err.to_string(), 160, "c");
     }
 
     #[test]
     fn t_uxf_parse_ok() {
-        let uxo = uxf::parse("uxf 1.0\n[]").unwrap();
-        assert_eq!(uxo.to_string(), "uxf 1.0\n[]\n");
-        let uxo = uxf::parse("uxf 1.0 My <Custom> Format 5.8\n[]").unwrap();
-        assert_eq!(uxo.to_string(), "uxf 1.0 My <Custom> Format 5.8\n[]\n");
+        let uxo = uxf::parse("uxf 1\n[]").unwrap();
+        assert_eq!(uxo.to_string(), "uxf 1\n[]\n");
+        let uxo = uxf::parse("uxf 1 My <Custom> Format 5.8\n[]").unwrap();
+        assert_eq!(uxo.to_string(), "uxf 1 My <Custom> Format 5.8\n[]\n");
         assert_eq!(uxo.custom(), "My <Custom> Format 5.8");
         let uxo =
-            uxf::parse("uxf 1.0\n#<A &lt;Big&gt; comment!>\n[]").unwrap();
+            uxf::parse("uxf 1\n#<A &lt;Big&gt; comment!>\n[]").unwrap();
         assert_eq!(
             uxo.to_string(),
-            "uxf 1.0\n#<A &lt;Big&gt; comment!>\n[]"
+            "uxf 1\n#<A &lt;Big&gt; comment!>\n[]"
         );
         assert_eq!(uxo.comment(), "A <Big> comment!");
         // TODO

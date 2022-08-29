@@ -1,5 +1,5 @@
 <?xml version="1.0" ?>
-<uxf version="1.0" custom="One Column Table">
+<uxf version="1" custom="One Column Table">
   <ttypes>
     <ttype name="Countries">
       <field name="Name"/>

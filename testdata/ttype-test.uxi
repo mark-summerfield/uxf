@@ -1,4 +1,4 @@
-uxf 1.0
+uxf 1
 #<An example of a system ttype definitions file used for testing.>
 = IPv4 A:int B:int C:int D:int
 = #<0-255 per component> rgb red:int green:int blue:int

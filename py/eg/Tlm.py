@@ -230,7 +230,7 @@ class Model:
                         t_track, t_group, t_history)}
             uxo = uxf.Uxf(custom='TLM 1.2', tclasses=tclasses)
         else:
-            uxo = uxf.loads('''uxf 1.0 TLM 1.2
+            uxo = uxf.loads('''uxf 1 TLM 1.2
 =Group name:str items:list
 =History name:str
 =Track filename:str secs:real

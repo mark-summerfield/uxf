@@ -1,7 +1,7 @@
 // Copyright © 2022 Mark Summerfield. All rights reserved.
 // License: GPLv3
 
-pub const UXF_VERSION: f64 = 1.0;
+pub const UXF_VERSION: u16 = 1;
 
 pub const MAX_IDENTIFIER_LEN: usize = 60;
 

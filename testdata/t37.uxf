@@ -1,4 +1,4 @@
-uxf 1.0 MyApp Data
+uxf 1 MyApp Data
 #<Suitable for SQLite conversion>
 = Customers CID:int Company:str Address:str Contact:str Email:str
 = Invoices INUM:int CID:int Raised_Date:date Due_Date:date Paid:bool Description:str

@@ -1,5 +1,5 @@
 <?xml version="1.0" ?>
-<uxf version="1.0" custom="Map comparison test">
+<uxf version="1" custom="Map comparison test">
   <comment>t77.uxf == t78.uxf even though maps have different orders</comment>
   <ttypes>
     <ttype name="IPv4">

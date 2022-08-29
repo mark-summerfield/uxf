@@ -1,4 +1,4 @@
-uxf 1.0
+uxf 1
 #<UXF version of TOML Example>
 =DateTime base:datetime offset:str
 =Owner name:str dob:DateTime

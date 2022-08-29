@@ -1,5 +1,5 @@
 <?xml version="1.0" ?>
-<uxf version="1.0" custom="MyApp Data">
+<uxf version="1" custom="MyApp Data">
   <comment><![CDATA[A hierarchical alternative to some foreign key IDs.
 We've kept Customers as-is because different invoices may be for the same
 customer.]]></comment>

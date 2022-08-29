@@ -1,4 +1,4 @@
-uxf 1.0 MyApp 1.2.0 Config
+uxf 1 MyApp 1.2.0 Config
 =#<Window dimensions> Geometry x:int y:int width:int height:int scale:real
 {#<Notes on this configuration file format> str map
   <General> {#<Miscellaneous settings> str

@@ -25,7 +25,7 @@ syn region uxfComment start="#<" end=">"
 syn match uxfBytes /(:[A-Fa-f0-9\s]\+:)/ contains=uxfIdentifier keepend
 syn match uxfNumber /\<[-+]\=\d\+\(\.\d\+\([Ee][-+]\=\d\+\)\=\)\=\>/
 syn match uxfDateTime /\<\d\d\d\d-\d\d-\d\d\(T\d\d\(:\d\d\(:\d\d\)\=\)\=\)\=\>/
-syn match uxfHeader /^uxf\s*\d\+.\d\+.*$/
+syn match uxfHeader /^uxf\s*\d\+.*$/
 
 " See https://sashamaps.net/docs/resources/20-colors/
 hi uxfIdentifier guifg=#9A6324 "brown

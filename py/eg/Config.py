@@ -8,7 +8,7 @@ configuration data, preserving comments, providing defaults, and validating.
 
 The configuration file looks like this:
 
-    uxf 1.0 Sudoku
+    uxf 1 Sudoku
     #<Sudoku Configuration>
     =initiallyvisible min:int max:int
     =#<internal use> numbers page:int game:int

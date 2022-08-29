@@ -1,4 +1,4 @@
-uxf 1.0
+uxf 1
 #<UXF version of TOML Example>
 =Clients a b
 =Database server:str ports:list connection_max:int enabled:bool

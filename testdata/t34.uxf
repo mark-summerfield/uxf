@@ -1,4 +1,4 @@
-uxf 1.0 TLM Config
+uxf 1 TLM Config
 { str map
     <Map Test #1> {#<Map with different types of key>
       5 6

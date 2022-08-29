@@ -7,7 +7,7 @@ See eg/merge.py for more about the merge() function.
 
 Example 'include' file:
 
-uxf 1.0 UXF Include
+uxf 1 UXF Include
 #<e.g., include.uxf>
 =include filename:str
 (include

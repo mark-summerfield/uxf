@@ -1,5 +1,5 @@
 <?xml version="1.0" ?>
-<uxf version="1.0">
+<uxf version="1">
   <comment>File level comment for testing string concatenation with the &amp; operator.</comment>
   <ttypes>
     <ttype name="A">

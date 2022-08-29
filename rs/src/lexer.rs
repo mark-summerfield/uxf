@@ -57,7 +57,8 @@ impl<'a> Lexer<'a> {
         self.pos = if let Some(i) = self.text.iter().position(|&c| c == NL)
         {
             i
-        } else { // "impossible" because if no NL we assume it is a filename
+        } else {
+            // "impossible" because if no NL we assume it is a filename
             bail!(
                 "E110:{}:{}:missing UXF file header or missing data \
                     or empty file",
@@ -77,14 +78,13 @@ impl<'a> Lexer<'a> {
         if parts[0] != "uxf" {
             bail!("E130:{}:{}:not a UXF file", self.filename, self.lino)
         }
-        if let Ok(version) = parts[1].trim().parse::<f64>() {
+        if let Ok(version) = parts[1].trim().parse::<u16>() {
             if version > UXF_VERSION {
                 (self.on_event)(&Event::new_warning(
                     141,
                     &format!(
                         "version {} > current {}",
-                        realstr64(version),
-                        realstr64(UXF_VERSION)
+                        version, UXF_VERSION
                     ),
                     self.filename,
                     self.lino,

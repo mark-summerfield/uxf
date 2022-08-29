@@ -252,7 +252,7 @@ impl fmt::Display for Uxf {
     /// output formatting and event handling.
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         const NL: &str = "\n";
-        let mut parts = vec![format!("uxf {}", realstr64(UXF_VERSION))];
+        let mut parts = vec![format!("uxf {}", UXF_VERSION)];
         if !self.custom().is_empty() {
             parts.push(" ".to_string());
             parts.push(self.custom().to_string());

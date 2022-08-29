@@ -1,4 +1,4 @@
-uxf 1.0
+uxf 1
 =Categories CID:int title:str selected:bool when:date
 =Playlists PID:int title cid:int selected:real timestamp:datetime
 [
