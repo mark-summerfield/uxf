@@ -1,6 +1,6 @@
 [package]
 name = "uxf"
-version = "0.9.0"
+version = "0.10.0"
 edition = "2021"
 publish = true
 authors = [ "Mark Summerfield <mark@qtrac.eu>",]
@@ -18,9 +18,12 @@ license = "GPL-3.0"
 anyhow = "^1.0"
 bitflags = "^1.3"
 chrono = "^0.4"
-clap = {version="^3.2", features=["derive", "wrap_help"]}
 flate2 = "^1.0"
 once_cell = "^1.13"
+
+[dependencies.clap]
+version = "^3.2"
+features = [ "derive", "wrap_help",]
 
 [badges.maintenance]
 status = "passively-maintained"

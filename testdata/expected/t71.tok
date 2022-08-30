@@ -1,0 +1,24 @@
+TClassBegin ttype=<Roman>
+TClassEnd
+TClassBegin ttype=<Decimal>
+TClassEnd
+TClassBegin ttype=<p>
+  Field Str("x")
+  Field Str("y")
+TClassEnd
+ListBegin
+  TableBegin ttype=<Roman>
+  TableEnd
+  TableBegin ttype=<Decimal>
+  TableEnd
+  TableBegin ttype=<Decimal>
+  TableEnd
+  ListBegin vtype=<p>
+    TableBegin ttype=<p>
+      Int(1)
+      Int(2)
+    TableEnd
+  ListEnd
+ListEnd
+Eof
+----------------------------------------

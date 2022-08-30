@@ -37,7 +37,7 @@ MapBegin
     Real(1.1)
   MapEnd
   Str("Magic")
-  Bytes([31, 139])
+  Bytes( (:1F8B:) )
   Str("Nested Map")
   MapBegin
     Str("Classical")

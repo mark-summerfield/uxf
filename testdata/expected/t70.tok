@@ -1,0 +1,19 @@
+TClassBegin ttype=<Pair>
+  Field Str("first")
+  Field Str("second")
+TClassEnd
+TableBegin ttype=<Pair>
+  TableBegin ttype=<Pair>
+    Int(1)
+    Int(2)
+  TableEnd
+  TableBegin ttype=<Pair>
+    Int(3)
+    TableBegin ttype=<Pair>
+      Int(4)
+      Int(5)
+    TableEnd
+  TableEnd
+TableEnd
+Eof
+----------------------------------------

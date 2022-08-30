@@ -13,9 +13,29 @@ TClassBegin ttype=<Playlists>
   Field Str("CID")
   Field Str("Selected")
 TClassEnd
+TClassBegin ttype=<IPv4>
+  Field Str("A") vtype=int
+  Field Str("B") vtype=int
+  Field Str("C") vtype=int
+  Field Str("D") vtype=int
+TClassEnd
+TClassBegin ttype=<RGB>
+  Field Str("Red") vtype=int
+  Field Str("Green") vtype=int
+  Field Str("Blue") vtype=int
+TClassEnd
+TClassBegin ttype=<RGBA>
+  Field Str("Red") vtype=int
+  Field Str("Green") vtype=int
+  Field Str("Blue") vtype=int
+  Field Str("Alpha") vtype=int
+TClassEnd
 MapBegin
   Str("General")
   MapBegin
+    Str("empty map 0")
+    MapBegin
+    MapEnd
     Str("saved")
     Date(2022-03-21)
     Str("autosave")
@@ -24,6 +44,9 @@ MapBegin
     Int(-35)
     Str("volume")
     Real(0.7)
+    Str("empty map 1")
+    MapBegin
+    MapEnd
     Str("files")
     TableBegin ttype=<Files>
       Str("current")
@@ -33,28 +56,86 @@ MapBegin
       Str("recent2")
       Str("/home/mark/data/playlists-all.tlm")
     TableEnd
+    Str("empty map 2")
+    MapBegin
+    MapEnd
   MapEnd
   Str("Window")
   MapBegin
-    Str("x")
-    Int(383)
-    Str("y")
-    Int(124)
-    Str("width")
-    Int(590)
-    Str("height")
-    Int(536)
+    Str("pos")
+    ListBegin
+      Int(383)
+      Int(124)
+    ListEnd
+    Str("size")
+    ListBegin
+      Int(590)
+      Int(536)
+    ListEnd
     Str("scale")
     Real(1.1)
   MapEnd
+  Str("More Tests")
+  ListBegin # A list of name value pairs; normally would be a map
+    Str("empty table 0")
+    TableBegin ttype=<RGBA>
+    TableEnd
+    Str("one")
+    TableBegin ttype=<IPv4>
+      Int(141)
+      Int(179)
+      Int(19)
+      Int(9)
+    TableEnd
+    Str("empty table 1")
+    TableBegin ttype=<RGBA>
+    TableEnd
+    Str("many")
+    TableBegin ttype=<IPv4>
+      Int(172)
+      Int(16)
+      Int(254)
+      Int(1)
+      Int(192)
+      Int(0)
+      Int(2)
+      Int(235)
+      Int(127)
+      Int(0)
+      Int(0)
+      Int(1)
+    TableEnd
+    Str("red")
+    TableBegin ttype=<RGB>
+      Int(255)
+      Int(0)
+      Int(0)
+    TableEnd
+    Str("semi-transparent blue")
+    TableBegin ttype=<RGBA>
+      Int(0)
+      Int(0)
+      Int(255)
+      Int(80)
+    TableEnd
+    Str("empty table 2")
+    TableBegin ttype=<RGBA>
+    TableEnd
+  ListEnd
   Str("Magic")
   Bytes( (:1F8B:) )
   Str("Nested Map")
   MapBegin
+    Str("empty list 0")
+    ListBegin
+    ListEnd
     Str("Classical")
     ListBegin
       Int(5)
       Bool(true)
+    ListEnd
+    Str("empty list 1")
+    ListBegin
     ListEnd
     Str("Modern Instrumental")
     ListBegin
@@ -66,8 +147,13 @@ MapBegin
       Int(1)
       Bool(false)
     ListEnd
+    Str("empty list 2")
+    ListBegin
+    ListEnd
     Str("Nested List of Lists")
     ListBegin
+      ListBegin
+      ListEnd
       ListBegin
         Int(5)
         Str("Classical")
@@ -79,9 +165,13 @@ MapBegin
         Bool(false)
       ListEnd
       ListBegin
+      ListEnd
+      ListBegin
         Int(1)
         Str("New Acquistions")
         Bool(false)
+      ListEnd
+      ListBegin
       ListEnd
     ListEnd
     Str("Nested Table")
@@ -111,6 +201,8 @@ MapBegin
     Str("Nested List of Tables")
     ListBegin
       TableBegin ttype=<Categories>
+      TableEnd
+      TableBegin ttype=<Categories>
         Int(5)
         Str("Classical")
         Bool(true)
@@ -132,6 +224,10 @@ MapBegin
         Int(6)
         Str("Unpopular Pop")
         Bool(false)
+      TableEnd
+      TableBegin ttype=<Categories>
+      TableEnd
+      TableBegin ttype=<Playlists>
       TableEnd
       TableBegin ttype=<Playlists>
         Int(4)
@@ -182,6 +278,8 @@ MapBegin
         Str("Dire Straits")
         Int(2)
         Bool(false)
+      TableEnd
+      TableBegin ttype=<Playlists>
       TableEnd
     ListEnd
   MapEnd

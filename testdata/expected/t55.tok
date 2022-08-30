@@ -1,0 +1,9 @@
+FileComment Str("Another file-level comment")
+TClassBegin ttype=<Pair>
+  Field Str("first")
+  Field Str("second")
+TClassEnd
+ListBegin
+ListEnd
+Eof
+----------------------------------------

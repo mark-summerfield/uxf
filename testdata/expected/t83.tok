@@ -1,0 +1,66 @@
+FileComment Str("UXF version of TOML Example")
+TClassBegin ttype=<DateTime>
+  Field Str("base") vtype=datetime
+  Field Str("offset") vtype=str
+TClassEnd
+TClassBegin ttype=<Owner>
+  Field Str("name") vtype=str
+  Field Str("dob") vtype=DateTime
+TClassEnd
+TClassBegin ttype=<Database>
+  Field Str("server") vtype=str
+  Field Str("ports") vtype=list
+  Field Str("connection_max") vtype=int
+  Field Str("enabled") vtype=bool
+TClassEnd
+TClassBegin ttype=<Server>
+  Field Str("name") vtype=str
+  Field Str("ip") vtype=str
+  Field Str("dc") vtype=str
+TClassEnd
+TClassBegin ttype=<Clients>
+  Field Str("a")
+  Field Str("b")
+TClassEnd
+TClassBegin ttype=<Hosts>
+  Field Str("name") vtype=str
+TClassEnd
+ListBegin
+  TableBegin ttype=<Owner>
+    Str("Tom Preston-Werner")
+    TableBegin ttype=<DateTime>
+      DateTime(1979-05-27T07:32:00)
+      Str("-08:00")
+    TableEnd
+  TableEnd
+  TableBegin ttype=<Database>
+    Str("192.168.1.1")
+    ListBegin
+      Int(8000)
+      Int(8001)
+      Int(8002)
+    ListEnd
+    Int(5000)
+    Bool(true)
+  TableEnd
+  TableBegin ttype=<Server>
+    Str("alpha")
+    Str("10.0.0.1")
+    Str("eqdc10")
+    Str("beta")
+    Str("10.0.0.2")
+    Str("eqdc10")
+  TableEnd
+  TableBegin ttype=<Clients>
+    Str("gamma")
+    Str("delta")
+    Int(1)
+    Int(2)
+  TableEnd
+  TableBegin ttype=<Hosts>
+    Str("alpha")
+    Str("omega")
+  TableEnd
+ListEnd
+Eof
+----------------------------------------

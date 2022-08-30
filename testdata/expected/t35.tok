@@ -1,0 +1,105 @@
+FileComment Str("Suitable for SQLite conversion")
+TClassBegin ttype=<Categories>
+  Field Str("CID") vtype=int
+  Field Str("title") vtype=str
+  Field Str("selected") vtype=bool
+  Field Str("when") vtype=date
+TClassEnd
+TClassBegin ttype=<Playlists>
+  Field Str("PID") vtype=int
+  Field Str("title")
+  Field Str("cid") vtype=int
+  Field Str("selected") vtype=bool
+  Field Str("timestamp") vtype=datetime
+TClassEnd
+ListBegin
+  TableBegin ttype=<Categories>
+    Int(5)
+    Str("Classical")
+    Bool(true)
+    Date(2001-12-27)
+    Int(4)
+    Str("Modern Instrumental")
+    Bool(false)
+    Date(1973-10-18)
+    Int(1)
+    Str("New Acquistions")
+    Bool(false)
+    Date(2019-02-10)
+    Int(2)
+    Str("Pop")
+    Bool(false)
+    Date(1983-04-07)
+    Int(3)
+    Str("Punk")
+    Bool(false)
+    Date(1999-06-09)
+    Int(7)
+    Str("Uncategorized")
+    Bool(false)
+    Date(1992-02-24)
+    Int(6)
+    Str("Unpopular Pop")
+    Bool(false)
+    Date(2004-04-11)
+  TableEnd
+  TableBegin ttype=<Playlists>
+    Int(4)
+    Str("ABBA")
+    Int(2)
+    Bool(false)
+    DateTime(1998-09-19T23:57:59)
+    Int(38)
+    Str("Bach")
+    Int(5)
+    Bool(false)
+    DateTime(1982-07-12T23:57:12)
+    Int(39)
+    Str("Bartok")
+    Int(5)
+    Bool(false)
+    DateTime(1983-04-13T23:46:31)
+    Int(5)
+    Str("Beatles")
+    Int(2)
+    Bool(false)
+    DateTime(2022-04-11T23:48:01)
+    Int(40)
+    Str("Beethoven")
+    Int(5)
+    Bool(false)
+    DateTime(1986-06-11T23:47:25)
+    Int(6)
+    Str("Blondie")
+    Int(2)
+    Bool(false)
+    DateTime(1995-11-23T23:56:03)
+    Int(52)
+    Str("Bob Marley")
+    Int(6)
+    Bool(true)
+    DateTime(1981-02-27T23:56:53)
+    Int(7)
+    Str("Bruce Springsteen")
+    Int(2)
+    Bool(false)
+    DateTime(1995-08-10T23:56:32)
+    Int(41)
+    Str("Chopin")
+    Int(5)
+    Bool(true)
+    DateTime(1973-11-23T23:53:54)
+    Int(37)
+    Str("Classical")
+    Int(5)
+    Bool(false)
+    DateTime(1992-11-18T23:57:27)
+    Int(8)
+    Str("David Bowie")
+    Int(2)
+    Bool(false)
+    DateTime(2008-09-01T23:59:46)
+  TableEnd
+ListEnd
+Eof
+----------------------------------------

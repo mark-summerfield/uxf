@@ -1,0 +1,15 @@
+Import Str("numeric")
+ListBegin
+  TableBegin ttype=<Complex>
+    Real(3.9)
+    Real(-1.4)
+    Real(-170.0)
+    Real(2e-5)
+  TableEnd
+  TableBegin ttype=<Fraction>
+    Int(22)
+    Int(7)
+  TableEnd
+ListEnd
+Eof
+----------------------------------------

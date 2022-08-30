@@ -5,6 +5,7 @@ use crate::constants::*;
 use anyhow::{bail, Result};
 use flate2::read::GzDecoder;
 use std::{
+    path::{self,PathBuf},
     fs::File,
     io::{prelude::*, BufReader},
 };
@@ -63,6 +64,41 @@ pub(crate) fn is_compressed(filename: &str) -> Result<bool> {
     let mut buffer = [0; 2]; // 0x1F 0x8B gzip magic
     file.read_exact(&mut buffer)?;
     Ok(buffer[0] == 0x1F && buffer[1] == 0x8B)
+}
+
+/// If filename is absolute, returns it as-is, otherwise returns the
+/// absolute of the given path and filename if possible.
+pub(crate) fn full_filename(filename: &str, path: &str) -> String {
+    let full = PathBuf::from(filename);
+    if full.is_absolute() {
+        filename.to_string()
+    } else {
+        let mut full = PathBuf::from(path);
+        full.push(filename);
+        if full.is_absolute() {
+            full.to_string_lossy().to_string()
+        } else if let Ok(full) = full.canonicalize() {
+            full.to_string_lossy().to_string()
+        } else {
+            let mut full = path.to_string();
+            if !full.ends_with(path::MAIN_SEPARATOR) {
+                full.push(path::MAIN_SEPARATOR);
+            }
+            full.push_str(filename);
+            full
+        }
+    }
+}
+
+/// Returns the filename's dirname or ".".
+pub(crate) fn dirname(filename: &str) -> String {
+    if let Some((dir, _)) =
+        filename.rsplit_once(path::MAIN_SEPARATOR)
+    {
+        dir.to_string()
+    } else {
+        ".".to_string()
+    }
 }
 
 /// Returns the bytes for the given slices of chars.

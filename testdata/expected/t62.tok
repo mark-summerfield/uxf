@@ -1,0 +1,73 @@
+Import Str("ttype-test.uxi")
+TClassBegin ttype=<point>
+  Field Str("x") vtype=int
+  Field Str("y") vtype=int
+  Field Str("z") vtype=int
+TClassEnd
+TClassBegin ttype=<Files>
+  Field Str("Kind")
+  Field Str("Filename")
+TClassEnd
+MapBegin
+  Str("files")
+  TableBegin ttype=<Files>
+    Str("current")
+    Str("/home/mark/app/rs/tlm/PlaylistsTest.tlm")
+    Str("recent1")
+    Str("/home/mark/app/rs/tlm/PlaylistsTest.tlm")
+    Str("recent2")
+    Str("/home/mark/data/playlists-all.tlm")
+  TableEnd
+  Str("More Tests")
+  ListBegin # A list of name value pairs; normally would be a map
+    Str("one")
+    TableBegin ttype=<IPv4>
+      Int(141)
+      Int(179)
+      Int(19)
+      Int(9)
+    TableEnd
+    Str("many")
+    TableBegin ttype=<IPv4>
+      Int(172)
+      Int(16)
+      Int(254)
+      Int(1)
+      Int(192)
+      Int(0)
+      Int(2)
+      Int(235)
+      Int(127)
+      Int(0)
+      Int(0)
+      Int(1)
+    TableEnd
+    Str("red")
+    TableBegin ttype=<rgb>
+      Int(255)
+      Int(0)
+      Int(0)
+    TableEnd
+    Str("semi-transparent blue")
+    TableBegin ttype=<rgba>
+      Int(0)
+      Int(0)
+      Int(255)
+      Int(80)
+    TableEnd
+    Str("points")
+    TableBegin ttype=<point>
+      Int(-1)
+      Int(2)
+      Int(3)
+      Int(-4)
+      Int(5)
+      Int(6)
+      Int(-7)
+      Int(8)
+      Int(9)
+    TableEnd
+  ListEnd
+MapEnd
+Eof
+----------------------------------------

@@ -5,7 +5,9 @@ use crate::check::{check_ktype, check_ttype, check_vtype};
 use crate::constants::*;
 use crate::event::{Event, OnEventFn};
 use crate::token::{Token, TokenKind, Tokens};
-use crate::util::{hex_as_bytes, str_for_chars, unescape};
+use crate::util::{
+    dirname, full_filename, hex_as_bytes, str_for_chars, unescape,
+};
 use crate::value::Value;
 use anyhow::{bail, Result};
 use chrono::{NaiveDate, NaiveDateTime};
@@ -218,12 +220,35 @@ impl<'a> Lexer<'a> {
                 c
             )
         }
-        let raw = hex_as_bytes(&text, &self.filename, self.lino)?;
+        let raw = hex_as_bytes(&text, self.filename, self.lino)?;
         self.add_token(TokenKind::Bytes, Value::Bytes(raw))
     }
 
     fn read_imports(&mut self) -> Result<()> {
-        bail!("TODO read_imports") // TODO
+        let this_file = full_filename(self.filename, ".");
+        let path = dirname(&this_file);
+        loop {
+            let text = self.match_to_char('\n', "import")?;
+            let text = text.trim();
+            if this_file == full_filename(text, &path) {
+                bail!(
+                    "E176:{}:{}:a UXF file cannot import itself",
+                    self.filename,
+                    self.lino,
+                )
+            } else {
+                self.add_token(
+                    TokenKind::Import,
+                    Value::Str(text.to_string()),
+                )?;
+            }
+            if self.at_end() || self.text[self.pos] != '!' {
+                break; // imports finished
+            } else {
+                self.getch(); // skip ! ready for next import's text
+            };
+        }
+        Ok(())
     }
 
     fn read_comment(&mut self) -> Result<()> {
@@ -365,9 +390,15 @@ impl<'a> Lexer<'a> {
         self.pos -= 1; // wind back to terminating non-numeric char
         let text: String = self.text[start..self.pos].iter().collect();
         if is_datetime {
+            // ignore any timezone text
+            let text = if text.len() > 19 { &text[..19] } else { &text };
             let d = NaiveDateTime::parse_from_str(
-                &text[..19], // ignore any timezone text
-                ISO8601_DATETIME,
+                text,
+                match text.len() {
+                    13 => ISO8601_DATETIME_H, // YYYY-MM-DDTHH
+                    16 => ISO8601_DATETIME_M, // YYYY-MM-DDTHH:MM
+                    _ => ISO8601_DATETIME,    // YYYY-MM-DDTHH:MM:SS
+                },
             )?;
             self.add_token(TokenKind::DateTime, Value::DateTime(d))
         } else if hyphens == 2 {

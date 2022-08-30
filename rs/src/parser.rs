@@ -17,7 +17,7 @@ pub(crate) fn parse(
     let data: Vec<char> = text.chars().collect();
     let mut lexer = Lexer::new(&data, filename, Rc::clone(&on_event));
     let (custom, tokens) = lexer.tokenize()?;
-    debug_tokens(&tokens); // TODO delete
+    debug_tokens(tokens); // TODO delete
     let mut uxo = Uxf::new_on_event(Rc::clone(&on_event));
     if !custom.is_empty() {
         uxo.set_custom(&custom);

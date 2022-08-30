@@ -1,0 +1,65 @@
+TClassBegin ttype=<Feature>
+  Field Str("geometry")
+  Field Str("properties") vtype=map
+TClassEnd
+TClassBegin ttype=<LineString>
+  Field Str("x") vtype=real
+  Field Str("y") vtype=real
+TClassEnd
+TClassBegin ttype=<Point>
+  Field Str("x") vtype=real
+  Field Str("y") vtype=real
+TClassEnd
+TClassBegin ttype=<Polygon>
+  Field Str("x") vtype=real
+  Field Str("y") vtype=real
+TClassEnd
+TableBegin ttype=<Feature>
+  TableBegin ttype=<Point>
+    Real(102.0)
+    Real(0.5)
+  TableEnd
+  MapBegin
+    Str("prop0")
+    Str("value0")
+  MapEnd
+  TableBegin ttype=<LineString>
+    Real(102.0)
+    Real(0.0)
+    Real(103.0)
+    Real(1.0)
+    Real(104.0)
+    Real(0.0)
+    Real(105.0)
+    Real(1.0)
+  TableEnd
+  MapBegin
+    Str("prop0")
+    Str("value0")
+    Str("prop1")
+    Real(0.0)
+  MapEnd
+  TableBegin ttype=<Polygon>
+    Real(100.0)
+    Real(0.0)
+    Real(101.0)
+    Real(0.0)
+    Real(101.0)
+    Real(1.0)
+    Real(100.0)
+    Real(1.0)
+    Real(100.0)
+    Real(0.0)
+  TableEnd
+  MapBegin
+    Str("prop0")
+    Str("value0")
+    Str("prop1")
+    MapBegin
+      Str("this")
+      Str("that")
+    MapEnd
+  MapEnd
+TableEnd
+Eof
+----------------------------------------

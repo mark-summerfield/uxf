@@ -45,7 +45,7 @@ impl<'a> fmt::Display for Token<'a> {
             format!("{} ttype={}", &self.kind, &self.value)
         } else if matches!(
             &self.kind,
-            TokenKind::Field | TokenKind::FileComment
+            TokenKind::Field | TokenKind::FileComment | TokenKind::Import
         ) {
             format!("{} ", &self.kind)
         } else if !matches!(
@@ -94,6 +94,8 @@ impl<'a> fmt::Display for Token<'a> {
             "".to_string()
         } else if self.value == Value::Null {
             "?".to_string()
+        } else if self.kind == TokenKind::Bytes {
+            format!("Bytes( {} )", self.value)
         } else {
             format!("{:?}", self.value)
         };

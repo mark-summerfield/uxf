@@ -1,12 +1,38 @@
-FileComment Str("A single comment may be placed at the start after the uxf header and\nbefore evertthing else.")
 TClassBegin ttype=<Files>
   Field Str("Kind")
   Field Str("Filename")
 TClassEnd
 TClassBegin ttype=<Categories>
-  Field Str("CID")
+  Field Str("CID") vtype=int
   Field Str("Title")
+  Field Str("Selected") vtype=bool
+TClassEnd
+TClassBegin ttype=<Playlists>
+  Field Str("PID")
+  Field Str("Title")
+  Field Str("CID")
   Field Str("Selected")
+TClassEnd
+TClassBegin ttype=<IPv4>
+  Field Str("A") vtype=int
+  Field Str("B") vtype=int
+  Field Str("C") vtype=int
+  Field Str("D") vtype=int
+TClassEnd
+TClassBegin ttype=<RGB>
+  Field Str("Red") vtype=int
+  Field Str("Green") vtype=int
+  Field Str("Blue") vtype=int
+TClassEnd
+TClassBegin ttype=<RGBA>
+  Field Str("Red") vtype=int
+  Field Str("Green") vtype=int
+  Field Str("Blue") vtype=int
+  Field Str("Alpha") vtype=int
+TClassEnd
+TClassBegin ttype=<IntPair>
+  Field Str("First") vtype=int
+  Field Str("Second") vtype=int
 TClassEnd
 MapBegin
   Str("General")
@@ -43,8 +69,8 @@ MapBegin
     Real(1.1)
   MapEnd
   Str("Magic")
-  Bytes( (:1F8B:) )
-  Str("Nested Dict")
+  Bytes( (:1F8B110CFF:) )
+  Str("Nested Map")
   MapBegin
     Str("Classical")
     ListBegin
@@ -62,7 +88,7 @@ MapBegin
       Bool(false)
     ListEnd
     Str("Nested List of Lists")
-    ListBegin
+    ListBegin vtype=<list>
       ListBegin
         Int(5)
         Str("Classical")
@@ -95,12 +121,12 @@ MapBegin
       Bool(false)
       Int(3)
       Str("Punk")
-      ?
-      ?
-      ?
       Bool(false)
-      Int(6)
-      Str("Unpopular Pop")
+      Int(7)
+      Str("Uncategorized")
+      ?
+      ?
+      ?
       Bool(false)
     TableEnd
   MapEnd

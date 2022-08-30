@@ -1,0 +1,92 @@
+TClassBegin ttype=<cmyk>
+  Field Str("cyan") vtype=real
+  Field Str("magenta") vtype=real
+  Field Str("yellow") vtype=real
+  Field Str("black") vtype=real
+TClassEnd
+TClassBegin ttype=<Complex>
+  Field Str("Real") vtype=real
+  Field Str("Imag") vtype=real
+TClassEnd
+TClassBegin ttype=<dob>
+  Field Str("dob") vtype=date
+TClassEnd
+TClassBegin ttype=<Fraction>
+  Field Str("numerator") vtype=int
+  Field Str("denominator") vtype=int
+TClassEnd
+TClassBegin ttype=<i> # italic
+  Field Str("content")
+TClassEnd
+TClassBegin ttype=<img> # image
+  Field Str("content")
+  Field Str("image") vtype=bytes
+TClassEnd
+TClassBegin ttype=<pair> # a pair of any two values
+  Field Str("first")
+  Field Str("second")
+TClassEnd
+TClassBegin ttype=<point3d>
+  Field Str("x") vtype=int
+  Field Str("y") vtype=int
+  Field Str("z") vtype=int
+TClassEnd
+TClassBegin ttype=<rgb> # 0-255 per component
+  Field Str("red") vtype=int
+  Field Str("green") vtype=int
+  Field Str("blue") vtype=int
+TClassEnd
+ListBegin
+  TableBegin ttype=<img>
+    TableBegin ttype=<rgb>
+      Int(0)
+      Int(0)
+      Int(127)
+    TableEnd
+    Bytes( (:DECADE:) )
+  TableEnd
+  TableBegin ttype=<i>
+    Str("is this oblique?")
+  TableEnd
+  MapBegin
+    Int(10)
+    TableBegin ttype=<point3d>
+      Int(3)
+      Int(4)
+      Int(5)
+      Int(5)
+      Int(12)
+      Int(13)
+      Int(8)
+      Int(15)
+      Int(17)
+      Int(7)
+      Int(24)
+      Int(25)
+    TableEnd
+    Int(20)
+    TableBegin ttype=<cmyk>
+      Real(0.9)
+      Real(0.9)
+      Real(0.5)
+      Real(0.0)
+    TableEnd
+    Int(30)
+    TableBegin ttype=<pair>
+      Str("one")
+      Int(2)
+    TableEnd
+  MapEnd
+  TableBegin ttype=<Complex>
+    Real(3.9)
+    Real(-1.4)
+    Real(-170.0)
+    Real(2e-5)
+  TableEnd
+  TableBegin ttype=<Fraction>
+    Int(22)
+    Int(7)
+  TableEnd
+ListEnd
+Eof
+----------------------------------------

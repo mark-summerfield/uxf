@@ -1,0 +1,8 @@
+TClassBegin ttype=<Pair>
+  Field Str("first") vtype=int
+  Field Str("second") vtype=int
+TClassEnd
+TableBegin ttype=<Pair>
+TableEnd
+Eof
+----------------------------------------

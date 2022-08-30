@@ -1,0 +1,21 @@
+TClassBegin ttype=<Pair>
+  Field Str("First") vtype=int
+  Field Str("Second") vtype=list
+TClassEnd
+TableBegin ttype=<Pair>
+  Int(1)
+  ListBegin
+  ListEnd
+  Int(2)
+  ListBegin
+    Str("a")
+    Str("b")
+  ListEnd
+  Int(3)
+  ListBegin
+    Real(9.8)
+    Real(7.1)
+  ListEnd
+TableEnd
+Eof
+----------------------------------------

@@ -69,7 +69,7 @@ MapBegin
     Real(1.1)
   MapEnd
   Str("Magic")
-  Bytes([31, 139, 17, 255, 12])
+  Bytes( (:1F8B11FF0C:) )
   Str("Nested Map")
   MapBegin
     Str("Classical")
@@ -115,7 +115,7 @@ MapBegin
       Str("world")
       DateTime(1965-04-27T16:05:00)
       Str("UXF in ASCII bytes follows")
-      Bytes([117, 120, 102])
+      Bytes( (:757866:) )
       DateTime(1985-05-22T04:31:00)
     MapEnd
     Str("Map Test #2")
@@ -127,7 +127,7 @@ MapBegin
       Int(3)
       Real(3.0)
       Int(4)
-      Bytes([2, 32])
+      Bytes( (:0220:) )
     MapEnd
   MapEnd
 MapEnd

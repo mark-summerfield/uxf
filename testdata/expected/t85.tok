@@ -1,3 +1,5 @@
+FileComment Str("This file is for quick visual tests of the PrettyPrint experiment.")
+Import Str("numeric")
 TClassBegin ttype=<Files>
   Field Str("Kind")
   Field Str("Filename")
@@ -6,12 +8,14 @@ TClassBegin ttype=<Categories>
   Field Str("CID")
   Field Str("Title")
   Field Str("Selected")
+  Field Str("Date") vtype=date
 TClassEnd
 TClassBegin ttype=<Playlists>
   Field Str("PID")
   Field Str("Title")
-  Field Str("CID")
+  Field Str("Cid")
   Field Str("Selected")
+  Field Str("DateTime") vtype=datetime
 TClassEnd
 TClassBegin ttype=<IPv4>
   Field Str("A") vtype=int
@@ -19,18 +23,64 @@ TClassBegin ttype=<IPv4>
   Field Str("C") vtype=int
   Field Str("D") vtype=int
 TClassEnd
-TClassBegin ttype=<rgb> # 0-255 per component
+TClassBegin ttype=<rgb> # 0-255 for 3 components
   Field Str("red") vtype=int
   Field Str("green") vtype=int
   Field Str("blue") vtype=int
 TClassEnd
-TClassBegin ttype=<rgba> # 0-255 per component
+TClassBegin ttype=<rgba> # 0-255 per 3 components 0.0-1.0 for 1 component
   Field Str("red") vtype=int
   Field Str("green") vtype=int
   Field Str("blue") vtype=int
-  Field Str("alpha") vtype=int
+  Field Str("alpha") vtype=real
 TClassEnd
 MapBegin
+  Str("Map Test #1")
+  MapBegin # Map with different types of key
+    Int(5)
+    TableBegin ttype=<Complex> # From !numeric import
+      Real(1.0)
+      Real(-3.8)
+    TableEnd
+    Str("hello")
+    Date(2021-02-01)
+    Date(2001-01-31)
+    Str("world")
+    DateTime(1965-04-27T16:05:00)
+    Str("UXF in ASCII bytes follows")
+    Bytes( (:757866:) )
+    DateTime(1985-05-22T04:31:00)
+    Int(19)
+    ?
+    Int(24)
+    Str("An imaginarily long string joined by &s that isn't really that long.")
+  MapEnd
+  Str("Empties")
+  ListBegin
+    ListBegin
+    ListEnd
+    MapBegin
+    MapEnd
+    TableBegin ttype=<Files>
+    TableEnd
+    ListBegin vtype=<int>
+    ListEnd
+    MapBegin ktype=str
+    MapEnd
+    MapBegin ktype=date vtype=str
+    MapEnd
+  ListEnd
+  Str("Map Test #2")
+  MapBegin ktype=int # Map same type of non-str keys
+    Int(1)
+    Str("one")
+    Int(2)
+    Int(2)
+    Int(3)
+    Real(3.0)
+    Int(4)
+    Bytes( (:0220:) )
+  MapEnd
   Str("General")
   MapBegin
     Str("saved")
@@ -44,11 +94,11 @@ MapBegin
     Str("files")
     TableBegin ttype=<Files>
       Str("current")
-      Str("/home/mark/app/rs/tlm/PlaylistsTest.tlm")
-      Str("recent1")
-      Str("/home/mark/app/rs/tlm/PlaylistsTest.tlm")
+      Str("/home/mark/test1.uxf")
+      Str("recent3")
+      ?
       Str("recent2")
-      Str("/home/mark/data/playlists-all.tlm")
+      Str("/home/mark/test2.uxf")
     TableEnd
   MapEnd
   Str("Window")
@@ -76,7 +126,7 @@ MapBegin
       Int(9)
     TableEnd
     Str("many")
-    TableBegin ttype=<IPv4>
+    TableBegin ttype=<IPv4> # A list of IPv4 addresses
       Int(172)
       Int(16)
       Int(254)
@@ -85,10 +135,6 @@ MapBegin
       Int(0)
       Int(2)
       Int(235)
-      Int(127)
-      Int(0)
-      Int(0)
-      Int(1)
     TableEnd
     Str("red")
     TableBegin ttype=<rgb>
@@ -101,7 +147,7 @@ MapBegin
       Int(0)
       Int(0)
       Int(255)
-      Int(80)
+      Real(0.8)
     TableEnd
   ListEnd
   Str("Magic")
@@ -113,27 +159,22 @@ MapBegin
       Int(5)
       Bool(true)
     ListEnd
-    Str("Modern Instrumental")
-    ListBegin
-      Int(4)
-      Bool(false)
-    ListEnd
     Str("New Acquistions")
     ListBegin
       Int(1)
       Bool(false)
     ListEnd
     Str("Nested List of Lists")
-    ListBegin
+    ListBegin # A list of lists
       ListBegin
         Int(5)
         Str("Classical")
         Bool(true)
       ListEnd
       ListBegin
-        Int(4)
-        Str("Modern Instrumental")
-        Bool(false)
+        ?
+        ?
+        ?
       ListEnd
       ListBegin
         Int(1)
@@ -143,102 +184,64 @@ MapBegin
     ListEnd
     Str("Nested Table")
     TableBegin ttype=<Categories>
-      Int(5)
-      Str("Classical")
-      Bool(true)
       Int(4)
       Str("Modern Instrumental")
       Bool(false)
-      Int(1)
-      Str("New Acquistions")
-      Bool(false)
+      Date(1973-10-18)
       Int(2)
       Str("Pop")
       Bool(false)
-      Int(3)
-      Str("Punk")
-      Bool(false)
+      Date(1983-04-07)
+      ?
+      ?
+      ?
+      ?
       Int(7)
       Str("Uncategorized")
       Bool(false)
-      Int(6)
-      Str("Unpopular Pop")
-      Bool(false)
+      Date(1992-02-24)
     TableEnd
     Str("Nested List of Tables")
     ListBegin
-      TableBegin ttype=<Categories>
+      TableBegin ttype=<Categories> # These categories are just to show nesting
         Int(5)
         Str("Classical")
         Bool(true)
-        Int(4)
-        Str("Modern Instrumental")
-        Bool(false)
-        Int(1)
-        Str("New Acquistions")
-        Bool(false)
-        Int(2)
-        Str("Pop")
-        Bool(false)
+        Date(2001-12-27)
         Int(3)
         Str("Punk")
         Bool(false)
+        Date(1999-06-09)
+        ?
+        ?
+        ?
+        ?
         Int(7)
         Str("Uncategorized")
         Bool(false)
-        Int(6)
-        Str("Unpopular Pop")
-        Bool(false)
+        Date(1992-02-24)
       TableEnd
       TableBegin ttype=<Playlists>
-        Int(4)
-        Str("ABBA")
-        Int(2)
-        Bool(false)
-        Int(38)
-        Str("Bach")
-        Int(5)
-        Bool(false)
         Int(39)
         Str("Bartok")
         Int(5)
         Bool(false)
+        DateTime(1983-04-13T23:46:31)
         Int(5)
         Str("Beatles")
         Int(2)
         Bool(false)
-        Int(40)
-        Str("Beethoven")
-        Int(5)
-        Bool(false)
-        Int(6)
-        Str("Blondie")
-        Int(2)
-        Bool(false)
-        Int(52)
-        Str("Bob Marley")
-        Int(6)
-        Bool(true)
-        Int(7)
-        Str("Bruce Springsteen")
-        Int(2)
-        Bool(false)
-        Int(41)
-        Str("Chopin")
-        Int(5)
-        Bool(true)
-        Int(37)
-        Str("Classical")
-        Int(5)
-        Bool(false)
+        DateTime(2022-04-11T23:48:01)
+        ?
+        ?
+        ?
+        ?
+        ?
         Int(8)
         Str("David Bowie")
         Int(2)
         Bool(false)
-        Int(9)
-        Str("Dire Straits")
-        Int(2)
-        Bool(false)
+        DateTime(2008-09-01T23:59:46)
       TableEnd
     ListEnd
   MapEnd

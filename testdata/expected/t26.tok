@@ -1,0 +1,65 @@
+TClassBegin ttype=<Files>
+  Field Str("Kind")
+  Field Str("Filename")
+TClassEnd
+MapBegin
+  Str("General")
+  MapBegin
+    Str("shapename")
+    Str("Hexagon")
+    Str("zoom")
+    Int(150)
+    Str("showtoolbar")
+    Bool(false)
+  MapEnd
+  Str("Window1")
+  MapBegin
+    Str("x")
+    Int(615)
+    Str("y")
+    Int(252)
+    Str("width")
+    Int(592)
+    Str("height")
+    Int(636)
+    Str("scale")
+    Real(1.1)
+  MapEnd
+  Str("Window2")
+  MapBegin
+    Str("x")
+    Int(28)
+    Str("y")
+    Int(42)
+    Str("width")
+    Int(140)
+    Str("height")
+    Int(81)
+    Str("scale")
+    Real(1.0)
+  MapEnd
+  Str("Window3")
+  MapBegin
+    Str("x")
+    Int(57)
+    Str("y")
+    Int(98)
+    Str("width")
+    Int(89)
+    Str("height")
+    Int(22)
+    Str("scale")
+    Real(0.5)
+  MapEnd
+  Str("Files")
+  TableBegin ttype=<Files>
+    Str("current")
+    Str("test1.uxf")
+    Str("recent1")
+    Str("/tmp/test2.uxf")
+    Str("recent2")
+    Str("C:\\Users\\mark\\test3.uxf")
+  TableEnd
+MapEnd
+Eof
+----------------------------------------

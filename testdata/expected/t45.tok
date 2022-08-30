@@ -1,0 +1,48 @@
+TClassBegin ttype=<Pair>
+  Field Str("First")
+  Field Str("Second")
+TClassEnd
+TClassBegin ttype=<Quad>
+  Field Str("First") vtype=Pair
+  Field Str("Second") vtype=Pair
+TClassEnd
+ListBegin
+  TableBegin ttype=<Quad>
+    TableBegin ttype=<Pair>
+      Int(1)
+      Int(2)
+    TableEnd
+    TableBegin ttype=<Pair>
+      Int(3)
+      Int(4)
+    TableEnd
+  TableEnd
+  TableBegin ttype=<Quad>
+    TableBegin ttype=<Pair>
+      Int(1)
+      Int(2)
+    TableEnd
+    TableBegin ttype=<Pair>
+      Int(3)
+      Int(4)
+    TableEnd
+    TableBegin ttype=<Pair>
+      Int(5)
+      Int(6)
+    TableEnd
+    TableBegin ttype=<Pair>
+      Int(7)
+      Int(8)
+    TableEnd
+    TableBegin ttype=<Pair>
+      Int(9)
+      Int(10)
+    TableEnd
+    TableBegin ttype=<Pair>
+      Int(11)
+      Int(12)
+    TableEnd
+  TableEnd
+ListEnd
+Eof
+----------------------------------------

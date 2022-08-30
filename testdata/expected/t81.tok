@@ -1,0 +1,23 @@
+FileComment Str("last modified 1 April 2001 by John Doe")
+TClassBegin ttype=<Owner>
+  Field Str("name") vtype=str
+  Field Str("organization") vtype=str
+TClassEnd
+TClassBegin ttype=<Database> # use IP address in case network name resolution is not working
+  Field Str("server") vtype=str
+  Field Str("port") vtype=int
+  Field Str("file") vtype=str
+TClassEnd
+ListBegin
+  TableBegin ttype=<Owner>
+    Str("John Doe")
+    Str("Acme Widgets Inc.")
+  TableEnd
+  TableBegin ttype=<Database>
+    Str("192.0.2.62")
+    Int(143)
+    Str("payroll.dat")
+  TableEnd
+ListEnd
+Eof
+----------------------------------------
