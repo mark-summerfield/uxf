@@ -1,0 +1,109 @@
+ListBegin
+  ListBegin
+    ListBegin
+      Int(5)
+      Str("Classical")
+      Bool(true)
+    ListEnd
+    ListBegin
+      Int(4)
+      Str("Modern Instrumental")
+      Bool(false)
+    ListEnd
+    ListBegin
+      Int(1)
+      Str("New Acquistions")
+      Bool(false)
+    ListEnd
+    ListBegin
+      Int(2)
+      Str("Pop")
+      Bool(false)
+    ListEnd
+    ListBegin
+      Int(3)
+      Str("Punk")
+      Bool(false)
+    ListEnd
+    ListBegin
+      Int(7)
+      Str("Uncategorized")
+      Bool(false)
+    ListEnd
+    ListBegin
+      Int(6)
+      Str("Unpopular Pop")
+      Bool(false)
+    ListEnd
+  ListEnd
+  ListBegin
+    ListBegin
+      Int(4)
+      Str("ABBA")
+      Int(2)
+      Bool(false)
+    ListEnd
+    ListBegin
+      Int(38)
+      Str("Bach")
+      Int(5)
+      Bool(false)
+    ListEnd
+    ListBegin
+      Int(39)
+      Str("Bartok")
+      Int(5)
+      Bool(false)
+    ListEnd
+    ListBegin
+      Int(5)
+      Str("Beatles")
+      Int(2)
+      Bool(false)
+    ListEnd
+    ListBegin
+      Int(40)
+      Str("Beethoven")
+      Int(5)
+      Bool(false)
+    ListEnd
+    ListBegin
+      Int(6)
+      Str("Blondie")
+      Int(2)
+      Bool(false)
+    ListEnd
+    ListBegin
+      Int(52)
+      Str("Bob Marley")
+      Int(6)
+      Bool(true)
+    ListEnd
+    ListBegin
+      Int(7)
+      Str("Bruce Springsteen")
+      Int(2)
+      Bool(false)
+    ListEnd
+    ListBegin
+      Int(41)
+      Str("Chopin")
+      Int(5)
+      Bool(true)
+    ListEnd
+    ListBegin
+      Int(37)
+      Str("Classical")
+      Int(5)
+      Bool(false)
+    ListEnd
+    ListBegin
+      Int(8)
+      Str("David Bowie")
+      Int(2)
+      Bool(false)
+    ListEnd
+  ListEnd
+ListEnd
+Eof
+----------------------------------------

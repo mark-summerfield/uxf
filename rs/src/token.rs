@@ -41,6 +41,29 @@ impl<'a> Token<'a> {
 impl<'a> fmt::Display for Token<'a> {
     /// Purely for debugging
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        let kind = if self.kind == TokenKind::TClassBegin {
+            format!("{} ttype={}", &self.kind, &self.value)
+        } else if matches!(
+            &self.kind,
+            TokenKind::Field | TokenKind::FileComment
+        ) {
+            format!("{} ", &self.kind)
+        } else if !matches!(
+            self.kind,
+            TokenKind::TClassBegin
+                | TokenKind::TClassEnd
+                | TokenKind::TableBegin
+                | TokenKind::TableEnd
+                | TokenKind::ListBegin
+                | TokenKind::ListEnd
+                | TokenKind::MapBegin
+                | TokenKind::MapEnd
+                | TokenKind::Eof
+        ) {
+            "".to_string()
+        } else {
+            format!("{}", &self.kind)
+        };
         let comment = if !self.comment.is_empty() {
             format!(" # {}", self.comment)
         } else {
@@ -56,10 +79,23 @@ impl<'a> fmt::Display for Token<'a> {
         } else {
             "".to_string()
         };
-        let value = if self.value == Value::Null {
+        let value = if matches!(
+            self.kind,
+            TokenKind::TClassBegin
+                | TokenKind::TClassEnd
+                | TokenKind::TableBegin
+                | TokenKind::TableEnd
+                | TokenKind::ListBegin
+                | TokenKind::ListEnd
+                | TokenKind::MapBegin
+                | TokenKind::MapEnd
+                | TokenKind::Eof
+        ) {
             "".to_string()
+        } else if self.value == Value::Null {
+            "?".to_string()
         } else {
-            format!(" {:?}", self.value)
+            format!("{:?}", self.value)
         };
         let xtype = if !self.ttype.is_empty() {
             format!(" ttype={}", self.ttype)
@@ -72,7 +108,7 @@ impl<'a> fmt::Display for Token<'a> {
         } else {
             "".to_string()
         };
-        write!(f, "{}{}{}{}", &self.kind, value, xtype, comment)
+        write!(f, "{}{}{}{}", kind, value, xtype, comment)
     }
 }
 
@@ -113,7 +149,10 @@ pub(crate) fn debug_tokens(tokens: &[Token]) {
     for token in tokens.iter() {
         if matches!(
             &token.kind,
-            TokenKind::ListEnd | TokenKind::MapEnd | TokenKind::TableEnd
+            TokenKind::TClassEnd
+                | TokenKind::ListEnd
+                | TokenKind::MapEnd
+                | TokenKind::TableEnd
         ) {
             indent -= 1;
         }
@@ -123,7 +162,8 @@ pub(crate) fn debug_tokens(tokens: &[Token]) {
         println!("{}", token);
         if matches!(
             &token.kind,
-            TokenKind::ListBegin
+            TokenKind::TClassBegin
+                | TokenKind::ListBegin
                 | TokenKind::MapBegin
                 | TokenKind::TableBegin
         ) {

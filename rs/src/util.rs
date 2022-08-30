@@ -69,13 +69,17 @@ pub(crate) fn is_compressed(filename: &str) -> Result<bool> {
 /// Each char may be 0-9A-Fa-f or ASCII whitespace (which is ignored) and
 /// non-whitespace chars must come in pairs (even if separated by
 /// whitespace).
-pub(crate) fn hex_as_bytes(h: &[char]) -> Result<Vec<u8>> {
+pub(crate) fn hex_as_bytes(
+    h: &str,
+    filename: &str,
+    lino: usize,
+) -> Result<Vec<u8>> {
     let mut raw = vec![];
     let mut b = NUL;
-    for c in h {
+    for c in h.chars() {
         if c.is_ascii_hexdigit() {
             if b == NUL {
-                b = *c;
+                b = c;
             } else {
                 // safe to unwrap because of is_ascii_hexdigit()
                 let x = b.to_digit(16).unwrap() * 16;
@@ -84,7 +88,7 @@ pub(crate) fn hex_as_bytes(h: &[char]) -> Result<Vec<u8>> {
                 b = NUL;
             }
         } else if !c.is_ascii_whitespace() {
-            bail!("E600:-:0:invalid hex char: {:?}", c)
+            bail!("E600:{}:{}:invalid hex char: {:?}", filename, lino, c)
         }
     }
     Ok(raw)

@@ -121,7 +121,7 @@ impl<'a> Lexer<'a> {
             } else {
                 bail!(
                     "E160:{}:{}:invalid comment syntax: expected '<', \
-                    got '{}'",
+                    got {:?}",
                     self.filename,
                     self.lino,
                     self.peek()
@@ -164,10 +164,10 @@ impl<'a> Lexer<'a> {
                         self.read_name()
                     } else {
                         bail!(
-                            "E170:{}:{}:invalid character encountered {}",
+                            "E170:{}:{}:invalid character encountered {:?}",
                             self.filename,
                             self.lino,
-                            "?" // TODO use first char found
+                            c
                         )
                     }
                 }
@@ -208,8 +208,17 @@ impl<'a> Lexer<'a> {
     }
 
     fn read_bytes(&mut self) -> Result<()> {
-        let i = self.match_to_chars_index(&[':', ')'], "bytes")?;
-        let raw = hex_as_bytes(&self.text[self.pos..i])?;
+        let text = self.match_to_char(':', "bytes")?;
+        let c = self.getch();
+        if c != ')' {
+            bail!(
+                "E269:{}:{}:unterminated bytes, got {:?}",
+                self.filename,
+                self.lino,
+                c
+            )
+        }
+        let raw = hex_as_bytes(&text, &self.filename, self.lino)?;
         self.add_token(TokenKind::Bytes, Value::Bytes(raw))
     }
 
@@ -433,12 +442,13 @@ impl<'a> Lexer<'a> {
         what: &str,
     ) -> Result<String> {
         while self.pos < self.text.len() {
-            if self.text[self.pos] != '_'
-                || !self.text[self.pos].is_alphanumeric()
+            if self.text[self.pos] == '_'
+                || self.text[self.pos].is_alphanumeric()
             {
+                self.pos += 1;
+            } else {
                 break;
             }
-            self.pos += 1;
         }
         let identifier = &self.text[start..self.pos];
         let end = std::cmp::min(identifier.len(), MAX_IDENTIFIER_LEN + 1);
@@ -507,7 +517,7 @@ impl<'a> Lexer<'a> {
             let end = start + target.len();
             let chars: Vec<char> = target.chars().collect();
             if end < self.text.len() && self.text[start..end] == chars {
-                self.pos = end - 1; // skip past target
+                self.pos = end; // skip past target
                 return Some(target);
             }
         }
@@ -526,28 +536,12 @@ impl<'a> Lexer<'a> {
                 return Ok(str_for_chars(text));
             }
         }
-        bail!("E270:{}:{}:unterminated {}", self.filename, self.lino, what)
-    }
-
-    fn match_to_chars_index(
-        &mut self,
-        cs: &[char],
-        what: &str,
-    ) -> Result<usize> {
-        if !self.at_end() {
-            for (offset, x) in
-                self.text[self.pos..].windows(cs.len()).enumerate()
-            {
-                if x == cs {
-                    let i = self.pos + offset;
-                    let text = &self.text[self.pos..i];
-                    self.lino += text.iter().filter(|&c| *c == NL).count();
-                    self.pos = i + cs.len(); // skip past terminator
-                    return Ok(i);
-                }
-            }
-        }
-        bail!("E279:{}:{}:unterminated {}", self.filename, self.lino, what)
+        bail!(
+            "E270:{}:{}:unterminated {:?}",
+            self.filename,
+            self.lino,
+            what
+        )
     }
 
     fn add_token(&mut self, kind: TokenKind, value: Value) -> Result<()> {
@@ -593,7 +587,7 @@ impl<'a> Lexer<'a> {
                 top.vtype = value.to_string();
             } else {
                 bail!(
-                    "E271:{}:{}:invalid vtype, got {}",
+                    "E271:{}:{}:invalid vtype, got {:?}",
                     self.filename,
                     self.lino,
                     value
@@ -601,7 +595,7 @@ impl<'a> Lexer<'a> {
             }
         } else {
             bail!(
-                "E272:{}:{}:expected value, got type {}",
+                "E272:{}:{}:expected value, got type {:?}",
                 self.filename,
                 self.lino,
                 value
@@ -620,7 +614,7 @@ impl<'a> Lexer<'a> {
         if top.ktype.is_empty() {
             if kind == TokenKind::Identifier {
                 bail!(
-                    "E273:{}:{}:expected ktype, got {}",
+                    "E273:{}:{}:expected ktype, got {:?}",
                     self.filename,
                     self.lino,
                     value
@@ -632,7 +626,7 @@ impl<'a> Lexer<'a> {
                 top.ktype = ktype.to_string();
             } else {
                 bail!(
-                    "E275:{}:{}:invalid ktype, got {}",
+                    "E275:{}:{}:invalid ktype, got {:?}",
                     self.filename,
                     self.lino,
                     value
@@ -645,7 +639,7 @@ impl<'a> Lexer<'a> {
                 top.vtype = vtype.to_string();
             } else {
                 bail!(
-                    "E277:{}:{}:invalid vtype, got {}",
+                    "E277:{}:{}:invalid vtype, got {:?}",
                     self.filename,
                     self.lino,
                     value
@@ -653,7 +647,7 @@ impl<'a> Lexer<'a> {
             }
         } else {
             bail!(
-                "E276:{}:{}:expected first map key, got type {}",
+                "E276:{}:{}:expected first map key, got type {:?}",
                 self.filename,
                 self.lino,
                 value
@@ -676,7 +670,7 @@ impl<'a> Lexer<'a> {
                 top.ttype = value.to_string();
             } else {
                 bail!(
-                    "E278:{}:{}:invalid ttype, got {}",
+                    "E278:{}:{}:invalid ttype, got {:?}",
                     self.filename,
                     self.lino,
                     value
@@ -684,7 +678,7 @@ impl<'a> Lexer<'a> {
             }
         } else {
             bail!(
-                "E274:{}:{}:expected value, got type {}",
+                "E274:{}:{}:expected value, got type {:?}",
                 self.filename,
                 self.lino,
                 value

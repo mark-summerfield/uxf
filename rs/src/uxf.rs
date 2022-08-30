@@ -7,7 +7,7 @@ use crate::format::Format;
 use crate::list::List;
 use crate::parser;
 use crate::tclass::TClass;
-use crate::util::{escape, read_file, realstr64};
+use crate::util::{escape, read_file};
 use crate::value::{Value, Visit, Visitor};
 use anyhow::{bail, Result};
 use bitflags::bitflags;
