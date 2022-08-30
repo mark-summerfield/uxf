@@ -13,8 +13,8 @@ rs/src/check.rs
 rs/src/util.rs
 rs/src/event.rs
 rs/src/constants.rs
-rs/src/parser.rs # TODO (1) parse() (& test using py/t/regression.py -r)
-rs/src/lexer.rs # TODO imports
+rs/src/parser.rs # TODO (2) parse() (& test using py/t/regression.py -r)
+rs/src/lexer.rs # TODO (1) imports (& test using rs/check_lexer.py)
 rs/src/token.rs
 rs/src/prettyprint.rs # TODO see (9) above
 rs/src/test_utils.rs

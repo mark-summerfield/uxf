@@ -1,0 +1,26 @@
+TClassBegin ttype=<PriceList>
+  Field Str("Date") vtype=date
+  Field Str("Price") vtype=real
+  Field Str("Quantity") vtype=int
+  Field Str("ID") vtype=str
+  Field Str("Description") vtype=str
+TClassEnd
+TableBegin ttype=<PriceList>
+  Date(2022-09-21)
+  Real(3.99)
+  Int(2)
+  Str("CH1-A2")
+  Str("Chisels (pair), 1in & 1¼in")
+  Date(2022-10-02)
+  Real(4.49)
+  Int(1)
+  Str("HV2-K9")
+  Str("Hammer, 2lb")
+  Date(2022-10-02)
+  Real(5.89)
+  Int(1)
+  Str("SX4-D1")
+  Str("Eversure Sealant, 13-floz")
+TableEnd
+Eof
+----------------------------------------

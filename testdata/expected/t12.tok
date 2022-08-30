@@ -1,0 +1,252 @@
+TClassBegin ttype=<Files>
+  Field Str("Kind")
+  Field Str("Filename")
+TClassEnd
+TClassBegin ttype=<Categories>
+  Field Str("CID")
+  Field Str("Title")
+  Field Str("Selected")
+TClassEnd
+TClassBegin ttype=<Playlists>
+  Field Str("PID")
+  Field Str("Title")
+  Field Str("CID")
+  Field Str("Selected")
+TClassEnd
+TClassBegin ttype=<IPv4>
+  Field Str("A") vtype=int
+  Field Str("B") vtype=int
+  Field Str("C") vtype=int
+  Field Str("D") vtype=int
+TClassEnd
+TClassBegin ttype=<RGB>
+  Field Str("Red") vtype=int
+  Field Str("Green") vtype=int
+  Field Str("Blue") vtype=int
+TClassEnd
+TClassBegin ttype=<RGBA>
+  Field Str("Red") vtype=int
+  Field Str("Green") vtype=int
+  Field Str("Blue") vtype=int
+  Field Str("Alpha") vtype=int
+TClassEnd
+TClassBegin ttype=<IntPair>
+  Field Str("First") vtype=int
+  Field Str("Second") vtype=int
+TClassEnd
+MapBegin
+  Str("General")
+  MapBegin # Various configuration items
+    Str("saved")
+    Date(2022-03-21)
+    Str("autosave")
+    Bool(true)
+    Str("historysize")
+    Int(-35)
+    Str("volume")
+    Real(0.7)
+    Str("files")
+    TableBegin ttype=<Files> # Another little comment
+      Str("current")
+      Str("/home/mark/app/rs/tlm/PlaylistsTest.tlm")
+      Str("recent1")
+      Str("/home/mark/app/rs/tlm/PlaylistsTest.tlm")
+      Str("recent2")
+      Str("/home/mark/data/playlists-all.tlm")
+    TableEnd
+  MapEnd
+  Str("Window")
+  MapBegin # Some numbers
+    Str("pos")
+    TableBegin ttype=<IntPair>
+      Int(383)
+      Int(124)
+    TableEnd
+    Str("size")
+    TableBegin ttype=<IntPair>
+      Int(590)
+      Int(536)
+    TableEnd
+    Str("scale")
+    Real(1.1)
+  MapEnd
+  Str("UXF Type Tests")
+  ListBegin
+    Str("one")
+    TableBegin ttype=<IPv4>
+      Int(141)
+      Int(179)
+      Int(19)
+      Int(9)
+    TableEnd
+    Str("many")
+    TableBegin ttype=<IPv4>
+      Int(172)
+      Int(16)
+      Int(254)
+      Int(1)
+      Int(192)
+      Int(0)
+      Int(2)
+      Int(235)
+      Int(127)
+      Int(0)
+      Int(0)
+      Int(1)
+    TableEnd
+    Str("red")
+    TableBegin ttype=<RGB>
+      Int(255)
+      Int(0)
+      Int(0)
+    TableEnd
+    Str("semi-transparent blue")
+    TableBegin ttype=<RGBA>
+      Int(0)
+      Int(0)
+      Int(255)
+      Int(80)
+    TableEnd
+  ListEnd
+  Str("Magic")
+  Bytes([31, 139])
+  Str("Nested Map")
+  MapBegin # Another comment this time in a nested map
+    Str("Classical")
+    ListBegin
+      Int(5)
+      Bool(true)
+    ListEnd
+    Str("Modern Instrumental")
+    ListBegin
+      Int(4)
+      Bool(false)
+    ListEnd
+    Str("New Acquistions")
+    ListBegin
+      Int(1)
+      Bool(false)
+    ListEnd
+    Str("Nested List of Lists")
+    ListBegin # Just a little list
+      ListBegin
+        Int(5)
+        Str("Classical")
+        Bool(true)
+      ListEnd
+      ListBegin
+        Int(4)
+        Str("Modern Instrumental & <Experimental>")
+        Bool(false)
+      ListEnd
+      ListBegin
+        Int(1)
+        Str("New Acquistions")
+        Bool(false)
+      ListEnd
+    ListEnd
+    Str("Nested Table")
+    TableBegin ttype=<Categories> # A table with a rather long comment just to
+show what can be done.
+      Int(5)
+      Str("Classical")
+      Bool(true)
+      Int(4)
+      Str("Modern Instrumental")
+      Bool(false)
+      Int(1)
+      Str("New Acquistions")
+      Bool(false)
+      Int(2)
+      Str("Pop")
+      Bool(false)
+      Int(3)
+      Str("Punk")
+      Bool(false)
+      Int(7)
+      Str("Uncategorized")
+      Bool(false)
+      Int(6)
+      Str("Unpopular Pop")
+      Bool(false)
+    TableEnd
+    Str("Nested List of Tables")
+    ListBegin # Yet another comment in a list
+      TableBegin ttype=<Categories>
+        Int(5)
+        Str("Classical")
+        Bool(true)
+        Int(4)
+        Str("Modern Instrumental")
+        Bool(false)
+        Int(1)
+        Str("New Acquistions")
+        Bool(false)
+        Int(2)
+        Str("Pop")
+        Bool(false)
+        Int(3)
+        Str("Punk")
+        Bool(false)
+        Int(7)
+        Str("Uncategorized")
+        Bool(false)
+        Int(6)
+        Str("Unpopular Pop")
+        Bool(false)
+      TableEnd
+      TableBegin ttype=<Playlists> # Comments may appear at the beginning of any list, map or table
+        Int(4)
+        Str("ABBA")
+        Int(2)
+        Bool(false)
+        Int(38)
+        Str("Bach")
+        Int(5)
+        Bool(false)
+        Int(39)
+        Str("Bartok")
+        Int(5)
+        Bool(false)
+        Int(5)
+        Str("Beatles")
+        Int(2)
+        Bool(false)
+        Int(40)
+        Str("Beethoven")
+        Int(5)
+        Bool(false)
+        Int(6)
+        Str("Blondie")
+        Int(2)
+        Bool(false)
+        Int(52)
+        Str("Bob Marley")
+        Int(6)
+        Bool(true)
+        Int(7)
+        Str("Bruce Springsteen")
+        Int(2)
+        Bool(false)
+        Int(41)
+        Str("Chopin")
+        Int(5)
+        Bool(true)
+        Int(37)
+        Str("Classical")
+        Int(5)
+        Bool(false)
+        Int(8)
+        Str("David Bowie")
+        Int(2)
+        Bool(false)
+        Int(9)
+        Str("Dire Straits")
+        Int(2)
+        Bool(false)
+      TableEnd
+    ListEnd
+  MapEnd
+MapEnd
+Eof
+----------------------------------------

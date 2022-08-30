@@ -1,0 +1,23 @@
+FileComment Str(" A little note.")
+ListBegin vtype=<list>
+  ListBegin
+    Int(5)
+    Str("Classical")
+    Bool(true)
+    Date(1999-07-21)
+  ListEnd
+  ListBegin
+    Int(4)
+    Str("Modern Instrumental")
+    Bool(false)
+    Date(1976-11-30)
+  ListEnd
+  ListBegin
+    Int(1)
+    Str("New Acquistions")
+    Bool(false)
+    Date(1947-02-28)
+  ListEnd
+ListEnd
+Eof
+----------------------------------------

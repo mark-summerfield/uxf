@@ -1,0 +1,13 @@
+TClassBegin ttype=<Countries>
+  Field Str("Name")
+TClassEnd
+TableBegin ttype=<Countries>
+  Str("Netherlands")
+  Str("Wales")
+  Str("Belgium")
+  Str("Australia")
+  Str("Japan")
+  Str("Ukraine")
+TableEnd
+Eof
+----------------------------------------
