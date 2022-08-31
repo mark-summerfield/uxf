@@ -13,7 +13,7 @@ rs/src/check.rs
 rs/src/util.rs
 rs/src/event.rs
 rs/src/constants.rs
-rs/src/parser.rs # TODO (1) parse() (& test using py/t/regression.py -r)
+rs/src/parser.rs # TODO (1) test using py/t/regression.py -r
 rs/src/lexer.rs
 rs/src/token.rs
 rs/src/prettyprint.rs # TODO see (9) above
@@ -25,7 +25,7 @@ rs/tests/test_table.rs
 rs/tests/test_tclass.rs
 rs/tests/test_field.rs
 rs/tests/test_uxf.rs
-rs/check_lexer.py
+# rs/check_lexer.py
 rs/Cargo.toml
 
 rs/README.md

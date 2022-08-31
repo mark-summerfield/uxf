@@ -1868,7 +1868,6 @@ class _Parser(_EventMixin):
         self.tclasses = {} # key=ttype value=TClass
         self.lino_for_tclass = {} # key=ttype value=lino
         self.used_tclasses = set()
-        self.pos = -1
         self.lino = 0
 
 

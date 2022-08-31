@@ -246,7 +246,7 @@ mod tests {
             uxf::parse("uxf 1\n#<A &lt;Big&gt; comment!>\n[]").unwrap();
         assert_eq!(
             uxo.to_string(),
-            "uxf 1\n#<A &lt;Big&gt; comment!>\n[]"
+            "uxf 1\n#<A &lt;Big&gt; comment!>\n[]\n"
         );
         assert_eq!(uxo.comment(), "A <Big> comment!");
         // TODO

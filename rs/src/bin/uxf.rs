@@ -16,12 +16,7 @@ fn main() -> Result<()> {
     let config = Config::parse();
     let inbuf = canonicalize_file(&config.infile)?;
     let infile = inbuf.to_string_lossy().to_string();
-    let mut outfile = String::new();
-    if let Some(outbuf) = &config.outfile {
-        check_same_file(&inbuf, outbuf)?;
-        let outpath = canonicalize_file(outbuf)?;
-        outfile = outpath.to_string_lossy().to_string();
-    }
+    let outfile = get_outfile(&inbuf, &config.outfile)?;
     let options = parser_options(&config);
     let uxo = uxf::parse_options(
         &infile,
@@ -32,6 +27,20 @@ fn main() -> Result<()> {
         output(&outfile, &config, &uxo)?;
     }
     Ok(())
+}
+
+fn get_outfile(inbuf: &Path, outfile: &Option<PathBuf>) -> Result<String> {
+    Ok(if let Some(outbuf) = outfile {
+        if outbuf == &PathBuf::from("-") {
+            "-".to_string()
+        } else {
+            check_same_file(inbuf, outbuf)?;
+            let outpath = canonicalize_file(outbuf)?;
+            outpath.to_string_lossy().to_string()
+        }
+    } else {
+        "".to_string()
+    })
 }
 
 fn output(outfile: &str, config: &Config, uxo: &uxf::Uxf) -> Result<()> {

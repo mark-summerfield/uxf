@@ -11,7 +11,7 @@ use crate::util::{
 use crate::value::Value;
 use anyhow::{bail, Result};
 use chrono::{NaiveDate, NaiveDateTime};
-use std::{rc::Rc, str};
+use std::{collections::VecDeque, mem, rc::Rc, str};
 
 pub struct Lexer<'a> {
     pub text: &'a Vec<char>,
@@ -40,18 +40,18 @@ impl<'a> Lexer<'a> {
             lino: 0,
             in_tclass: false,
             concatenate: false,
-            tokens: vec![],
+            tokens: VecDeque::new(),
         }
     }
 
-    pub fn tokenize(&mut self) -> Result<(String, &Tokens)> {
+    pub fn tokenize(&mut self) -> Result<(String, Tokens)> {
         self.scan_header()?;
         self.maybe_read_file_comment()?;
         while !self.at_end() {
             self.scan_next()?;
         }
         self.add_token(TokenKind::Eof, Value::Null)?;
-        Ok((self.custom.clone(), &self.tokens))
+        Ok((self.custom.clone(), mem::take(&mut self.tokens)))
     }
 
     fn scan_header(&mut self) -> Result<()> {
@@ -253,7 +253,7 @@ impl<'a> Lexer<'a> {
 
     fn read_comment(&mut self) -> Result<()> {
         let c = self.peek();
-        if let Some(top) = self.tokens.last() {
+        if let Some(top) = self.tokens.back() {
             if matches!(
                 &top.kind,
                 TokenKind::ListBegin
@@ -265,7 +265,7 @@ impl<'a> Lexer<'a> {
                 self.pos += 1; // skip the leading <
                 let text = self.match_to_char('>', "comment string")?;
                 if !text.is_empty() {
-                    let top = self.tokens.last_mut().unwrap();
+                    let top = self.tokens.back_mut().unwrap();
                     top.comment = unescape(&text);
                 }
                 Ok(())
@@ -292,7 +292,7 @@ impl<'a> Lexer<'a> {
         let text = unescape(&self.match_to_char('>', "string")?);
         if self.concatenate {
             // safe because we must already have had at least one token
-            let top = self.tokens.last_mut().unwrap();
+            let top = self.tokens.back_mut().unwrap();
             if matches!(top.kind, TokenKind::Str | TokenKind::FileComment) {
                 let old = top.value.as_str().unwrap(); // should be safe
                 top.value = Value::Str(old.to_owned() + &text);
@@ -329,9 +329,9 @@ impl<'a> Lexer<'a> {
         let identifier = self.match_identifier(self.pos, "field vtype")?;
         if self.in_tclass
             && !self.tokens.is_empty()
-            && self.tokens.last().unwrap().kind == TokenKind::Field
+            && self.tokens.back().unwrap().kind == TokenKind::Field
         {
-            let top = self.tokens.last_mut().unwrap(); // safe
+            let top = self.tokens.back_mut().unwrap(); // safe
             top.vtype = identifier;
             Ok(())
         } else {
@@ -453,7 +453,7 @@ impl<'a> Lexer<'a> {
         let identifier = Value::Str(identifier);
         if self.in_tclass {
             // safe because if in TClass there must have been a prev token
-            let top = self.tokens.last_mut().unwrap();
+            let top = self.tokens.back_mut().unwrap();
             if top.kind == TokenKind::TClassBegin
                 && top.value == Value::Null
             {
@@ -582,14 +582,19 @@ impl<'a> Lexer<'a> {
         {
             return Ok(());
         }
-        self.tokens.push(Token::new(kind, value, self.filename, self.lino));
+        self.tokens.push_back(Token::new(
+            kind,
+            value,
+            self.filename,
+            self.lino,
+        ));
         Ok(())
     }
 
     fn subsumed(&mut self, kind: TokenKind, value: &Value) -> Result<bool> {
         if matches!(kind, TokenKind::Identifier | TokenKind::Type) {
             // safe because we only call when self.tokens is nonempty
-            let top = self.tokens.last().unwrap();
+            let top = self.tokens.back().unwrap();
             return match top.kind {
                 TokenKind::ListBegin => {
                     self.subsume_list_vtype(kind, value)
@@ -610,7 +615,7 @@ impl<'a> Lexer<'a> {
         value: &Value,
     ) -> Result<bool> {
         // safe because we only call when self.tokens is nonempty
-        let top = self.tokens.last_mut().unwrap();
+        let top = self.tokens.back_mut().unwrap();
         if top.vtype.is_empty() {
             if let Some(vtype) = value.as_str() {
                 assert!(!vtype.is_empty());
@@ -641,7 +646,7 @@ impl<'a> Lexer<'a> {
         value: &Value,
     ) -> Result<bool> {
         // safe because we only call when self.tokens is nonempty
-        let top = self.tokens.last_mut().unwrap();
+        let top = self.tokens.back_mut().unwrap();
         if top.ktype.is_empty() {
             if kind == TokenKind::Identifier {
                 bail!(
@@ -693,7 +698,7 @@ impl<'a> Lexer<'a> {
         value: &Value,
     ) -> Result<bool> {
         // safe because we only call when self.tokens is nonempty
-        let top = self.tokens.last_mut().unwrap();
+        let top = self.tokens.back_mut().unwrap();
         if top.vtype.is_empty() {
             if let Some(ttype) = value.as_str() {
                 assert!(!ttype.is_empty());

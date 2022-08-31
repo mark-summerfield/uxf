@@ -2,9 +2,9 @@
 // License: GPLv3
 
 use crate::value::Value;
-use std::fmt;
+use std::{collections::VecDeque, fmt};
 
-pub type Tokens<'a> = Vec<Token<'a>>;
+pub type Tokens<'a> = VecDeque<Token<'a>>;
 
 #[derive(Clone, Debug)]
 pub struct Token<'a> {
