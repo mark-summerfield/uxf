@@ -13,7 +13,6 @@ pub struct Token<'a> {
     pub filename: &'a str,
     pub lino: usize,
     pub comment: String,
-    pub ttype: String,
     pub ktype: String,
     pub vtype: String,
 }
@@ -27,13 +26,12 @@ impl<'a> Token<'a> {
     ) -> Self {
         Token {
             kind,
-            value,
+            value, // may store vtype or ttype
             filename,
             lino,
             comment: "".to_string(),
-            ttype: "".to_string(),
             ktype: "".to_string(),
-            vtype: "".to_string(),
+            vtype: "".to_string(), // stores vtype _or_ ttype
         }
     }
 }
@@ -99,14 +97,16 @@ impl<'a> fmt::Display for Token<'a> {
         } else {
             format!("{:?}", self.value)
         };
-        let xtype = if !self.ttype.is_empty() {
-            format!(" ttype={}", self.ttype)
-        } else if !self.ktype.is_empty() && !self.vtype.is_empty() {
+        let xtype = if !self.ktype.is_empty() && !self.vtype.is_empty() {
             format!(" ktype={} vtype={}", self.ktype, self.vtype)
         } else if !self.ktype.is_empty() {
             format!(" ktype={}", self.ktype)
         } else if !self.vtype.is_empty() {
-            format!(" vtype={}", self.vtype)
+            format!(
+                " {}type={}",
+                if self.kind == TokenKind::TableBegin { 't' } else { 'v' },
+                self.vtype
+            )
         } else {
             "".to_string()
         };

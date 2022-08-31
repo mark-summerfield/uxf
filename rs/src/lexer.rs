@@ -694,11 +694,11 @@ impl<'a> Lexer<'a> {
     ) -> Result<bool> {
         // safe because we only call when self.tokens is nonempty
         let top = self.tokens.last_mut().unwrap();
-        if top.ttype.is_empty() {
+        if top.vtype.is_empty() {
             if let Some(ttype) = value.as_str() {
                 assert!(!ttype.is_empty());
                 check_ttype(ttype)?;
-                top.ttype = value.to_string();
+                top.vtype = value.to_string();
             } else {
                 bail!(
                     "E278:{}:{}:invalid ttype, got {:?}",
