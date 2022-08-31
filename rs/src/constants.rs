@@ -13,6 +13,8 @@ pub static ISO8601_DATETIME: &str = "%Y-%m-%dT%H:%M:%S"; // YYYY-MM-DDTHH:MM:SS
 pub static ISO8601_DATETIME_M: &str = "%Y-%m-%dT%H:%M"; // YYYY-MM-DDTHH:MM
 pub static ISO8601_DATETIME_H: &str = "%Y-%m-%dT%H"; // YYYY-MM-DDTHH
 
+pub const INVALID_POS: usize = usize::MAX;
+
 pub static VALUE_NAME_NULL: &str = "null";
 pub static VTYPE_NAME_BOOL: &str = "bool";
 pub static VTYPE_NAME_BYTES: &str = "bytes";
