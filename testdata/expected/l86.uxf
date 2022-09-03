@@ -1,0 +1,7 @@
+uxf 1
+#<A file level comment in two parts>
+[#<A list comment in 2 parts>
+  <A string in II parts>
+  [#<Another list comment in ii parts>]
+  <Another string in deux parts>
+]

@@ -31,7 +31,7 @@ from xml.sax.saxutils import escape, unescape
 
 import editabletuple
 
-__version__ = '2.5.0' # uxf module version
+__version__ = '2.5.1' # uxf module version
 VERSION = 1 # UXF file format version
 
 UTF8 = 'utf-8'
@@ -611,10 +611,17 @@ class _Lexer(_EventMixin):
             self.pos += 1 # skip the leading <
             value = self.match_to('>', what='comment string')
             if value:
-                self.tokens[-1].comment = unescape(value)
+                if self.concatenate:
+                    self.tokens[-1].comment += unescape(value)
+                    self.concatenate = False
+                    self.warning(
+                        191, 'for concatenated comments, the comment '
+                        'marker (&) should only precede the first fragment')
+                else:
+                    self.tokens[-1].comment = unescape(value)
         else:
-            self.error(190, 'comments may only occur at the start of '
-                       'Lists, Maps, Tables, and TClasses')
+            self.error(190, 'inline comments may only occur at the start '
+                       'of Lists, Maps, Tables, and TClasses')
 
 
     def read_string(self):

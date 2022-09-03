@@ -19,7 +19,7 @@ finally:
 
 ERROR_FILES = {'t13.uxf', 't14.uxf', 't28.uxf', 't33.uxf', 't54.uxf',
                't55.uxf', 'l56.uxf', 'l57.uxf', 'l58.uxf', 'l59.uxf',
-               'l60.uxf', 't63.uxf', 't63r.uxf'}
+               'l60.uxf', 't63.uxf', 't63r.uxf', 'l86.uxf'}
 ALL_LINTS = 'uxflint.txt'
 MAX_DIFF_LEN = 100
 
