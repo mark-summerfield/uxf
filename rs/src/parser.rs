@@ -51,7 +51,7 @@ pub struct Parser<'a> {
     had_root: bool,
     is_import: bool,
     tokens: &'a mut Tokens<'a>,
-    stack: Vec<Token<'a>>,
+    stack: Vec<&'a Value>,
     imports: HashMap<String, String>, // key=ttype value=import text
     imported: HashSet<String>, // ttype (to avoid reimports or self import)
     tclasses: HashMap<String, TClass>, // key=ttype value=TClass
@@ -107,6 +107,27 @@ impl<'a> Parser<'a> {
         self.parse_file_comment();
         self.parse_imports()?;
         self.parse_tclasses()?;
+        for (index, token) in self.tokens.iter().enumerate() {
+            self.lino = token.lino;
+            let kind = &token.kind;
+            let is_collection_start = kind.is_collection_start();
+            if !self.had_root && !is_collection_start {
+                bail!(
+                    "E402:{}:{}:expected a map, list, or table, got {:?}",
+                    self.filename,
+                    self.lino,
+                    token
+                );
+            }
+            if is_collection_start {
+                let next_value = if index + 1 < self.tokens.len() {
+                    self.tokens[index + 1].value.clone()
+                } else {
+                    Value::Null
+                };
+                //self.handle_collection_start(&token, next_value)?;
+            }
+        }
         Ok(())
     }
 
@@ -190,6 +211,39 @@ impl<'a> Parser<'a> {
             }
         }
         self.tokens.drain(..offset);
+        Ok(())
+    }
+
+    fn handle_collection_start(
+        &mut self,
+        token: &Token,
+        next_value: Value,
+    ) -> Result<()> {
+        let value = match token.kind {
+            TokenKind::ListBegin => {Value::Null}
+            TokenKind::MapBegin => {Value::Null}
+            TokenKind::TableBegin => {Value::Null}
+            _ => 
+                bail!(
+                    "E504:{}:{}:expected to create a map, list, or table, got {:?}",
+                    self.filename,
+                    self.lino,
+                    token
+                )
+
+        };
+        if !self.stack.is_empty() {
+            // self.typecheck(value)?; // TODO
+            let last = self.stack.last_mut().unwrap(); // collection
+            if last.is_list() {
+                last.as_list_mut().unwrap().push(value.clone());
+            }
+        }
+        self.stack.push(&value);
+        if !self.had_root {
+            self.uxo.set_value(value);
+            self.had_root = true;
+        }
         Ok(())
     }
 }

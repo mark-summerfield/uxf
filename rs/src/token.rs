@@ -140,6 +140,24 @@ pub enum TokenKind {
     Eof,
 }
 
+impl TokenKind {
+    pub fn is_collection_start(&self) -> bool {
+        matches!(
+            self,
+            TokenKind::ListBegin
+                | TokenKind::MapBegin
+                | TokenKind::TableBegin
+        )
+    }
+
+    pub fn is_collection_end(&self) -> bool {
+        matches!(
+            self,
+            TokenKind::ListEnd | TokenKind::MapEnd | TokenKind::TableEnd
+        )
+    }
+}
+
 impl fmt::Display for TokenKind {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         write!(f, "{:?}", self)

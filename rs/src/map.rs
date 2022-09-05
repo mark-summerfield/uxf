@@ -15,6 +15,7 @@ pub struct Map {
     ktype: String,
     vtype: String,
     comment: String,
+    pending_key: Option<Key>,
     items: HashMap<Key, Value>,
 }
 
@@ -47,6 +48,7 @@ impl Map {
             ktype: ktype.to_string(),
             vtype: vtype.to_string(),
             comment: comment.to_string(),
+            pending_key: None,
             items: HashMap::new(),
         })
     }
@@ -85,6 +87,17 @@ impl Map {
     /// `None`.
     pub fn get_mut(&mut self, key: &Key) -> Option<&mut Value> {
         self.items.get_mut(key)
+    }
+
+    /// Allows key-value items to be added one part at a time
+    pub(crate) fn push(&mut self, value: Value) -> Result<()> {
+        if let Some(key) = &self.pending_key {
+            self.insert(key.clone(), value);
+            self.pending_key = None;
+        } else {
+            self.pending_key = Some(Key::from(value)?);
+        }
+        Ok(())
     }
 
     /// Inserts the given `key` and `value` into the map.
@@ -152,6 +165,7 @@ impl Default for Map {
             ktype: "".to_string(),
             vtype: "".to_string(),
             comment: "".to_string(),
+            pending_key: None,
             items: HashMap::new(),
         }
     }

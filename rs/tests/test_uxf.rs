@@ -56,10 +56,10 @@ mod tests {
         let fields = make_fields(&[("x", "int"), ("y", "int")]).unwrap();
         let tc3 = TClass::new("Point", fields, "").unwrap();
         let mut t3 = Table::new(tc3, "");
-        let _ = t3.push(vec![Value::Int(0), 0.into()]);
-        let _ = t3.push(vec![Value::Int(-7), 11.into()]);
-        let _ = t3.push(t3.tclass().record_of_nulls().unwrap());
-        let _ = t3.push(vec![Value::Int(19), (-23).into()]);
+        let _ = t3.append(vec![Value::Int(0), 0.into()]);
+        let _ = t3.append(vec![Value::Int(-7), 11.into()]);
+        let _ = t3.append(t3.tclass().record_of_nulls().unwrap());
+        let _ = t3.append(vec![Value::Int(19), (-23).into()]);
         let mut lst = List::default();
         lst.push(t1.into());
         lst.push(t2.into());

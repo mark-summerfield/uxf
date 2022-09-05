@@ -5,7 +5,8 @@
 
 use crate::constants::*;
 use crate::util::escape;
-use crate::value::bytes_to_uxf;
+use crate::value::{bytes_to_uxf, Value};
+use anyhow::{bail, Result};
 use chrono::prelude::*;
 use std::{cmp::Ordering, fmt};
 
@@ -89,6 +90,21 @@ impl Key {
             Some(value)
         } else {
             None
+        }
+    }
+
+    pub(crate) fn from(value: Value) -> Result<Key> {
+        match value {
+            Value::Bytes(b) => Ok(Key::Bytes(b)),
+            Value::Date(d) => Ok(Key::Date(d)),
+            Value::DateTime(d) => Ok(Key::DateTime(d)),
+            Value::Int(i) => Ok(Key::Int(i)),
+            Value::Str(s) => Ok(Key::Str(s)),
+            _ => bail!(
+                "E600:-:0:can only convert bytes, date, datetime, \
+                int, str from Value to Key, got {:?}",
+                value
+            ),
         }
     }
 }

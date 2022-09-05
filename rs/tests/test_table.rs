@@ -31,13 +31,13 @@ mod tests {
         assert_eq!(tclass.to_string(), "=Point x:int y:int");
         let mut t = Table::new(tclass, "");
         assert_eq!(t.to_string(), "(Point)");
-        let _ = t.push(vec![0.into(), 0.into()]);
+        let _ = t.append(vec![0.into(), 0.into()]);
         assert_eq!(t.to_string(), "(Point 0 0)");
-        let _ = t.push(t.tclass().record_of_nulls().unwrap());
+        let _ = t.append(t.tclass().record_of_nulls().unwrap());
         assert_eq!(t.to_string(), "(Point 0 0\n? ?)");
         t[1] = vec![(-11).into(), 14.into()];
         assert_eq!(t.to_string(), "(Point 0 0\n-11 14)");
-        let _ = t.push_empty();
+        let _ = t.append_empty();
         assert_eq!(t.to_string(), "(Point 0 0\n-11 14\n? ?)");
         assert_eq!(t.ttype(), "Point");
         assert!(t.comment().is_empty());

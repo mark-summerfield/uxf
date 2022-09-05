@@ -4,7 +4,7 @@
 use crate::tclass::TClass;
 use crate::util::escape;
 use crate::uxf::Compare;
-use crate::value::Record;
+use crate::value::{Record, Value, Values};
 use anyhow::{bail, Result};
 use std::fmt;
 use std::ops::{Index, IndexMut};
@@ -13,6 +13,7 @@ use std::ops::{Index, IndexMut};
 pub struct Table {
     tclass: TClass,
     comment: String,
+    pending_record: Record,
     records: Vec<Record>,
 }
 
@@ -21,7 +22,12 @@ impl Table {
     /// records.
     /// The `TClass` and `comment` are immutable after construction.
     pub fn new(tclass: TClass, comment: &str) -> Self {
-        Table { tclass, comment: comment.to_string(), records: vec![] }
+        Table {
+            tclass,
+            comment: comment.to_string(),
+            pending_record: Values::new(),
+            records: vec![],
+        }
     }
 
     /// Returns a new Table with a fieldless`TClass` (with the given
@@ -32,6 +38,7 @@ impl Table {
         Ok(Table {
             tclass: TClass::new_fieldless(ttype, "")?,
             comment: comment.to_string(),
+            pending_record: Values::new(),
             records: vec![],
         })
     }
@@ -49,6 +56,11 @@ impl Table {
     /// Returns the `ttype`'s number of fields.
     pub fn ttype_len(&self) -> usize {
         self.tclass.len()
+    }
+
+    /// Returns whether the `ttype` is fieldless.
+    pub fn is_fieldless(&self) -> bool {
+        self.tclass.is_fieldless()
     }
 
     /// Returns the `comment` which may be `""`.
@@ -80,7 +92,7 @@ impl Table {
     /// Appends the given `record` of `Value`s to the end of the table or
     /// returns `Err` if `record` doesn't have `Table::ttype_len()` values
     /// or if this is a fieldless table.
-    pub fn push(&mut self, record: Record) -> Result<()> {
+    pub fn append(&mut self, record: Record) -> Result<()> {
         if record.len() != self.tclass.len() {
             bail!(
                 "E736:-:0:rows for table of ttype {} must have exactly {} \
@@ -96,9 +108,23 @@ impl Table {
 
     /// Appends a `record` of `Value::Null`s to the end of the table or
     /// returns `Err` if this is a fieldless table.
-    pub fn push_empty(&mut self) -> Result<()> {
+    pub fn append_empty(&mut self) -> Result<()> {
         let record = self.tclass.record_of_nulls()?;
         self.records.push(record);
+        Ok(())
+    }
+
+    /// Allows records to be added one value at a time
+    pub(crate) fn push(&mut self, value: Value) -> Result<()> {
+        if self.is_fieldless() {
+            bail!("E738:-:0:cannot add values to a fieldless table")
+        }
+        self.pending_record.push(value);
+        if self.pending_record.len() == self.tclass.len() {
+            let mut record = Values::new();
+            std::mem::swap(&mut self.pending_record, &mut record);
+            self.append(record);
+        }
         Ok(())
     }
 
