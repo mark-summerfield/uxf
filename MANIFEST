@@ -1,8 +1,3 @@
-# TODO (0) uxf.py
-# <A> & <B> OK
-# #<C> & <D> OK
-# <A> & #<B> Error
-# #<C> & #<D> Warning
 rs/src/bin/uxf.rs
 rs/src/lib.rs # add docs at the end
 rs/src/value.rs

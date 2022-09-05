@@ -68,6 +68,11 @@ impl TClass {
         &self.comment
     }
 
+    /// Returns the optional `comment`.
+    pub fn set_comment(&mut self, comment: &str) {
+        self.comment = comment.to_string()
+    }
+
     /// Returns the `fields` (which will be empty if `is_fieldless()`).
     pub fn fields(&self) -> &Vec<Field> {
         &self.fields
@@ -147,7 +152,7 @@ impl fmt::Display for TClass {
 /// This allows us to build up a TClass incrementally since a real
 /// TClass is immutable.
 pub struct TClassBuilder {
-    ttype: String,
+    pub ttype: String,
     fields: Vec<Field>,
     comment: String,
 }
@@ -161,12 +166,46 @@ impl TClassBuilder {
         }
     }
 
+    pub fn initialize(&mut self, ttype: &str, comment: &str) {
+        self.ttype = ttype.to_string();
+        self.comment = comment.to_string();
+    }
+
+    pub fn clear(&mut self) {
+        self.ttype = "".to_string();
+        self.comment = "".to_string();
+        self.fields.clear();
+    }
+
+    pub fn is_valid(&self) -> bool {
+        !self.ttype.is_empty()
+    }
+
     pub fn append(&mut self, field: &Field) {
         self.fields.push(field.clone());
+    }
+
+    pub fn append_field(
+        &mut self,
+        ttype: &str,
+        comment: &str,
+    ) -> Result<()> {
+        self.fields.push(Field::new(ttype, comment)?);
+        Ok(())
     }
 
     pub fn build(&self) -> Result<TClass> {
         check_fields(&self.fields)?;
         TClass::new(&self.ttype, self.fields.clone(), &self.comment)
+    }
+}
+
+impl Default for TClassBuilder {
+    fn default() -> Self {
+        TClassBuilder {
+            ttype: "".to_string(),
+            fields: vec![],
+            comment: "".to_string(),
+        }
     }
 }

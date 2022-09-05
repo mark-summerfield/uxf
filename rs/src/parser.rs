@@ -3,7 +3,7 @@
 
 use crate::event::OnEventFn;
 use crate::lexer::Lexer;
-use crate::tclass::TClass;
+use crate::tclass::{TClass, TClassBuilder};
 use crate::token::{Token, TokenKind, Tokens};
 use crate::util::full_filename;
 use crate::uxf::{ParserOptions, Uxf};
@@ -132,11 +132,95 @@ impl<'a> Parser<'a> {
     }
 
     fn handle_import(&mut self, value: &str) -> Result<()> {
-        bail!("TODO parser::handle_import"); // TODO (last)
+        bail!("TODO parser::handle_import: {:?}", value); // TODO (last)
     }
 
     fn parse_tclasses(&mut self) -> Result<()> {
-        // TODO
+        let mut tclass_builder = TClassBuilder::default();
+        let mut offset = 0;
+        let mut lino = 0;
+        for (index, token) in self.tokens.iter().enumerate() {
+            self.lino = token.lino;
+            match token.kind {
+                TokenKind::TClassBegin => {
+                    tclass_builder.initialize(
+                        token.value.as_str().unwrap(),
+                        &token.comment,
+                    );
+                    lino = self.lino;
+                }
+                TokenKind::Field => {
+                    if tclass_builder.is_valid() {
+                        tclass_builder.append_field(
+                            token.value.as_str().unwrap(),
+                            &token.vtype,
+                        )?;
+                    } else {
+                        bail!(
+                            "E524:{}:{}:Field outside TClass",
+                            self.filename,
+                            self.lino
+                        );
+                    }
+                }
+                TokenKind::TClassEnd => {
+                    let tclass = if tclass_builder.is_valid() {
+                        tclass_builder.build()?
+                    } else {
+                        bail!(
+                            "E526:{}:{}:TClass without ttype",
+                            self.filename,
+                            self.lino
+                        );
+                    };
+                    add_to_tclasses(
+                        &mut self.tclasses,
+                        tclass,
+                        self.filename,
+                        self.lino,
+                        528,
+                    )?;
+                    self.lino_for_tclass
+                        .insert(tclass_builder.ttype.to_string(), lino);
+                    offset = index + 1;
+                    tclass_builder.clear();
+                    lino = 0;
+                }
+                _ => break, // no TClasses at all
+            }
+        }
+        self.tokens.drain(..offset);
         Ok(())
     }
+}
+
+fn add_to_tclasses(
+    tclasses: &mut HashMap<String, TClass>,
+    tclass: TClass,
+    filename: &str,
+    lino: usize,
+    code: u16,
+) -> Result<bool> {
+    let first_tclass =
+        if let Some(first_tclass) = tclasses.get_mut(tclass.ttype()) {
+            first_tclass
+        } else {
+            tclasses.insert(tclass.ttype().to_string(), tclass);
+            return Ok(true); // this is the first definition of this ttype
+        };
+    if first_tclass == &tclass {
+        if !tclass.comment().is_empty()
+            && tclass.comment() != first_tclass.comment()
+        {
+            first_tclass.set_comment(tclass.comment()); // last one wins
+        }
+        return Ok(true); // harmless duplicate
+    }
+    bail!(
+        "E{}:{}:{}:conflicting ttype definitions for {}",
+        code,
+        filename,
+        lino,
+        tclass.ttype()
+    )
 }
