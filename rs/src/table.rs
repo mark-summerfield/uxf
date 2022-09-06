@@ -123,7 +123,7 @@ impl Table {
         if self.pending_record.len() == self.tclass.len() {
             let mut record = Values::new();
             std::mem::swap(&mut self.pending_record, &mut record);
-            self.append(record);
+            self.append(record)?;
         }
         Ok(())
     }

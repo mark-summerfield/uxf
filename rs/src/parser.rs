@@ -10,7 +10,7 @@ use crate::uxf::{ParserOptions, Uxf};
 use crate::value::Value;
 use anyhow::{bail, Result};
 use std::{
-    cell::{RefCell, RefMut},
+    cell::RefCell,
     collections::{HashMap, HashSet},
     rc::Rc,
 };
@@ -52,7 +52,7 @@ pub struct Parser<'a> {
     had_root: bool,
     is_import: bool,
     tokens: &'a mut Tokens<'a>,
-    stack: Vec<Rc<RefCell<&'a mut Value>>>,
+    stack: Vec<Rc<RefCell<Value>>>,
     imports: HashMap<String, String>, // key=ttype value=import text
     imported: HashSet<String>, // ttype (to avoid reimports or self import)
     tclasses: HashMap<String, TClass>, // key=ttype value=TClass
@@ -233,6 +233,7 @@ impl<'a> Parser<'a> {
                 )
 
         };
+        /* TODO ###########################
         {
             if !self.stack.is_empty() {
                 // self.typecheck(value)?; // TODO
@@ -247,6 +248,7 @@ impl<'a> Parser<'a> {
             self.uxo.set_value(value);
             self.had_root = true;
         }
+        */
         Ok(())
     }
 }

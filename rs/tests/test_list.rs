@@ -206,6 +206,7 @@ mod tests {
         lst.push(List::default().into()); // 3
         assert_eq!(lst.to_string(), "[?\n?\n?\n[]]");
         if let Some(sublist) = lst[0].as_list() {
+            let sublist = sublist.borrow();
             assert_eq!(sublist.len(), 0);
             assert!(sublist.is_empty());
         }
@@ -213,11 +214,13 @@ mod tests {
         assert!(!lst.is_empty());
         lst.push(998877.into()); // 4
         assert_eq!(lst.to_string(), "[?\n?\n?\n[]\n998877]");
-        if let Some(sublist) = lst[3].as_list_mut() {
+        if let Some(sublist) = lst[3].as_list() {
+            let mut sublist = sublist.borrow_mut();
             sublist.push("this & that".into());
             sublist.push("is <bold> &tc.!".into());
         }
         if let Some(sublist) = lst[3].as_list() {
+            let sublist = sublist.borrow();
             assert_eq!(sublist.len(), 2);
             assert!(!sublist.is_empty());
         }
@@ -226,9 +229,11 @@ mod tests {
             "[?\n?\n?\n[<this &amp; that>\n<is &lt;bold&gt; \
         &amp;tc.!>]\n998877]"
         );
-        if let Some(sublist) = lst[3].as_list_mut() {
+        if let Some(sublist) = lst[3].as_list() {
+            let mut sublist = sublist.borrow_mut();
             sublist.push(List::new("real", "<Totals>").unwrap().into());
-            if let Some(subsublist) = sublist[2].as_list_mut() {
+            if let Some(subsublist) = sublist[2].as_list() {
+                let mut subsublist = subsublist.borrow_mut();
                 subsublist.push((7.9).into());
                 subsublist.push((1e2).into());
                 subsublist.push((-19.357).into());

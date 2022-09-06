@@ -3,6 +3,7 @@
 
 #[cfg(test)]
 mod tests {
+    use std::{cell::RefCell, rc::Rc};
     use uxf::field::make_fields;
     use uxf::table::Table;
     use uxf::tclass::TClass;
@@ -24,7 +25,7 @@ mod tests {
         assert_eq!(t.len(), 0);
         assert_eq!(t.ttype_len(), 0);
         assert!(t.is_empty());
-        let v = Value::Table(t);
+        let v = Value::Table(Rc::new(RefCell::new(t)));
         assert_eq!(v.to_string(), "(ReadyState)");
         let fields = make_fields(&[("x", "int"), ("y", "int")]).unwrap();
         let tclass = TClass::new("Point", fields, "").unwrap();
