@@ -344,6 +344,12 @@ impl Value {
     }
 }
 
+impl Default for Value {
+    fn default() -> Self {
+        Value::Null
+    }
+}
+
 impl fmt::Display for Value {
     /// Provides a .to_string() that returns a valid UXF fragment
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {

@@ -54,6 +54,7 @@ pub struct Parser<'a> {
     had_root: bool,
     is_import: bool,
     tokens: &'a mut Tokens<'a>,
+    root: Rc<RefCell<Value>>,
     stack: Vec<Rc<RefCell<Value>>>,
     imports: HashMap<String, String>, // key=ttype value=import text
     imported: HashSet<String>, // ttype (to avoid reimports or self import)
@@ -95,6 +96,7 @@ impl<'a> Parser<'a> {
             had_root: false,
             is_import,
             tokens,
+            root: Rc::new(RefCell::new(Value::Null)),
             stack: vec![],
             imports: HashMap::new(),
             imported,
@@ -110,7 +112,10 @@ impl<'a> Parser<'a> {
         self.parse_file_comment();
         self.parse_imports()?;
         self.parse_tclasses()?;
-        for (index, token) in self.tokens.iter().enumerate() {
+        let mut pos = 0;
+        while pos < self.tokens.len() {
+            let token = &self.tokens[pos];
+            pos += 1;
             self.lino = token.lino;
             let kind = &token.kind;
             let is_collection_start = kind.is_collection_start();
@@ -123,13 +128,16 @@ impl<'a> Parser<'a> {
                 );
             }
             if is_collection_start {
-                let next_value = if index + 1 < self.tokens.len() {
-                    self.tokens[index + 1].value.clone()
+                let next_value = if pos + 1 < self.tokens.len() {
+                    self.tokens[pos + 1].value.clone()
                 } else {
                     Value::Null
                 };
-                //self.handle_collection_start(&token, next_value)?;
+                self.handle_collection_start(&token.clone(), next_value)?;
             }
+        }
+        if !self.root.borrow().is_null() {
+            self.uxo.set_value(self.root.take())?;
         }
         Ok(())
     }
@@ -237,19 +245,16 @@ impl<'a> Parser<'a> {
                 token
             ),
         };
-        {
-            if !self.stack.is_empty() {
-                // self.typecheck(value)?; // TODO
-                let mut last = self.stack.last_mut().unwrap(); // collection
-                let last = last.borrow_mut();
-                if last.borrow().is_list() {
-                    last.borrow_mut().push(value);
-                }
-            }
-            self.stack.push(Rc::new(RefCell::new(value)));
+        if !self.stack.is_empty() {
+            // self.typecheck(value)?; // TODO
+            dbg!(0, &self.stack);
+            let mut last = self.stack.last_mut().unwrap(); // collection
+            (*(*(*last.borrow_mut())).borrow_mut().as_list().unwrap())
+                .borrow_mut()
+                .push(value);
         }
+        self.stack.push(Rc::new(RefCell::new(value)));
         if !self.had_root {
-            self.uxo.set_value(value);
             self.had_root = true;
         }
         Ok(())
