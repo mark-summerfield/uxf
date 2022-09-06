@@ -3,6 +3,7 @@
 
 use crate::event::OnEventFn;
 use crate::lexer::Lexer;
+use crate::list::List;
 use crate::tclass::{TClass, TClassBuilder};
 use crate::token::{Token, TokenKind, Tokens};
 use crate::util::full_filename;
@@ -10,6 +11,7 @@ use crate::uxf::{ParserOptions, Uxf};
 use crate::value::Value;
 use anyhow::{bail, Result};
 use std::{
+    borrow::BorrowMut,
     cell::RefCell,
     collections::{HashMap, HashSet},
     rc::Rc,
@@ -220,35 +222,36 @@ impl<'a> Parser<'a> {
         token: &Token,
         next_value: Value,
     ) -> Result<()> {
-        let mut value = match token.kind {
-            TokenKind::ListBegin => {Value::Null}
-            TokenKind::MapBegin => {Value::Null}
-            TokenKind::TableBegin => {Value::Null}
-            _ => 
-                bail!(
-                    "E504:{}:{}:expected to create a map, list, or table, got {:?}",
-                    self.filename,
-                    self.lino,
-                    token
-                )
-
+        let value = match token.kind {
+            TokenKind::ListBegin => {
+                // self.verify_type_identifier(&token.vtype)?; // TODO
+                Value::from(List::new(&token.vtype, &token.comment)?)
+            }
+            TokenKind::MapBegin => Value::Null, // TODO
+            TokenKind::TableBegin => Value::Null, // TODO
+            _ => bail!(
+                "E504:{}:{}:expected to create a map, list, or table, \
+                got {:?}",
+                self.filename,
+                self.lino,
+                token
+            ),
         };
-        /* TODO ###########################
         {
             if !self.stack.is_empty() {
                 // self.typecheck(value)?; // TODO
-                let mut last = self.stack.last_mut().unwrap().borrow_mut(); // collection
-                if last.is_list() {
-                    last.as_list_mut().unwrap().push(value);
+                let mut last = self.stack.last_mut().unwrap(); // collection
+                let last = last.borrow_mut();
+                if last.borrow().is_list() {
+                    last.borrow_mut().push(value);
                 }
             }
-            self.stack.push(Rc::new(RefCell::new(&mut value)));
+            self.stack.push(Rc::new(RefCell::new(value)));
         }
         if !self.had_root {
             self.uxo.set_value(value);
             self.had_root = true;
         }
-        */
         Ok(())
     }
 }
