@@ -1008,6 +1008,13 @@ _ttypes_, e.g.,
     =Timestamp when:datetime microseconds:real
     =DateTime when:datetime tz:str
 
+Alternatively, if all the ``datetime``s in a UXF have the _same_ timezone,
+one approach would be to to just set it once, and then use plain
+``datetime``s throughout e.g.,
+
+    =Timezone tz:str
+    [(Timezone <+01:00>) ... 1990-01-15T13:05 ...]
+
 Note that a UXF reader (writer) _must_ be able to read (write) a plain text
 `.uxf` file containing UTF-8 encoded text, and _ought_ to be able to read
 and write gzipped plain text `.uxf.gz` files.

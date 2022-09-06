@@ -90,7 +90,6 @@ st.sh
 #   . add UxfFmt() to .gvimrc
 # - uxfdiff.py
 # - uxfedit (GUI) applications
-# - rs: noncopy nonowned versions: UxfBuf ValueBuf ... FieldBuf
 # - UXF libraries:
 #   . for .js use Dart or TypeScript or similar that can output JS?
 #   . uxf.cpp uxf.java uxf.rb ... ?
