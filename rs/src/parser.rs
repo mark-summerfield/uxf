@@ -10,6 +10,7 @@ use crate::uxf::{ParserOptions, Uxf};
 use crate::value::Value;
 use anyhow::{bail, Result};
 use std::{
+    cell::{RefCell, RefMut},
     collections::{HashMap, HashSet},
     rc::Rc,
 };
@@ -51,7 +52,7 @@ pub struct Parser<'a> {
     had_root: bool,
     is_import: bool,
     tokens: &'a mut Tokens<'a>,
-    stack: Vec<&'a Value>,
+    stack: Vec<Rc<RefCell<&'a mut Value>>>,
     imports: HashMap<String, String>, // key=ttype value=import text
     imported: HashSet<String>, // ttype (to avoid reimports or self import)
     tclasses: HashMap<String, TClass>, // key=ttype value=TClass
@@ -219,7 +220,7 @@ impl<'a> Parser<'a> {
         token: &Token,
         next_value: Value,
     ) -> Result<()> {
-        let value = match token.kind {
+        let mut value = match token.kind {
             TokenKind::ListBegin => {Value::Null}
             TokenKind::MapBegin => {Value::Null}
             TokenKind::TableBegin => {Value::Null}
@@ -232,14 +233,16 @@ impl<'a> Parser<'a> {
                 )
 
         };
-        if !self.stack.is_empty() {
-            // self.typecheck(value)?; // TODO
-            let last = self.stack.last_mut().unwrap(); // collection
-            if last.is_list() {
-                last.as_list_mut().unwrap().push(value.clone());
+        {
+            if !self.stack.is_empty() {
+                // self.typecheck(value)?; // TODO
+                let mut last = self.stack.last_mut().unwrap().borrow_mut(); // collection
+                if last.is_list() {
+                    last.as_list_mut().unwrap().push(value);
+                }
             }
+            self.stack.push(Rc::new(RefCell::new(&mut value)));
         }
-        self.stack.push(&value);
         if !self.had_root {
             self.uxo.set_value(value);
             self.had_root = true;
