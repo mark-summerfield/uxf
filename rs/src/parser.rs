@@ -115,7 +115,6 @@ impl<'a> Parser<'a> {
             let token = &self.tokens[pos];
             self.lino = token.lino;
             let kind = &token.kind;
-            let is_collection_start = kind.is_collection_start();
             if let Some(element) = self.root.take() {
                 if let Some(collection) = self.stack.last_mut() {
                     if collection.is_list() {
@@ -130,18 +129,18 @@ impl<'a> Parser<'a> {
                         if let Some(t) = collection.as_table_mut() {
                             t.push(element)?;
                         }
+                    } else {
+                        bail!(
+                            "E402:{}:{}:expected a map, list, or table, \
+                            got {:?}",
+                            self.filename,
+                            self.lino,
+                            token
+                        );
                     }
                 }
             }
-            if self.root.is_none() && !is_collection_start {
-                bail!(
-                    "E402:{}:{}:expected a map, list, or table, got {:?}",
-                    self.filename,
-                    self.lino,
-                    token
-                );
-            }
-            self.root = if is_collection_start {
+            self.root = if kind.is_collection_start() {
                 let next_value = if pos + 1 < self.tokens.len() {
                     Some(self.tokens[pos + 1].clone())
                 } else {
@@ -150,7 +149,16 @@ impl<'a> Parser<'a> {
                 self.handle_collection_start(&token.clone(), next_value)?;
                 None
             } else if kind.is_collection_end() {
-                Some(self.stack.pop().unwrap())
+                if self.stack.is_empty() {
+                    bail!(
+                        "E403:{}:{}:missing a map, list, or table, \
+                        got {:?}",
+                        self.filename,
+                        self.lino,
+                        token
+                    );
+                }
+                Some(self.stack.pop().unwrap()) // safe
             } else {
                 // Some(token.into())
                 None // TODO ############# MUST RETURN a Value
