@@ -1,36 +1,6 @@
-rs/src/bin/uxf.rs
-rs/src/lib.rs # add docs at the end
-rs/src/value.rs
-rs/src/key.rs
-rs/src/list.rs
-rs/src/map.rs
-rs/src/table.rs
-rs/src/tclass.rs
-rs/src/field.rs
-rs/src/uxf.rs # TODO (9) to_string_options()
-rs/src/format.rs
-rs/src/check.rs
-rs/src/util.rs
-rs/src/event.rs
-rs/src/constants.rs
-rs/src/parser.rs # TODO (1) test using py/t/regression.py -r
-rs/src/lexer.rs
-rs/src/token.rs
-rs/src/prettyprint.rs # TODO see (9) above
-rs/src/test_utils.rs
-rs/tests/test_value.rs
-rs/tests/test_list.rs
-rs/tests/test_map.rs
-rs/tests/test_table.rs
-rs/tests/test_tclass.rs
-rs/tests/test_field.rs
-rs/tests/test_uxf.rs
-# rs/check_lexer.py
-rs/Cargo.toml
-
-rs/README.md
-rs/deploy.sh
-rs/deploy.bat
+x/x.py
+x/rs/src/main.rs
+x/rs/Cargo.toml
 
 py/uxf.py
 py/uxfconvert.py
@@ -76,6 +46,45 @@ misc/fixversion.py
 uxf.vim
 
 st.sh
+
+# Currently abandoned as I got stuck.
+rs/src/bin/uxf.rs
+rs/src/lib.rs # add docs at the end
+rs/src/value.rs
+rs/src/key.rs
+rs/src/list.rs
+rs/src/map.rs
+rs/src/table.rs
+rs/src/tclass.rs
+rs/src/field.rs
+rs/src/uxf.rs # TODO (9) to_string_options()
+rs/src/format.rs
+rs/src/check.rs
+rs/src/util.rs
+rs/src/event.rs
+rs/src/constants.rs
+rs/src/parser.rs # TODO (1) test using py/t/regression.py -r
+rs/src/lexer.rs
+rs/src/token.rs
+rs/src/prettyprint.rs # TODO see (9) above
+rs/src/test_utils.rs
+rs/tests/test_value.rs
+rs/tests/test_list.rs
+rs/tests/test_map.rs
+rs/tests/test_table.rs
+rs/tests/test_tclass.rs
+rs/tests/test_field.rs
+rs/tests/test_uxf.rs
+# rs/check_lexer.py
+rs/Cargo.toml
+
+# TODO Add
+# **This project has ground to a halt. Hopefully someone with superior
+# Rust programming skills witll create the Rust UXF library that was
+# beyond my abilities.**
+rs/README.md
+rs/deploy.sh
+rs/deploy.bat
 
 # TODO port tlm to use rust uxf
 # NOTE IDEAS:

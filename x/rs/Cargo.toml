@@ -1,0 +1,12 @@
+[package]
+name = "x"
+version = "0.1.0"
+edition = "2021"
+
+[profile.release]
+strip = true
+opt-level = 3 # 3 is fastest binary; use "s" for smallest
+lto = true
+
+[dependencies]
+anyhow = "1"
