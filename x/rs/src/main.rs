@@ -1,5 +1,5 @@
-use anyhow::Result;
-use std::{cell::RefCell, fmt, rc::Rc};
+use anyhow::{bail, Result};
+use std::fmt;
 
 const B: i64 = -1; // list begin
 const E: i64 = -2; // list end
@@ -22,36 +22,30 @@ fn main() -> Result<()> {
 }
 
 fn parse(tokens: Vec<i64>) -> Result<Value> {
-    let mut root: Value = 0.into(); // fake root to be overwritten
-    let mut stack = vec![];
+    let mut value: Option<Value> = None;
+    let mut stack: Vec<Value> = vec![];
     for token in tokens {
-        if token == B {
-            let lst = Value::from(List::new()?);
-            if root.is_int() {
-                root = lst.clone();
-                stack.push(Rc::new(RefCell::new(lst)));
-            } else {
-                let top = stack.last().unwrap().borrow_mut();
-                if let Some(sublst) = top.as_list() {
-                    let mut sublst = sublst.borrow_mut();
-                    // add new list to current list
-                    sublst.push(lst.clone());
+        if let Some(element) = value.take() {
+            if let Some(lst) = stack.last_mut() {
+                if let Some(lst) = lst.as_list_mut() {
+                    lst.push(element);
                 }
-                drop(top);
-                // make new list the current list
-                stack.push(Rc::new(RefCell::new(lst)));
-            }
-        } else if token == E {
-            stack.pop();
-        } else {
-            let top = stack.last().unwrap().borrow_mut();
-            if let Some(sublst) = top.as_list() {
-                let mut sublst = sublst.borrow_mut();
-                sublst.push(token.into());
             }
         }
+        value = if token == B {
+            stack.push(Value::from(List::new()?));
+            None
+        } else if token == E {
+            Some(stack.pop().unwrap())
+        } else {
+            Some(token.into())
+        };
     }
-    Ok(Value::from(root))
+    match (stack.len(), value) {
+        (0, Some(value)) => Ok(value),
+        (0, None) => bail!("E993:-:0:missing collection"),
+        _ => bail!("E994:-:0:unclosed collection"),
+    }
 }
 
 fn get_expected() -> Result<Value> {
@@ -59,24 +53,27 @@ fn get_expected() -> Result<Value> {
     lst.push(1.into());
     lst.push(2.into());
     lst.push(Value::from(List::new()?));
-    if let Some(sublst) = lst.inner().last().unwrap().as_list() {
-        let mut sublst = sublst.borrow_mut();
-        sublst.push(30.into());
-        sublst.push(40.into());
-        sublst.push(Value::from(List::new()?));
-        if let Some(subsublst) = sublst.inner().last().unwrap().as_list() {
-            let mut subsublst = subsublst.borrow_mut();
-            subsublst.push(500.into());
-            subsublst.push(Value::from(List::new()?));
+    if let Some(sublst) = lst.inner_mut().last_mut() {
+        if let Some(sublst) = sublst.as_list_mut() {
+            sublst.push(30.into());
+            sublst.push(40.into());
+            sublst.push(Value::from(List::new()?));
+            if let Some(subsublst) = sublst.inner_mut().last_mut() {
+                if let Some(subsublst) = subsublst.as_list_mut() {
+                    subsublst.push(500.into());
+                    subsublst.push(Value::from(List::new()?));
+                }
+            }
+            sublst.push(70.into());
+            sublst.push(Value::from(List::new()?));
+            if let Some(subsublst) = sublst.inner_mut().last_mut() {
+                if let Some(subsublst) = subsublst.as_list_mut() {
+                    subsublst.push(800.into());
+                    subsublst.push(900.into());
+                }
+            }
+            sublst.push(1000.into());
         }
-        sublst.push(70.into());
-        sublst.push(Value::from(List::new()?));
-        if let Some(subsublst) = sublst.inner().last().unwrap().as_list() {
-            let mut subsublst = subsublst.borrow_mut();
-            subsublst.push(800.into());
-            subsublst.push(900.into());
-        }
-        sublst.push(1000.into());
     }
     lst.push(1100.into());
     Ok(Value::from(lst))
@@ -88,13 +85,20 @@ pub type Values = Vec<Value>; // For Lists
 pub enum Value {
     // The full Value has other scalar & collection types
     Int(i64),
-    List(Rc<RefCell<List>>),
+    List(List),
 }
 
 impl Value {
-    pub fn as_list(&self) -> Option<Rc<RefCell<List>>> {
+    pub fn as_list(&self) -> Option<&List> {
         if let Value::List(value) = self {
-            Some(Rc::clone(value))
+            Some(value)
+        } else {
+            None
+        }
+    }
+    pub fn as_list_mut(&mut self) -> Option<&mut List> {
+        if let Value::List(value) = self {
+            Some(value)
         } else {
             None
         }
@@ -112,7 +116,7 @@ impl fmt::Display for Value {
             "{}",
             match self {
                 Value::Int(i) => i.to_string(),
-                Value::List(lst) => lst.borrow().to_string(),
+                Value::List(lst) => lst.to_string(),
             }
         )
     }
@@ -126,7 +130,7 @@ impl From<i64> for Value {
 
 impl From<List> for Value {
     fn from(lst: List) -> Self {
-        Value::List(Rc::new(RefCell::new(lst)))
+        Value::List(lst)
     }
 }
 
@@ -150,6 +154,10 @@ impl List {
 
     pub fn inner(&self) -> &Values {
         &self.values
+    }
+
+    pub fn inner_mut(&mut self) -> &mut Values {
+        &mut self.values
     }
 }
 
