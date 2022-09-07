@@ -200,8 +200,7 @@ mod tests {
         m.insert("alpha".into(), List::new("int", "").unwrap().into());
         assert_eq!(m.to_string(), "{str <alpha> [int]}");
         if let Some(value) = m.get_mut(&"alpha".into()) {
-            if let Some(lst) = value.as_list() {
-                let mut lst = lst.borrow_mut();
+            if let Some(lst) = value.as_list_mut() {
                 lst.push(391.into());
                 lst.push(9870.into());
                 lst.push((-16).into());
@@ -214,8 +213,7 @@ mod tests {
             "{str <alpha> [int 391\n9870\n-16]\n<bravo> {}}"
         );
         if let Some(value) = m.get_mut(&"bravo".into()) {
-            if let Some(bm) = value.as_map() {
-                let mut bm = bm.borrow_mut();
+            if let Some(bm) = value.as_map_mut() {
                 bm.insert(1.into(), "one".into());
                 bm.insert(10.into(), "ten".into());
                 bm.insert("charlie".into(), List::default().into());
@@ -228,11 +226,9 @@ mod tests {
             10 <ten>\n<charlie> []\n<delta> {}}}"
         );
         if let Some(value) = m.get_mut(&"bravo".into()) {
-            if let Some(bm) = value.as_map() {
-                let mut bm = bm.borrow_mut();
+            if let Some(bm) = value.as_map_mut() {
                 if let Some(charlie) = bm.get_mut(&"charlie".into()) {
-                    if let Some(lst) = charlie.as_list() {
-                        let mut lst = lst.borrow_mut();
+                    if let Some(lst) = charlie.as_list_mut() {
                         lst.push("I".into());
                         lst.push("V".into());
                         lst.push("X".into());
@@ -246,11 +242,9 @@ mod tests {
             10 <ten>\n<charlie> [<I>\n<V>\n<X>]\n<delta> {}}}"
         );
         if let Some(value) = m.get_mut(&"bravo".into()) {
-            if let Some(bm) = value.as_map() {
-                let mut bm = bm.borrow_mut();
+            if let Some(bm) = value.as_map_mut() {
                 if let Some(delta) = bm.get_mut(&"delta".into()) {
-                    if let Some(dm) = delta.as_map() {
-                        let mut dm = dm.borrow_mut();
+                    if let Some(dm) = delta.as_map_mut() {
                         dm.insert("L".into(), 50.into());
                         dm.insert("C".into(), 100.into());
                         dm.insert("D".into(), 500.into());

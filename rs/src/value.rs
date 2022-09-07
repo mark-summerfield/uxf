@@ -25,11 +25,11 @@ pub enum Value {
     Date(NaiveDate),
     DateTime(NaiveDateTime),
     Int(i64),
-    List(Rc<RefCell<List>>),
-    Map(Rc<RefCell<Map>>),
+    List(List),
+    Map(Map),
     Real(f64),
     Str(String),
-    Table(Rc<RefCell<Table>>),
+    Table(Table),
 }
 
 impl Value {
@@ -169,19 +169,38 @@ impl Value {
         }
     }
 
-    /// Returns `Some(List)` if `Value::List`; otherwise returns `None`.
-    pub fn as_list(&self) -> Option<Rc<RefCell<List>>> {
+    /// Returns `Some(&List)` if `Value::List`; otherwise returns `None`.
+    pub fn as_list(&self) -> Option<&List> {
         if let Value::List(value) = self {
-            Some(Rc::clone(value))
+            Some(value)
         } else {
             None
         }
     }
 
-    /// Returns `Some(Map)` if `Value::Map`; otherwise returns `None`.
-    pub fn as_map(&self) -> Option<Rc<RefCell<Map>>> {
+    /// Returns `Some(&mut List)` if `Value::List`; otherwise returns
+    /// `None`.
+    pub fn as_list_mut(&mut self) -> Option<&mut List> {
+        if let Value::List(value) = self {
+            Some(value)
+        } else {
+            None
+        }
+    }
+
+    /// Returns `Some(&Map)` if `Value::Map`; otherwise returns `None`.
+    pub fn as_map(&self) -> Option<&Map> {
         if let Value::Map(value) = self {
-            Some(Rc::clone(value))
+            Some(value)
+        } else {
+            None
+        }
+    }
+
+    /// Returns `Some(&mut Map)` if `Value::Map`; otherwise returns `None`.
+    pub fn as_map_mut(&mut self) -> Option<&mut Map> {
+        if let Value::Map(value) = self {
+            Some(value)
         } else {
             None
         }
@@ -206,9 +225,19 @@ impl Value {
     }
 
     /// Returns `Some(&Table)` if `Value::Table`; otherwise returns `None`.
-    pub fn as_table(&self) -> Option<Rc<RefCell<Table>>> {
+    pub fn as_table(&self) -> Option<&Table> {
         if let Value::Table(value) = self {
-            Some(Rc::clone(value))
+            Some(value)
+        } else {
+            None
+        }
+    }
+
+    /// Returns `Some(&mut Table)` if `Value::Table`; otherwise returns
+    /// `None`.
+    pub fn as_table_mut(&mut self) -> Option<&mut Table> {
+        if let Value::Table(value) = self {
+            Some(value)
         } else {
             None
         }
@@ -242,7 +271,7 @@ impl Value {
         match self {
             Value::List(lst) => {
                 (Rc::clone(&visitor))(Visit::ListBegin, self);
-                for value in lst.borrow().iter() {
+                for value in lst.iter() {
                     (Rc::clone(&visitor))(
                         Visit::ListValueBegin,
                         &Value::Null,
@@ -257,7 +286,7 @@ impl Value {
             }
             Value::Map(m) => {
                 (Rc::clone(&visitor))(Visit::MapBegin, self);
-                for key in m.borrow().sorted_keys() {
+                for key in m.sorted_keys() {
                     (Rc::clone(&visitor))(
                         Visit::MapItemBegin,
                         &Value::Null,
@@ -265,14 +294,14 @@ impl Value {
                     // A key is never a collection
                     let key_value = Value::from(key.clone());
                     (Rc::clone(&visitor))(Visit::Value, &key_value);
-                    m.borrow().get(key).unwrap().visit(Rc::clone(&visitor));
+                    m.get(key).unwrap().visit(Rc::clone(&visitor));
                     (Rc::clone(&visitor))(Visit::MapItemEnd, &Value::Null);
                 }
                 (Rc::clone(&visitor))(Visit::MapEnd, &Value::Null);
             }
             Value::Table(t) => {
                 (Rc::clone(&visitor))(Visit::TableBegin, self);
-                for record in t.borrow().iter() {
+                for record in t.iter() {
                     (Rc::clone(&visitor))(
                         Visit::TableRecordBegin,
                         &Value::Null,
@@ -300,7 +329,7 @@ impl Value {
             Rc::new(move |_: Visit, value: &Value| {
                 if let Some(table) = value.as_table() {
                     let mut tclasses = tclasses.borrow_mut();
-                    tclasses.push(table.borrow().tclass().clone());
+                    tclasses.push(table.tclass().clone());
                 }
             })
         });
@@ -316,25 +345,19 @@ impl Value {
         if self.is_collection() && other.is_collection() {
             if let Some(alst) = self.as_list() {
                 if let Some(blst) = other.as_list() {
-                    return alst
-                        .borrow()
-                        .is_equivalent(&blst.borrow(), compare);
+                    return alst.is_equivalent(blst, compare);
                 } else {
                     return false;
                 }
             } else if let Some(am) = self.as_map() {
                 if let Some(bm) = other.as_map() {
-                    return am
-                        .borrow()
-                        .is_equivalent(&bm.borrow(), compare);
+                    return am.is_equivalent(bm, compare);
                 } else {
                     return false;
                 }
             } else if let Some(at) = self.as_table() {
                 if let Some(bt) = other.as_table() {
-                    return at
-                        .borrow()
-                        .is_equivalent(&bt.borrow(), compare);
+                    return at.is_equivalent(bt, compare);
                 } else {
                     return false;
                 }
@@ -365,11 +388,11 @@ impl fmt::Display for Value {
                 Value::DateTime(dt) =>
                     dt.format(ISO8601_DATETIME).to_string(),
                 Value::Int(i) => i.to_string(),
-                Value::List(lst) => lst.borrow().to_string(),
-                Value::Map(m) => m.borrow().to_string(),
+                Value::List(lst) => lst.to_string(),
+                Value::Map(m) => m.to_string(),
                 Value::Real(r) => realstr64(*r),
                 Value::Str(s) => format!("<{}>", escape(s)),
-                Value::Table(t) => t.borrow().to_string(),
+                Value::Table(t) => t.to_string(),
             }
         )
     }
@@ -407,13 +430,13 @@ impl From<i64> for Value {
 
 impl From<List> for Value {
     fn from(lst: List) -> Self {
-        Value::List(Rc::new(RefCell::new(lst)))
+        Value::List(lst)
     }
 }
 
 impl From<Map> for Value {
     fn from(m: Map) -> Self {
-        Value::Map(Rc::new(RefCell::new(m)))
+        Value::Map(m)
     }
 }
 
@@ -437,7 +460,7 @@ impl From<String> for Value {
 
 impl From<Table> for Value {
     fn from(t: Table) -> Self {
-        Value::Table(Rc::new(RefCell::new(t)))
+        Value::Table(t)
     }
 }
 
@@ -508,21 +531,21 @@ impl PartialEq for Value {
             }
             Value::List(lst) => {
                 if let Some(other) = other.as_list() {
-                    *lst.borrow() == *other.borrow()
+                    lst == other
                 } else {
                     false
                 }
             }
             Value::Map(m) => {
                 if let Some(other) = other.as_map() {
-                    *m.borrow() == *other.borrow()
+                    m == other
                 } else {
                     false
                 }
             }
             Value::Table(t) => {
                 if let Some(other) = other.as_table() {
-                    *t.borrow() == *other.borrow()
+                    t == other
                 } else {
                     false
                 }

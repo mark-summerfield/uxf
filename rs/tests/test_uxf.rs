@@ -28,23 +28,20 @@ mod tests {
         assert_eq!(
             format!("{:?}", uxo),
             "Uxf { custom: \"custom 1\", comment: \"comment 1\", value: \
-        List(RefCell { value: List { vtype: \"\", comment: \"\", \
-        values: [] } }) }"
+        List(List { vtype: \"\", comment: \"\", values: [] }) }"
         );
         assert_eq!(uxo.to_string(), "uxf 1 custom 1\n#<comment 1>\n[]\n");
         uxo.set_comment("New text");
         assert_eq!(
             format!("{:?}", uxo),
             "Uxf { custom: \"custom 1\", comment: \"New text\", value: \
-        List(RefCell { value: List { vtype: \"\", comment: \"\", \
-        values: [] } }) }"
+        List(List { vtype: \"\", comment: \"\", values: [] }) }"
         );
         assert_eq!(uxo.to_string(), "uxf 1 custom 1\n#<New text>\n[]\n");
         uxo.set_custom("Dummy format");
         assert_eq!(format!("{:?}", uxo),
         "Uxf { custom: \"Dummy format\", comment: \"New text\", value: \
-        List(RefCell { value: List { vtype: \"\", comment: \"\", \
-        values: [] } }) }");
+        List(List { vtype: \"\", comment: \"\", values: [] }) }");
         assert_eq!(
             uxo.to_string(),
             "uxf 1 Dummy format\n#<New text>\n[]\n"

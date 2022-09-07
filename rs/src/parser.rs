@@ -1,18 +1,19 @@
 // Copyright © 2022 Mark Summerfield. All rights reserved.
 // License: GPLv3
 
+use crate::constants::*;
 use crate::event::OnEventFn;
 use crate::lexer::Lexer;
 use crate::list::List;
+use crate::map::Map;
+use crate::table::Table;
 use crate::tclass::{TClass, TClassBuilder};
 use crate::token::{Token, TokenKind, Tokens};
 use crate::util::full_filename;
 use crate::uxf::{ParserOptions, Uxf};
-use crate::value::Value;
+use crate::value::{Value, Values};
 use anyhow::{bail, Result};
 use std::{
-    borrow::BorrowMut,
-    cell::RefCell,
     collections::{HashMap, HashSet},
     rc::Rc,
 };
@@ -51,11 +52,10 @@ pub struct Parser<'a> {
     options: ParserOptions,
     on_event: OnEventFn,
     uxo: &'a mut Uxf,
-    had_root: bool,
     is_import: bool,
     tokens: &'a mut Tokens<'a>,
-    root: Rc<RefCell<Value>>,
-    stack: Vec<Rc<RefCell<Value>>>,
+    root: Option<Value>,
+    stack: Values,
     imports: HashMap<String, String>, // key=ttype value=import text
     imported: HashSet<String>, // ttype (to avoid reimports or self import)
     tclasses: HashMap<String, TClass>, // key=ttype value=TClass
@@ -93,10 +93,9 @@ impl<'a> Parser<'a> {
             on_event: Rc::clone(&on_event),
             uxo,
             options,
-            had_root: false,
             is_import,
             tokens,
-            root: Rc::new(RefCell::new(Value::Null)),
+            root: None,
             stack: vec![],
             imports: HashMap::new(),
             imported,
@@ -108,18 +107,33 @@ impl<'a> Parser<'a> {
     }
 
     fn parse(&mut self) -> Result<()> {
-        let mut value: Option<Value> = None;
         self.parse_file_comment();
         self.parse_imports()?;
         self.parse_tclasses()?;
         let mut pos = 0;
         while pos < self.tokens.len() {
             let token = &self.tokens[pos];
-            pos += 1;
             self.lino = token.lino;
             let kind = &token.kind;
             let is_collection_start = kind.is_collection_start();
-            if !self.had_root && !is_collection_start {
+            if let Some(element) = self.root.take() {
+                if let Some(collection) = self.stack.last_mut() {
+                    if collection.is_list() {
+                        if let Some(lst) = collection.as_list_mut() {
+                            lst.push(element);
+                        }
+                    } else if collection.is_map() {
+                        if let Some(m) = collection.as_map_mut() {
+                            m.push(element)?;
+                        }
+                    } else if collection.is_table() {
+                        if let Some(t) = collection.as_table_mut() {
+                            t.push(element)?;
+                        }
+                    }
+                }
+            }
+            if self.root.is_none() && !is_collection_start {
                 bail!(
                     "E402:{}:{}:expected a map, list, or table, got {:?}",
                     self.filename,
@@ -127,17 +141,27 @@ impl<'a> Parser<'a> {
                     token
                 );
             }
-            if is_collection_start {
+            self.root = if is_collection_start {
                 let next_value = if pos + 1 < self.tokens.len() {
-                    self.tokens[pos + 1].value.clone()
+                    Some(self.tokens[pos + 1].clone())
                 } else {
-                    Value::Null
+                    None
                 };
                 self.handle_collection_start(&token.clone(), next_value)?;
-            }
+                None
+            } else if kind.is_collection_end() {
+                Some(self.stack.pop().unwrap())
+            } else {
+                // Some(token.into())
+                None // TODO ############# MUST RETURN a Value
+            };
+            pos += 1;
         }
-        if !self.root.borrow().is_null() {
-            self.uxo.set_value(self.root.take())?;
+        let root = self.root.replace(Value::Null);
+        if let Some(root) = root {
+            if root.is_collection() {
+                self.uxo.set_value(root)?
+            }
         }
         Ok(())
     }
@@ -228,14 +252,31 @@ impl<'a> Parser<'a> {
     fn handle_collection_start(
         &mut self,
         token: &Token,
-        next_value: Value,
+        next_value: Option<Token>,
     ) -> Result<()> {
-        let value = match token.kind {
+        self.stack.push(match token.kind {
             TokenKind::ListBegin => {
                 // self.verify_type_identifier(&token.vtype)?; // TODO
                 Value::from(List::new(&token.vtype, &token.comment)?)
             }
-            TokenKind::MapBegin => Value::Null, // TODO
+            TokenKind::MapBegin => {
+                if !token.ktype.is_empty()
+                    && !KTYPES.contains(&token.ktype.as_str())
+                {
+                    bail!(
+                        "E440:{}:{}:expected map ktype, got {:?}",
+                        self.filename,
+                        self.lino,
+                        token.ktype
+                    )
+                }
+                // self.verify_type_identifier(&token.vtype)?; // TODO
+                Value::from(Map::new(
+                    &token.ktype,
+                    &token.vtype,
+                    &token.comment,
+                )?)
+            }
             TokenKind::TableBegin => Value::Null, // TODO
             _ => bail!(
                 "E504:{}:{}:expected to create a map, list, or table, \
@@ -244,19 +285,7 @@ impl<'a> Parser<'a> {
                 self.lino,
                 token
             ),
-        };
-        if !self.stack.is_empty() {
-            // self.typecheck(value)?; // TODO
-            dbg!(0, &self.stack);
-            let mut last = self.stack.last_mut().unwrap(); // collection
-            (*(*(*last.borrow_mut())).borrow_mut().as_list().unwrap())
-                .borrow_mut()
-                .push(value);
-        }
-        self.stack.push(Rc::new(RefCell::new(value)));
-        if !self.had_root {
-            self.had_root = true;
-        }
+        });
         Ok(())
     }
 }

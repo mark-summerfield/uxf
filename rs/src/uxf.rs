@@ -11,14 +11,13 @@ use crate::util::{escape, read_file};
 use crate::value::{Value, Visit, Visitor};
 use anyhow::{bail, Result};
 use bitflags::bitflags;
-use std::{cell::RefCell, collections::HashMap, fmt, rc::Rc};
+use std::{collections::HashMap, fmt, rc::Rc};
 
 #[derive(Clone)]
 pub struct Uxf {
     custom: String,
     comment: String,
-    // NOTE must be Value::List | Value::Map | Value::Table
-    value: Value,
+    value: Value, // NOTE must be Value::List | Value::Map | Value::Table
     on_event: OnEventFn,
     tclass_for_ttype: HashMap<String, TClass>, // ttype x TClass
     import_index_for_ttype: HashMap<String, usize>, // imports index
@@ -37,7 +36,7 @@ impl Uxf {
         Uxf {
             custom: custom.to_string(),
             comment: comment.to_string(),
-            value: Value::List(Rc::new(RefCell::new(List::default()))),
+            value: Value::List(List::default()),
             tclass_for_ttype: HashMap::new(),
             import_index_for_ttype: HashMap::new(),
             imports: vec![],
@@ -51,7 +50,7 @@ impl Uxf {
         Uxf {
             custom: "".to_string(),
             comment: "".to_string(),
-            value: Value::List(Rc::new(RefCell::new(List::default()))),
+            value: Value::List(List::default()),
             tclass_for_ttype: HashMap::new(),
             import_index_for_ttype: HashMap::new(),
             imports: vec![],
@@ -204,7 +203,7 @@ impl Default for Uxf {
         Uxf {
             custom: "".to_string(),
             comment: "".to_string(),
-            value: Value::List(Rc::new(RefCell::new(List::default()))),
+            value: Value::List(List::default()),
             tclass_for_ttype: HashMap::new(),
             import_index_for_ttype: HashMap::new(),
             imports: vec![],
