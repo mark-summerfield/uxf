@@ -33,7 +33,6 @@ pub(crate) fn parse(
     }
     if !tokens.is_empty() {
         let mut parser = Parser::new(
-            text,
             filename,
             Rc::clone(&on_event),
             &mut uxo,
@@ -47,7 +46,6 @@ pub(crate) fn parse(
 }
 
 pub struct Parser<'a> {
-    text: &'a str, // TODO do we need this?
     filename: &'a str,
     options: ParserOptions,
     on_event: OnEventFn,
@@ -64,7 +62,6 @@ pub struct Parser<'a> {
 
 impl<'a> Parser<'a> {
     pub(crate) fn new(
-        text: &'a str, // TODO do we need this?
         filename: &'a str,
         on_event: OnEventFn,
         uxo: &'a mut Uxf,
@@ -86,7 +83,6 @@ impl<'a> Parser<'a> {
             imported.insert(filename);
         }
         Ok(Parser {
-            text, // TODO do we need this?
             filename,
             on_event: Rc::clone(&on_event),
             uxo,
@@ -106,6 +102,10 @@ impl<'a> Parser<'a> {
         self.parse_file_comment();
         self.parse_imports()?;
         self.parse_tclasses()?;
+        self.parse_root()
+    }
+
+    fn parse_root(&mut self) -> Result<()> {
         let mut value: Option<Value> = None;
         let mut stack: Values = vec![];
         let mut pos = 0;
@@ -118,53 +118,21 @@ impl<'a> Parser<'a> {
             }
             self.lino = token.lino;
             if let Some(element) = value.take() {
-                if let Some(collection) = stack.last_mut() {
-                    if let Some(lst) = collection.as_list_mut() {
-                        lst.push(element);
-                    } else if let Some(m) = collection.as_map_mut() {
-                        m.push(element)?;
-                    } else if let Some(t) = collection.as_table_mut() {
-                        t.push(element)?;
-                    } else {
-                        bail!(self.error_t(
-                            402,
-                            "expected a map, list, or table",
-                            token
-                        ));
-                    }
-                }
+                self.handle_collection_push(element, &mut stack, &token)?;
             }
-            value =
-                if kind.is_collection_start() {
-                    let next_value = if pos < self.tokens.len() {
-                        Some(self.tokens[pos].clone())
-                    } else {
-                        None
-                    };
-                    stack.push(self.handle_collection_start(
-                        &token.clone(),
-                        next_value,
-                    )?);
-                    None
-                } else if kind.is_collection_end() {
-                    if let Some(value) = stack.pop() {
-                        Some(value)
-                    } else {
-                        bail!(self.error_t(
-                            403,
-                            "missing a map, list, or table",
-                            token
-                        ));
-                    }
-                } else if kind == &TokenKind::Str {
-                    Some(Value::Null) // TODO MUST RETURN a Value
-                } else if kind.is_scalar() {
-                    Some(Value::Null) // TODO MUST RETURN a Value
-                } else if kind == &TokenKind::Identifier {
-                    bail!(self.handle_invalid_identifier(&token));
-                } else {
-                    bail!(self.error_t(410, "unexpected token", token));
-                };
+            value = if kind.is_collection_start() {
+                self.on_collection_start(pos, &mut stack, &token)?
+            } else if kind.is_collection_end() {
+                self.on_collection_end(&mut stack, &token)?
+            } else if kind == &TokenKind::Str {
+                Some(Value::Null) // TODO MUST RETURN a Value
+            } else if kind.is_scalar() {
+                Some(Value::Null) // TODO MUST RETURN a Value
+            } else if kind == &TokenKind::Identifier {
+                bail!(self.handle_invalid_identifier(&token));
+            } else {
+                bail!(self.error_t(410, "unexpected token", token));
+            };
         }
         // TODO if not is_import: check_tclasses
         if let Some(value) = value {
@@ -250,8 +218,49 @@ impl<'a> Parser<'a> {
         Ok(())
     }
 
+    fn handle_collection_push(
+        &self,
+        element: Value,
+        stack: &mut Values,
+        token: &Token,
+    ) -> Result<()> {
+        if let Some(collection) = stack.last_mut() {
+            if let Some(lst) = collection.as_list_mut() {
+                lst.push(element);
+            } else if let Some(m) = collection.as_map_mut() {
+                m.push(element)?;
+            } else if let Some(t) = collection.as_table_mut() {
+                t.push(element)?;
+            } else {
+                bail!(self.error_t(
+                    402,
+                    "expected a map, list, or table",
+                    token
+                ));
+            }
+        }
+        Ok(())
+    }
+
+    fn on_collection_start(
+        &self,
+        pos: usize,
+        stack: &mut Values,
+        token: &Token,
+    ) -> Result<Option<Value>> {
+        let next_value = if pos < self.tokens.len() {
+            Some(self.tokens[pos].clone())
+        } else {
+            None
+        };
+        stack.push(
+            self.handle_collection_start(&token.clone(), next_value)?,
+        );
+        Ok(None)
+    }
+
     fn handle_collection_start(
-        &mut self,
+        &self,
         token: &Token,
         next_value: Option<Token>,
     ) -> Result<Value> {
@@ -283,6 +292,22 @@ impl<'a> Parser<'a> {
                 "expected to create a map, list, or table",
                 token
             )),
+        }
+    }
+
+    fn on_collection_end(
+        &self,
+        stack: &mut Values,
+        token: &Token,
+    ) -> Result<Option<Value>> {
+        if let Some(value) = stack.pop() {
+            Ok(Some(value))
+        } else {
+            bail!(self.error_t(
+                403,
+                "missing a map, list, or table",
+                token
+            ));
         }
     }
 
