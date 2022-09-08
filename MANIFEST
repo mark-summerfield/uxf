@@ -1,4 +1,3 @@
-# TODO x/xx.py using rust algo
 rs/src/bin/uxf.rs
 rs/src/lib.rs # add docs at the end
 rs/src/value.rs
