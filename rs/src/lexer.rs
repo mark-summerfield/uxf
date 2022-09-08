@@ -22,7 +22,7 @@ pub struct Lexer<'a> {
     lino: usize,
     in_tclass: bool,
     concatenate: bool,
-    tokens: Tokens<'a>,
+    tokens: Tokens,
 }
 
 impl<'a> Lexer<'a> {
@@ -582,12 +582,7 @@ impl<'a> Lexer<'a> {
         {
             return Ok(());
         }
-        self.tokens.push_back(Token::new(
-            kind,
-            value,
-            self.filename,
-            self.lino,
-        ));
+        self.tokens.push_back(Token::new(kind, value, self.lino));
         Ok(())
     }
 

@@ -124,7 +124,7 @@ pub(crate) fn hex_as_bytes(
                 b = NUL;
             }
         } else if !c.is_ascii_whitespace() {
-            bail!("E600:{}:{}:invalid hex char: {:?}", filename, lino, c)
+            bail!("E601:{}:{}:invalid hex char: {:?}", filename, lino, c)
         }
     }
     Ok(raw)

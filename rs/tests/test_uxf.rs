@@ -249,6 +249,10 @@ mod tests {
             "uxf 1\n#<A &lt;Big&gt; comment!>\n[]\n"
         );
         assert_eq!(uxo.comment(), "A <Big> comment!");
+        let uxo = uxf::parse("uxf 1\n{}").unwrap();
+        assert_eq!(uxo.to_string(), "uxf 1\n{}\n");
+        let uxo = uxf::parse("uxf 1\n[{} {} ? []]").unwrap();
+        assert_eq!(uxo.to_string(), "uxf 1\n[{} {} ? []]\n");
         // TODO
     }
 

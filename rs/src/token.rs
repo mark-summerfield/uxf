@@ -4,30 +4,27 @@
 use crate::value::Value;
 use std::{collections::VecDeque, fmt};
 
-pub type Tokens<'a> = VecDeque<Token<'a>>;
+pub type Tokens = VecDeque<Token>;
 
 #[derive(Clone, Debug)]
-pub struct Token<'a> {
+pub struct Token {
     pub kind: TokenKind,
     pub value: Value,
-    pub filename: &'a str,
     pub lino: usize,
     pub comment: String,
     pub ktype: String,
     pub vtype: String,
 }
 
-impl<'a> Token<'a> {
+impl Token {
     pub fn new(
         kind: TokenKind,
         value: Value,
-        filename: &'a str,
         lino: usize,
     ) -> Self {
         Token {
             kind,
             value, // may store vtype or ttype
-            filename,
             lino,
             comment: "".to_string(),
             ktype: "".to_string(),
@@ -36,7 +33,7 @@ impl<'a> Token<'a> {
     }
 }
 
-impl<'a> fmt::Display for Token<'a> {
+impl fmt::Display for Token {
     /// Purely for debugging
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         let kind = if self.kind == TokenKind::TClassBegin {
@@ -66,11 +63,6 @@ impl<'a> fmt::Display for Token<'a> {
             format!(" # {}", self.comment)
         } else {
             "".to_string()
-        };
-        let filename = if self.filename.is_empty() {
-            "".to_string()
-        } else {
-            format!(" {:?}", self.filename)
         };
         let lino = if self.lino > 0 {
             format!(" {}", self.lino)

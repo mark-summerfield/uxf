@@ -53,9 +53,7 @@ pub struct Parser<'a> {
     on_event: OnEventFn,
     uxo: &'a mut Uxf,
     is_import: bool,
-    tokens: &'a mut Tokens<'a>,
-    root: Option<Value>,
-    stack: Values,
+    tokens: &'a mut Tokens,
     imports: HashMap<String, String>, // key=ttype value=import text
     imported: HashSet<String>, // ttype (to avoid reimports or self import)
     tclasses: HashMap<String, TClass>, // key=ttype value=TClass
@@ -71,7 +69,7 @@ impl<'a> Parser<'a> {
         on_event: OnEventFn,
         uxo: &'a mut Uxf,
         options: ParserOptions,
-        tokens: &'a mut Tokens<'a>,
+        tokens: &'a mut Tokens,
         // None for not an import; empty for an import that has no ttypes
         imported: Option<HashSet<String>>,
     ) -> Result<Self> {
@@ -95,8 +93,6 @@ impl<'a> Parser<'a> {
             options,
             is_import,
             tokens,
-            root: None,
-            stack: vec![],
             imports: HashMap::new(),
             imported,
             tclasses: HashMap::new(),
@@ -110,13 +106,15 @@ impl<'a> Parser<'a> {
         self.parse_file_comment();
         self.parse_imports()?;
         self.parse_tclasses()?;
+        let mut value: Option<Value> = None;
+        let mut stack: Values = vec![];
         let mut pos = 0;
         while pos < self.tokens.len() {
             let token = &self.tokens[pos];
             self.lino = token.lino;
             let kind = &token.kind;
-            if let Some(element) = self.root.take() {
-                if let Some(collection) = self.stack.last_mut() {
+            if let Some(element) = value.take() {
+                if let Some(collection) = stack.last_mut() {
                     if collection.is_list() {
                         if let Some(lst) = collection.as_list_mut() {
                             lst.push(element);
@@ -140,35 +138,38 @@ impl<'a> Parser<'a> {
                     }
                 }
             }
-            self.root = if kind.is_collection_start() {
-                let next_value = if pos + 1 < self.tokens.len() {
-                    Some(self.tokens[pos + 1].clone())
-                } else {
+            value =
+                if kind.is_collection_start() {
+                    let next_value = if pos + 1 < self.tokens.len() {
+                        Some(self.tokens[pos + 1].clone())
+                    } else {
+                        None
+                    };
+                    stack.push(self.handle_collection_start(
+                        &token.clone(),
+                        next_value,
+                    )?);
                     None
-                };
-                self.handle_collection_start(&token.clone(), next_value)?;
-                None
-            } else if kind.is_collection_end() {
-                if self.stack.is_empty() {
-                    bail!(
-                        "E403:{}:{}:missing a map, list, or table, \
+                } else if kind.is_collection_end() {
+                    if stack.is_empty() {
+                        bail!(
+                            "E403:{}:{}:missing a map, list, or table, \
                         got {:?}",
-                        self.filename,
-                        self.lino,
-                        token
-                    );
-                }
-                Some(self.stack.pop().unwrap()) // safe
-            } else {
-                // Some(token.into())
-                None // TODO ############# MUST RETURN a Value
-            };
+                            self.filename,
+                            self.lino,
+                            token
+                        );
+                    }
+                    Some(stack.pop().unwrap()) // safe
+                } else {
+                    // Some(token.into())
+                    Some(Value::Null) // TODO ############# MUST RETURN a Value
+                };
             pos += 1;
         }
-        let root = self.root.replace(Value::Null);
-        if let Some(root) = root {
-            if root.is_collection() {
-                self.uxo.set_value(root)?
+        if let Some(value) = value {
+            if value.is_collection() {
+                self.uxo.set_value(value)?
             }
         }
         Ok(())
@@ -261,11 +262,11 @@ impl<'a> Parser<'a> {
         &mut self,
         token: &Token,
         next_value: Option<Token>,
-    ) -> Result<()> {
-        self.stack.push(match token.kind {
+    ) -> Result<Value> {
+        match token.kind {
             TokenKind::ListBegin => {
                 // self.verify_type_identifier(&token.vtype)?; // TODO
-                Value::from(List::new(&token.vtype, &token.comment)?)
+                Ok(Value::from(List::new(&token.vtype, &token.comment)?))
             }
             TokenKind::MapBegin => {
                 if !token.ktype.is_empty()
@@ -279,13 +280,13 @@ impl<'a> Parser<'a> {
                     )
                 }
                 // self.verify_type_identifier(&token.vtype)?; // TODO
-                Value::from(Map::new(
+                Ok(Value::from(Map::new(
                     &token.ktype,
                     &token.vtype,
                     &token.comment,
-                )?)
+                )?))
             }
-            TokenKind::TableBegin => Value::Null, // TODO
+            TokenKind::TableBegin => Ok(Value::Null), // TODO
             _ => bail!(
                 "E504:{}:{}:expected to create a map, list, or table, \
                 got {:?}",
@@ -293,8 +294,7 @@ impl<'a> Parser<'a> {
                 self.lino,
                 token
             ),
-        });
-        Ok(())
+        }
     }
 }
 
