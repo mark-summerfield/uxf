@@ -33,10 +33,6 @@ rs/README.md
 rs/deploy.sh
 rs/deploy.bat
 
-x/x.py
-x/rs/src/main.rs
-x/rs/Cargo.toml
-
 py/uxf.py
 py/uxfconvert.py
 py/uxflint.py
@@ -71,6 +67,11 @@ py/eg/Config2.py
 py/eg/Tlm.py
 
 README.md
+
+x/x.py
+x/xx.py
+x/rs/src/main.rs
+x/rs/Cargo.toml
 
 misc/epd2uxf.py
 misc/md2html.sh

@@ -15,26 +15,25 @@ def main():
     assert actual == expected
 
 
-# My algorithm (20 LOC)
+# rust forum's 2e71828's algorithm (19 LOC)
 def parse(tokens):
     value = None
     stack = []
     for token in tokens:
-        if token == B:
-            lst = []
-            if value is None:
-                value = lst
-                stack.append(value)
-            else:
+        if value is not None:
+            element = value
+            value = None
+            if stack:
                 top = stack[-1]
                 if isinstance(top, list):
-                    top.append(lst) # add new list to current list
-                stack.append(lst) # make new list the current list
+                    top.append(element)
+        if token == B:
+            stack.append([])
+            value = None
         elif token == E:
-            stack.pop()
+            value = stack.pop()
         else:
-            top = stack[-1]
-            top.append(token)
+            value = token
     return value
 
 

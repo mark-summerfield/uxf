@@ -105,6 +105,8 @@ impl<'a> Parser<'a> {
         self.parse_root()
     }
 
+
+    // rust forum's 2e71828's algorithm
     fn parse_root(&mut self) -> Result<()> {
         let mut value: Option<Value> = None;
         let mut stack: Values = vec![];
@@ -286,7 +288,21 @@ impl<'a> Parser<'a> {
                     &token.comment,
                 )?))
             }
-            TokenKind::TableBegin => Ok(Value::Null), // TODO
+            TokenKind::TableBegin => {
+                if let Some(tclass) = self.tclasses.get(&token.vtype) {
+                    // self.verify_ttype_identifier(tclass, next_value) // TODO
+                    Ok(Value::from(Table::new(
+                        tclass.clone(),
+                        &token.comment,
+                    )))
+                } else {
+                    bail!(self.error_s(
+                        503,
+                        "undefined ttype",
+                        &token.vtype
+                    ))
+                }
+            }
             _ => bail!(self.error_t(
                 504,
                 "expected to create a map, list, or table",
