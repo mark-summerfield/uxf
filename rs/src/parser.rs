@@ -105,7 +105,6 @@ impl<'a> Parser<'a> {
         self.parse_root()
     }
 
-
     // rust forum's 2e71828's algorithm
     fn parse_root(&mut self) -> Result<()> {
         let mut value: Option<Value> = None;
@@ -178,21 +177,11 @@ impl<'a> Parser<'a> {
             self.lino = token.lino;
             match token.kind {
                 TokenKind::TClassBegin => {
-                    tclass_builder.initialize(
-                        token.value.as_str().unwrap(),
-                        &token.comment,
-                    );
+                    self.handle_tclass_begin(&mut tclass_builder, token);
                     lino = self.lino;
                 }
                 TokenKind::Field => {
-                    if tclass_builder.is_valid() {
-                        tclass_builder.append_field(
-                            token.value.as_str().unwrap(),
-                            &token.vtype,
-                        )?;
-                    } else {
-                        bail!(self.error(524, "Field outside TClass"));
-                    }
+                    self.handle_tclass_field(&mut tclass_builder, token)?;
                 }
                 TokenKind::TClassEnd => {
                     let tclass = if tclass_builder.is_valid() {
@@ -218,6 +207,28 @@ impl<'a> Parser<'a> {
         }
         self.tokens.drain(..offset);
         Ok(())
+    }
+
+    fn handle_tclass_begin(
+        &self,
+        tclass_builder: &mut TClassBuilder,
+        token: &Token,
+    ) {
+        tclass_builder
+            .initialize(token.value.as_str().unwrap(), &token.comment);
+    }
+
+    fn handle_tclass_field(
+        &self,
+        tclass_builder: &mut TClassBuilder,
+        token: &Token,
+    ) -> Result<()> {
+        if tclass_builder.is_valid() {
+            tclass_builder
+                .append_field(token.value.as_str().unwrap(), &token.vtype)
+        } else {
+            bail!(self.error(524, "Field outside TClass"));
+        }
     }
 
     fn handle_collection_push(
@@ -267,47 +278,42 @@ impl<'a> Parser<'a> {
         next_value: Option<Token>,
     ) -> Result<Value> {
         match token.kind {
-            TokenKind::ListBegin => {
-                // self.verify_type_identifier(&token.vtype)?; // TODO
-                Ok(Value::from(List::new(&token.vtype, &token.comment)?))
-            }
-            TokenKind::MapBegin => {
-                if !token.ktype.is_empty()
-                    && !KTYPES.contains(&token.ktype.as_str())
-                {
-                    bail!(self.error_s(
-                        440,
-                        "expected map ktype",
-                        &token.ktype
-                    ))
-                }
-                // self.verify_type_identifier(&token.vtype)?; // TODO
-                Ok(Value::from(Map::new(
-                    &token.ktype,
-                    &token.vtype,
-                    &token.comment,
-                )?))
-            }
-            TokenKind::TableBegin => {
-                if let Some(tclass) = self.tclasses.get(&token.vtype) {
-                    // self.verify_ttype_identifier(tclass, next_value) // TODO
-                    Ok(Value::from(Table::new(
-                        tclass.clone(),
-                        &token.comment,
-                    )))
-                } else {
-                    bail!(self.error_s(
-                        503,
-                        "undefined ttype",
-                        &token.vtype
-                    ))
-                }
-            }
+            TokenKind::ListBegin => self.handle_list_start(token),
+            TokenKind::MapBegin => self.handle_map_start(token),
+            TokenKind::TableBegin => self.handle_table_start(token),
             _ => bail!(self.error_t(
                 504,
                 "expected to create a map, list, or table",
                 token
             )),
+        }
+    }
+
+    fn handle_list_start(&self, token: &Token) -> Result<Value> {
+        // self.verify_type_identifier(&token.vtype)?; // TODO
+        Ok(Value::from(List::new(&token.vtype, &token.comment)?))
+    }
+
+    fn handle_map_start(&self, token: &Token) -> Result<Value> {
+        if !token.ktype.is_empty()
+            && !KTYPES.contains(&token.ktype.as_str())
+        {
+            bail!(self.error_s(440, "expected map ktype", &token.ktype))
+        }
+        // self.verify_type_identifier(&token.vtype)?; // TODO
+        Ok(Value::from(Map::new(
+            &token.ktype,
+            &token.vtype,
+            &token.comment,
+        )?))
+    }
+
+    fn handle_table_start(&self, token: &Token) -> Result<Value> {
+        if let Some(tclass) = self.tclasses.get(&token.vtype) {
+            // self.verify_ttype_identifier(tclass, next_value) // TODO
+            Ok(Value::from(Table::new(tclass.clone(), &token.comment)))
+        } else {
+            bail!(self.error_s(503, "undefined ttype", &token.vtype))
         }
     }
 
