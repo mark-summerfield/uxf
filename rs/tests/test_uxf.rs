@@ -258,6 +258,20 @@ mod tests {
             uxo.to_string(),
             "uxf 1\n[[?\n?]\n{}\n?\n[[]\n[]\n?]]\n"
         );
+        let uxo = uxf::parse("uxf 1\n=Point x y\n[]").unwrap();
+        assert_eq!(uxo.to_string(), "uxf 1\n=Point x y\n[]\n");
+        let uxo = uxf::parse("uxf 1\n=Point x:real y:real\n[]").unwrap();
+        assert_eq!(uxo.to_string(), "uxf 1\n=Point x:real y:real\n[]\n");
+        let uxo =
+            uxf::parse("uxf 1\n=Enum\n=Point x:real y:real\n[]").unwrap();
+        assert_eq!(
+            uxo.to_string(),
+            "uxf 1\n=Enum\n=Point x:real y:real\n[]\n"
+        );
+        let uxo = uxf::parse("uxf 1\n=Point x y\n(Point)").unwrap();
+        assert_eq!(uxo.to_string(), "uxf 1\n=Point x y\n(Point)\n");
+        let uxo = uxf::parse("uxf 1\n=Point x y\n[(Point 1 2)]").unwrap();
+        assert_eq!(uxo.to_string(), "uxf 1\n=Point x y\n[(Point 1 2)]\n");
         // TODO
     }
 
