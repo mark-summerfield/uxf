@@ -118,18 +118,18 @@ impl<'a> Parser<'a> {
             }
             self.lino = token.lino;
             if let Some(element) = value.take() {
-                self.handle_collection_push(element, &mut stack, &token)?;
+                self.handle_collection_push(element, &mut stack, token)?;
             }
             value = if kind.is_collection_start() {
-                self.on_collection_start(pos, &mut stack, &token)?
+                self.on_collection_start(pos, &mut stack, token)?
             } else if kind.is_collection_end() {
-                self.on_collection_end(&mut stack, &token)?
+                self.on_collection_end(&mut stack, token)?
             } else if kind == &TokenKind::Str {
                 Some(Value::Null) // TODO MUST RETURN a Value
             } else if kind.is_scalar() {
                 Some(Value::Null) // TODO MUST RETURN a Value
             } else if kind == &TokenKind::Identifier {
-                bail!(self.handle_invalid_identifier(&token));
+                bail!(self.handle_invalid_identifier(token));
             } else {
                 bail!(self.error_t(410, "unexpected token", token));
             };
