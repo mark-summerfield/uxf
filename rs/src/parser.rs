@@ -111,22 +111,20 @@ impl<'a> Parser<'a> {
         let mut pos = 0;
         while pos < self.tokens.len() {
             let token = &self.tokens[pos];
-            self.lino = token.lino;
+            pos += 1;
             let kind = &token.kind;
+            if kind == &TokenKind::Eof {
+                break;
+            }
+            self.lino = token.lino;
             if let Some(element) = value.take() {
                 if let Some(collection) = stack.last_mut() {
-                    if collection.is_list() {
-                        if let Some(lst) = collection.as_list_mut() {
-                            lst.push(element);
-                        }
-                    } else if collection.is_map() {
-                        if let Some(m) = collection.as_map_mut() {
-                            m.push(element)?;
-                        }
-                    } else if collection.is_table() {
-                        if let Some(t) = collection.as_table_mut() {
-                            t.push(element)?;
-                        }
+                    if let Some(lst) = collection.as_list_mut() {
+                        lst.push(element);
+                    } else if let Some(m) = collection.as_map_mut() {
+                        m.push(element)?;
+                    } else if let Some(t) = collection.as_table_mut() {
+                        t.push(element)?;
                     } else {
                         bail!(self.error_t(
                             402,
@@ -138,8 +136,8 @@ impl<'a> Parser<'a> {
             }
             value =
                 if kind.is_collection_start() {
-                    let next_value = if pos + 1 < self.tokens.len() {
-                        Some(self.tokens[pos + 1].clone())
+                    let next_value = if pos < self.tokens.len() {
+                        Some(self.tokens[pos].clone())
                     } else {
                         None
                     };
@@ -149,26 +147,24 @@ impl<'a> Parser<'a> {
                     )?);
                     None
                 } else if kind.is_collection_end() {
-                    if stack.is_empty() {
+                    if let Some(value) = stack.pop() {
+                        Some(value)
+                    } else {
                         bail!(self.error_t(
                             403,
                             "missing a map, list, or table",
                             token
                         ));
                     }
-                    Some(stack.pop().unwrap()) // safe
                 } else if kind == &TokenKind::Str {
                     Some(Value::Null) // TODO MUST RETURN a Value
                 } else if kind.is_scalar() {
                     Some(Value::Null) // TODO MUST RETURN a Value
-                } else if kind == &TokenKind::Eof {
-                    break;
                 } else if kind == &TokenKind::Identifier {
                     bail!(self.handle_invalid_identifier(&token));
                 } else {
                     bail!(self.error_t(410, "unexpected token", token));
                 };
-            pos += 1;
         }
         // TODO if not is_import: check_tclasses
         if let Some(value) = value {
@@ -294,17 +290,17 @@ impl<'a> Parser<'a> {
         // All valid identifiers have already been handled
         if let Some(s) = token.value.as_str() {
             if ["true", "false"].contains(&s.to_lowercase().as_str()) {
-                return format!(
-                    "E458:{}:{}:boolean values are represented by \
-                    yes or no",
-                    self.filename, self.lino,
+                return self.error(
+                    458,
+                    "boolean values are represented by yes or no",
                 );
             }
         }
-        format!(
-            "E460:{}:{}:ttypes may only appear at the start \
-            of a map (as the value type), list, or table, got {:?}",
-            self.filename, self.lino, token
+        self.error_t(
+            460,
+            "ttypes may only appear at the start of a map (as the \
+            value type), list, or table",
+            token,
         )
     }
 
@@ -323,13 +319,6 @@ impl<'a> Parser<'a> {
         format!(
             "E{}:{}:{}:{}, got {:?}",
             code, self.filename, self.lino, message, t
-        )
-    }
-
-    fn error_v(&self, code: u16, message: &str, v: &Value) -> String {
-        format!(
-            "E{}:{}:{}:{}, got {:?}",
-            code, self.filename, self.lino, message, v
         )
     }
 }
