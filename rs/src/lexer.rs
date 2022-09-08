@@ -61,24 +61,18 @@ impl<'a> Lexer<'a> {
             i
         } else {
             // "impossible" because if no NL we assume it is a filename
-            bail!(
-                "E110:{}:{}:missing UXF file header or missing data \
-                    or empty file",
-                self.filename,
-                self.lino,
-            )
+            bail!(self.error(
+                110,
+                "missing UXF file header or missing data or empty file"
+            ))
         };
         let line = str_for_chars(&self.text[..self.pos]);
         let parts: Vec<&str> = line.splitn(3, &[' ', '\t']).collect();
         if parts.len() < 2 {
-            bail!(
-                "E120:{}:{}:invalid UXF file header",
-                self.filename,
-                self.lino,
-            )
+            bail!(self.error(120, "invalid UXF file header"))
         }
         if parts[0] != "uxf" {
-            bail!("E130:{}:{}:not a UXF file", self.filename, self.lino)
+            bail!(self.error(130, "not a UXF file"))
         }
         if let Ok(version) = parts[1].trim().parse::<u16>() {
             if version > UXF_VERSION {
@@ -93,11 +87,7 @@ impl<'a> Lexer<'a> {
                 ));
             }
         } else {
-            bail!(
-                "E151:{}:{}:failed to read UXF file version number",
-                self.filename,
-                self.lino,
-            )
+            bail!(self.error(151, "failed to read UXF file version number"))
         }
         if parts.len() > 2 {
             self.custom = parts[2].trim().to_string();
@@ -121,13 +111,11 @@ impl<'a> Lexer<'a> {
                     Value::Str(comment),
                 )?;
             } else {
-                bail!(
-                    "E160:{}:{}:invalid comment syntax: expected '<', \
-                    got {:?}",
-                    self.filename,
-                    self.lino,
+                bail!(self.error_c(
+                    160,
+                    "invalid comment syntax: expected '<'",
                     self.peek()
-                )
+                ))
             }
         }
         Ok(())
@@ -165,12 +153,11 @@ impl<'a> Lexer<'a> {
                     } else if c.is_alphabetic() {
                         self.read_name()
                     } else {
-                        bail!(
-                            "E170:{}:{}:invalid character encountered {:?}",
-                            self.filename,
-                            self.lino,
+                        bail!(self.error_c(
+                            170,
+                            "invalid character encountered",
                             c
-                        )
+                        ))
                     }
                 }
             }
@@ -213,12 +200,7 @@ impl<'a> Lexer<'a> {
         let text = self.match_to_char(':', "bytes")?;
         let c = self.getch();
         if c != ')' {
-            bail!(
-                "E269:{}:{}:unterminated bytes, got {:?}",
-                self.filename,
-                self.lino,
-                c
-            )
+            bail!(self.error_c(269, "unterminated bytes", c))
         }
         let raw = hex_as_bytes(&text, self.filename, self.lino)?;
         self.add_token(TokenKind::Bytes, Value::Bytes(raw))
@@ -231,11 +213,7 @@ impl<'a> Lexer<'a> {
             let text = self.match_to_char('\n', "import")?;
             let text = text.trim();
             if this_file == full_filename(text, &path) {
-                bail!(
-                    "E176:{}:{}:a UXF file cannot import itself",
-                    self.filename,
-                    self.lino,
-                )
+                bail!(self.error(176, "a UXF file cannot import itself"))
             } else {
                 self.add_token(
                     TokenKind::Import,
@@ -270,21 +248,18 @@ impl<'a> Lexer<'a> {
                 }
                 Ok(())
             } else {
-                bail!(
-                    "E180:{}:{}:a str must follow the # comment \
-                     introducer, got {:?}",
-                    self.filename,
-                    self.lino,
+                bail!(self.error_c(
+                    180,
+                    "a str must follow the # comment introducer",
                     c
-                );
+                ));
             }
         } else {
-            bail!(
-                "E190:{}:{}:comments may only occur at the start of \
-                 'Lists, Maps, Tables, and TClasses",
-                self.filename,
-                self.lino,
-            );
+            bail!(self.error(
+                190,
+                "comments may only occur at the start of \
+                 'Lists, Maps, Tables, and TClasses"
+            ));
         }
     }
 
@@ -305,11 +280,10 @@ impl<'a> Lexer<'a> {
             ) {
                 top.comment += &text;
             } else {
-                bail!(
-                    "E195:{}:{}:attempt to concatenate a str to a non-str",
-                    self.filename,
-                    self.lino,
-                );
+                bail!(self.error(
+                    195,
+                    "attempt to concatenate a str to a non-str"
+                ));
             }
         } else {
             self.add_token(TokenKind::Str, Value::Str(text))?;
@@ -335,12 +309,7 @@ impl<'a> Lexer<'a> {
             top.vtype = identifier;
             Ok(())
         } else {
-            bail!(
-                "E248:{}:{}:expected field vtype, got {:?}",
-                self.filename,
-                self.lino,
-                identifier
-            );
+            bail!(self.error_s(248, "expected field vtype", &identifier));
         }
     }
 
@@ -440,12 +409,11 @@ impl<'a> Lexer<'a> {
         if self.text[start] == '_' || self.text[start].is_alphabetic() {
             return self.read_ttype_or_identifier(start);
         }
-        bail!(
-            "E250:{}:{}:expected const or identifier, got {:?}",
-            self.filename,
-            self.lino,
+        bail!(self.error_s(
+            250,
+            "expected const or identifier",
             &self.peek_chunk(start)
-        )
+        ))
     }
 
     fn read_ttype_or_identifier(&mut self, start: usize) -> Result<()> {
@@ -567,12 +535,7 @@ impl<'a> Lexer<'a> {
                 return Ok(str_for_chars(text));
             }
         }
-        bail!(
-            "E270:{}:{}:unterminated {:?}",
-            self.filename,
-            self.lino,
-            what
-        )
+        bail!(self.error_s(270, "unterminated", what))
     }
 
     fn add_token(&mut self, kind: TokenKind, value: Value) -> Result<()> {
@@ -617,20 +580,10 @@ impl<'a> Lexer<'a> {
                 check_vtype(vtype)?;
                 top.vtype = value.to_string();
             } else {
-                bail!(
-                    "E271:{}:{}:invalid vtype, got {:?}",
-                    self.filename,
-                    self.lino,
-                    value
-                )
+                bail!(self.error_v(271, "invalid vtype", value))
             }
         } else {
-            bail!(
-                "E272:{}:{}:expected value, got type {:?}",
-                self.filename,
-                self.lino,
-                value
-            )
+            bail!(self.error_v(272, "expected value", value))
         }
         Ok(true)
     }
@@ -644,24 +597,14 @@ impl<'a> Lexer<'a> {
         let top = self.tokens.back_mut().unwrap();
         if top.ktype.is_empty() {
             if kind == TokenKind::Identifier {
-                bail!(
-                    "E273:{}:{}:expected ktype, got {:?}",
-                    self.filename,
-                    self.lino,
-                    value
-                )
+                bail!(self.error_v(273, "expected ktype", value))
             }
             if let Some(ktype) = value.as_str() {
                 assert!(!ktype.is_empty());
                 check_ktype(ktype)?;
                 top.ktype = ktype.to_string();
             } else {
-                bail!(
-                    "E275:{}:{}:invalid ktype, got {:?}",
-                    self.filename,
-                    self.lino,
-                    value
-                )
+                bail!(self.error_v(275, "invalid ktype", value))
             }
         } else if top.vtype.is_empty() {
             if let Some(vtype) = value.as_str() {
@@ -669,20 +612,10 @@ impl<'a> Lexer<'a> {
                 check_vtype(vtype)?;
                 top.vtype = vtype.to_string();
             } else {
-                bail!(
-                    "E277:{}:{}:invalid vtype, got {:?}",
-                    self.filename,
-                    self.lino,
-                    value
-                )
+                bail!(self.error_v(277, "invalid vtype", value))
             }
         } else {
-            bail!(
-                "E276:{}:{}:expected first map key, got type {:?}",
-                self.filename,
-                self.lino,
-                value
-            )
+            bail!(self.error_v(276, "expected first map key", value))
         }
         Ok(true)
     }
@@ -700,21 +633,36 @@ impl<'a> Lexer<'a> {
                 check_ttype(ttype)?;
                 top.vtype = value.to_string();
             } else {
-                bail!(
-                    "E278:{}:{}:invalid ttype, got {:?}",
-                    self.filename,
-                    self.lino,
-                    value
-                )
+                bail!(self.error_v(278, "invalid ttype", value))
             }
         } else {
-            bail!(
-                "E274:{}:{}:expected value, got type {:?}",
-                self.filename,
-                self.lino,
-                value
-            )
+            bail!(self.error_v(274, "expected value", value))
         }
         Ok(true)
+    }
+
+    fn error(&self, code: u16, message: &str) -> String {
+        format!("E{}:{}:{}:{}", code, self.filename, self.lino, message)
+    }
+
+    fn error_c(&self, code: u16, message: &str, c: char) -> String {
+        format!(
+            "E{}:{}:{}:{}, got {:?}",
+            code, self.filename, self.lino, message, c
+        )
+    }
+
+    fn error_s(&self, code: u16, message: &str, s: &str) -> String {
+        format!(
+            "E{}:{}:{}:{}, got {:?}",
+            code, self.filename, self.lino, message, s
+        )
+    }
+
+    fn error_v(&self, code: u16, message: &str, v: &Value) -> String {
+        format!(
+            "E{}:{}:{}:{}, got {:?}",
+            code, self.filename, self.lino, message, v
+        )
     }
 }

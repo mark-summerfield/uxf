@@ -128,13 +128,11 @@ impl<'a> Parser<'a> {
                             t.push(element)?;
                         }
                     } else {
-                        bail!(
-                            "E402:{}:{}:expected a map, list, or table, \
-                            got {:?}",
-                            self.filename,
-                            self.lino,
+                        bail!(self.error_t(
+                            402,
+                            "expected a map, list, or table",
                             token
-                        );
+                        ));
                     }
                 }
             }
@@ -152,21 +150,27 @@ impl<'a> Parser<'a> {
                     None
                 } else if kind.is_collection_end() {
                     if stack.is_empty() {
-                        bail!(
-                            "E403:{}:{}:missing a map, list, or table, \
-                        got {:?}",
-                            self.filename,
-                            self.lino,
+                        bail!(self.error_t(
+                            403,
+                            "missing a map, list, or table",
                             token
-                        );
+                        ));
                     }
                     Some(stack.pop().unwrap()) // safe
+                } else if kind == &TokenKind::Str {
+                    Some(Value::Null) // TODO MUST RETURN a Value
+                } else if kind.is_scalar() {
+                    Some(Value::Null) // TODO MUST RETURN a Value
+                } else if kind == &TokenKind::Eof {
+                    break;
+                } else if kind == &TokenKind::Identifier {
+                    bail!(self.handle_invalid_identifier(&token));
                 } else {
-                    // Some(token.into())
-                    Some(Value::Null) // TODO ############# MUST RETURN a Value
+                    bail!(self.error_t(410, "unexpected token", token));
                 };
             pos += 1;
         }
+        // TODO if not is_import: check_tclasses
         if let Some(value) = value {
             if value.is_collection() {
                 self.uxo.set_value(value)?
@@ -221,22 +225,14 @@ impl<'a> Parser<'a> {
                             &token.vtype,
                         )?;
                     } else {
-                        bail!(
-                            "E524:{}:{}:Field outside TClass",
-                            self.filename,
-                            self.lino
-                        );
+                        bail!(self.error(524, "Field outside TClass"));
                     }
                 }
                 TokenKind::TClassEnd => {
                     let tclass = if tclass_builder.is_valid() {
                         tclass_builder.build()?
                     } else {
-                        bail!(
-                            "E526:{}:{}:TClass without ttype",
-                            self.filename,
-                            self.lino
-                        );
+                        bail!(self.error(526, "TClass without ttype"));
                     };
                     add_to_tclasses(
                         &mut self.tclasses,
@@ -272,12 +268,11 @@ impl<'a> Parser<'a> {
                 if !token.ktype.is_empty()
                     && !KTYPES.contains(&token.ktype.as_str())
                 {
-                    bail!(
-                        "E440:{}:{}:expected map ktype, got {:?}",
-                        self.filename,
-                        self.lino,
-                        token.ktype
-                    )
+                    bail!(self.error_s(
+                        440,
+                        "expected map ktype",
+                        &token.ktype
+                    ))
                 }
                 // self.verify_type_identifier(&token.vtype)?; // TODO
                 Ok(Value::from(Map::new(
@@ -287,14 +282,55 @@ impl<'a> Parser<'a> {
                 )?))
             }
             TokenKind::TableBegin => Ok(Value::Null), // TODO
-            _ => bail!(
-                "E504:{}:{}:expected to create a map, list, or table, \
-                got {:?}",
-                self.filename,
-                self.lino,
+            _ => bail!(self.error_t(
+                504,
+                "expected to create a map, list, or table",
                 token
-            ),
+            )),
         }
+    }
+
+    fn handle_invalid_identifier(&self, token: &Token) -> String {
+        // All valid identifiers have already been handled
+        if let Some(s) = token.value.as_str() {
+            if ["true", "false"].contains(&s.to_lowercase().as_str()) {
+                return format!(
+                    "E458:{}:{}:boolean values are represented by \
+                    yes or no",
+                    self.filename, self.lino,
+                );
+            }
+        }
+        format!(
+            "E460:{}:{}:ttypes may only appear at the start \
+            of a map (as the value type), list, or table, got {:?}",
+            self.filename, self.lino, token
+        )
+    }
+
+    fn error(&self, code: u16, message: &str) -> String {
+        format!("E{}:{}:{}:{}", code, self.filename, self.lino, message)
+    }
+
+    fn error_s(&self, code: u16, message: &str, s: &str) -> String {
+        format!(
+            "E{}:{}:{}:{}, got {:?}",
+            code, self.filename, self.lino, message, s
+        )
+    }
+
+    fn error_t(&self, code: u16, message: &str, t: &Token) -> String {
+        format!(
+            "E{}:{}:{}:{}, got {:?}",
+            code, self.filename, self.lino, message, t
+        )
+    }
+
+    fn error_v(&self, code: u16, message: &str, v: &Value) -> String {
+        format!(
+            "E{}:{}:{}:{}, got {:?}",
+            code, self.filename, self.lino, message, v
+        )
     }
 }
 

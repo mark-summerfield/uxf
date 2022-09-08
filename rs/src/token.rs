@@ -17,11 +17,7 @@ pub struct Token {
 }
 
 impl Token {
-    pub fn new(
-        kind: TokenKind,
-        value: Value,
-        lino: usize,
-    ) -> Self {
+    pub fn new(kind: TokenKind, value: Value, lino: usize) -> Self {
         Token {
             kind,
             value, // may store vtype or ttype
@@ -146,6 +142,20 @@ impl TokenKind {
         matches!(
             self,
             TokenKind::ListEnd | TokenKind::MapEnd | TokenKind::TableEnd
+        )
+    }
+
+    pub fn is_scalar(&self) -> bool {
+        matches!(
+            self,
+            TokenKind::Null
+                | TokenKind::Bool
+                | TokenKind::Int
+                | TokenKind::Real
+                | TokenKind::Date
+                | TokenKind::DateTime
+                | TokenKind::Str
+                | TokenKind::Bytes
         )
     }
 }
