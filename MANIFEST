@@ -97,7 +97,7 @@ st.sh
 # - uxfedit (GUI) applications
 # - UXF libraries:
 #   . for .js use Dart or TypeScript or similar that can output JS?
-#   . uxf.cpp uxf.java uxf.rb ... ?
+#   . uxf.cpp (use zig toolchain?) uxf.java uxf.rb ... ?
 # - Documentation:
 #   . Complete manual with egs and use cases
 #	. Part I Preliminaries

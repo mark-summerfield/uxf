@@ -40,6 +40,11 @@ impl List {
         &self.vtype
     }
 
+    /// To support type checking during parsing
+    pub(crate) fn expected_type(&self) -> String {
+        self.vtype.to_string()
+    }
+
     /// Returns the `comment` which may be `""`.
     pub fn comment(&self) -> &str {
         &self.comment

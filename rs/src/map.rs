@@ -100,6 +100,15 @@ impl Map {
         Ok(())
     }
 
+    /// To support type checking during parsing
+    pub(crate) fn expected_type(&self) -> String {
+        if self.pending_key.is_none() {
+            self.ktype.to_string() // expecting a key
+        } else {
+            self.vtype.to_string() // expecting a value
+        }
+    }
+
     /// Inserts the given `key` and `value` into the map.
     /// If the `key` was already present, returns the previous value;
     /// otherwise returns `None`.

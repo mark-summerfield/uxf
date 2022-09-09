@@ -128,6 +128,20 @@ impl Table {
         Ok(())
     }
 
+    /// To support type checking during parsing
+    pub(crate) fn expected_type(&self) -> String {
+        if self.is_fieldless() {
+            "".to_string()
+        } else if self.pending_record.is_empty() {
+            self.tclass.fields()[0].vtype().unwrap_or("").to_string()
+        } else {
+            self.tclass.fields()[self.pending_record.len()]
+                .vtype()
+                .unwrap_or("")
+                .to_string()
+        }
+    }
+
     /// Truncates the table to contain at most `size` records.
     pub fn truncate(&mut self, size: usize) {
         self.records.truncate(size);

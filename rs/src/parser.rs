@@ -2,7 +2,7 @@
 // License: GPLv3
 
 use crate::constants::*;
-use crate::event::OnEventFn;
+use crate::event::{Event, OnEventFn};
 use crate::lexer::Lexer;
 use crate::list::List;
 use crate::map::Map;
@@ -102,7 +102,6 @@ impl<'a> Parser<'a> {
         self.parse_file_comment();
         self.parse_imports()?;
         self.parse_tclasses()?;
-        //dbg!(&self.tokens);  TODO
         self.parse_data()?;
         self.update_uxo();
         Ok(())
@@ -114,28 +113,34 @@ impl<'a> Parser<'a> {
         let mut stack: Values = vec![];
         let mut pos = 0;
         while pos < self.tokens.len() {
-            let token = &self.tokens[pos];
+            let token = self.tokens[pos].clone();
             pos += 1;
             let kind = &token.kind;
             if kind == &TokenKind::Eof {
                 break;
             }
             self.lino = token.lino;
+            let expected_type = self.expected_type(&stack);
             if let Some(element) = value.take() {
-                self.handle_collection_push(element, &mut stack, token)?;
+                self.handle_collection_push(element, &mut stack, &token)?;
             }
             value = if kind.is_collection_start() {
-                self.on_collection_start(pos, &mut stack, token)?
+                self.on_collection_start(
+                    pos,
+                    &mut stack,
+                    &token,
+                    &expected_type,
+                )?
             } else if kind.is_collection_end() {
-                self.on_collection_end(&mut stack, token)?
+                self.on_collection_end(&mut stack, &token)?
             } else if kind == &TokenKind::Str {
-                Some(Value::Null) // TODO MUST RETURN a Value
+                self.handle_str(&token, &expected_type, stack.len())?
             } else if kind.is_scalar() {
                 Some(Value::Null) // TODO MUST RETURN a Value
             } else if kind == &TokenKind::Identifier {
-                bail!(self.handle_invalid_identifier(token));
+                bail!(self.handle_invalid_identifier(&token));
             } else {
-                bail!(self.error_t(410, "unexpected token", token));
+                bail!(self.error_t(410, "unexpected token", &token));
             };
         }
         // TODO if not is_import: check_tclasses
@@ -212,6 +217,22 @@ impl<'a> Parser<'a> {
         Ok(())
     }
 
+    fn expected_type(&self, stack: &Values) -> String {
+        if let Some(value) = stack.last() {
+            if let Some(lst) = value.as_list() {
+                lst.expected_type()
+            } else if let Some(m) = value.as_map() {
+                m.expected_type()
+            } else if let Some(t) = value.as_table() {
+                t.expected_type()
+            } else {
+                "".to_string()
+            }
+        } else {
+            "".to_string()
+        }
+    }
+
     fn handle_tclass_begin(
         &self,
         tclass_builder: &mut TClassBuilder,
@@ -259,31 +280,37 @@ impl<'a> Parser<'a> {
     }
 
     fn on_collection_start(
-        &self,
+        &mut self,
         pos: usize,
         stack: &mut Values,
         token: &Token,
+        expected_type: &str,
     ) -> Result<Option<Value>> {
         let next_value = if pos < self.tokens.len() {
             Some(self.tokens[pos].clone())
         } else {
             None
         };
-        stack.push(
-            self.handle_collection_start(&token.clone(), next_value)?,
-        );
+        stack.push(self.handle_collection_start(
+            &token.clone(),
+            next_value,
+            expected_type,
+        )?);
         Ok(None)
     }
 
     fn handle_collection_start(
-        &self,
+        &mut self,
         token: &Token,
         next_value: Option<Token>,
+        expected_type: &str,
     ) -> Result<Value> {
         match token.kind {
             TokenKind::ListBegin => self.handle_list_start(token),
             TokenKind::MapBegin => self.handle_map_start(token),
-            TokenKind::TableBegin => self.handle_table_start(token),
+            TokenKind::TableBegin => {
+                self.handle_table_start(token, next_value, expected_type)
+            }
             _ => bail!(self.error_t(
                 504,
                 "expected to create a map, list, or table",
@@ -292,18 +319,18 @@ impl<'a> Parser<'a> {
         }
     }
 
-    fn handle_list_start(&self, token: &Token) -> Result<Value> {
-        // self.verify_type_identifier(&token.vtype)?; // TODO
+    fn handle_list_start(&mut self, token: &Token) -> Result<Value> {
+        self.verify_type_identifier(&token.vtype)?;
         Ok(Value::from(List::new(&token.vtype, &token.comment)?))
     }
 
-    fn handle_map_start(&self, token: &Token) -> Result<Value> {
+    fn handle_map_start(&mut self, token: &Token) -> Result<Value> {
         if !token.ktype.is_empty()
             && !KTYPES.contains(&token.ktype.as_str())
         {
             bail!(self.error_s(440, "expected map ktype", &token.ktype))
         }
-        // self.verify_type_identifier(&token.vtype)?; // TODO
+        self.verify_type_identifier(&token.vtype)?;
         Ok(Value::from(Map::new(
             &token.ktype,
             &token.vtype,
@@ -311,14 +338,28 @@ impl<'a> Parser<'a> {
         )?))
     }
 
-    fn handle_table_start(&self, token: &Token) -> Result<Value> {
-        //dbg!(&token.vtype);// TODO
-        //dbg!(&self.tclass_for_ttype);//TODO
+    fn handle_table_start(
+        &mut self,
+        token: &Token,
+        next_value: Option<Token>,
+        expected_type: &str,
+    ) -> Result<Value> {
         if let Some(tclass) = self.tclass_for_ttype.get(&token.vtype) {
-            // self.verify_ttype_identifier(tclass, next_value) // TODO
+            let ttype = tclass.ttype();
+            self.used_tclasses.insert(ttype.to_string());
+            self.verify_ttype_identifier(ttype, expected_type)?;
             Ok(Value::from(Table::new(tclass.clone(), &token.comment)))
         } else {
-            bail!(self.error_s(503, "undefined ttype", &token.vtype))
+            let next_value = if let Some(next_value) = next_value {
+                next_value.to_string()
+            } else {
+                "nothing".to_string()
+            };
+            bail!(self.error_s(
+                450,
+                "expected table ttype, got {:?}",
+                &next_value
+            ))
         }
     }
 
@@ -338,6 +379,41 @@ impl<'a> Parser<'a> {
         }
     }
 
+    fn handle_str(
+        &mut self,
+        token: &Token,
+        expected_type: &str,
+        size: usize,
+    ) -> Result<Option<Value>> {
+        if size == 0 {
+            bail!(self.error(590, "invalid UXF data"));
+        }
+        let mut value = token.value.clone();
+        let message = self.verify_type(&value, expected_type);
+        if value != Value::Null
+            && !message.is_empty()
+            && ["bool", "int", "real", "date", "datetime"]
+                .contains(&expected_type)
+        {
+            let new_value = value.naturalize();
+            if new_value != value {
+                (self.on_event)(&Event::new_repair(
+                    486,
+                    &format!(
+                        "converted str {:?} to {:?}",
+                        value, new_value
+                    ),
+                    self.filename,
+                    self.lino,
+                ));
+                value = new_value;
+            } else {
+                bail!(self.error(488, &message));
+            }
+        }
+        Ok(Some(value))
+    }
+
     fn handle_invalid_identifier(&self, token: &Token) -> String {
         // All valid identifiers have already been handled
         if let Some(s) = token.value.as_str() {
@@ -354,6 +430,61 @@ impl<'a> Parser<'a> {
             value type), list, or table",
             token,
         )
+    }
+
+    fn verify_type_identifier(&mut self, vtype: &str) -> Result<()> {
+        if !vtype.is_empty() {
+            if VTYPES.contains(&vtype) {
+                return Ok(()); // built-in type
+            }
+            if let Some(tclass) = self.tclass_for_ttype.get(vtype) {
+                self.used_tclasses.insert(tclass.ttype().to_string());
+            } else {
+                bail!(self.error_s(446, "expected vtype", vtype));
+            }
+        }
+        Ok(())
+    }
+
+    fn verify_ttype_identifier(
+        &self,
+        ttype: &str,
+        expected_type: &str,
+    ) -> Result<()> {
+        if !expected_type.is_empty()
+            && expected_type != "table"
+            && expected_type != ttype
+        {
+            bail!(
+                "E456:{}:{}:expected table value of type {}, got value \
+                 of type {}",
+                self.filename,
+                self.lino,
+                expected_type,
+                ttype
+            );
+        }
+        Ok(())
+    }
+
+    // uxf.py: typecheck()
+    fn verify_type(&self, value: &Value, expected_type: &str) -> String {
+        if value != &Value::Null && !expected_type.is_empty() {
+            if VTYPES.contains(&expected_type) {
+                if value.typename() != expected_type {
+                    return format!(
+                        "expected {}, got {:?}",
+                        expected_type, &value
+                    );
+                }
+            } else if !self.tclass_for_ttype.contains_key(expected_type) {
+                return format!(
+                    "expected {}, got {:?}",
+                    expected_type, &value
+                );
+            }
+        }
+        "".to_string()
     }
 
     fn update_uxo(&mut self) {

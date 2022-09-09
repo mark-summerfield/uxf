@@ -10,6 +10,7 @@ use crate::tclass::TClass;
 use crate::util::{escape, isclose64, realstr64};
 use crate::uxf::Compare;
 use chrono::prelude::*;
+use chrono::{NaiveDate, NaiveDateTime};
 use std::fmt::Write as _;
 use std::{cell::RefCell, fmt, rc::Rc};
 
@@ -222,6 +223,49 @@ impl Value {
         } else {
             None
         }
+    }
+
+    pub fn naturalize(&self) -> Self {
+        // date/times are ASCII so we can use str.len()
+        if let Value::Str(value) = self {
+            let uvalue = value.to_uppercase();
+            if ["T", "TRUE", "Y", "YES"].contains(&uvalue.as_str()) {
+                return Value::Bool(true);
+            }
+            if ["F", "FALSE", "N", "NO"].contains(&uvalue.as_str()) {
+                return Value::Bool(false);
+            }
+            if let Ok(i) = value.parse::<i64>() {
+                return Value::Int(i);
+            } else if let Ok(r) = value.parse::<f64>() {
+                return Value::Real(r);
+            } else if value.len() == 10 {
+                if let Ok(d) =
+                    NaiveDate::parse_from_str(value, ISO8601_DATE)
+                {
+                    return Value::Date(d);
+                }
+            } else if value.len() == 13 {
+                if let Ok(dt) =
+                    NaiveDateTime::parse_from_str(value, ISO8601_DATETIME_H)
+                {
+                    return Value::DateTime(dt);
+                }
+            } else if value.len() == 16 {
+                if let Ok(dt) =
+                    NaiveDateTime::parse_from_str(value, ISO8601_DATETIME_M)
+                {
+                    return Value::DateTime(dt);
+                }
+            } else if value.len() == 19 {
+                if let Ok(dt) =
+                    NaiveDateTime::parse_from_str(value, ISO8601_DATETIME)
+                {
+                    return Value::DateTime(dt);
+                }
+            }
+        }
+        self.clone()
     }
 
     /// Returns `Some(&Table)` if `Value::Table`; otherwise returns `None`.

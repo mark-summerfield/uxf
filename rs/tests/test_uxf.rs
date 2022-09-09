@@ -270,6 +270,14 @@ mod tests {
         );
         let uxo = uxf::parse("uxf 1\n=Point x y\n(Point)").unwrap();
         assert_eq!(uxo.to_string(), "uxf 1\n=Point x y\n(Point)\n");
+        let uxo = uxf::parse(
+            "uxf 1\n=Pair first second\n[(Pair <A &amp; B> <C &lt; D>)]",
+        )
+        .unwrap();
+        assert_eq!(
+            uxo.to_string(),
+            "uxf 1\n=Pair first second\n[(Pair <A &amp; B> <C &lt; D>)]\n"
+        );
         let uxo = uxf::parse("uxf 1\n=Point x y\n[(Point 1 2)]").unwrap();
         assert_eq!(uxo.to_string(), "uxf 1\n=Point x y\n[(Point 1 2)]\n");
         // TODO
