@@ -19,8 +19,8 @@ pub struct Uxf {
     comment: String,
     value: Value, // NOTE must be Value::List | Value::Map | Value::Table
     on_event: OnEventFn,
-    tclass_for_ttype: HashMap<String, TClass>, // ttype x TClass
-    import_index_for_ttype: HashMap<String, usize>, // imports index
+    pub(crate) tclass_for_ttype: HashMap<String, TClass>, // ttype x TClass
+    import_index_for_ttype: HashMap<String, usize>,       // imports index
     imports: Vec<String>, // import text NOTE preserve order & no duplicates
 }
 

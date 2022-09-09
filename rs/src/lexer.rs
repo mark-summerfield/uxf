@@ -578,7 +578,7 @@ impl<'a> Lexer<'a> {
             if let Some(vtype) = value.as_str() {
                 assert!(!vtype.is_empty());
                 check_vtype(vtype)?;
-                top.vtype = value.to_string();
+                top.vtype = vtype.to_string();
             } else {
                 bail!(self.error_v(271, "invalid vtype", value))
             }
@@ -631,7 +631,7 @@ impl<'a> Lexer<'a> {
             if let Some(ttype) = value.as_str() {
                 assert!(!ttype.is_empty());
                 check_ttype(ttype)?;
-                top.vtype = value.to_string();
+                top.vtype = ttype.to_string();
             } else {
                 bail!(self.error_v(278, "invalid ttype", value))
             }

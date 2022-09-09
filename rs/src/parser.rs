@@ -54,7 +54,7 @@ pub struct Parser<'a> {
     tokens: &'a mut Tokens,
     imports: HashMap<String, String>, // key=ttype value=import text
     imported: HashSet<String>, // ttype (to avoid reimports or self import)
-    tclasses: HashMap<String, TClass>, // key=ttype value=TClass
+    tclass_for_ttype: HashMap<String, TClass>, // key=ttype value=TClass
     lino_for_tclass: HashMap<String, usize>, // key=ttype value=lino
     used_tclasses: HashSet<String>, // ttype (of ttypes actually used)
     lino: usize,
@@ -91,7 +91,7 @@ impl<'a> Parser<'a> {
             tokens,
             imports: HashMap::new(),
             imported,
-            tclasses: HashMap::new(),
+            tclass_for_ttype: HashMap::new(),
             lino_for_tclass: HashMap::new(),
             used_tclasses: HashSet::new(),
             lino: 0,
@@ -102,11 +102,14 @@ impl<'a> Parser<'a> {
         self.parse_file_comment();
         self.parse_imports()?;
         self.parse_tclasses()?;
-        self.parse_root()
+        //dbg!(&self.tokens);  TODO
+        self.parse_data()?;
+        self.update_uxo();
+        Ok(())
     }
 
     // rust forum's 2e71828's algorithm
-    fn parse_root(&mut self) -> Result<()> {
+    fn parse_data(&mut self) -> Result<()> {
         let mut value: Option<Value> = None;
         let mut stack: Values = vec![];
         let mut pos = 0;
@@ -190,7 +193,7 @@ impl<'a> Parser<'a> {
                         bail!(self.error(526, "TClass without ttype"));
                     };
                     add_to_tclasses(
-                        &mut self.tclasses,
+                        &mut self.tclass_for_ttype,
                         tclass,
                         self.filename,
                         self.lino,
@@ -309,7 +312,9 @@ impl<'a> Parser<'a> {
     }
 
     fn handle_table_start(&self, token: &Token) -> Result<Value> {
-        if let Some(tclass) = self.tclasses.get(&token.vtype) {
+        //dbg!(&token.vtype);// TODO
+        //dbg!(&self.tclass_for_ttype);//TODO
+        if let Some(tclass) = self.tclass_for_ttype.get(&token.vtype) {
             // self.verify_ttype_identifier(tclass, next_value) // TODO
             Ok(Value::from(Table::new(tclass.clone(), &token.comment)))
         } else {
@@ -351,6 +356,13 @@ impl<'a> Parser<'a> {
         )
     }
 
+    fn update_uxo(&mut self) {
+        std::mem::swap(
+            &mut self.uxo.tclass_for_ttype,
+            &mut self.tclass_for_ttype,
+        );
+    }
+
     fn error(&self, code: u16, message: &str) -> String {
         format!("E{}:{}:{}:{}", code, self.filename, self.lino, message)
     }
@@ -371,19 +383,20 @@ impl<'a> Parser<'a> {
 }
 
 fn add_to_tclasses(
-    tclasses: &mut HashMap<String, TClass>,
+    tclass_for_ttype: &mut HashMap<String, TClass>,
     tclass: TClass,
     filename: &str,
     lino: usize,
     code: u16,
 ) -> Result<bool> {
-    let first_tclass =
-        if let Some(first_tclass) = tclasses.get_mut(tclass.ttype()) {
-            first_tclass
-        } else {
-            tclasses.insert(tclass.ttype().to_string(), tclass);
-            return Ok(true); // this is the first definition of this ttype
-        };
+    let first_tclass = if let Some(first_tclass) =
+        tclass_for_ttype.get_mut(tclass.ttype())
+    {
+        first_tclass
+    } else {
+        tclass_for_ttype.insert(tclass.ttype().to_string(), tclass);
+        return Ok(true); // this is the first definition of this ttype
+    };
     if first_tclass == &tclass {
         if !tclass.comment().is_empty()
             && tclass.comment() != first_tclass.comment()
