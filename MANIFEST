@@ -13,7 +13,6 @@ rs/src/check.rs
 rs/src/util.rs
 rs/src/event.rs
 rs/src/constants.rs
-# FIXME are ttype defs working? (why aren't they output by to_string()?)
 rs/src/parser.rs # TODO (1) test using py/t/regression.py -r
 rs/src/lexer.rs
 rs/src/token.rs
