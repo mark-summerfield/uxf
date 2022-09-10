@@ -1,0 +1,124 @@
+<?xml version="1.0" ?>
+<uxf version="1">
+  <ttypes>
+    <ttype name="Feature">
+      <field name="geometry"/>
+      <field name="properties" vtype="map"/>
+    </ttype>
+    <ttype name="LineString">
+      <field name="points" vtype="Point"/>
+    </ttype>
+    <ttype name="Point">
+      <field name="x" vtype="real"/>
+      <field name="y" vtype="real"/>
+    </ttype>
+    <ttype name="Polygon">
+      <field name="points" vtype="Point"/>
+    </ttype>
+  </ttypes>
+  <table name="Feature">
+    <row>
+      <table name="Point">
+        <row>
+          <real v="102.0"/>
+          <real v="0.5"/>
+        </row>
+      </table>
+      <map>
+        <key>
+          <str>prop0</str>
+        </key>
+        <value>
+          <str>value0</str>
+        </value>
+      </map>
+    </row>
+    <row>
+      <table name="LineString">
+        <row>
+          <table name="Point">
+            <row>
+              <real v="102.0"/>
+              <real v="0.0"/>
+            </row>
+            <row>
+              <real v="103.0"/>
+              <real v="1.0"/>
+            </row>
+            <row>
+              <real v="104.0"/>
+              <real v="0.0"/>
+            </row>
+            <row>
+              <real v="105.0"/>
+              <real v="1.0"/>
+            </row>
+          </table>
+        </row>
+      </table>
+      <map>
+        <key>
+          <str>prop0</str>
+        </key>
+        <value>
+          <str>value0</str>
+        </value>
+        <key>
+          <str>prop1</str>
+        </key>
+        <value>
+          <real v="0.0"/>
+        </value>
+      </map>
+    </row>
+    <row>
+      <table name="Polygon">
+        <row>
+          <table name="Point">
+            <row>
+              <real v="100.0"/>
+              <real v="0.0"/>
+            </row>
+            <row>
+              <real v="101.0"/>
+              <real v="0.0"/>
+            </row>
+            <row>
+              <real v="101.0"/>
+              <real v="1.0"/>
+            </row>
+            <row>
+              <real v="100.0"/>
+              <real v="1.0"/>
+            </row>
+            <row>
+              <real v="100.0"/>
+              <real v="0.0"/>
+            </row>
+          </table>
+        </row>
+      </table>
+      <map>
+        <key>
+          <str>prop0</str>
+        </key>
+        <value>
+          <str>value0</str>
+        </value>
+        <key>
+          <str>prop1</str>
+        </key>
+        <value>
+          <map>
+            <key>
+              <str>this</str>
+            </key>
+            <value>
+              <str>that</str>
+            </value>
+          </map>
+        </value>
+      </map>
+    </row>
+  </table>
+</uxf>

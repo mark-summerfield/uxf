@@ -660,13 +660,31 @@ And here's a possible UXF alternative:
     (Feature
         (Point 102.0 0.5) {<prop0> <value0>}
         (LineString 102.0 0.0 103.0 1.0 104.0 0.0 105.0 1.0)
-            {<prop0> <value0> <prop1> 0.0}
+                    {<prop0> <value0> <prop1> 0.0}
         (Polygon 100.0 0.0 101.0 0.0 101.0 1.0 100.0 1.0 100.0 0.0)
-            {<prop0> <value0> <prop1> {<this> <that>}}
+                    {<prop0> <value0> <prop1> {<this> <that>}}
     )
 
 We don't need a FeatureCollection because UXF tables can accept zero or more
 values, so a Feature table is sufficient.
+
+Here's a last JSON alternative, this time avoiding the duplication of
+`x:real` and `y:real`:
+
+    uxf 1
+    =Feature geometry properties:map
+    =LineString points:Point
+    =Point x:real y:real
+    =Polygon points:Point
+    (Feature
+	(Point 102.0 0.5) {<prop0> <value0>}
+	(LineString (Point 102.0 0.0 103.0 1.0 104.0 0.0 105.0 1.0))
+	            {<prop0> <value0> <prop1> 0.0}
+	(Polygon (Point 100.0 0.0 101.0 0.0 101.0 1.0 100.0 1.0 100.0 0.0))
+	         {<prop0> <value0> <prop1> {<this> <that>}}
+    )
+
+This seems like the clearest solution.
 
 ## TOML
 
