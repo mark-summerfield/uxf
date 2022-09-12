@@ -31,7 +31,7 @@ from xml.sax.saxutils import escape, unescape
 
 import editabletuple
 
-__version__ = '2.5.2' # uxf module version
+__version__ = '2.5.3' # uxf module version
 VERSION = 1 # UXF file format version
 
 UTF8 = 'utf-8'
@@ -1917,11 +1917,11 @@ class _Parser(_EventMixin):
             else:
                 self.error(410, f'unexpected token, got {token}')
         if not self._is_import:
-            self._check_tclasses()
+            self._cleanup_tclasses()
         return data, comment
 
 
-    def _check_tclasses(self):
+    def _cleanup_tclasses(self):
         imported = set(self.imports.keys())
         if self.replace_imports:
             self._replace_imports(imported)

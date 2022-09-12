@@ -1,4 +1,5 @@
 rs/src/bin/uxf.rs
+# rs/src/bin/benchmark.rs TODO at the end
 rs/src/lib.rs # add docs at the end
 rs/src/value.rs
 rs/src/key.rs
@@ -7,7 +8,7 @@ rs/src/map.rs
 rs/src/table.rs
 rs/src/tclass.rs
 rs/src/field.rs
-rs/src/uxf.rs # TODO (9) to_string_options()
+rs/src/uxf.rs # TODO (2) to_string_options()
 rs/src/format.rs
 rs/src/check.rs
 rs/src/util.rs
@@ -16,7 +17,7 @@ rs/src/constants.rs
 rs/src/parser.rs # TODO (1) test using py/t/regression.py -r
 rs/src/lexer.rs
 rs/src/token.rs
-rs/src/prettyprint.rs # TODO see (9) above
+rs/src/prettyprint.rs # TODO see (2) above
 rs/src/test_utils.rs
 rs/tests/test_value.rs
 rs/tests/test_list.rs

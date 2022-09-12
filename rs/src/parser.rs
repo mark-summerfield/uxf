@@ -136,14 +136,16 @@ impl<'a> Parser<'a> {
             } else if kind == &TokenKind::Str {
                 self.handle_str(&token, &expected_type, stack.len())?
             } else if kind.is_scalar() {
-                Some(Value::Null) // TODO MUST RETURN a Value
+                self.handle_scalar(&token, &expected_type, stack.len())?
             } else if kind == &TokenKind::Identifier {
                 bail!(self.handle_invalid_identifier(&token));
             } else {
                 bail!(self.error_t(410, "unexpected token", &token));
             };
         }
-        // TODO if not is_import: check_tclasses
+        if !self.is_import {
+            self.cleanup_tclasses();
+        }
         if let Some(value) = value {
             if value.is_collection() {
                 self.uxo.set_value(value)?
@@ -414,6 +416,36 @@ impl<'a> Parser<'a> {
         Ok(Some(value))
     }
 
+    fn handle_scalar(
+        &mut self,
+        token: &Token,
+        expected_type: &str,
+        size: usize,
+    ) -> Result<Option<Value>> {
+        if size == 0 {
+            bail!(self.error(501, "invalid UXF data"));
+        }
+        let mut value = token.value.clone();
+        let message = self.verify_type(&value, expected_type);
+        if value != Value::Null && !message.is_empty() {
+            let new_value = if expected_type == "real" && value.is_int() {
+                Value::Real(value.as_int().unwrap() as f64) // safe
+            } else if expected_type == "int" && value.is_real() {
+                Value::Int(value.as_real().unwrap().round() as i64) // safe
+            } else {
+                bail!(self.error(500, &message));
+            };
+            (self.on_event)(&Event::new_repair(
+                486,
+                &format!("converted str {:?} to {:?}", value, new_value),
+                self.filename,
+                self.lino,
+            ));
+            value = new_value;
+        }
+        Ok(Some(value))
+    }
+
     fn handle_invalid_identifier(&self, token: &Token) -> String {
         // All valid identifiers have already been handled
         if let Some(s) = token.value.as_str() {
@@ -492,6 +524,73 @@ impl<'a> Parser<'a> {
             &mut self.uxo.tclass_for_ttype,
             &mut self.tclass_for_ttype,
         );
+    }
+
+    fn cleanup_tclasses(&mut self) {
+        let mut imported: HashSet<String> =
+            self.imports.keys().cloned().collect();
+        if self.options.contains(ParserOptions::REPLACE_IMPORTS) {
+            for ttype in &imported {
+                if !self.used_tclasses.contains(ttype) {
+                    self.tclass_for_ttype.remove(ttype); // unused ttype
+                }
+            }
+            self.imports.clear();
+            imported.clear();
+        }
+        let mut defined: HashSet<String> =
+            self.tclass_for_ttype.keys().cloned().collect();
+        if self.options.contains(ParserOptions::DROP_UNUSED_TTYPES) {
+            let mut ttypes_for_filename = self.get_ttypes_for_filename();
+            for ttype in &defined.clone() {
+                if !self.used_tclasses.contains(ttype) {
+                    self.tclass_for_ttype.remove(ttype); // unused ttype def
+                    defined.remove(ttype);
+                    for (_, ttypes) in ttypes_for_filename.iter_mut() {
+                        ttypes.remove(ttype.as_str());
+                    }
+                }
+            }
+            for (filename, ttypes) in ttypes_for_filename {
+                if ttypes.is_empty() {
+                    let mut ttypes: Vec<String> = vec![];
+                    for (ttype, ifilename) in &self.imports {
+                        if filename == *ifilename {
+                            ttypes.push(ttype.to_string());
+                        }
+                    }
+                    for ttype in &ttypes {
+                        self.imports.remove(ttype); // del unused import
+                    }
+                }
+            }
+        }
+        let mut unused: HashSet<String> = defined
+            .difference(&self.used_tclasses)
+            .map(|s| s.to_string())
+            .collect();
+        // don't warn unused imports
+        unused =
+            unused.difference(&imported).map(|s| s.to_string()).collect();
+        // TODO ####################################
+    }
+
+    fn get_ttypes_for_filename(&self) -> HashMap<String, HashSet<String>> {
+        let mut ttypes_for_filename: HashMap<String, HashSet<String>> =
+            HashMap::new();
+        for (ttype, filename) in &self.imports {
+            ttypes_for_filename
+                .entry(ttype.to_string())
+                .and_modify(|v| {
+                    v.insert(filename.to_string());
+                })
+                .or_insert({
+                    let mut set = HashSet::new();
+                    set.insert(filename.to_string());
+                    set
+                });
+        }
+        ttypes_for_filename
     }
 
     fn error(&self, code: u16, message: &str) -> String {

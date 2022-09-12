@@ -9,7 +9,6 @@ use crate::table::Table;
 use crate::tclass::TClass;
 use crate::util::{escape, isclose64, realstr64};
 use crate::uxf::Compare;
-use chrono::prelude::*;
 use chrono::{NaiveDate, NaiveDateTime};
 use std::fmt::Write as _;
 use std::{cell::RefCell, fmt, rc::Rc};
