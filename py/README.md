@@ -799,7 +799,8 @@ or
 
 ## Changes
 
-- 2.5.1 Minor cleanups and internal improvements.
+- 2.5.2 Minor cleanups and internal improvements.
+- 2.5.1 Minor internal improvements.
 - 2.5.0 Switched to new int UXF header version (i.e., `uxf 1` instead of
   `uxf 1.0`); hopefully this breaking change won't affect anyone.
 - 2.4.6 Bugfix: `-c|--compact` now works correctly if output is stdout.

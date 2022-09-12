@@ -31,7 +31,7 @@ from xml.sax.saxutils import escape, unescape
 
 import editabletuple
 
-__version__ = '2.5.1' # uxf module version
+__version__ = '2.5.2' # uxf module version
 VERSION = 1 # UXF file format version
 
 UTF8 = 'utf-8'
