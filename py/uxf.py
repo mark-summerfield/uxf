@@ -963,6 +963,11 @@ class List(collections.UserList, _CommentMixin):
         self._comment = comment
 
 
+    def _append(self, value):
+        '''This is for UXF readers; instead use: lst.append(value).'''
+        self.data.append(value)
+
+
     @property
     def vtype(self):
         if self._vtype == '':
@@ -2018,7 +2023,7 @@ class _Parser(_EventMixin):
         if not self.stack:
             self.fatal(489, 'invalid UXF data')
             return # in case user on_event doesn't raise
-        append_to_parent(self.stack[-1], value)
+        self.stack[-1]._append(value)
 
 
     def _handle_scalar(self, token):
@@ -2038,7 +2043,7 @@ class _Parser(_EventMixin):
         if not self.stack:
             self.fatal(501, 'invalid UXF data')
             return # in case user on_event doesn't raise
-        append_to_parent(self.stack[-1], value)
+        self.stack[-1]._append(value)
 
 
     def _on_collection_start(self, token, next_value):
@@ -2064,7 +2069,7 @@ class _Parser(_EventMixin):
             if message is not None:
                 self.error(506, message)
             # add the collection to the parent
-            append_to_parent(self.stack[-1], value)
+            self.stack[-1]._append(value)
         self.stack.append(value) # make the collection the current parent
 
 
@@ -3041,15 +3046,6 @@ def _str_for_value(value):
 
 class _AlreadyImported(Exception):
     pass
-
-
-def append_to_parent(parent, value):
-    '''Utility for UXF processors; see uxf.py and uxfconvert.py for examples
-    of use.'''
-    if isinstance(parent, (Map, Table)):
-        parent._append(value)
-    else:
-        parent.append(value)
 
 
 def naturalize(s):

@@ -84,6 +84,7 @@ st.sh
 
 # TODO port tlm to use rust uxf
 # NOTE IDEAS:
+# - ~/rs/bin/benchmark.rs (use gen.py files so I can compare with py?)
 # - try regression.py & benchmark.py with pypy to compare speeds
 # - create geo.uxi based on GeoJSON and if successful create:
 #   uxfgeo.py <infile.{json,geojson,uxf,uxg}>

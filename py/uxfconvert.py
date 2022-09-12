@@ -717,19 +717,19 @@ class _UxfSaxHandler(xml.sax.handler.ContentHandler):
             self.inbytes = True
             self.bytes = ''
         elif name == 'int':
-            _append_to_parent(self.stack, int(d['v']))
+            self.stack[-1]._append(int(d['v']))
         elif name == 'real':
-            _append_to_parent(self.stack, float(d['v']))
+            self.stack[-1]._append(float(d['v']))
         elif name == 'date':
-            _append_to_parent(self.stack, uxf.naturalize(d['v']))
+            self.stack[-1]._append(uxf.naturalize(d['v']))
         elif name == 'datetime':
-            _append_to_parent(self.stack, uxf.naturalize(d['v']))
+            self.stack[-1]._append(uxf.naturalize(d['v']))
         elif name == 'null':
-            _append_to_parent(self.stack, None)
+            self.stack[-1]._append(None)
         elif name == 'yes':
-            _append_to_parent(self.stack, True)
+            self.stack[-1]._append(True)
         elif name == 'no':
-            _append_to_parent(self.stack, False)
+            self.stack[-1]._append(False)
 
 
     def endElement(self, name):
@@ -755,11 +755,11 @@ class _UxfSaxHandler(xml.sax.handler.ContentHandler):
             self.comment = ''
             self.incomment = False
         elif name == 'str':
-            _append_to_parent(self.stack, self.string)
+            self.stack[-1]._append(self.string)
             self.string = ''
             self.instr = False
         elif name == 'bytes':
-            _append_to_parent(self.stack, bytes.fromhex(self.bytes))
+            self.stack[-1]._append(bytes.fromhex(self.bytes))
             self.bytes = ''
             self.inbytes = False
 
@@ -778,7 +778,7 @@ class _UxfSaxHandler(xml.sax.handler.ContentHandler):
             self.uxo.value = container
             self.stack = [container]
         elif self.stack:
-            _append_to_parent(self.stack, container)
+            self.stack[-1]._append(container)
         self.stack.append(container)
 
 
@@ -793,10 +793,6 @@ def _get_imports(imports_list):
         uxo = uxf.loads(uxt)
         imports = uxo.imports
     return imports
-
-
-def _append_to_parent(stack, value):
-    uxf.append_to_parent(stack[-1], value)
 
 
 BYTES = 'bytes'

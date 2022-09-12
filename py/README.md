@@ -610,7 +610,6 @@ subclass then it is probably a bug that should be reported.)
 
 The functions are documented in convenience order. Here are alphabetically
 ordered links:
-[append\_to\_parent()](#append_to_parent-def),
 [canonicalize()](#canonicalize-def),
 [dump()](#dump-def),
 [dumps()](#dumps-def),
@@ -779,12 +778,6 @@ returns `False`. Its main use is as a helper for the [dump()](#dump-def) and
 Utility for UXF processors. Given a `name`, returns a `name` that is a valid
 table or field name. See `uxfconvert.py` for uses.
 
-<a name="append_to_parent-def"></a>
-**`append_to_parent(parent, value)`**
-
-Utility for UXF processors; see `uxf.py` and `uxfconvert.py` for examples of
-use.
-
 ### Constants
 
 |**Constant**|**Description**|
@@ -806,6 +799,7 @@ or
 
 ## Changes
 
+- 2.5.1 Minor cleanups and internal improvements.
 - 2.5.0 Switched to new int UXF header version (i.e., `uxf 1` instead of
   `uxf 1.0`); hopefully this breaking change won't affect anyone.
 - 2.4.6 Bugfix: `-c|--compact` now works correctly if output is stdout.
