@@ -524,6 +524,11 @@ impl<'a> Parser<'a> {
             &mut self.uxo.tclass_for_ttype,
             &mut self.tclass_for_ttype,
         );
+        /* TODO
+        self.uxo.imports = self.imports.values().cloned().collect();
+        for (ttype, filename) in self.imports.keys() {
+        }
+        */
     }
 
     fn cleanup_tclasses(&mut self) {

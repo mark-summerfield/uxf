@@ -1,3 +1,10 @@
+# TODO #####################
+# Uxf:
+# - drop import_index_for_ttype
+# - change type of imports from Vec<String> /* import texts */ to
+#   indexmap: NB when I need deletion I must create a new empty indexmap
+#   and copy from the original all those except those I want to delete
+#   (to preserve insertion order)
 rs/src/bin/uxf.rs
 # rs/src/bin/benchmark.rs TODO at the end
 rs/src/lib.rs # add docs at the end

@@ -20,8 +20,10 @@ pub struct Uxf {
     value: Value, // NOTE must be Value::List | Value::Map | Value::Table
     on_event: OnEventFn,
     pub(crate) tclass_for_ttype: HashMap<String, TClass>, // ttype x TClass
-    import_index_for_ttype: HashMap<String, usize>,       // imports index
-    imports: Vec<String>, // import text NOTE preserve order & no duplicates
+    // imports index: key=ttype, value=index
+    pub(crate) import_index_for_ttype: HashMap<String, usize>,
+    // import texts NOTE preserve order & no duplicates
+    pub(crate) imports: Vec<String>,
 }
 
 impl Uxf {
