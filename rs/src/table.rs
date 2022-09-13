@@ -132,7 +132,9 @@ impl Table {
     pub(crate) fn expected_type(&self) -> String {
         if self.is_fieldless() {
             "".to_string()
-        } else if self.pending_record.is_empty() {
+        } else if self.pending_record.is_empty()
+            || self.pending_record.len() == self.tclass.len()
+        {
             self.tclass.fields()[0].vtype().unwrap_or("").to_string()
         } else {
             self.tclass.fields()[self.pending_record.len()]

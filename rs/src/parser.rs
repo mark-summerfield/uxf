@@ -121,22 +121,18 @@ impl<'a> Parser<'a> {
                 break;
             }
             self.lino = token.lino;
-            let expected_type = self.expected_type(&stack);
             if let Some(element) = value.take() {
                 self.handle_collection_push(element, &mut stack, &token)?;
             }
             value = if kind.is_collection_start() {
-                self.on_collection_start(
-                    pos,
-                    &mut stack,
-                    &token,
-                    &expected_type,
-                )?
+                self.on_collection_start(pos, &mut stack, &token)?
             } else if kind.is_collection_end() {
                 self.on_collection_end(&mut stack, &token)?
             } else if kind == &TokenKind::Str {
+                let expected_type = self.expected_type(&stack);
                 self.handle_str(&token, &expected_type, stack.len())?
             } else if kind.is_scalar() {
+                let expected_type = self.expected_type(&stack);
                 self.handle_scalar(&token, &expected_type, stack.len())?
             } else if kind == &TokenKind::Identifier {
                 bail!(self.handle_invalid_identifier(&token));
@@ -287,8 +283,8 @@ impl<'a> Parser<'a> {
         pos: usize,
         stack: &mut Values,
         token: &Token,
-        expected_type: &str,
     ) -> Result<Option<Value>> {
+        let expected_type = self.expected_type(stack);
         let next_value = if pos < self.tokens.len() {
             Some(self.tokens[pos].clone())
         } else {
@@ -297,7 +293,7 @@ impl<'a> Parser<'a> {
         stack.push(self.handle_collection_start(
             &token.clone(),
             next_value,
-            expected_type,
+            &expected_type,
         )?);
         Ok(None)
     }

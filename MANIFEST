@@ -1,3 +1,4 @@
+# TODO (0) find & fix table type checking bug (e.g., t15.uxf)
 rs/src/bin/uxf.rs
 # rs/src/bin/benchmark.rs TODO (5)
 rs/src/lib.rs # TODO (6) docs
