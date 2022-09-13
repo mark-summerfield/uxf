@@ -12,7 +12,13 @@ use std::{
     rc::Rc,
 };
 
-fn main() -> Result<()> {
+fn main() {
+    if let Err(err) = real_main() {
+        eprintln!("{}", err);
+    }
+}
+
+fn real_main() -> Result<()> {
     let config = Config::parse();
     let inbuf = canonicalize_file(&config.infile)?;
     let infile = inbuf.to_string_lossy().to_string();
