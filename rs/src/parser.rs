@@ -13,6 +13,7 @@ use crate::util::full_filename;
 use crate::uxf::{ParserOptions, Uxf};
 use crate::value::{Value, Values};
 use anyhow::{bail, Result};
+use indexmap::map::IndexMap;
 use std::{
     collections::{HashMap, HashSet},
     rc::Rc,
@@ -52,10 +53,10 @@ pub struct Parser<'a> {
     uxo: &'a mut Uxf,
     is_import: bool,
     tokens: &'a mut Tokens,
-    imports: HashMap<String, String>, // key=ttype value=import text
-    imported: HashSet<String>, // ttype (to avoid reimports or self import)
-    tclass_for_ttype: HashMap<String, TClass>, // key=ttype value=TClass
-    lino_for_tclass: HashMap<String, usize>, // key=ttype value=lino
+    imported: Option<HashSet<String>>,
+    import_for_ttype: IndexMap<String, String>, // ttype x import text
+    tclass_for_ttype: HashMap<String, TClass>,  // ttype x TClass
+    lino_for_tclass: HashMap<String, usize>,    // key=ttype value=lino
     used_tclasses: HashSet<String>, // ttype (of ttypes actually used)
     lino: usize,
 }
@@ -89,8 +90,8 @@ impl<'a> Parser<'a> {
             options,
             is_import,
             tokens,
-            imports: HashMap::new(),
-            imported,
+            imported: Some(imported),
+            import_for_ttype: IndexMap::new(),
             tclass_for_ttype: HashMap::new(),
             lino_for_tclass: HashMap::new(),
             used_tclasses: HashSet::new(),
@@ -524,23 +525,22 @@ impl<'a> Parser<'a> {
             &mut self.uxo.tclass_for_ttype,
             &mut self.tclass_for_ttype,
         );
-        /* TODO
-        self.uxo.imports = self.imports.values().cloned().collect();
-        for (ttype, filename) in self.imports.keys() {
-        }
-        */
+        std::mem::swap(
+            &mut self.uxo.import_for_ttype,
+            &mut self.import_for_ttype,
+        );
     }
 
     fn cleanup_tclasses(&mut self) {
         let mut imported: HashSet<String> =
-            self.imports.keys().cloned().collect();
+            self.import_for_ttype.keys().cloned().collect();
         if self.options.contains(ParserOptions::REPLACE_IMPORTS) {
             for ttype in &imported {
                 if !self.used_tclasses.contains(ttype) {
                     self.tclass_for_ttype.remove(ttype); // unused ttype
                 }
             }
-            self.imports.clear();
+            self.import_for_ttype.clear();
             imported.clear();
         }
         let mut defined: HashSet<String> =
@@ -556,19 +556,34 @@ impl<'a> Parser<'a> {
                     }
                 }
             }
+            let mut deleted_ttypes: HashSet<String> = HashSet::new();
             for (filename, ttypes) in ttypes_for_filename {
                 if ttypes.is_empty() {
                     let mut ttypes: Vec<String> = vec![];
-                    for (ttype, ifilename) in &self.imports {
+                    for (ttype, ifilename) in &self.import_for_ttype {
                         if filename == *ifilename {
                             ttypes.push(ttype.to_string());
                         }
                     }
                     for ttype in &ttypes {
-                        self.imports.remove(ttype); // del unused import
+                        deleted_ttypes.insert(ttype.to_string());
                     }
                 }
             }
+            // We can't delete from an IndexMap since that ruins the
+            // insertion order, so we must copy to a new one just those
+            // items we want to keep.
+            let mut import_for_ttype = IndexMap::new();
+            for (ttype, filename) in &self.import_for_ttype {
+                if !deleted_ttypes.contains(ttype.as_str()) {
+                    import_for_ttype
+                        .insert(ttype.to_string(), filename.to_string());
+                }
+            }
+            std::mem::swap(
+                &mut import_for_ttype,
+                &mut self.import_for_ttype,
+            );
         }
         let mut unused: HashSet<String> = defined
             .difference(&self.used_tclasses)
@@ -583,7 +598,7 @@ impl<'a> Parser<'a> {
     fn get_ttypes_for_filename(&self) -> HashMap<String, HashSet<String>> {
         let mut ttypes_for_filename: HashMap<String, HashSet<String>> =
             HashMap::new();
-        for (ttype, filename) in &self.imports {
+        for (ttype, filename) in &self.import_for_ttype {
             ttypes_for_filename
                 .entry(ttype.to_string())
                 .and_modify(|v| {

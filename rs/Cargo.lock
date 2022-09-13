@@ -305,6 +305,7 @@ dependencies = [
  "chrono",
  "clap",
  "flate2",
+ "indexmap",
  "once_cell",
 ]
 

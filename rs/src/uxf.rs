@@ -11,7 +11,12 @@ use crate::util::{escape, read_file};
 use crate::value::{Value, Visit, Visitor};
 use anyhow::{bail, Result};
 use bitflags::bitflags;
-use std::{collections::HashMap, fmt, rc::Rc};
+use indexmap::map::IndexMap;
+use std::{
+    collections::{HashMap, HashSet},
+    fmt,
+    rc::Rc,
+};
 
 #[derive(Clone)]
 pub struct Uxf {
@@ -20,10 +25,7 @@ pub struct Uxf {
     value: Value, // NOTE must be Value::List | Value::Map | Value::Table
     on_event: OnEventFn,
     pub(crate) tclass_for_ttype: HashMap<String, TClass>, // ttype x TClass
-    // imports index: key=ttype, value=index
-    pub(crate) import_index_for_ttype: HashMap<String, usize>,
-    // import texts NOTE preserve order & no duplicates
-    pub(crate) imports: Vec<String>,
+    pub(crate) import_for_ttype: IndexMap<String, String>, // ttype x import
 }
 
 impl Uxf {
@@ -40,8 +42,7 @@ impl Uxf {
             comment: comment.to_string(),
             value: Value::List(List::default()),
             tclass_for_ttype: HashMap::new(),
-            import_index_for_ttype: HashMap::new(),
-            imports: vec![],
+            import_for_ttype: IndexMap::new(),
             on_event: on_event.unwrap_or_else(|| Rc::new(event::on_event)),
         }
     }
@@ -54,8 +55,7 @@ impl Uxf {
             comment: "".to_string(),
             value: Value::List(List::default()),
             tclass_for_ttype: HashMap::new(),
-            import_index_for_ttype: HashMap::new(),
-            imports: vec![],
+            import_for_ttype: IndexMap::new(),
             on_event,
         }
     }
@@ -95,8 +95,7 @@ impl Uxf {
                 value.typename()
             )
         }
-        self.import_index_for_ttype.clear();
-        self.imports.clear();
+        self.import_for_ttype.clear();
         self.tclass_for_ttype.clear();
         for tclass in value.tclasses() {
             self.tclass_for_ttype
@@ -172,7 +171,7 @@ impl Uxf {
             return false;
         }
         if !compare.contains(Compare::IGNORE_IMPORTS)
-            && self.imports != other.imports
+            && self.import_for_ttype != other.import_for_ttype
         {
             return false;
         }
@@ -207,8 +206,7 @@ impl Default for Uxf {
             comment: "".to_string(),
             value: Value::List(List::default()),
             tclass_for_ttype: HashMap::new(),
-            import_index_for_ttype: HashMap::new(),
-            imports: vec![],
+            import_for_ttype: IndexMap::new(),
             on_event: Rc::new(event::on_event),
         }
     }
@@ -226,7 +224,7 @@ impl PartialEq for Uxf {
         if self.comment != other.comment {
             return false;
         }
-        if self.imports != other.imports {
+        if self.import_for_ttype != other.import_for_ttype {
             return false;
         }
         if self.tclass_for_ttype != other.tclass_for_ttype {
@@ -264,15 +262,19 @@ impl fmt::Display for Uxf {
             parts.push(format!("#<{}>", escape(self.comment())));
             parts.push(NL.to_string());
         }
-        for import in self.imports.iter() {
-            // Preserve original order
-            parts.push(format!("!{}\n", import));
+        // Output unique imports in order of insertion
+        let mut seen: HashSet<&str> = HashSet::new();
+        for (_, import) in &self.import_for_ttype {
+            if !seen.contains(import.as_str()) {
+                parts.push(format!("!{}\n", &import));
+                seen.insert(import);
+            }
         }
         let mut tclasses: Vec<TClass> =
             self.tclass_for_ttype.values().cloned().collect();
         tclasses.sort_unstable(); // Use alphabetical order
         for tclass in tclasses.iter() {
-            if !self.import_index_for_ttype.contains_key(tclass.ttype()) {
+            if !self.import_for_ttype.contains_key(tclass.ttype()) {
                 parts.push(tclass.to_string());
                 parts.push(NL.to_string());
             }
