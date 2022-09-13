@@ -13,6 +13,17 @@ convenient alternative to sqlite or xml.
 For details of the Uniform eXchange Format (UXF) supported by this library,
 see the [UXF Overview](https://github.com/mark-summerfield/uxf/blob/main/README.md).
 
+**Note that this is WIP — currently the parser is complete (except for
+imports), along with human __un__friendly output.**
+
+# Dependencies
+
+To use uxf, add this line your `Cargo.toml` file's `[dependencies]`
+section:
+
+```toml,ignore
+uxf = "1"
+```
 TODO
 
 Comments, ktypes, vtypes, are all strings. If a ktype or vtype is empty this

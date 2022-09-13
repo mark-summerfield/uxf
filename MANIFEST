@@ -1,6 +1,9 @@
 rs/src/bin/uxf.rs
+# rs/regression.py TODO (4) compare compact & pprint with actual
 # rs/src/bin/benchmark.rs TODO (5)
-rs/src/lib.rs # TODO (6) docs
+# rs/src/bin/uxfcmp.rs TODO (6)
+# rs/src/bin/uxfmt.rs TODO (7)
+rs/src/lib.rs # TODO (8) docs
 rs/src/value.rs
 rs/src/key.rs
 rs/src/list.rs
@@ -8,16 +11,16 @@ rs/src/map.rs
 rs/src/table.rs
 rs/src/tclass.rs
 rs/src/field.rs
-rs/src/uxf.rs # TODO (2) to_string_options()
+rs/src/uxf.rs # TODO (3) to_string_options()
 rs/src/format.rs
 rs/src/check.rs
 rs/src/util.rs
 rs/src/event.rs
 rs/src/constants.rs
-rs/src/parser.rs # TODO (3) imports (4) test using py/t/regression.py -r
+rs/src/parser.rs # TODO (1) imports
 rs/src/lexer.rs
 rs/src/token.rs
-rs/src/pprint.rs # TODO (1)
+rs/src/pprint.rs # TODO (2)
 rs/src/test_utils.rs
 rs/tests/test_value.rs
 rs/tests/test_list.rs
