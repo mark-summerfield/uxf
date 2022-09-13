@@ -3,6 +3,7 @@ rs/src/bin/uxf.rs
 # rs/src/bin/benchmark.rs TODO (5)
 # rs/src/bin/uxfcmp.rs TODO (6)
 # rs/src/bin/uxfmt.rs TODO (7)
+# rs/src/bin/uxlint.rs TODO (7)
 rs/src/lib.rs # TODO (8) docs
 rs/src/value.rs
 rs/src/key.rs

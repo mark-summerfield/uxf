@@ -12,50 +12,27 @@ For details of the Uniform eXchange Format (UXF) supported by this library,
 see the [UXF Overview](../README.md). ([Alternative link to UXF
 Overview](https://github.com/mark-summerfield/uxf/blob/main/README.md).)
 
-- [Introduction](#introduction)
-- [Rust UXF Types](#python-uxf-types)
-- [API](#api)
-    - [Reading and Writing UXF Data](#reading-and-writing-uxf-data)
-    - [Command Line Usage](#command-line-usage)
-- [Changes](#changes)
+**Note that this is WIP — currently the parser is complete (except for
+imports), along with human __un__friendly output.**
 
-## Introduction
+[crates.io](https://crates.io/crates/uxf)
+[docs](https://docs.rs/uxf/latest/uxf/)
 
-**This is a WIP which may or may not succeed! Not _yet_ usable!**
+## Commmand Line tools
 
-
-## Rust UXF Types
-
-## API
-
-The simplest part of the API loads and saves (dumps) UXF data from/to
-strings or files.
-
-See the rust docs for full API details.
-
-### Reading and Writing UXF Data
-
-### Uxf Type
-
-### Value Type
-
-### List Type
-
-### Map Type
-
-### Table Type
-
-### TClass Type
-
-### Field Type
-
-Provides a definition of a field (`name` and `vtype`) for use in
-``TClass``es.
-
-### Command Line Usage
+- _uxf_ this can read UXF files (optionally gzip compressed) and lint and
+  output UXF files (optionally gzip compressed; optionally replacing imports
+  and dropping unused ttypes).
+- _uxfcmp_ this compares two UXF files (optionally gzip compressed) for
+  equality or equivalence.
+- _uxflint_ this lints any number of UXF files. 
+- _uxfmt_ this reads a UXF file and writes out a pretty printed version
+  (useful for UXF editing).
 
 ## Changes
 
+- 0.11.0 Parser does everything except imports; can output __un__friendly
+  output.
 - 0.2.0 Now use `Value::Null` rather than `Option<Value>` since this better
   represents UXF data.
 - 0.1.0 Started.
