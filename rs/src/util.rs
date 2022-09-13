@@ -5,9 +5,9 @@ use crate::constants::*;
 use anyhow::{bail, Result};
 use flate2::read::GzDecoder;
 use std::{
-    path::{self,PathBuf},
     fs::File,
     io::{prelude::*, BufReader},
+    path::{self, PathBuf},
 };
 
 /// Returns a clone of `s` with replacements & → &amp; < → &lt; > → &gt;
@@ -92,9 +92,7 @@ pub(crate) fn full_filename(filename: &str, path: &str) -> String {
 
 /// Returns the filename's dirname or ".".
 pub(crate) fn dirname(filename: &str) -> String {
-    if let Some((dir, _)) =
-        filename.rsplit_once(path::MAIN_SEPARATOR)
-    {
+    if let Some((dir, _)) = filename.rsplit_once(path::MAIN_SEPARATOR) {
         dir.to_string()
     } else {
         ".".to_string()

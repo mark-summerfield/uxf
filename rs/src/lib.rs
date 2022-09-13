@@ -31,7 +31,7 @@ pub mod lexer;
 pub mod list;
 pub mod map;
 pub mod parser;
-pub mod prettyprint;
+pub mod pprint;
 pub mod table;
 pub mod tclass;
 pub mod test_utils;

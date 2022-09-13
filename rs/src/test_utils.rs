@@ -4,18 +4,18 @@
 use crate::constants::*;
 use crate::event::{Event, EventKind};
 
-pub fn assert_warning(event: &Event, code: i16, message: &str) {
+pub fn assert_warning(event: &Event, code: u16, message: &str) {
     assert_event(event, EventKind::Warning, code, "-", 0, message);
 }
 
-pub fn assert_repair(event: &Event, code: i16, message: &str) {
+pub fn assert_repair(event: &Event, code: u16, message: &str) {
     assert_event(event, EventKind::Repair, code, "-", 0, message);
 }
 
 pub fn assert_event(
     event: &Event,
     kind: EventKind,
-    code: i16,
+    code: u16,
     filename: &str,
     lino: usize,
     message: &str,

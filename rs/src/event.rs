@@ -16,7 +16,7 @@ pub fn on_event(event: &Event) {
 #[derive(Clone, Debug)]
 pub struct Event {
     pub kind: EventKind,
-    pub code: i16,
+    pub code: u16,
     pub message: String,
     pub filename: String,
     pub lino: usize,
@@ -25,7 +25,7 @@ pub struct Event {
 impl Event {
     pub fn new(
         kind: EventKind,
-        code: i16,
+        code: u16,
         message: &str,
         filename: &str,
         lino: usize,
@@ -39,7 +39,7 @@ impl Event {
         }
     }
     pub fn new_warning(
-        code: i16,
+        code: u16,
         message: &str,
         filename: &str,
         lino: usize,
@@ -54,7 +54,7 @@ impl Event {
     }
 
     pub fn new_repair(
-        code: i16,
+        code: u16,
         message: &str,
         filename: &str,
         lino: usize,

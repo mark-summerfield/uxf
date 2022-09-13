@@ -145,7 +145,7 @@ impl<'a> Parser<'a> {
             };
         }
         if !self.is_import {
-            self.cleanup_tclasses();
+            self.cleanup_tclasses()?;
         }
         if let Some(value) = value {
             if value.is_collection() {
@@ -531,9 +531,10 @@ impl<'a> Parser<'a> {
         );
     }
 
-    fn cleanup_tclasses(&mut self) {
+    fn cleanup_tclasses(&mut self) -> Result<()> {
         let mut imported: HashSet<String> =
             self.import_for_ttype.keys().cloned().collect();
+        // replace imports
         if self.options.contains(ParserOptions::REPLACE_IMPORTS) {
             for ttype in &imported {
                 if !self.used_tclasses.contains(ttype) {
@@ -545,6 +546,7 @@ impl<'a> Parser<'a> {
         }
         let mut defined: HashSet<String> =
             self.tclass_for_ttype.keys().cloned().collect();
+        // drop unused
         if self.options.contains(ParserOptions::DROP_UNUSED_TTYPES) {
             let mut ttypes_for_filename = self.get_ttypes_for_filename();
             for ttype in &defined.clone() {
@@ -556,43 +558,109 @@ impl<'a> Parser<'a> {
                     }
                 }
             }
-            let mut deleted_ttypes: HashSet<String> = HashSet::new();
-            for (filename, ttypes) in ttypes_for_filename {
-                if ttypes.is_empty() {
-                    let mut ttypes: Vec<String> = vec![];
-                    for (ttype, ifilename) in &self.import_for_ttype {
-                        if filename == *ifilename {
-                            ttypes.push(ttype.to_string());
-                        }
-                    }
-                    for ttype in &ttypes {
-                        deleted_ttypes.insert(ttype.to_string());
-                    }
-                }
-            }
-            // We can't delete from an IndexMap since that ruins the
-            // insertion order, so we must copy to a new one just those
-            // items we want to keep.
-            let mut import_for_ttype = IndexMap::new();
-            for (ttype, filename) in &self.import_for_ttype {
-                if !deleted_ttypes.contains(ttype.as_str()) {
-                    import_for_ttype
-                        .insert(ttype.to_string(), filename.to_string());
-                }
-            }
+            let mut import_for_ttype =
+                self.get_updated_import_for_ttype(&ttypes_for_filename);
             std::mem::swap(
                 &mut import_for_ttype,
                 &mut self.import_for_ttype,
             );
         }
-        let mut unused: HashSet<String> = defined
+        self.cleanup_maybe_warn(&imported, &defined)
+    }
+
+    fn get_deleted_ttypes(
+        &self,
+        ttypes_for_filename: &HashMap<String, HashSet<String>>,
+    ) -> HashSet<String> {
+        let mut deleted_ttypes: HashSet<String> = HashSet::new();
+        for (filename, ttypes) in ttypes_for_filename {
+            if ttypes.is_empty() {
+                let mut ttypes: Vec<String> = vec![];
+                for (ttype, ifilename) in &self.import_for_ttype {
+                    if filename == ifilename {
+                        ttypes.push(ttype.to_string());
+                    }
+                }
+                for ttype in &ttypes {
+                    deleted_ttypes.insert(ttype.to_string());
+                }
+            }
+        }
+        deleted_ttypes
+    }
+
+    fn get_updated_import_for_ttype(
+        &self,
+        ttypes_for_filename: &HashMap<String, HashSet<String>>,
+    ) -> IndexMap<String, String> {
+        let deleted_ttypes = self.get_deleted_ttypes(ttypes_for_filename);
+        // We can't delete from an IndexMap since that ruins the
+        // insertion order, so we must copy to a new one just those
+        // items we want to keep.
+        let mut import_for_ttype = IndexMap::new();
+        for (ttype, filename) in &self.import_for_ttype {
+            if !deleted_ttypes.contains(ttype.as_str()) {
+                import_for_ttype
+                    .insert(ttype.to_string(), filename.to_string());
+            }
+        }
+        import_for_ttype
+    }
+
+    fn cleanup_maybe_warn(
+        &self,
+        imported: &HashSet<String>,
+        defined: &HashSet<String>,
+    ) -> Result<()> {
+        let set: HashSet<String> = defined
             .difference(&self.used_tclasses)
             .map(|s| s.to_string())
             .collect();
-        // don't warn unused imports
-        unused =
-            unused.difference(&imported).map(|s| s.to_string()).collect();
-        // TODO ####################################
+        // don't warn on unused imports or on fieldless ttypes
+        let set: HashSet<String> =
+            set.difference(imported).map(|s| s.to_string()).collect();
+        let mut unused: HashSet<String> = HashSet::new();
+        for ttype in set {
+            if !self.tclass_for_ttype[&ttype].is_fieldless() {
+                unused.insert(ttype);
+            }
+        }
+        if !unused.is_empty() {
+            self.cleanup_report_problem(&unused, 422, "unused")?;
+        }
+        let undefined: HashSet<String> = self
+            .used_tclasses
+            .difference(defined)
+            .map(|s| s.to_string())
+            .collect();
+        if !undefined.is_empty() {
+            self.cleanup_report_problem(&unused, 424, "undefined")?;
+        }
+        Ok(())
+    }
+
+    fn cleanup_report_problem(
+        &self,
+        diff: &HashSet<String>,
+        code: u16,
+        what: &str,
+    ) -> Result<()> {
+        let s = if diff.len() == 1 { "" } else { "s" };
+        let mut diff: Vec<String> =
+            diff.iter().map(|s| s.to_string()).collect();
+        diff.sort_by_key(|x| x.to_lowercase());
+        let message = format!("{} ttype{}: {}", what, s, diff.join(" "));
+        if code == 422 {
+            (self.on_event)(&Event::new_warning(
+                code,
+                &message,
+                self.filename,
+                self.lino,
+            ));
+        } else {
+            bail!(self.error(code, &message));
+        }
+        Ok(())
     }
 
     fn get_ttypes_for_filename(&self) -> HashMap<String, HashSet<String>> {

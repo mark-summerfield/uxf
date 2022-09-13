@@ -60,11 +60,6 @@ impl fmt::Display for Token {
         } else {
             "".to_string()
         };
-        let lino = if self.lino > 0 {
-            format!(" {}", self.lino)
-        } else {
-            "".to_string()
-        };
         let value = if matches!(
             self.kind,
             TokenKind::TClassBegin

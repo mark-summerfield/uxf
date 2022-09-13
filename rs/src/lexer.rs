@@ -554,12 +554,10 @@ impl<'a> Lexer<'a> {
             // safe because we only call when self.tokens is nonempty
             let top = self.tokens.back().unwrap();
             return match top.kind {
-                TokenKind::ListBegin => {
-                    self.subsume_list_vtype(kind, value)
-                }
+                TokenKind::ListBegin => self.subsume_list_vtype(value),
                 TokenKind::MapBegin => self.subsume_map_type(kind, value),
                 TokenKind::TableBegin if kind == TokenKind::Identifier => {
-                    self.subsume_table_ttype(kind, value)
+                    self.subsume_table_ttype(value)
                 }
                 _ => Ok(false),
             };
@@ -567,11 +565,7 @@ impl<'a> Lexer<'a> {
         Ok(false)
     }
 
-    fn subsume_list_vtype(
-        &mut self,
-        kind: TokenKind,
-        value: &Value,
-    ) -> Result<bool> {
+    fn subsume_list_vtype(&mut self, value: &Value) -> Result<bool> {
         // safe because we only call when self.tokens is nonempty
         let top = self.tokens.back_mut().unwrap();
         if top.vtype.is_empty() {
@@ -620,11 +614,7 @@ impl<'a> Lexer<'a> {
         Ok(true)
     }
 
-    fn subsume_table_ttype(
-        &mut self,
-        kind: TokenKind,
-        value: &Value,
-    ) -> Result<bool> {
+    fn subsume_table_ttype(&mut self, value: &Value) -> Result<bool> {
         // safe because we only call when self.tokens is nonempty
         let top = self.tokens.back_mut().unwrap();
         if top.vtype.is_empty() {
