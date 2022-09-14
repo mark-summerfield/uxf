@@ -31,7 +31,7 @@ from xml.sax.saxutils import escape, unescape
 
 import editabletuple
 
-__version__ = '2.5.3' # uxf module version
+__version__ = '2.5.6' # uxf module version
 VERSION = 1 # UXF file format version
 
 UTF8 = 'utf-8'
@@ -3182,11 +3182,13 @@ duplicates removed) to allow later imports to override earlier ones.''')
     parser.add_argument(
         'infile', nargs=1,
         help='required UXF infile (can have any suffix, i.e., not just '
-        '.uxf, and be gzip-compressed if it ends with .gz)')
+        '.uxf, and be gzip-compressed if it ends with .gz), or use - to '
+        'read from stdin (and may not be gzipped)')
     parser.add_argument(
         'outfile', nargs='?',
-        help='optional UXF outfile; use - to write to stdout; not needed '
-        'purely for linting; gzip-compressed if outfile ends .gz')
+        help='optional UXF outfile; use - to write to stdout or = to '
+        'overwrite infile; not needed purely for linting; gzip-'
+        'compressed if outfile ends .gz')
     config = parser.parse_args()
     if config.standalone:
         config.dropunused = config.replaceimports = config.standalone
@@ -3194,20 +3196,27 @@ duplicates removed) to allow later imports to override earlier ones.''')
         config.indent = (' ' * config.indent) if config.indent < 9 else '\t'
     infile = config.infile[0]
     outfile = config.outfile
-    if outfile is not None:
+    if outfile is not None and outfile not in '-=':
         with contextlib.suppress(FileNotFoundError):
             if os.path.samefile(infile, outfile):
-                raise SystemExit(f'uxf.py:error:won\'t overwrite {outfile}')
+                raise SystemExit(f'uxf.py:error:won\'t overwrite {outfile} '
+                                 'use = to force overwrite')
     try:
         lint = config.lint or (config.lint is None and outfile is None)
         on_event = functools.partial(on_event, verbose=config.lint,
                                      filename=infile)
-        uxo = load(infile, on_event=on_event, drop_unused=config.dropunused,
-                   replace_imports=config.replaceimports)
+        kwargs = dict(on_event=on_event, drop_unused=config.dropunused,
+                      replace_imports=config.replaceimports)
+        if infile == '-':
+            uxo = loads(sys.stdin.read(), **kwargs)
+        else:
+            uxo = load(infile, **kwargs)
         do_dump = outfile is not None
         on_event = functools.partial(on_event, verbose=config.lint,
                                      filename=outfile)
         if do_dump:
+            if outfile == '=':
+                outfile = infile
             if config.compact:
                 if outfile == '-':
                     print(uxo)

@@ -799,6 +799,8 @@ or
 
 ## Changes
 
+- 2.5.6 uxf.py can now overwrite the infile (e.g., to be used as a formatter
+  in an editor)
 - 2.5.2 Minor cleanups and internal improvements.
 - 2.5.1 Minor internal improvements.
 - 2.5.0 Switched to new int UXF header version (i.e., `uxf 1` instead of
