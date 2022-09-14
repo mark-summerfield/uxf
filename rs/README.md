@@ -26,8 +26,6 @@ imports), along with human __un__friendly output.**
 - _uxfcmp_ this compares two UXF files (optionally gzip compressed) for
   equality or equivalence.
 - _uxflint_ this lints any number of UXF files. 
-- _uxfmt_ this reads a UXF file and writes out a pretty printed version
-  (useful for UXF editing).
 
 ## Changes
 
