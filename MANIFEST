@@ -1,13 +1,3 @@
-# TODO (0) parser.rs instead of full_filename() create
-#      find_full_filename() which trys to find & return abs of actually
-#      existing file
-#      uxf.py will check the .uxf file's cwd as well as its own cwd
-#      cf
-#      ./py/uxf.py -l testdata/t62.uxf -
-#      ./py/uxf.py -l testdata/t63.uxf -
-#	vs (which give wrong error message)
-#      crr.rs rs -cl ./testdata/t62.uxf -
-#      crr.rs rs -cl ./testdata/t63.uxf -
 # TODO (1) rs/regression.py
 #	     (i) compare compact with expected
 #	    (ii) compare pprint with expected
