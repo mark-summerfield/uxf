@@ -39,6 +39,8 @@ fn get_outfile(inbuf: &Path, outfile: &Option<PathBuf>) -> Result<String> {
     Ok(if let Some(outbuf) = outfile {
         if outbuf == &PathBuf::from("-") {
             "-".to_string()
+        } else if outbuf == &PathBuf::from("=") {
+            inbuf.to_string_lossy().to_string()
         } else {
             check_same_file(inbuf, outbuf)?;
             let outpath = canonicalize_file(outbuf)?;
@@ -91,7 +93,7 @@ fn check_same_file(a: &Path, b: &Path) -> Result<()> {
         let a = canonicalize_file(a)?;
         let b = canonicalize_file(b)?;
         if a == b {
-            bail!("won't overwrite {}", a.display());
+            bail!("won't overwrite {}; use = to force", a.display());
         }
     }
     Ok(())
@@ -159,8 +161,9 @@ struct Config {
     #[clap(value_parser)]
     infile: PathBuf,
 
-    /// Optional UXF outfile; use - to write to stdout; not needed purely
-    /// for linting; gzip-compressed if outfile ends with .gz)
+    /// Optional UXF outfile; use - to write to stdout or = to overwrite
+    /// infile; not needed purely for linting; gzip-compressed if outfile
+    /// ends with .gz)
     #[clap(value_parser)]
     outfile: Option<PathBuf>,
 }
