@@ -260,12 +260,12 @@ impl<'a> Parser<'a> {
                 Ok(text) => Ok((text, false)),
                 Err(err) => bail!(self.error(
                     551,
-                    &format!("failed to read import {:?}: {:?}", url, err)
+                    &format!("failed to read import's text: {}", err)
                 )),
             },
             Err(err) => bail!(self.error(
                 550,
-                &format!("failed to download import {:?}: {:?}", url, err)
+                &format!("failed to download import: {}", err)
             )),
         }
     }
@@ -294,13 +294,13 @@ impl<'a> Parser<'a> {
             "complex" => self.system_import_tclass("Complex", import),
             "fraction" => self.system_import_tclass("Fraction", import),
             "numeric" => {
-                self.system_import_tclass("complex", import)?;
-                self.system_import_tclass("fraction", import)
+                self.system_import_tclass("Complex", import)?;
+                self.system_import_tclass("Fraction", import)
             }
             _ => bail!(self.error(
                 560,
                 &format!(
-                    "there is no system ttype import called {}",
+                    "there is no system ttype import called {:?}",
                     import
                 )
             )),
@@ -344,7 +344,9 @@ impl<'a> Parser<'a> {
         if reply.is_ok() {
             self.imported.insert(filename.clone()); // don't reimport
             reply
-        } else if self.imported.contains(&filename) {
+        } else if self.imported.contains(&filename)
+            || self.imported.contains(&full_filename(&self.filename, "."))
+        {
             self.imported.insert(filename.clone()); // don't retry
             bail!(self.error(
                 580,

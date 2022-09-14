@@ -1,10 +1,17 @@
-# TODO (0)(i) fix system import bug: t62 t63 t75 t85
-#      Are my TClass::new()s getting properly added?
-# TODO (0)(ii) parser.rs instead of full_filename() create
+# TODO (0) parser.rs instead of full_filename() create
 #      find_full_filename() which trys to find & return abs of actually
 #      existing file
+#      uxf.py will check the .uxf file's cwd as well as its own cwd
+#      cf
+#      ./py/uxf.py -l testdata/t62.uxf -
+#      ./py/uxf.py -l testdata/t63.uxf -
+#	vs (which give wrong error message)
+#      crr.rs rs -cl ./testdata/t62.uxf -
+#      crr.rs rs -cl ./testdata/t63.uxf -
+# TODO (1) rs/regression.py
+#	     (i) compare compact with expected
+#	    (ii) compare pprint with expected
 rs/src/bin/uxf.rs
-# rs/regression.py TODO (4) compare compact & pprint with actual
 # rs/src/bin/benchmark.rs TODO (5)
 # rs/src/bin/uxfcmp.rs TODO (6)
 # rs/src/bin/uxlint.rs TODO (7)
@@ -22,7 +29,7 @@ rs/src/check.rs
 rs/src/util.rs
 rs/src/event.rs
 rs/src/constants.rs
-rs/src/parser.rs # TODO (1) imports
+rs/src/parser.rs
 rs/src/lexer.rs
 rs/src/token.rs
 rs/src/pprint.rs # TODO (2)
