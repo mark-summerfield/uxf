@@ -340,14 +340,13 @@ impl<'a> Parser<'a> {
         if self.imported.contains(&filename) {
             return Ok((None, true)); // don't reimport
         }
+        let importer = full_filename(self.filename, ".");
         let reply = self.parse_import("", &filename);
         if reply.is_ok() {
             self.imported.insert(filename.clone()); // don't reimport
             reply
-        } else if self.imported.contains(&filename)
-            || self.imported.contains(&full_filename(&self.filename, "."))
-        {
-            self.imported.insert(filename.clone()); // don't retry
+        } else if self.imported.contains(&importer) {
+            self.imported.insert(importer); // don't retry
             bail!(self.error(
                 580,
                 &format!("cannot do circular imports {:?}", filename)
