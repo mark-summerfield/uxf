@@ -46,14 +46,38 @@ pub(crate) fn parse(
     Ok(uxo)
 }
 
+fn parse_import(
+    text: &str,
+    filename: &str,
+    on_event: OnEventFn,
+    imported: HashSet<String>,
+) -> Result<Uxf> {
+    let data: Vec<char> = text.chars().collect();
+    let mut lexer = Lexer::new(&data, filename, Rc::clone(&on_event));
+    let (_, mut tokens) = lexer.tokenize()?; // ignore comment
+    let mut uxo = Uxf::new_on_event(Rc::clone(&on_event));
+    if !tokens.is_empty() {
+        let mut parser = Parser::new(
+            filename,
+            Rc::clone(&on_event),
+            &mut uxo,
+            ParserOptions::DEFAULT, // ignore options
+            &mut tokens,
+            Some(imported),
+        )?;
+        parser.parse()?;
+    }
+    Ok(uxo)
+}
+
 pub struct Parser<'a> {
     filename: &'a str,
     options: ParserOptions,
     on_event: OnEventFn,
     uxo: &'a mut Uxf,
-    is_import: bool,
     tokens: &'a mut Tokens,
-    imported: Option<HashSet<String>>,
+    is_import: bool,
+    imported: HashSet<String>,
     import_for_ttype: IndexMap<String, String>, // ttype x import text
     tclass_for_ttype: HashMap<String, TClass>,  // ttype x TClass
     lino_for_tclass: HashMap<String, usize>,    // key=ttype value=lino
@@ -88,9 +112,9 @@ impl<'a> Parser<'a> {
             on_event: Rc::clone(&on_event),
             uxo,
             options,
-            is_import,
             tokens,
-            imported: Some(imported),
+            is_import,
+            imported,
             import_for_ttype: IndexMap::new(),
             tclass_for_ttype: HashMap::new(),
             lino_for_tclass: HashMap::new(),
@@ -173,7 +197,102 @@ impl<'a> Parser<'a> {
     }
 
     fn handle_import(&mut self, value: &str) -> Result<()> {
-        bail!("TODO parser::handle_import: {:?}", value); // TODO (last)
+        let (filename, text) = if value.starts_with("http://")
+            || value.starts_with("https://")
+        {
+            let (text, alread_imported) = self.url_import(value)?;
+            if alread_imported {
+                return Ok(()); // don't reimport & errors already handled
+            }
+            ("".to_string(), text)
+        } else if !value.contains('.') {
+            return Ok(self.system_import(value)?);
+        } else {
+            (value.to_string(), "".to_string())
+        };
+        let (uxo, alread_imported) = if !filename.is_empty() {
+            self.load_import(&filename)?
+        } else if !text.is_empty() {
+            self.parse_import(&text, value)?
+        } else {
+            bail!(self.error(
+                540,
+                &format!(
+                    "there are no ttype definitions to import {:?} ({:?})",
+                    value, filename
+                )
+            ));
+        };
+        if alread_imported {
+            return Ok(()); // don't reimport & errors already handled
+        }
+        if let Some(uxo) = uxo {
+            for (ttype, tclass) in &uxo.tclass_for_ttype {
+                if add_to_tclasses(
+                    &mut self.tclass_for_ttype,
+                    tclass.clone(),
+                    self.filename,
+                    self.lino,
+                    544,
+                )? {
+                    self.import_for_ttype
+                        .insert(ttype.to_string(), value.to_string());
+                }
+            }
+        } else {
+            bail!(self.error(541, "invalid UXF data"));
+        }
+        Ok(())
+    }
+
+    fn url_import(&mut self, url: &str) -> Result<(String, bool)> {
+        if self.imported.contains(url) {
+            return Ok(("".to_string(), true));
+        }
+        self.imported.insert(url.to_string()); // don't want to retry
+        match reqwest::blocking::get(url) {
+            Ok(reply) => match reply.text() {
+                Ok(text) => Ok((text, false)),
+                Err(err) => bail!(self.error(
+                    551,
+                    &format!("failed to read import {:?}: {:?}", url, err)
+                )),
+            },
+            Err(err) => bail!(self.error(
+                550,
+                &format!("failed to download import {:?}: {:?}", url, err)
+            )),
+        }
+    }
+
+    fn parse_import(
+        &mut self,
+        text: &str,
+        filename: &str,
+    ) -> Result<(Option<Uxf>, bool)> {
+        match parse_import(
+            text,
+            filename,
+            self.on_event.clone(),
+            self.imported.clone(),
+        ) {
+            Ok(uxo) => Ok((Some(uxo), false)),
+            Err(err) => bail!(self.error(
+                530,
+                &format!("failed to import {:?}: {}", filename, err)
+            )),
+        }
+    }
+
+    fn system_import(&mut self, import: &str) -> Result<()> {
+        bail!("TODO parser::system_import: {:?}", import) // TODO
+    }
+
+    fn load_import(
+        &mut self,
+        filename: &str,
+    ) -> Result<(Option<Uxf>, bool)> {
+        bail!("TODO parser::load_import: {:?}", filename) // TODO
     }
 
     fn parse_tclasses(&mut self) -> Result<()> {

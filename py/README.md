@@ -799,6 +799,7 @@ or
 
 ## Changes
 
+- 2.5.7 Removed redundant code.
 - 2.5.6 uxf.py can now overwrite the infile (e.g., to be used as a formatter
   in an editor)
 - 2.5.2 Minor cleanups and internal improvements.

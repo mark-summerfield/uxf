@@ -31,7 +31,7 @@ from xml.sax.saxutils import escape, unescape
 
 import editabletuple
 
-__version__ = '2.5.6' # uxf module version
+__version__ = '2.5.7' # uxf module version
 VERSION = 1 # UXF file format version
 
 UTF8 = 'utf-8'
@@ -2173,7 +2173,7 @@ class _Parser(_EventMixin):
             if filename is not None:
                 uxo = self._load_import(filename)
             elif text is not None:
-                uxo = self._parse_url_text(text, value)
+                uxo = self._parse_import(text, value)
             else:
                 self.fatal(540, 'there are no ttype definitions to import '
                            f'{value!r} ({filename!r})')
@@ -2204,10 +2204,10 @@ class _Parser(_EventMixin):
             self.imported.add(url) # don't want to retry
 
 
-    def _parse_url_text(self, text, filename):
+    def _parse_import(self, text, filename):
         try:
             return loads(text, filename=filename,
-                         on_event=self._on_import_error,
+                         on_event=self.on_event,
                          _imported=self.imported, _is_import=True)
         except Error as err:
             self.error(530, f'failed to import {filename!r}: {err}')
@@ -2238,7 +2238,7 @@ class _Parser(_EventMixin):
         if fullname in self.imported:
             raise _AlreadyImported # don't reimport
         try:
-            return load(fullname, on_event=self._on_import_error,
+            return load(fullname, on_event=self.on_event,
                         _imported=self.imported, _is_import=True)
         except (FileNotFoundError, Error) as err:
             if fullname in self.imported:
@@ -2269,14 +2269,6 @@ class _Parser(_EventMixin):
             if os.path.isfile(fullname):
                 return fullname # stop as soon as we find one
         return _full_filename(filename)
-
-
-    def _on_import_error(self, event, code, message, *, filename='-',
-                         lino=0, verbose=True):
-        if code == 418: # we expect all ttypes to be unused here
-            return
-        self.on_event(event, code, message, filename=filename, lino=lino,
-                      verbose=verbose)
 
 
     def typecheck(self, value):
