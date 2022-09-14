@@ -12,8 +12,9 @@ For details of the Uniform eXchange Format (UXF) supported by this library,
 see the [UXF Overview](../README.md). ([Alternative link to UXF
 Overview](https://github.com/mark-summerfield/uxf/blob/main/README.md).)
 
-**Note that this is WIP — currently the parser is complete (except for
-imports), along with human __un__friendly output.**
+**Note that this is WIP — currently the parser is complete , along with
+human unfriendly output. Aim is for 1.0.0 to include human-friendly output
+(pretty printing).**
 
 [crates.io](https://crates.io/crates/uxf)
 [docs](https://docs.rs/uxf/latest/uxf/)
@@ -29,7 +30,8 @@ imports), along with human __un__friendly output.**
 
 ## Changes
 
-- 0.11.0 Parser does everything except imports; can output __un__friendly
+- 0.12.0 Parser does everything including imports.
+- 0.11.0 Parser does everything except imports; can output unfriendly
   output.
 - 0.2.0 Now use `Value::Null` rather than `Option<Value>` since this better
   represents UXF data.

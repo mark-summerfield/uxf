@@ -10,13 +10,15 @@ use crate::map::Map;
 use crate::table::Table;
 use crate::tclass::{TClass, TClassBuilder};
 use crate::token::{Token, TokenKind, Tokens};
-use crate::util::{full_filename, read_file};
+use crate::util::{dirname, full_filename, read_file};
 use crate::uxf::{ParserOptions, Uxf};
 use crate::value::{Value, Values};
 use anyhow::{bail, Result};
 use indexmap::map::IndexMap;
 use std::{
     collections::{HashMap, HashSet},
+    env,
+    path::Path,
     rc::Rc,
 };
 
@@ -205,8 +207,8 @@ impl<'a> Parser<'a> {
         let (filename, text) = if value.starts_with("http://")
             || value.starts_with("https://")
         {
-            let (text, alread_imported) = self.url_import(value)?;
-            if alread_imported {
+            let (text, already_imported) = self.url_import(value)?;
+            if already_imported {
                 return Ok(()); // don't reimport & errors already handled
             }
             ("".to_string(), text)
@@ -215,7 +217,7 @@ impl<'a> Parser<'a> {
         } else {
             (value.to_string(), "".to_string())
         };
-        let (uxo, alread_imported) = if !filename.is_empty() {
+        let (uxo, already_imported) = if !filename.is_empty() {
             self.load_import(&filename)?
         } else if !text.is_empty() {
             self.parse_import(&text, value)?
@@ -228,7 +230,7 @@ impl<'a> Parser<'a> {
                 )
             ));
         };
-        if alread_imported {
+        if already_imported {
             return Ok(()); // don't reimport & errors already handled
         }
         if let Some(uxo) = uxo {
@@ -336,25 +338,32 @@ impl<'a> Parser<'a> {
         &mut self,
         filename: &str,
     ) -> Result<(Option<Uxf>, bool)> {
-        let filename = full_filename(filename, ".");
-        if self.imported.contains(&filename) {
+        let (filename, already_imported) = self.find_import(filename);
+        if already_imported {
             return Ok((None, true)); // don't reimport
         }
-        let importer = full_filename(self.filename, ".");
-        let reply = self.parse_import("", &filename);
-        if reply.is_ok() {
-            self.imported.insert(filename.clone()); // don't reimport
-            reply
-        } else if self.imported.contains(&importer) {
-            self.imported.insert(importer); // don't retry
-            bail!(self.error(
-                580,
-                &format!("cannot do circular imports {:?}", filename)
-            ))
-        } else {
-            self.imported.insert(filename.clone()); // don't retry
-            bail!(self
-                .error(586, &format!("failed to import {:?}", filename)))
+        match self.parse_import("", &filename) {
+            Ok(reply) => {
+                self.imported.insert(filename.clone()); // don't reimport
+                Ok(reply)
+            }
+            Err(err) => {
+                let err = err.to_string();
+                if err.contains("E530:") {
+                    bail!(self.error(
+                        580,
+                        &format!(
+                            "cannot do circular imports {:?}",
+                            filename
+                        )
+                    ))
+                }
+                self.imported.insert(filename.clone()); // don't retry
+                bail!(self.error(
+                    586,
+                    &format!("failed to import {:?}", filename)
+                ))
+            }
         }
     }
 
@@ -853,6 +862,32 @@ impl<'a> Parser<'a> {
                 });
         }
         ttypes_for_filename
+    }
+
+    // Searches in order: filename's path, cwd, UXF_PATH
+    fn find_import(&self, filename: &str) -> (String, bool) {
+        let mut paths = vec![];
+        if !self.filename.is_empty() && self.filename != "-" {
+            paths.push(dirname(self.filename));
+        }
+        if !paths.is_empty() && paths[0] != "." {
+            paths.push(".".to_string());
+        }
+        if let Ok(uxf_paths) = env::var("UXF_PATH") {
+            for path in env::split_paths(&uxf_paths) {
+                paths.push(path.to_string_lossy().to_string());
+            }
+        }
+        for path in &paths {
+            let fullname = full_filename(filename, path);
+            if self.imported.contains(&fullname) {
+                return (fullname, true); // already imported
+            }
+            if Path::new(&fullname).is_file() {
+                return (fullname, false); // stop as soon as we find one
+            }
+        }
+        (full_filename(filename, "."), false)
     }
 
     fn error(&self, code: u16, message: &str) -> String {
