@@ -4,6 +4,9 @@
 use crate::check::{check_ktype, check_ttype, check_vtype};
 use crate::constants::*;
 use crate::event::{Event, OnEventFn};
+/* DEBUG
+use crate::token::debug_tokens;
+*/
 use crate::token::{Token, TokenKind, Tokens};
 use crate::util::{
     dirname, full_filename, hex_as_bytes, str_for_chars, unescape,
@@ -51,6 +54,10 @@ impl<'a> Lexer<'a> {
             self.scan_next()?;
         }
         self.add_token(TokenKind::Eof, Value::Null)?;
+        /* DEBUG
+        let tokens: Vec<Token> = self.tokens.iter().cloned().collect();
+        debug_tokens(&tokens);
+        */
         Ok((self.custom.clone(), mem::take(&mut self.tokens)))
     }
 

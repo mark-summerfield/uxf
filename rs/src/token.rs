@@ -161,6 +161,7 @@ impl fmt::Display for TokenKind {
     }
 }
 
+/* DEBUG
 pub(crate) fn debug_tokens(tokens: &[Token]) {
     let mut indent = 0;
     for token in tokens.iter() {
@@ -189,3 +190,4 @@ pub(crate) fn debug_tokens(tokens: &[Token]) {
     }
     println!("----------------------------------------");
 }
+*/

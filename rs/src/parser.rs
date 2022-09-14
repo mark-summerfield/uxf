@@ -3,13 +3,14 @@
 
 use crate::constants::*;
 use crate::event::{Event, OnEventFn};
+use crate::field::make_fields;
 use crate::lexer::Lexer;
 use crate::list::List;
 use crate::map::Map;
 use crate::table::Table;
 use crate::tclass::{TClass, TClassBuilder};
 use crate::token::{Token, TokenKind, Tokens};
-use crate::util::full_filename;
+use crate::util::{full_filename, read_file};
 use crate::uxf::{ParserOptions, Uxf};
 use crate::value::{Value, Values};
 use anyhow::{bail, Result};
@@ -52,7 +53,11 @@ fn parse_import(
     on_event: OnEventFn,
     imported: HashSet<String>,
 ) -> Result<Uxf> {
-    let data: Vec<char> = text.chars().collect();
+    let data: Vec<char> = if text.is_empty() {
+        read_file(filename)?.chars().collect()
+    } else {
+        text.chars().collect()
+    };
     let mut lexer = Lexer::new(&data, filename, Rc::clone(&on_event));
     let (_, mut tokens) = lexer.tokenize()?; // ignore comment
     let mut uxo = Uxf::new_on_event(Rc::clone(&on_event));
@@ -206,7 +211,7 @@ impl<'a> Parser<'a> {
             }
             ("".to_string(), text)
         } else if !value.contains('.') {
-            return Ok(self.system_import(value)?);
+            return self.system_import(value);
         } else {
             (value.to_string(), "".to_string())
         };
@@ -285,14 +290,71 @@ impl<'a> Parser<'a> {
     }
 
     fn system_import(&mut self, import: &str) -> Result<()> {
-        bail!("TODO parser::system_import: {:?}", import) // TODO
+        match import {
+            "complex" => self.system_import_tclass("Complex", import),
+            "fraction" => self.system_import_tclass("Fraction", import),
+            "numeric" => {
+                self.system_import_tclass("complex", import)?;
+                self.system_import_tclass("fraction", import)
+            }
+            _ => bail!(self.error(
+                560,
+                &format!(
+                    "there is no system ttype import called {}",
+                    import
+                )
+            )),
+        }
+    }
+
+    fn system_import_tclass(
+        &mut self,
+        ttype: &str,
+        import: &str,
+    ) -> Result<()> {
+        let fields = if ttype == "Complex" {
+            make_fields(&[("Real", "real"), ("Imag", "real")])?
+        } else {
+            // Fraction
+            make_fields(&[("numerator", "int"), ("denominator", "int")])?
+        };
+        let tclass = TClass::new(ttype, fields, "")?;
+        if add_to_tclasses(
+            &mut self.tclass_for_ttype,
+            tclass,
+            self.filename,
+            self.lino,
+            570,
+        )? {
+            self.import_for_ttype
+                .insert(ttype.to_string(), import.to_string());
+        }
+        Ok(())
     }
 
     fn load_import(
         &mut self,
         filename: &str,
     ) -> Result<(Option<Uxf>, bool)> {
-        bail!("TODO parser::load_import: {:?}", filename) // TODO
+        let filename = full_filename(filename, ".");
+        if self.imported.contains(&filename) {
+            return Ok((None, true)); // don't reimport
+        }
+        let reply = self.parse_import("", &filename);
+        if reply.is_ok() {
+            self.imported.insert(filename.clone()); // don't reimport
+            reply
+        } else if self.imported.contains(&filename) {
+            self.imported.insert(filename.clone()); // don't retry
+            bail!(self.error(
+                580,
+                &format!("cannot do circular imports {:?}", filename)
+            ))
+        } else {
+            self.imported.insert(filename.clone()); // don't retry
+            bail!(self
+                .error(586, &format!("failed to import {:?}", filename)))
+        }
     }
 
     fn parse_tclasses(&mut self) -> Result<()> {
@@ -473,11 +535,7 @@ impl<'a> Parser<'a> {
             } else {
                 "nothing".to_string()
             };
-            bail!(self.error_s(
-                450,
-                "expected table ttype, got {:?}",
-                &next_value
-            ))
+            bail!(self.error_s(450, "expected table ttype", &next_value))
         }
     }
 
