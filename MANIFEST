@@ -1,8 +1,8 @@
 rs/src/bin/uxf.rs
-# rs/src/bin/uxfcmp.rs TODO (1)
-# rs/src/bin/benchmark.rs TODO (4)
-# rs/src/bin/uxlint.rs TODO (5)
-rs/src/lib.rs # TODO (6) docs
+rs/src/bin/uxfcmp.rs
+# rs/src/bin/benchmark.rs TODO (3)
+# rs/src/bin/uxlint.rs TODO (4)
+rs/src/lib.rs # TODO (5) docs
 rs/src/value.rs
 rs/src/key.rs
 rs/src/list.rs
@@ -21,12 +21,12 @@ rs/src/parser/parse.rs
 rs/src/parser/lexer.rs
 rs/src/parser/token.rs
 rs/src/pprint/mod.rs
-rs/src/pprint/pretty.rs # TODO (3)
+rs/src/pprint/pretty.rs # TODO (2)
 rs/src/test_utils.rs
-# TODO (2) - rs/tests/test_regression.rs
+# TODO (1) - rs/tests/regression.py
 #	      (i) compare compact with expected
 #	     (ii) compare pretty with expected
-#	   - rs/tests/test_errors.rs
+#	   - rs/tests/test_errors.py
 #	   - etc
 rs/tests/test_value.rs
 rs/tests/test_list.rs

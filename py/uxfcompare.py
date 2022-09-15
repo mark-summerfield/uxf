@@ -26,10 +26,10 @@ def main():
         eq = compare(filename1, filename2, equivalent=equivalent,
                      on_event=on_event)
         if eq:
-            eq = '=~' if equivalent else '=='
+            eq = 'Equivalent' if equivalent else 'Equal'
         else:
-            eq = '!~' if equivalent else '!='
-        print(f'{filename1} {eq} {filename2}')
+            eq = 'Unequivalent' if equivalent else 'Unequal'
+        print(f'{eq}: {filename1!r} {filename2!r}')
     else:
         raise SystemExit(
             'usage: compare.py [-e|--equiv[alent]] file1.uxf file2.uxf')
@@ -41,7 +41,7 @@ def compare(filename1: str, filename2: str, *, equivalent=False,
     filename2 (ignoring insignificant whitespace); otherwise returns False.
     If equivalent=True, returns True if filename1 is equivalent to filename2
     (i.e., the same ignoring insignificant whitespace, ignoring any unused
-    ttypes, and, in effect replacing any imports with the ttypes the
+    ttypes, and, in effect replacing any imports with the ttypes they
     define—if they are used); otherwise returns False.'''
     try:
         uxo1 = uxf.load(filename1, on_event=on_event)

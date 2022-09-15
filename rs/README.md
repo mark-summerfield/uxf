@@ -30,6 +30,8 @@ human unfriendly output. Aim is for 1.0.0 to include human-friendly output
 
 ## Changes
 
+- 0.14.0 Implemented uxfcmp.
+- 0.13.0 Cleanups.
 - 0.12.0 Parser does everything including imports.
 - 0.11.0 Parser does everything except imports; can output unfriendly
   output.
