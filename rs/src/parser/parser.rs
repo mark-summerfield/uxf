@@ -4,12 +4,14 @@
 use crate::constants::*;
 use crate::event::{Event, OnEventFn};
 use crate::field::make_fields;
-use crate::lexer::Lexer;
 use crate::list::List;
 use crate::map::Map;
+use crate::parser::{
+    lexer::Lexer,
+    token::{Token, TokenKind, Tokens},
+};
 use crate::table::Table;
 use crate::tclass::{TClass, TClassBuilder};
-use crate::token::{Token, TokenKind, Tokens};
 use crate::util::{dirname, full_filename, read_file};
 use crate::uxf::{ParserOptions, Uxf};
 use crate::value::{Value, Values};

@@ -16,6 +16,10 @@ see the [UXF Overview](https://github.com/mark-summerfield/uxf/blob/main/README.
 **Note that this is WIP — currently the parser is complete (except for
 imports), along with human __un__friendly output.**
 
+# Basic API for Reading/Writing UXF Files
+
+TODO
+
 # Dependencies
 
 To use uxf, add this line your `Cargo.toml` file's `[dependencies]`
@@ -38,7 +42,6 @@ pub mod event;
 pub mod field;
 pub mod format;
 pub mod key;
-pub mod lexer;
 pub mod list;
 pub mod map;
 pub mod parser;
@@ -46,7 +49,6 @@ pub mod pprint;
 pub mod table;
 pub mod tclass;
 pub mod test_utils;
-pub mod token;
 pub mod util;
 pub mod uxf;
 pub mod value;

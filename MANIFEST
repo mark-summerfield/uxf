@@ -1,6 +1,8 @@
-# TODO (1) rs/regression.py
-#	     (i) compare compact with expected
-#	    (ii) compare pprint with expected
+# TODO (1) - rs/tests/test_regression.rs
+#	      (i) compare compact with expected
+#	     (ii) compare pprint with expected
+#	   - rs/tests/test_errors.rs
+#	   - etc
 rs/src/bin/uxf.rs
 # rs/src/bin/benchmark.rs TODO (5)
 # rs/src/bin/uxfcmp.rs TODO (6)
@@ -13,16 +15,18 @@ rs/src/map.rs
 rs/src/table.rs
 rs/src/tclass.rs
 rs/src/field.rs
-rs/src/uxf.rs # TODO (3) to_string_options()
+rs/src/uxf.rs
 rs/src/format.rs
 rs/src/check.rs
 rs/src/util.rs
 rs/src/event.rs
 rs/src/constants.rs
-rs/src/parser.rs
-rs/src/lexer.rs
-rs/src/token.rs
-rs/src/pprint.rs # TODO (2)
+rs/src/parser/mod.rs
+rs/src/parser/parser.rs
+rs/src/parser/lexer.rs
+rs/src/parser/token.rs
+rs/src/pprint/mod.rs
+rs/src/pprint/pprint.rs # TODO (2)
 rs/src/test_utils.rs
 rs/tests/test_value.rs
 rs/tests/test_list.rs

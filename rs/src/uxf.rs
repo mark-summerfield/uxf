@@ -6,6 +6,7 @@ use crate::event::{self, OnEventFn};
 use crate::format::Format;
 use crate::list::List;
 use crate::parser;
+use crate::pprint;
 use crate::tclass::TClass;
 use crate::util::{escape, read_file};
 use crate::value::{Value, Visit, Visitor};
@@ -149,8 +150,7 @@ impl Uxf {
         format: &Format,
         on_event: Option<OnEventFn>,
     ) -> Result<String> {
-        // TODO writer (in addition to Display/to_string()
-        bail!("TODO: to_string_options") // TODO prettyprint
+        pprint::pprint(format, on_event)
     }
 
     /// Returns `true` if this `Uxf` and the `other` `Uxf` have the same

@@ -7,7 +7,7 @@ use crate::event::{Event, OnEventFn};
 /* DEBUG
 use crate::token::debug_tokens;
 */
-use crate::token::{Token, TokenKind, Tokens};
+use crate::parser::token::{Token, TokenKind, Tokens};
 use crate::util::{
     dirname, full_filename, hex_as_bytes, str_for_chars, unescape,
 };
