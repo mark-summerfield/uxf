@@ -1,7 +1,7 @@
 // Copyright © 2022 Mark Summerfield. All rights reserved.
 // License: GPLv3
 
-use crate::constants::*;
+use crate::consts::*;
 use crate::event::{Event, EventKind};
 
 pub fn assert_warning(event: &Event, code: u16, message: &str) {

@@ -3,7 +3,7 @@
 
 #[cfg(test)]
 mod tests {
-    use uxf::constants::*;
+    use uxf::consts::*;
     use uxf::field::{make_fields, Field};
     use uxf::tclass::{TClass, TClassBuilder};
     use uxf::test_utils::check_error;

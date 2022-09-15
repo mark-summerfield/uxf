@@ -2,7 +2,7 @@
 // License: GPLv3
 
 mod lexer;
-mod parser;
+mod lib;
 mod token;
 
-pub(crate) use crate::parser::parser::parse;
+pub(crate) use crate::parser::lib::parse;

@@ -170,13 +170,40 @@ def main():
             print(err)
 
     total += 1
+    try:
+        uxf.load('e87.uxi', on_event=on_event)
+        ok += 1
+    except uxf.Error as err:
+        if not regression:
+            print(err)
+
+    total += 1
+    try:
+        uxf.load('e88.uxi', on_event=on_event)
+        ok += 1
+    except uxf.Error as err:
+        if not regression:
+            print(err)
+
+    total += 1
+    try:
+        uxf.load('e89.uxi', on_event=on_event)
+        ok += 1
+    except uxf.Error as err:
+        if not regression:
+            print(err)
+
+    total += 1
     if on_event.errors == EXPECTED_ERRORS:
         ok += 1
     elif not regression:
-        for e, a in zip(EXPECTED_ERRORS, on_event.errors):
+        if len(on_event.errors) != len(EXPECTED_ERRORS):
+            print(f'expected {len(on_event.errors)} errors, got '
+                  f'{len(EXPECTED_ERRORS)} errors')
+        for i, (e, a) in enumerate(zip(EXPECTED_ERRORS, on_event.errors)):
             if e != a:
-                print('-', e)
-                print('+', a)
+                print('E', e)
+                print('A', a)
     if not regression:
         result = 'OK' if total == ok else 'FAIL'
         print(f'{ok}/{total} {result}')
@@ -295,6 +322,18 @@ uxf:W422:t72.uxi:12:unused ttypes: 'dob', 'point3d'
 uxf:W422:t72l.uxf:12:unused ttypes: 'dob', 'point3d'
 uxf:W422:t72.uxi:12:unused ttypes: 'dob', 'point3d'
 uxf:W422:t72r.uxf:12:unused ttypes: 'dob', 'point3d'
+uxf:F102:e87.uxi:0:failed to read UXF text: [Errno 2] No such file or \
+directory: 'testdata/missing.uxi'
+uxf:E586:e87.uxi:2:failed to import 'testdata/missing.uxi': \
+uxf:F102:e87.uxi:0:failed to read UXF text: [Errno 2] No such file or \
+directory: 'testdata/missing.uxi'
+uxf:F102:e87.uxi:0:failed to read UXF text: [Errno 2] No such file or \
+directory: 'testdata/missing.uxi'
+uxf:E586:e87.uxi:2:failed to import 'testdata/missing.uxi': \
+uxf:F102:e87.uxi:0:failed to read UXF text: [Errno 2] No such file or \
+directory: 'testdata/missing.uxi'
+uxf:E550:e89.uxi:2:failed to import 'http://localhost:5558/missing.uxf': \
+HTTP Error 404: File not found
 ''').splitlines()
 
 

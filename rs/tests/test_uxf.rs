@@ -24,7 +24,7 @@ mod tests {
             uxo.to_string(),
             "uxf 1 Geo 1.0.0\n#<A Geographical format>\n[]\n"
         );
-        let mut uxo = Uxf::new("custom 1", "comment 1", None);
+        let mut uxo = Uxf::new("custom 1", "comment 1");
         assert_eq!(
             format!("{:?}", uxo),
             "Uxf { custom: \"custom 1\", comment: \"comment 1\", value: \
@@ -85,7 +85,6 @@ mod tests {
 
     #[test]
     fn t_uxf_set_value_invalid() {
-        // using default on_event() handler
         let mut uxo = Uxf::default();
         assert_eq!(uxo.to_string(), "uxf 1\n[]\n");
         let err = uxo.set_value(0.into()).unwrap_err();
@@ -96,21 +95,8 @@ mod tests {
     }
 
     #[test]
-    fn t_uxf_on_event1() {
-        // using custom on_event() handler that accumulates events
-        let events = Rc::new(RefCell::new(Vec::<Event>::new()));
-        assert!(&events.borrow().is_empty());
-        let mut uxo = Uxf::new(
-            "MyUXF",
-            "A comment",
-            Some(Rc::new({
-                let events = Rc::clone(&events);
-                move |event| {
-                    let mut events = events.borrow_mut();
-                    events.push(event.clone());
-                }
-            })),
-        );
+    fn t_uxf_1() {
+        let mut uxo = Uxf::new("MyUXF", "A comment");
         assert_eq!(uxo.to_string(), "uxf 1 MyUXF\n#<A comment>\n[]\n");
         let mut m = Map::default();
         m.insert(1.into(), "one".into());
@@ -121,22 +107,11 @@ mod tests {
             uxo.to_string(),
             "uxf 1 MyUXF\n#<A comment>\n{1 <one>\n2 <two>}\n"
         );
-        assert!(&events.borrow().is_empty());
-        assert_eq!(*&events.borrow().len(), 0);
     }
 
     #[test]
-    fn t_uxf_on_event2() {
-        // using custom on_event() handler that accumulates events
-        let events = Rc::new(RefCell::new(Vec::<Event>::new()));
-        assert!(&events.borrow().is_empty());
-        let mut uxo = Uxf::new_on_event(Rc::new({
-            let events = Rc::clone(&events);
-            move |event| {
-                let mut events = events.borrow_mut();
-                events.push(event.clone());
-            }
-        }));
+    fn t_uxf_2() {
+        let mut uxo = Uxf::default();
         assert_eq!(uxo.to_string(), "uxf 1\n[]\n");
         uxo.set_custom("MyUXF");
         uxo.set_comment("A comment");
@@ -150,8 +125,6 @@ mod tests {
             uxo.to_string(),
             "uxf 1 MyUXF\n#<A comment>\n{1 <one>\n2 <two>}\n"
         );
-        assert!(&events.borrow().is_empty());
-        assert_eq!(*&events.borrow().len(), 0);
     }
 
     #[test]
@@ -174,6 +147,7 @@ mod tests {
             err.to_string(),
             "No such file or directory (os error 2)"
         );
+        assert!(&events.borrow().is_empty());
     }
 
     #[test]

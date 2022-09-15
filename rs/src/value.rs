@@ -1,7 +1,7 @@
 // Copyright © 2022 Mark Summerfield. All rights reserved.
 // License: GPLv3
 
-use crate::constants::*;
+use crate::consts::*;
 use crate::key::Key;
 use crate::list::List;
 use crate::map::Map;

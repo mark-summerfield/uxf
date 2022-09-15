@@ -1,7 +1,7 @@
 // Copyright © 2022 Mark Summerfield. All rights reserved.
 // License: GPLv3
 
-use crate::constants::*;
+use crate::consts::*;
 use crate::event::{Event, OnEventFn};
 use crate::field::make_fields;
 use crate::list::List;
@@ -33,7 +33,7 @@ pub(crate) fn parse(
     let data: Vec<char> = text.chars().collect();
     let mut lexer = Lexer::new(&data, filename, Rc::clone(&on_event));
     let (custom, mut tokens) = lexer.tokenize()?;
-    let mut uxo = Uxf::new_on_event(Rc::clone(&on_event));
+    let mut uxo = Uxf::default();
     if !custom.is_empty() {
         uxo.set_custom(&custom);
     }
@@ -64,7 +64,7 @@ fn parse_import(
     };
     let mut lexer = Lexer::new(&data, filename, Rc::clone(&on_event));
     let (_, mut tokens) = lexer.tokenize()?; // ignore comment
-    let mut uxo = Uxf::new_on_event(Rc::clone(&on_event));
+    let mut uxo = Uxf::default();
     if !tokens.is_empty() {
         let mut parser = Parser::new(
             filename,
@@ -351,7 +351,7 @@ impl<'a> Parser<'a> {
             }
             Err(err) => {
                 let err = err.to_string();
-                if err.contains("E530:") {
+                if err.contains("E530:") && err.contains("E450:") {
                     bail!(self.error(
                         580,
                         &format!(

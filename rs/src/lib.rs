@@ -37,7 +37,7 @@ For TClasses the ttype is also a string, and this may not be empty.
 */
 
 pub mod check;
-pub mod constants;
+pub mod consts;
 pub mod event;
 pub mod field;
 pub mod format;

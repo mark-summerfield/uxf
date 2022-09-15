@@ -3,7 +3,7 @@
 
 // NOTE Keep in harmony with Value
 
-use crate::constants::*;
+use crate::consts::*;
 use crate::util::escape;
 use crate::value::{bytes_to_uxf, Value};
 use anyhow::{bail, Result};

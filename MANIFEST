@@ -1,8 +1,4 @@
-# TODO (1) - rs/tests/test_regression.rs
-#	      (i) compare compact with expected
-#	     (ii) compare pprint with expected
-#	   - rs/tests/test_errors.rs
-#	   - etc
+# TODO (0) refactor
 rs/src/bin/uxf.rs
 # rs/src/bin/benchmark.rs TODO (5)
 # rs/src/bin/uxfcmp.rs TODO (6)
@@ -22,12 +18,17 @@ rs/src/util.rs
 rs/src/event.rs
 rs/src/constants.rs
 rs/src/parser/mod.rs
-rs/src/parser/parser.rs
+rs/src/parser/lib.rs
 rs/src/parser/lexer.rs
 rs/src/parser/token.rs
 rs/src/pprint/mod.rs
-rs/src/pprint/pprint.rs # TODO (2)
+rs/src/pprint/lib.rs # TODO (2)
 rs/src/test_utils.rs
+# TODO (1) - rs/tests/test_regression.rs
+#	      (i) compare compact with expected
+#	     (ii) compare pprint with expected
+#	   - rs/tests/test_errors.rs
+#	   - etc
 rs/tests/test_value.rs
 rs/tests/test_list.rs
 rs/tests/test_map.rs
@@ -100,10 +101,6 @@ st.sh
 #   uxfgeo.py <infile.{json,geojson,uxf,uxg}>
 #	      <outfile.{json,geojson,uxf,uxg}>
 # - article(s) on replacing csv with uxf & ini/json/toml with uxf
-# - uxformat.py [-d|--dropunused] [-r|--replaceimports] [-i|--indent I]
-#     [-w|--wrapwidth W] [-c|--compact] [-o|--out outfile] [<]infile
-#   . reads stdin or infile and writes to stdout or outfile
-#   . add UxfFmt() to .gvimrc
 # - uxfdiff.py
 # - uxfedit (GUI) applications
 # - UXF libraries:

@@ -2,7 +2,7 @@
 // License: GPLv3
 
 use crate::check::{check_ktype, check_ttype, check_vtype};
-use crate::constants::*;
+use crate::consts::*;
 use crate::event::{Event, OnEventFn};
 /* DEBUG
 use crate::token::debug_tokens;

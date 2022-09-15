@@ -1,7 +1,7 @@
 // Copyright © 2022 Mark Summerfield. All rights reserved.
 // License: GPLv3
 
-use crate::constants::*;
+use crate::consts::*;
 use crate::event::{self, OnEventFn};
 use crate::format::Format;
 use crate::list::List;
@@ -24,40 +24,20 @@ pub struct Uxf {
     custom: String,
     comment: String,
     value: Value, // NOTE must be Value::List | Value::Map | Value::Table
-    on_event: OnEventFn,
     pub(crate) tclass_for_ttype: HashMap<String, TClass>, // ttype x TClass
     pub(crate) import_for_ttype: IndexMap<String, String>, // ttype x import
 }
 
 impl Uxf {
-    /// Returns a `Uxf` with the given `custom` and `comment` strings using
-    /// the default `event::on_event()` event handler if `on_event` is
-    /// `None` or the given event handler, and containing an empty list.
-    pub fn new(
-        custom: &str,
-        comment: &str,
-        on_event: Option<OnEventFn>,
-    ) -> Self {
+    /// Returns a `Uxf` with the given `custom` and `comment` strings and
+    /// containing an empty list.
+    pub fn new(custom: &str, comment: &str) -> Self {
         Uxf {
             custom: custom.to_string(),
             comment: comment.to_string(),
             value: Value::List(List::default()),
             tclass_for_ttype: HashMap::new(),
             import_for_ttype: IndexMap::new(),
-            on_event: on_event.unwrap_or_else(|| Rc::new(event::on_event)),
-        }
-    }
-
-    /// Returns a `Uxf` with empty `custom` and `comment` strings,
-    /// the given event handler, and containing an empty list.
-    pub fn new_on_event(on_event: OnEventFn) -> Self {
-        Uxf {
-            custom: "".to_string(),
-            comment: "".to_string(),
-            value: Value::List(List::default()),
-            tclass_for_ttype: HashMap::new(),
-            import_for_ttype: IndexMap::new(),
-            on_event,
         }
     }
 
@@ -198,8 +178,8 @@ bitflags! {
 }
 
 impl Default for Uxf {
-    /// Returns a new `Uxf` that uses the default `event::on_event()`
-    /// event handler. and contains an empty list
+    /// Returns a new `Uxf` with empty custom and comment strings
+    /// and containing an empty list
     fn default() -> Self {
         Uxf {
             custom: "".to_string(),
@@ -207,7 +187,6 @@ impl Default for Uxf {
             value: Value::List(List::default()),
             tclass_for_ttype: HashMap::new(),
             import_for_ttype: IndexMap::new(),
-            on_event: Rc::new(event::on_event),
         }
     }
 }

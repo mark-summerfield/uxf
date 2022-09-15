@@ -1,7 +1,7 @@
 // Copyright © 2022 Mark Summerfield. All rights reserved.
 // License: GPLv3
 
-use crate::constants::*;
+use crate::consts::*;
 use anyhow::{bail, Result};
 
 /// Returns `Ok(())` if `ktype` is a valid ktype; otherwise `Err`.

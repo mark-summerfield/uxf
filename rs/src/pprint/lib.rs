@@ -5,7 +5,7 @@ use crate::event::OnEventFn;
 use crate::format::Format;
 use anyhow::{bail, Result};
 
-pub fn pprint(
+pub(crate) fn pprint(
     format: &Format,
     on_event: Option<OnEventFn>,
 ) -> Result<String> {
