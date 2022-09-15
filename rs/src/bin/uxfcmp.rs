@@ -51,6 +51,7 @@ fn real_main() -> Result<()> {
 #[derive(Parser, Debug)]
 #[clap(global_setting(AppSettings::DeriveDisplayOrder))]
 #[clap(
+    name = "uxfcmp",
     version,
     about = "Compares two UXF files for equality or equivalence.
 
