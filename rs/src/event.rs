@@ -13,6 +13,9 @@ pub fn on_event(event: &Event) {
     eprintln!("{}", event);
 }
 
+/// Used to ignore warning and repair events
+pub fn ignore_event(_: &Event) {}
+
 #[derive(Clone, Debug)]
 pub struct Event {
     pub kind: EventKind,

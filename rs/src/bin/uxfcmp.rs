@@ -20,7 +20,7 @@ fn real_main() -> Result<()> {
         } else {
             uxf::ParserOptions::DEFAULT
         },
-        Some(Rc::new(|_event| {})), // ignore lints
+        Some(Rc::new(uxf::ignore_event)), // ignore lints
     )?;
     let uxo2 = uxf::parse_options(
         &config.file2.to_string_lossy(),
@@ -29,7 +29,7 @@ fn real_main() -> Result<()> {
         } else {
             uxf::ParserOptions::DEFAULT
         },
-        Some(Rc::new(|_event| {})), // ignore lints
+        Some(Rc::new(uxf::ignore_event)), // ignore lints
     )?;
     let eq = if config.equivalent {
         if uxo1.is_equivalent(&uxo2, uxf::Compare::EQUIVALENT) {
