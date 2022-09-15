@@ -37,12 +37,10 @@ fn real_main() -> Result<()> {
         } else {
             "Unequivalent"
         }
+    } else if uxo1 == uxo2 {
+        "Equal"
     } else {
-        if uxo1 == uxo2 {
-            "Equal"
-        } else {
-            "Unequal"
-        }
+        "Unequal"
     };
     println!("{}: {:?} {:?}", eq, config.file1, config.file2);
     Ok(())
