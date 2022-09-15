@@ -462,13 +462,14 @@ impl<'a> Lexer<'a> {
         if !identifier.is_empty() {
             Ok(str_for_chars(identifier))
         } else {
-            bail!(
-                "E260:{}:{}:expected {}, got {:?}…",
-                self.filename,
-                self.lino,
-                what,
-                &self.peek_chunk(start)
-            )
+            bail!(self.error(
+                260,
+                &format!(
+                    "expected {}, got {:?}…",
+                    what,
+                    &self.peek_chunk(start)
+                )
+            ))
         }
     }
 
@@ -489,8 +490,8 @@ impl<'a> Lexer<'a> {
         self.pos >= self.text.len()
     }
 
+    // advance
     fn getch(&mut self) -> char {
-        // advance
         let c = self.text[self.pos];
         self.pos += 1;
         c

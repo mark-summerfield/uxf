@@ -1,8 +1,8 @@
 rs/src/bin/uxf.rs
-# rs/src/bin/benchmark.rs TODO (5)
-# rs/src/bin/uxfcmp.rs TODO (6)
-# rs/src/bin/uxlint.rs TODO (7)
-rs/src/lib.rs # TODO (8) docs
+# rs/src/bin/uxfcmp.rs TODO (1)
+# rs/src/bin/benchmark.rs TODO (4)
+# rs/src/bin/uxlint.rs TODO (5)
+rs/src/lib.rs # TODO (6) docs
 rs/src/value.rs
 rs/src/key.rs
 rs/src/list.rs
@@ -17,16 +17,15 @@ rs/src/util.rs
 rs/src/event.rs
 rs/src/consts.rs
 rs/src/parser/mod.rs
-# TODO (0) refactor from here down...
 rs/src/parser/parse.rs
 rs/src/parser/lexer.rs
 rs/src/parser/token.rs
 rs/src/pprint/mod.rs
-rs/src/pprint/pretty.rs # TODO (2)
+rs/src/pprint/pretty.rs # TODO (3)
 rs/src/test_utils.rs
-# TODO (1) - rs/tests/test_regression.rs
+# TODO (2) - rs/tests/test_regression.rs
 #	      (i) compare compact with expected
-#	     (ii) compare pprint with expected
+#	     (ii) compare pretty with expected
 #	   - rs/tests/test_errors.rs
 #	   - etc
 rs/tests/test_value.rs

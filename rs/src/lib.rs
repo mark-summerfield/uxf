@@ -13,14 +13,15 @@ convenient alternative to sqlite or xml.
 For details of the Uniform eXchange Format (UXF) supported by this library,
 see the [UXF Overview](https://github.com/mark-summerfield/uxf/blob/main/README.md).
 
-**Note that this is WIP — currently the parser is complete (except for
-imports), along with human __un__friendly output.**
+**Note that this is WIP — currently the parser is complete, along with
+human unfriendly output. Aim is for 1.0.0 to include human-friendly output
+(pretty printing).**
 
 # Reading and Writing UXF Files
 
 To read a UXF file into a `Uxf` object use `parse()` (or `parse_options()` for finer control), e.g.:
 
-```ignore
+```rust,ignore
 let uxo = uxf::parse(&uxt_or_filename)?;
 ```
 
@@ -35,7 +36,7 @@ canonical human-readable output, use `pretty()` (or `pretty_format()` for
 more control, or `pretty_options()` for even more control). Or use
 `to_string() for bare bones not very human friendly output.
 
-```ignore
+```rust,ignore
 let uxt = uxo.pretty()?;
 // write uxt of type String to the target...
 ```
@@ -56,7 +57,6 @@ For TClasses the ttype is also a string, and this may not be empty.
 
 */
 
-// NOTE how to I make check, parser, pprint, & test_utils private?
 pub mod check;
 pub mod consts;
 pub mod event;

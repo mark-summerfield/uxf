@@ -112,7 +112,7 @@ impl<'a> Parser<'a> {
         if !filename.is_empty() && filename != "-" {
             let filename = full_filename(filename, ".");
             if imported.contains(&filename) {
-                bail!("E400:{}:0:already imported this file", filename)
+                bail!("E400:-:0:already imported {:?}", filename)
             }
             imported.insert(filename);
         }
@@ -352,19 +352,14 @@ impl<'a> Parser<'a> {
             Err(err) => {
                 let err = err.to_string();
                 if err.contains("E530:") && err.contains("E450:") {
-                    bail!(self.error(
+                    bail!(self.error_f(
                         580,
-                        &format!(
-                            "cannot do circular imports {:?}",
-                            filename
-                        )
+                        "cannot do circular imports",
+                        &filename
                     ))
                 }
                 self.imported.insert(filename.clone()); // don't retry
-                bail!(self.error(
-                    586,
-                    &format!("failed to import {:?}", filename)
-                ))
+                bail!(self.error_f(586, "failed to import", &filename))
             }
         }
     }
@@ -673,14 +668,14 @@ impl<'a> Parser<'a> {
             && expected_type != "table"
             && expected_type != ttype
         {
-            bail!(
-                "E456:{}:{}:expected table value of type {}, got value \
-                 of type {}",
-                self.filename,
-                self.lino,
-                expected_type,
-                ttype
-            );
+            bail!(self.error(
+                456,
+                &format!(
+                    "expected table value of type {}, got value \
+                    of type {}",
+                    expected_type, ttype
+                )
+            ));
         }
         Ok(())
     }
@@ -894,6 +889,13 @@ impl<'a> Parser<'a> {
 
     fn error(&self, code: u16, message: &str) -> String {
         format!("E{}:{}:{}:{}", code, self.filename, self.lino, message)
+    }
+
+    fn error_f(&self, code: u16, message: &str, filename: &str) -> String {
+        format!(
+            "E{}:{}:{}:{} {:?}",
+            code, self.filename, self.lino, message, filename
+        )
     }
 
     fn error_s(&self, code: u16, message: &str, s: &str) -> String {
