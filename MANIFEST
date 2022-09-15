@@ -1,4 +1,3 @@
-# TODO (0) refactor
 rs/src/bin/uxf.rs
 # rs/src/bin/benchmark.rs TODO (5)
 # rs/src/bin/uxfcmp.rs TODO (6)
@@ -16,13 +15,14 @@ rs/src/format.rs
 rs/src/check.rs
 rs/src/util.rs
 rs/src/event.rs
-rs/src/constants.rs
+rs/src/consts.rs
 rs/src/parser/mod.rs
-rs/src/parser/lib.rs
+# TODO (0) refactor from here down...
+rs/src/parser/parse.rs
 rs/src/parser/lexer.rs
 rs/src/parser/token.rs
 rs/src/pprint/mod.rs
-rs/src/pprint/lib.rs # TODO (2)
+rs/src/pprint/pretty.rs # TODO (2)
 rs/src/test_utils.rs
 # TODO (1) - rs/tests/test_regression.rs
 #	      (i) compare compact with expected

@@ -16,9 +16,29 @@ see the [UXF Overview](https://github.com/mark-summerfield/uxf/blob/main/README.
 **Note that this is WIP — currently the parser is complete (except for
 imports), along with human __un__friendly output.**
 
-# Basic API for Reading/Writing UXF Files
+# Reading and Writing UXF Files
 
-TODO
+To read a UXF file into a `Uxf` object use `parse()` (or `parse_options()` for finer control), e.g.:
+
+```ignore
+let uxo = uxf::parse(&uxt_or_filename)?;
+```
+
+These functions can accept a filename (which may be gzip-compressed if it ends with `.gz`) or the _text_ of a UXF file.
+
+It is also possible to create `Uxf` objects programmatically by creating and
+populating a `List`, `Map`, or `Table`; see the corresponding test files for
+some basic examples.
+
+To write a `Uxf` object to a string (e.g., to write to a file) using
+canonical human-readable output, use `pretty()` (or `pretty_format()` for
+more control, or `pretty_options()` for even more control). Or use
+`to_string() for bare bones not very human friendly output.
+
+```ignore
+let uxt = uxo.pretty()?;
+// write uxt of type String to the target...
+```
 
 # Dependencies
 
@@ -36,6 +56,7 @@ For TClasses the ttype is also a string, and this may not be empty.
 
 */
 
+// NOTE how to I make check, parser, pprint, & test_utils private?
 pub mod check;
 pub mod consts;
 pub mod event;

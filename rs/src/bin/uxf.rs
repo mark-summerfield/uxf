@@ -55,12 +55,12 @@ fn output(outfile: &str, config: &Config, uxo: &uxf::Uxf) -> Result<()> {
     let text = if config.compact {
         uxo.to_string()
     } else {
-        uxo.to_string_options(
+        uxo.pretty_options(
             &uxf::Format::new(config.indent, config.wrapwidth, None),
             if config.lint {
-                None
+                None // use default linting output
             } else {
-                Some(Rc::new(move |_event| {}))
+                Some(Rc::new(move |_event| {})) // filter out lints
             },
         )?
     };

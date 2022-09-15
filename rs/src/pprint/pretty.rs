@@ -5,9 +5,9 @@ use crate::event::OnEventFn;
 use crate::format::Format;
 use anyhow::{bail, Result};
 
-pub(crate) fn pprint(
+pub(crate) fn pretty(
     format: &Format,
     on_event: Option<OnEventFn>,
 ) -> Result<String> {
-    bail!("TODO: pprint") // TODO
+    bail!("TODO: pretty") // TODO
 }

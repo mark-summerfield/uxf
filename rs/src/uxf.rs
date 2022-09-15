@@ -67,8 +67,7 @@ impl Uxf {
     }
 
     /// Sets the collection value which must be a List, Map, or Table.
-    /// Normally the Uxf is populated using from_str(), parse(), or
-    /// parse_options().
+    /// (Normally a Uxf is created using parse() or parse_options().)
     pub fn set_value(&mut self, value: Value) -> Result<()> {
         if !value.is_collection() {
             bail!(
@@ -104,9 +103,9 @@ impl Uxf {
     /// Use `to_string()` for compact output if human readability isn't
     /// needed.
     /// This is a convenience wrapper for
-    /// `to_string_options(&Format::default(), None)`
-    pub fn to_str(&self) -> Result<String> {
-        self.to_string_options(&Format::default(), None)
+    /// `pretty_options(&Format::default(), None)`
+    pub fn pretty(&self) -> Result<String> {
+        self.pretty_options(&Format::default(), None)
     }
 
     /// Returns the text of a valid UXF file using the given `Format`
@@ -114,9 +113,9 @@ impl Uxf {
     /// and using the default `on_event` event handler.
     /// Use `to_string()` for compact output if human readability isn't
     /// needed.
-    /// This is a convenience wrapper for `to_string_options(&format, None)`
-    pub fn to_string_format(&self, format: &Format) -> Result<String> {
-        self.to_string_options(format, None)
+    /// This is a convenience wrapper for `pretty_options(&format, None)`
+    pub fn pretty_format(&self, format: &Format) -> Result<String> {
+        self.pretty_options(format, None)
     }
 
     /// Returns the text of a valid UXF file using the given `Format`
@@ -125,12 +124,12 @@ impl Uxf {
     /// handler if `None`).
     /// Use `to_string()` for compact output if neither human readability
     /// nor custom event handling is needed.
-    pub fn to_string_options(
+    pub fn pretty_options(
         &self,
         format: &Format,
         on_event: Option<OnEventFn>,
     ) -> Result<String> {
-        pprint::pprint(format, on_event)
+        pprint::pretty(format, on_event)
     }
 
     /// Returns `true` if this `Uxf` and the `other` `Uxf` have the same
