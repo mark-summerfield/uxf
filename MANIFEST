@@ -1,4 +1,5 @@
 # TODO (0)
+cli.py
 # - uxf.py to subcommand API & ditch uxflint.py & uxfcompare.py
 # - uxf rs to subcommand API & ditch uxfcmp.rs
 #
