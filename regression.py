@@ -13,40 +13,45 @@ import sys
 import tempfile
 import time
 
-import util
+try:
+    ROOT = pathlib.Path(__file__).parent.resolve()
+    sys.path.append(str(ROOT / 'py/t'))
+    import util
+finally:
+    pass
 
-PATH = pathlib.Path(__file__).parent.parent.resolve()
-SERVER_PATH = PATH / 'misc'
+SERVER_PATH = ROOT / 'misc'
 TEMP_PATH = tempfile.gettempdir()
 EXE_FOR_LANG = {
-    'py': ['python3', str(PATH / 'py/uxf.py')],
-    'rs': [str(PATH / 'rs/target/release/uxf')],
+    'py': ['python3', str(ROOT / 'py/uxf.py')],
+    'rs': [str(ROOT / 'rs/target/release/uxf')],
     }
 
 
 def main():
-    os.chdir(PATH / 'testdata')
+    os.chdir(ROOT / 'testdata')
     util.check_server(SERVER_PATH)
     tmin, tmax, langs = get_config()
     cleanup()
-    total = ok = 0
-    start = time.monotonic()
+    all_total = all_ok = 0
+    all_duration = 0.0
+    print('=' * 30)
     for lang in langs:
-        print(f'{lang} tests... ', end='')
-        for i, t in enumerate(TESTS):
-            if i < tmin:
-                continue
-            if i > tmax:
-                break
-            total += 1
-            ok += test(lang, i, t)
-        print()
-    duration = time.monotonic() - start
+        total, ok, duration = test_lang(tmin, tmax, lang)
+        all_total += total
+        all_ok += ok
+        all_duration += duration
+        report(lang, total, ok, duration)
+    report('All', all_total, all_ok, all_duration, '=')
+    cleanup()
+
+
+def report(lang, total, ok, duration, sep='-'):
     if total == ok:
-        print(f'{ok:,}/{total:,} All OK ({duration:.3f} sec)')
-        cleanup()
+        print(f'{lang:3} {ok:,}/{total:,} OK ({duration:.3f} sec)')
     else:
-        print(f'{ok:,}/{total:,} • FAIL ({duration:.3f} sec)')
+        print(f'{lang:3} {ok:,}/{total:,} FAIL ({duration:.3f} sec)')
+    print(sep * 30)
 
 
 def get_config():
@@ -86,6 +91,21 @@ n-m    run tests n to m inclusive
        default: run all tests
 langX  from: {}
 '''
+
+
+def test_lang(tmin, tmax, lang):
+    total = ok = 0
+    start = time.monotonic()
+    print(f'{lang:3} tests... ')
+    for i, t in enumerate(TESTS):
+        if i < tmin:
+            continue
+        if i > tmax:
+            break
+        total += 1
+        ok += test(lang, i, t)
+    print()
+    return total, ok, time.monotonic() - start
 
 
 def test(lang, i, t):

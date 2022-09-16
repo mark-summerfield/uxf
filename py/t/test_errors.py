@@ -9,7 +9,6 @@ try:
     PATH = os.path.abspath(os.path.dirname(__file__))
     SERVER_PATH = os.path.abspath(PATH + '/../../misc')
     sys.path.append(os.path.abspath(os.path.join(PATH, '../')))
-    sys.path.append(os.path.abspath(os.path.join(PATH, '../../u/')))
     import uxf
     import util
     os.chdir(os.path.join(PATH, '../../testdata')) # move to test data

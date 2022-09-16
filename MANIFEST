@@ -71,6 +71,7 @@ py/t/test_tlm.py
 py/t/test_visit.py
 py/t/gen.py
 py/t/benchmark.py
+py/t/util.py
 py/eg/README.md
 py/eg/visit.py
 py/eg/slides.py
@@ -84,12 +85,10 @@ py/eg/Tlm.py
 README.md
 
 # TODO (1)
-u/regression.py
+regression.py
 #  (i) compare compact with expected
 # (ii) compare pretty with expected
 # TODO move gen.py here & update py/t/benchmark.py accordingly
-u/benchmark.py
-u/util.py
 
 x/x.py
 x/xx.py
