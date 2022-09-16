@@ -101,7 +101,7 @@ langX  from: {}
 def test_lang(tmin, tmax, lang, verbose):
     total = ok = 0
     start = time.monotonic()
-    print(f'{lang:3} tests... ')
+    print(f'{lang:3} tests... ', end='')
     for i, t in enumerate(TESTS):
         if i < tmin:
             continue
