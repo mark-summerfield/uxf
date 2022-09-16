@@ -1,0 +1,4 @@
+R486:/home/mark/app/uxf/testdata/l56.uxf:9:converted str <2> to int 2
+R486:/home/mark/app/uxf/testdata/l56.uxf:9:converted str <1983-04-07> to date 1983-04-07
+R486:/home/mark/app/uxf/testdata/l56.uxf:11:converted real 7.2 to int 7
+E488:/home/mark/app/uxf/testdata/l56.uxf:15:expected real, got <wrong>

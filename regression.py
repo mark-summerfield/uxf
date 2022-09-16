@@ -32,19 +32,20 @@ EXE_FOR_LANG = {
 def main():
     os.chdir(ROOT / 'testdata')
     util.check_server(SERVER_PATH)
-    tmin, tmax, langs = get_config()
+    tmin, tmax, langs, verbose = get_config()
     cleanup()
     all_total = all_ok = 0
     all_duration = 0.0
     print('=' * 30)
     for lang in langs:
-        total, ok, duration = test_lang(tmin, tmax, lang)
+        total, ok, duration = test_lang(tmin, tmax, lang, verbose)
         all_total += total
         all_ok += ok
         all_duration += duration
         report(lang, total, ok, duration)
     report('All', all_total, all_ok, all_duration, '=')
-    cleanup()
+    if all_total == all_ok:
+        cleanup()
 
 
 def report(lang, total, ok, duration, sep='-'):
@@ -59,9 +60,12 @@ def get_config():
     tmin = 0
     tmax = sys.maxsize
     langs = set()
+    verbose = False
     for arg in sys.argv[1:]:
         if arg in {'-h', '--help'}:
             raise SystemExit(USAGE.format(', '.join(sorted(EXE_FOR_LANG))))
+        elif arg in {'-v', '--verbose'}:
+            verbose = True
         elif arg in EXE_FOR_LANG:
             langs.add(arg)
         elif '-' in arg:
@@ -79,22 +83,22 @@ def get_config():
         else:
             raise SystemExit(f'error: unrecognized argument: {arg!r}')
     if not langs:
-        raise SystemExit('error: must specify at least one lang from '
-                         f'{sorted(EXE_FOR_LANG)}')
-    return tmin, tmax, tuple(langs)
+        langs = list(EXE_FOR_LANG)
+    return tmin, tmax, tuple(langs), verbose
 
 
 USAGE = '''\
-usage: regression.py [n|n-m] <lang1> [lang2 ... langN]
+usage: regression.py [-v|--verbose] [n|n-m] <lang1> [lang2 ... langN]
 
 n      run test n
 n-m    run tests n to m inclusive
        default: run all tests
 langX  from: {}
+       default: all
 '''
 
 
-def test_lang(tmin, tmax, lang):
+def test_lang(tmin, tmax, lang, verbose):
     total = ok = 0
     start = time.monotonic()
     print(f'{lang:3} tests... ')
@@ -103,14 +107,19 @@ def test_lang(tmin, tmax, lang):
             continue
         if i > tmax:
             break
+        if t.langs is not None and lang not in t.langs:
+            continue
         total += 1
-        ok += test(lang, i, t)
+        ok += test(lang, verbose, i, t)
     print()
     return total, ok, time.monotonic() - start
 
 
-def test(lang, i, t):
-    print(f'{i} ', end='', flush=True)
+def test(lang, verbose, i, t):
+    if verbose:
+        print(i)
+    else:
+        print(f'{i} ', end='', flush=True)
     cmd = list(EXE_FOR_LANG[lang])
     if t.opts:
         cmd += t.opts
@@ -118,6 +127,8 @@ def test(lang, i, t):
     if t.afile is not None:
         afile = 'actual/' + (t.ifile if t.afile is SAME else t.afile)
         cmd.append(afile)
+    if verbose:
+        print(' ', ' '.join(cmd))
     reply = subprocess.run(cmd, capture_output=True, text=True)
     if reply.returncode != t.returncode:
         print(f'\nexpected returncode {t.returncode}, got '
@@ -127,19 +138,28 @@ def test(lang, i, t):
         if t.stderr is None:
             print(f'\nunexpected stderr:\n{reply.stderr}')
             return 0
-        with open(t.stderr, 'rt', encoding='utf-8') as file:
+        stderr = f'expected/{t.stderr}'
+        lstderr = stderr.replace('.', f'-{lang}.')
+        stderr = lstderr if os.path.exists(lstderr) else stderr
+        with open(stderr, 'rt', encoding='utf-8') as file:
             stderr = file.read()
         if reply.stderr.strip() != stderr.strip():
             print(f'\nexpected stderr:\n{stderr}\n-got-\n{reply.stderr}')
             return 0
+        if verbose:
+            print('  stderr matched')
     if t.efile is not None:
         efile = 'expected/' + (t.ifile if t.efile is SAME else t.efile)
         if not compare(lang, t.i_vs_e, t.ifile, efile):
             print(f'\nnot {t.i_vs_e.value}: {t.ifile!r} {efile!r}')
             return 0
+        elif verbose:
+            print(f'  original vs expected {t.i_vs_e.value}')
         if not compare(lang, t.a_vs_e, afile, efile):
             print(f'\nnot {t.a_vs_e.value}: {afile!r} {efile!r}')
             return 0
+        elif verbose:
+            print(f'  actual vs expected {t.i_vs_e.value}')
     return 1
 
 
@@ -148,13 +168,14 @@ def compare(lang, compare, file1, file2):
         return True
     if compare is Compare.IDENTICAL:
         return filecmp(file1, file2, shallow=False)
-    cmd = list(EXE_FOR_LANG[lang])
-    cmd.append('c')
+    # cmd = list(EXE_FOR_LANG[lang]) # TODO
+    cmd = ['python3', str(ROOT / 'py/uxfcompare.py')] # TODO delete
+    # cmd.append('c') # TODO
     if compare is Compare.EQUIV:
         cmd.append('-e')
     cmd += [file1, file2]
     reply = subprocess.run(cmd, capture_output=True, text=True)
-    return reply.stdout.startswith('Un')
+    return reply.stdout.startswith('Equ')
 
 
 def cleanup():
@@ -179,13 +200,14 @@ T = collections.namedtuple(
     'T', ('ifile', # file to read
           'opts', # e.g., ['-l'] or ['-cl'] or ['-cl', '-i9', '-w40']
           'afile', # None or SAME or actual filename
-          'efile', # None or SAME, expected filename
+          'efile', # None or SAME or expected filename
           'i_vs_e', # whether and if so how to compare
           'a_vs_e', # whether and if so how to compare
-          'stderr', # None expected stderr filename
+          'stderr', # None or expected stderr filename
           'returncode', # expected return code
+          'langs', # set of langs for which this test is valid: None→all
           ),
-    defaults=(SAME, SAME, Compare.EQUAL, Compare.EQUAL, None, 0))
+    defaults=(SAME, SAME, Compare.EQUAL, Compare.EQUAL, None, 0, None))
 
 
 L = ('-l',)
@@ -194,6 +216,11 @@ CL = ('-cl',)
 TESTS = (
     T('t0.uxf', L),
     T('t0.uxf', CL, 't0c.uxf', 't0c.uxf'),
+    # TODO
+    T('l56.uxf', L, None, None, stderr='e56.txt'),
+    T('l56.uxf', CL, 'l56c.uxf', 'l56c.uxf', Compare.EQUIV, Compare.EQUIV,
+      'e56.txt', langs={'py'}),
+    # TODO
     )
 
 

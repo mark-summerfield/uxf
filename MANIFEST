@@ -1,4 +1,3 @@
-# TODO (-1) u/regression.py
 # TODO (0)
 # - uxf.py to subcommand API & ditch uxflint.py & uxfcompare.py
 # - uxf rs to subcommand API & ditch uxfcmp.rs
@@ -12,6 +11,12 @@
 #
 # - update .gvimrc to use rust uxf
 # - update py tests
+
+# TODO (1)
+regression.py
+# TODO switch to new cli API;
+# TODO create a big 1MB (then gzip) test file.
+
 rs/src/bin/uxf.rs
 rs/src/bin/uxfcmp.rs # TODO DELETE once new cli is ready
 rs/src/lib.rs # TODO (5) docs
@@ -83,12 +88,6 @@ py/eg/Config2.py
 py/eg/Tlm.py
 
 README.md
-
-# TODO (1)
-regression.py
-#  (i) compare compact with expected
-# (ii) compare pretty with expected
-# TODO move gen.py here & update py/t/benchmark.py accordingly
 
 x/x.py
 x/xx.py
