@@ -227,7 +227,7 @@ impl<'a> Parser<'a> {
             bail!(self.error(
                 540,
                 &format!(
-                    "there are no ttype definitions to import {:?} ({:?})",
+                    "there are no ttype definitions to import {} ({:?})",
                     value, filename
                 )
             ));
@@ -583,8 +583,11 @@ impl<'a> Parser<'a> {
                 (self.on_event)(&Event::new_repair(
                     486,
                     &format!(
-                        "converted str {:?} to {:?}",
-                        value, new_value
+                        "converted {} {} to {} {}",
+                        value.typename(),
+                        value,
+                        new_value.typename(),
+                        new_value
                     ),
                     self.filename,
                     self.lino,
@@ -618,7 +621,13 @@ impl<'a> Parser<'a> {
             };
             (self.on_event)(&Event::new_repair(
                 486,
-                &format!("converted str {:?} to {:?}", value, new_value),
+                &format!(
+                    "converted {} {} to {} {}",
+                    value.typename(),
+                    value,
+                    new_value.typename(),
+                    new_value
+                ),
                 self.filename,
                 self.lino,
             ));
@@ -686,13 +695,13 @@ impl<'a> Parser<'a> {
             if VTYPES.contains(&expected_type) {
                 if value.typename() != expected_type {
                     return format!(
-                        "expected {}, got {:?}",
+                        "expected {}, got {}",
                         expected_type, &value
                     );
                 }
             } else if !self.tclass_for_ttype.contains_key(expected_type) {
                 return format!(
-                    "expected {}, got {:?}",
+                    "expected {}, got {}",
                     expected_type, &value
                 );
             }

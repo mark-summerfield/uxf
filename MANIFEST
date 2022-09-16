@@ -1,3 +1,4 @@
+# TODO (-1) u/regression.py
 # TODO (0)
 # - uxf.py to subcommand API & ditch uxflint.py & uxfcompare.py
 # - uxf rs to subcommand API & ditch uxfcmp.rs
@@ -12,9 +13,7 @@
 # - update .gvimrc to use rust uxf
 # - update py tests
 rs/src/bin/uxf.rs
-rs/src/bin/uxfcmp.rs
-# rs/src/bin/benchmark.rs TODO (3)
-# rs/src/bin/uxlint.rs TODO (4)
+rs/src/bin/uxfcmp.rs # TODO DELETE once new cli is ready
 rs/src/lib.rs # TODO (5) docs
 rs/src/value.rs
 rs/src/key.rs
@@ -36,11 +35,6 @@ rs/src/parser/token.rs
 rs/src/pprint/mod.rs
 rs/src/pprint/pretty.rs # TODO (2)
 rs/src/test_utils.rs
-# TODO (1) - rs/tests/regression.py
-#	      (i) compare compact with expected
-#	     (ii) compare pretty with expected
-#	   - rs/tests/test_errors.py
-#	   - etc
 rs/tests/test_value.rs
 rs/tests/test_list.rs
 rs/tests/test_map.rs
@@ -57,8 +51,8 @@ rs/deploy.bat
 
 py/uxf.py
 py/uxfconvert.py
-py/uxflint.py
-py/uxfcompare.py
+py/uxflint.py # TODO delete
+py/uxfcompare.py # TODO delete
 py/README.md
 py/setup.py
 py/pypi.sh
@@ -77,7 +71,6 @@ py/t/test_tlm.py
 py/t/test_visit.py
 py/t/gen.py
 py/t/benchmark.py
-py/t/util.py
 py/eg/README.md
 py/eg/visit.py
 py/eg/slides.py
@@ -89,6 +82,14 @@ py/eg/Config2.py
 py/eg/Tlm.py
 
 README.md
+
+# TODO (1)
+u/regression.py
+#  (i) compare compact with expected
+# (ii) compare pretty with expected
+# TODO move gen.py here & update py/t/benchmark.py accordingly
+u/benchmark.py
+u/util.py
 
 x/x.py
 x/xx.py

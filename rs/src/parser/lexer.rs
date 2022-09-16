@@ -659,7 +659,7 @@ impl<'a> Lexer<'a> {
 
     fn error_v(&self, code: u16, message: &str, v: &Value) -> String {
         format!(
-            "E{}:{}:{}:{}, got {:?}",
+            "E{}:{}:{}:{}, got {}",
             code, self.filename, self.lino, message, v
         )
     }
