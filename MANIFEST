@@ -1,21 +1,16 @@
-# TODO (0)
-cli.py
-# - uxf.py to subcommand API & ditch uxflint.py & uxfcompare.py
-# - uxf rs to subcommand API & ditch uxfcmp.rs
-#
-# uxf{.py} l|lint <infile1> [infile2 .. infileN]
-#          f|fmt|format [-l|--lint] [-s|--standalone] [-d|--dropunused]
-#		[-r|--replaceimports] [-i|--indent <indent>]
-#		[-w|--wrapwidth <wrapwidth>] [-c|--compact]
-#		<infile> [outfile] # outfile may be - or =
-#	   c|compare [-e|--equiv|--equivalent] <file1> <file2>
+# TODO (0) uxf rs to subcommand API & ditch uxfcmp.rs
+# rsclaptest/src/main.rs
+# uxf l|lint <infile1> [infile2 .. infileN]
+#     f|fmt|format [-l|--lint] [-s|--standalone] [-d|--dropunused]
+#          [-r|--replaceimports] [-i|--indent <indent>]
+#          [-w|--wrapwidth <wrapwidth>] [-c|--compact]
+#          <infile> [outfile] # outfile may be - or =
+#     c|compare [-e|--equiv|--equivalent] <file1> <file2>
 #
 # - update .gvimrc to use rust uxf
-# - update py tests
 
 # TODO (1)
-regression.py
-# TODO switch to new cli API;
+regression.py # TODO delete delete line in compare()
 # TODO create a big 1MB (then gzip) test file.
 
 rs/src/bin/uxf.rs
@@ -57,8 +52,8 @@ rs/deploy.bat
 
 py/uxf.py
 py/uxfconvert.py
-py/uxflint.py # TODO delete
-py/uxfcompare.py # TODO delete
+py/uxflint.py
+py/uxfcompare.py
 py/README.md
 py/setup.py
 py/pypi.sh

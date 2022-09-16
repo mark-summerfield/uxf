@@ -23,10 +23,10 @@ finally:
 
 SERVER_PATH = ROOT / 'misc'
 TEMP_PATH = tempfile.gettempdir()
-EXE_FOR_LANG = {
-    'py': ['python3', str(ROOT / 'py/uxf.py')],
-    'rs': [str(ROOT / 'rs/target/release/uxf')],
-    }
+EXE_FOR_LANG = {'py': ['python3', str(ROOT / 'py/uxf.py')],
+                'rs': [str(ROOT / 'rs/target/release/uxf')]}
+CMP_FOR_LANG = {'py': ['python3', str(ROOT / 'py/uxfcompare.py')],
+                'rs': [str(ROOT / 'rs/target/release/uxf'), 'c']}
 
 
 def main():
@@ -168,9 +168,8 @@ def compare(lang, compare, file1, file2):
         return True
     if compare is Compare.IDENTICAL:
         return filecmp(file1, file2, shallow=False)
-    # cmd = list(EXE_FOR_LANG[lang]) # TODO
-    cmd = ['python3', str(ROOT / 'py/uxfcompare.py')] # TODO delete
-    # cmd.append('c') # TODO
+    cmd = list(CMP_FOR_LANG[lang])
+    cmd = list(CMP_FOR_LANG['py']) # TODO delete
     if compare is Compare.EQUIV:
         cmd.append('-e')
     cmd += [file1, file2]
