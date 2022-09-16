@@ -5,6 +5,7 @@
 import collections
 import contextlib
 import enum
+import filecmp
 import os
 import pathlib
 import shutil
@@ -115,8 +116,8 @@ def test(lang, i, t):
         cmd += t.opts
     cmd.append(t.ifile)
     if t.afile is not None:
-        afile = t.ifile if t.afile is SAME else t.afile
-        cmd.append(f'actual/{afile}')
+        afile = 'actual/' + (t.ifile if t.afile is SAME else t.afile)
+        cmd.append(afile)
     reply = subprocess.run(cmd, capture_output=True, text=True)
     if reply.returncode != t.returncode:
         print(f'\nexpected returncode {t.returncode}, got '
@@ -132,9 +133,28 @@ def test(lang, i, t):
             print(f'\nexpected stderr:\n{stderr}\n-got-\n{reply.stderr}')
             return 0
     if t.efile is not None:
-        efile = t.ifile if t.efile is SAME else t.efile
-        # TODO compare i vs e & a vs e as per i_vs_e & a_vs_e
+        efile = 'expected/' + (t.ifile if t.efile is SAME else t.efile)
+        if not compare(lang, t.i_vs_e, t.ifile, efile):
+            print(f'\nnot {t.i_vs_e.value}: {t.ifile!r} {efile!r}')
+            return 0
+        if not compare(lang, t.a_vs_e, afile, efile):
+            print(f'\nnot {t.a_vs_e.value}: {afile!r} {efile!r}')
+            return 0
     return 1
+
+
+def compare(lang, compare, file1, file2):
+    if compare is Compare.SKIP:
+        return True
+    if compare is Compare.IDENTICAL:
+        return filecmp(file1, file2, shallow=False)
+    cmd = list(EXE_FOR_LANG[lang])
+    cmd.append('c')
+    if compare is Compare.EQUIV:
+        cmd.append('-e')
+    cmd += [file1, file2]
+    reply = subprocess.run(cmd, capture_output=True, text=True)
+    return reply.stdout.startswith('Un')
 
 
 def cleanup():
@@ -146,10 +166,10 @@ def cleanup():
 
 @enum.unique
 class Compare(enum.Enum):
-    SKIP = enum.auto()
-    EQUIV = enum.auto()
-    EQUAL = enum.auto()
-    IDENTICAL = enum.auto()
+    SKIP = 'skip'
+    EQUIV = 'equiv'
+    EQUAL = 'equal'
+    IDENTICAL = 'same'
 
 
 SAME = object()
