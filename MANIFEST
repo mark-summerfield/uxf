@@ -6,8 +6,6 @@
 #          [-w|--wrapwidth <wrapwidth>] [-c|--compact]
 #          <infile> [outfile] # outfile may be - or =
 #     c|compare [-e|--equiv|--equivalent] <file1> <file2>
-#
-# - update .gvimrc to use rust uxf
 
 # TODO (1)
 regression.py # TODO delete delete line in compare()
@@ -24,7 +22,7 @@ testdata/regression.dat.gz
 #   =Name fields ...
 
 rs/src/bin/uxf.rs
-rs/src/bin/uxfcmp.rs # TODO DELETE once new cli is ready
+rs/src/bin/uxfcmp.rs # TODO DELETE once new cli is ready + delete from Cargo.toml
 rs/src/lib.rs # TODO (4) docs
 rs/src/value.rs
 rs/src/key.rs
@@ -44,7 +42,7 @@ rs/src/parser/parse.rs
 rs/src/parser/lexer.rs
 rs/src/parser/token.rs
 rs/src/pprint/mod.rs
-rs/src/pprint/pretty.rs # TODO (3)
+rs/src/pprint/pretty.rs # TODO (3) (then update .gvimrc to use rust uxf)
 rs/src/test_utils.rs
 rs/tests/test_value.rs
 rs/tests/test_list.rs
@@ -54,7 +52,7 @@ rs/tests/test_tclass.rs
 rs/tests/test_field.rs
 rs/tests/test_uxf.rs
 # rs/check_lexer.py
-rs/Cargo.toml
+rs/Cargo.toml # delete default-run once uxfcmp.rs is deleted
 
 rs/README.md
 rs/deploy.sh
