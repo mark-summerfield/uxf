@@ -1,18 +1,4 @@
-# TODO (0) uxf rs to subcommand API & ditch uxfcmp.rs
-# rsclaptest/src/main.rs
-# uxf l|lint <infile1> [infile2 .. infileN]
-#     f|fmt|format [-l|--lint] [-s|--standalone] [-d|--dropunused]
-#          [-r|--replaceimports] [-i|--indent <indent>]
-#          [-w|--wrapwidth <wrapwidth>] [-c|--compact]
-#          <infile> [outfile] # outfile may be - or =
-#     c|compare [-e|--equiv|--equivalent] <file1> <file2>
-
-# TODO (1)
-regression.py # TODO delete delete line in compare()
-testdata/regression.dat.gz
-# TODO create a big 1MB (then gzip) test file.
-
-# TODO (2) Improve uxf.py's ttype def output to properly honour wrap
+# TODO (1) Improve uxf.py's ttype def output to properly honour wrap
 # width (and only widen if it necessary); (i) with comment; (ii) without
 # comment.
 #   (i)
@@ -21,9 +7,13 @@ testdata/regression.dat.gz
 #   (ii)
 #   =Name fields ...
 
+regression.py
+testdata/regression.dat.gz
+# TODO add every testdata UXF file -cl (and -l after uxf pretty)
+# TODO add testdata/big.uxd.gz after uxf pretty
+
 rs/src/bin/uxf.rs
-rs/src/bin/uxfcmp.rs # TODO DELETE once new cli is ready + delete from Cargo.toml
-rs/src/lib.rs # TODO (4) docs
+rs/src/lib.rs # TODO (3) docs
 rs/src/value.rs
 rs/src/key.rs
 rs/src/list.rs
@@ -42,7 +32,7 @@ rs/src/parser/parse.rs
 rs/src/parser/lexer.rs
 rs/src/parser/token.rs
 rs/src/pprint/mod.rs
-rs/src/pprint/pretty.rs # TODO (3) (then update .gvimrc to use rust uxf)
+rs/src/pprint/pretty.rs # TODO (2) (then update .gvimrc to use rust uxf)
 rs/src/test_utils.rs
 rs/tests/test_value.rs
 rs/tests/test_list.rs
@@ -52,7 +42,7 @@ rs/tests/test_tclass.rs
 rs/tests/test_field.rs
 rs/tests/test_uxf.rs
 # rs/check_lexer.py
-rs/Cargo.toml # delete default-run once uxfcmp.rs is deleted
+rs/Cargo.toml
 
 rs/README.md
 rs/deploy.sh

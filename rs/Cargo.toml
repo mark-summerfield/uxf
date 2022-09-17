@@ -1,6 +1,6 @@
 [package]
 name = "uxf"
-version = "0.14.0"
+version = "0.15.0"
 edition = "2021"
 publish = true
 authors = [ "Mark Summerfield <mark@qtrac.eu>",]
@@ -13,7 +13,6 @@ readme = "README.md"
 keywords = [ "parser", "database", "uxf", "serialization", "configuration",]
 categories = [ "development-tools", "text-processing", "config", "parser-implementations", "database",]
 license = "GPL-3.0"
-default-run = "uxf"
 
 [dependencies]
 anyhow = "^1.0"

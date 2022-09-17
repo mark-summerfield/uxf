@@ -29,8 +29,7 @@ finally:
 SERVER_PATH = ROOT / 'misc'
 TEMP_PATH = tempfile.gettempdir()
 EXE_FOR_LANG = {'py': ['python3', str(ROOT / 'py/uxf.py')],
-                'rs': [str(ROOT / 'rs/target/release/uxf')]} # TODO delete
-                # 'rs': [str(ROOT / 'rs/target/release/uxf'), 'c']} # TODO
+                'rs': [str(ROOT / 'rs/target/release/uxf'), 'f']}
 CMP_FOR_LANG = {'py': ['python3', str(ROOT / 'py/uxfcompare.py')],
                 'rs': [str(ROOT / 'rs/target/release/uxf'), 'c']}
 
@@ -117,12 +116,12 @@ def test_lang(tmin, tmax, lang, verbose, tests):
         if t.langs is not None and lang not in t.langs:
             continue
         total += 1
-        ok += test(lang, verbose, i, t)
+        ok += test_one(lang, verbose, i, t)
     print()
     return total, ok, time.monotonic() - start
 
 
-def test(lang, verbose, i, t):
+def test_one(lang, verbose, i, t):
     if verbose:
         print(i)
     else:
@@ -142,32 +141,44 @@ def test(lang, verbose, i, t):
               f'{reply.returncode}')
         return 0
     if reply.stderr:
-        if t.stderr is None:
-            print(f'\nunexpected stderr:\n{reply.stderr}')
+        if not check_stderr(lang, verbose, t, reply.stderr):
             return 0
-        stderr = f'expected/{t.stderr}'
-        lstderr = stderr.replace('.', f'-{lang}.')
-        stderr = lstderr if os.path.exists(lstderr) else stderr
-        with open(stderr, 'rt', encoding='utf-8') as file:
-            stderr = file.read()
-        if reply.stderr.strip() != stderr.strip():
-            print(f'\nexpected stderr:\n{stderr}\n-got-\n{reply.stderr}')
-            return 0
-        if verbose:
-            print('  stderr matched')
     if t.efile is not None:
-        efile = 'expected/' + (t.ifile if t.efile is SAME else t.efile)
-        if not compare(lang, t.i_vs_e, t.ifile, efile):
-            print(f'\nnot {t.i_vs_e.value}: {t.ifile!r} {efile!r}')
+        if not check_expected(lang, verbose, t, afile):
             return 0
-        elif verbose:
-            print(f'  original vs expected {t.i_vs_e.value}')
-        if not compare(lang, t.a_vs_e, afile, efile):
-            print(f'\nnot {t.a_vs_e.value}: {afile!r} {efile!r}')
-            return 0
-        elif verbose:
-            print(f'  actual vs expected {t.i_vs_e.value}')
     return 1
+
+
+def check_stderr(lang, verbose, t, rstderr):
+    if t.stderr is None:
+        print(f'\nunexpected stderr:\n{rstderr}')
+        return False
+    stderr = f'expected/{t.stderr}'
+    lstderr = stderr.replace('.', f'-{lang}.')
+    stderr = lstderr if os.path.exists(lstderr) else stderr
+    with open(stderr, 'rt', encoding='utf-8') as file:
+        stderr = file.read()
+    if rstderr.strip() != stderr.strip():
+        print(f'\nexpected stderr:\n{stderr}\n-got-\n{rstderr}')
+        return False
+    if verbose:
+        print('  stderr matched')
+    return True
+
+
+def check_expected(lang, verbose, t, afile):
+    efile = 'expected/' + (t.ifile if t.efile is SAME else t.efile)
+    if not compare(lang, t.i_vs_e, t.ifile, efile):
+        print(f'\nnot {t.i_vs_e.value}: {t.ifile!r} {efile!r}')
+        return False
+    elif verbose:
+        print(f'  original vs expected {t.i_vs_e.value}')
+    if not compare(lang, t.a_vs_e, afile, efile):
+        print(f'\nnot {t.a_vs_e.value}: {afile!r} {efile!r}')
+        return False
+    elif verbose:
+        print(f'  actual vs expected {t.i_vs_e.value}')
+    return True
 
 
 def compare(lang, compare, file1, file2):
@@ -175,8 +186,7 @@ def compare(lang, compare, file1, file2):
         return True
     if compare is Compare.IDENTICAL:
         return filecmp(file1, file2, shallow=False)
-    cmd = list(CMP_FOR_LANG['py']) # TODO delete
-    # cmd = list(CMP_FOR_LANG[lang]) # TODO
+    cmd = list(CMP_FOR_LANG[lang])
     if compare is Compare.EQUIV:
         cmd.append('-e')
     cmd += [file1, file2]
