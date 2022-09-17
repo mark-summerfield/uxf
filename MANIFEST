@@ -11,11 +11,21 @@
 
 # TODO (1)
 regression.py # TODO delete delete line in compare()
+testdata/regression.dat.gz
 # TODO create a big 1MB (then gzip) test file.
+
+# TODO (2) Improve uxf.py's ttype def output to properly honour wrap
+# width (and only widen if it necessary); (i) with comment; (ii) without
+# comment.
+#   (i)
+#   =#<A comment no matter how short always followed by NL & depth += 1>
+#     Name fields....
+#   (ii)
+#   =Name fields ...
 
 rs/src/bin/uxf.rs
 rs/src/bin/uxfcmp.rs # TODO DELETE once new cli is ready
-rs/src/lib.rs # TODO (5) docs
+rs/src/lib.rs # TODO (4) docs
 rs/src/value.rs
 rs/src/key.rs
 rs/src/list.rs
@@ -34,7 +44,7 @@ rs/src/parser/parse.rs
 rs/src/parser/lexer.rs
 rs/src/parser/token.rs
 rs/src/pprint/mod.rs
-rs/src/pprint/pretty.rs # TODO (2)
+rs/src/pprint/pretty.rs # TODO (3)
 rs/src/test_utils.rs
 rs/tests/test_value.rs
 rs/tests/test_list.rs
@@ -135,6 +145,10 @@ st.sh
 #   tableclass=Table, & uses these rather than List, Map, and Table, so
 #   the user can use their own subclasses
 # NOTE Rejected Ideas
+# - Elide ttypes: e.g., given =Pair a b
+#	[Pair (Pair 1 2) (Pair 3 4)] → [Pair (1 2) (3 4)]
+#   redundant because we can rewrite it as this:
+#	(Pair 1 2 3 4)
 # - Replace yes and no bools with built-in fieldless tables, (Y) (N)
 # - Union types.
 # - Money type (twelth type), e.g., MONEY ::= '$' REAL; use, say

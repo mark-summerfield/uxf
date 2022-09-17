@@ -18,13 +18,19 @@ try:
     ROOT = pathlib.Path(__file__).parent.resolve()
     sys.path.append(str(ROOT / 'py/t'))
     import util
+    try:
+        import uxf # prefer stable system version
+    except ImportError:
+        sys.path.append(str(ROOT / 'py'))
+        import uxf
 finally:
     pass
 
 SERVER_PATH = ROOT / 'misc'
 TEMP_PATH = tempfile.gettempdir()
 EXE_FOR_LANG = {'py': ['python3', str(ROOT / 'py/uxf.py')],
-                'rs': [str(ROOT / 'rs/target/release/uxf')]}
+                'rs': [str(ROOT / 'rs/target/release/uxf')]} # TODO delete
+                # 'rs': [str(ROOT / 'rs/target/release/uxf'), 'c']} # TODO
 CMP_FOR_LANG = {'py': ['python3', str(ROOT / 'py/uxfcompare.py')],
                 'rs': [str(ROOT / 'rs/target/release/uxf'), 'c']}
 
@@ -37,8 +43,9 @@ def main():
     all_total = all_ok = 0
     all_duration = 0.0
     print('=' * 30)
+    tests = list(read_tests('regression.dat.gz'))
     for lang in langs:
-        total, ok, duration = test_lang(tmin, tmax, lang, verbose)
+        total, ok, duration = test_lang(tmin, tmax, lang, verbose, tests)
         all_total += total
         all_ok += ok
         all_duration += duration
@@ -98,11 +105,11 @@ langX  from: {}
 '''
 
 
-def test_lang(tmin, tmax, lang, verbose):
+def test_lang(tmin, tmax, lang, verbose, tests):
     total = ok = 0
     start = time.monotonic()
     print(f'{lang:3} tests... ', end='')
-    for i, t in enumerate(TESTS):
+    for i, t in enumerate(tests):
         if i < tmin:
             continue
         if i > tmax:
@@ -168,8 +175,8 @@ def compare(lang, compare, file1, file2):
         return True
     if compare is Compare.IDENTICAL:
         return filecmp(file1, file2, shallow=False)
-    cmd = list(CMP_FOR_LANG[lang])
     cmd = list(CMP_FOR_LANG['py']) # TODO delete
+    # cmd = list(CMP_FOR_LANG[lang]) # TODO
     if compare is Compare.EQUIV:
         cmd.append('-e')
     cmd += [file1, file2]
@@ -184,6 +191,29 @@ def cleanup():
         os.mkdir('actual')
 
 
+def read_tests(filename):
+    def xfile(field):
+        if field is not None:
+            if isinstance(field, str):
+                return field
+            elif field.ttype == 'same':
+                return SAME
+        # else: return None
+
+    def cmp(field):
+        for compare in Compare:
+            if compare.value == field.ttype:
+                return compare
+
+    uxo = uxf.load(filename)
+    for record in uxo.value:
+        langs = None if record.langs is None else set(record.langs)
+        yield Test(record.ifile, tuple(record.opts), xfile(record.afile),
+                   xfile(record.efile), cmp(record.i_vs_e),
+                   cmp(record.a_vs_e), record.stderr, record.returncode,
+                   langs)
+
+
 @enum.unique
 class Compare(enum.Enum):
     SKIP = 'skip'
@@ -195,32 +225,17 @@ class Compare(enum.Enum):
 SAME = object()
 
 
-T = collections.namedtuple(
-    'T', ('ifile', # file to read
-          'opts', # e.g., ['-l'] or ['-cl'] or ['-cl', '-i9', '-w40']
-          'afile', # None or SAME or actual filename
-          'efile', # None or SAME or expected filename
-          'i_vs_e', # whether and if so how to compare
-          'a_vs_e', # whether and if so how to compare
-          'stderr', # None or expected stderr filename
-          'returncode', # expected return code
-          'langs', # set of langs for which this test is valid: None→all
-          ),
-    defaults=(SAME, SAME, Compare.EQUAL, Compare.EQUAL, None, 0, None))
-
-
-L = ('-l',)
-CL = ('-cl',)
-
-TESTS = (
-    T('t0.uxf', L),
-    T('t0.uxf', CL, 't0c.uxf', 't0c.uxf'),
-    # TODO
-    T('l56.uxf', L, None, None, stderr='e56.txt'),
-    T('l56.uxf', CL, 'l56c.uxf', 'l56c.uxf', Compare.EQUIV, Compare.EQUIV,
-      'e56.txt', langs={'py'}),
-    # TODO
-    )
+Test = collections.namedtuple(
+    'Test', ('ifile', # file to read
+             'opts', # e.g., ['-l'] or ['-cl'] or ['-cl', '-i9', '-w40']
+             'afile', # None or SAME or actual filename
+             'efile', # None or SAME or expected filename
+             'i_vs_e', # whether and if so how to compare
+             'a_vs_e', # whether and if so how to compare
+             'stderr', # None or expected stderr filename
+             'returncode', # expected return code
+             'langs', # set of langs for which this test is valid: None→all
+             ))
 
 
 if __name__ == '__main__':
