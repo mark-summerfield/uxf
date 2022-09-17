@@ -11,19 +11,16 @@ use std::{
     path::{Path, PathBuf},
     rc::Rc,
 };
+use uxf::util::PathBufExt;
 
 fn main() {
-    if let Err(err) = real_main() {
-        eprintln!("{}", err);
-    }
-}
-
-fn real_main() -> Result<()> {
     let config = Config::parse();
-    match &config.command {
-        Commands::Format(format) => handle_format(&format),
-        Commands::Lint(lint) => handle_lint(&lint),
-        Commands::Compare(compare) => handle_compare(&compare),
+    if let Err(err) = match &config.command {
+        Commands::Format(format) => handle_format(format),
+        Commands::Lint(lint) => handle_lint(lint),
+        Commands::Compare(compare) => handle_compare(compare),
+    } {
+        eprintln!("{}", err);
     }
 }
 
@@ -31,21 +28,23 @@ fn handle_format(format: &Format) -> Result<()> {
     let inbuf = canonicalize_file(&format.infile)?;
     let infile = inbuf.to_string_lossy().to_string();
     let outfile = get_outfile(&inbuf, &format.outfile)?;
-    let options = parser_options(&format);
+    let options = parser_options(format);
     let uxo = uxf::parse_options(
         &infile,
         options,
         if format.lint { None } else { Some(Rc::new(move |_event| {})) },
     )?;
     if !outfile.is_empty() {
-        output(&outfile, &format, &uxo)?;
+        output(&outfile, format, &uxo)?;
     }
     Ok(())
 }
 
 fn handle_lint(lint: &Lint) -> Result<()> {
     for file in &lint.files {
-        _ = handle_format(&Format::new_lint(file)); // ignore errors
+        if let Err(err) = handle_format(&Format::new_lint(file)) {
+            eprintln!("{}", err);
+        }
     }
     Ok(())
 }
@@ -84,15 +83,15 @@ fn handle_compare(compare: &Compare) -> Result<()> {
     Ok(())
 }
 
-fn get_outfile(inbuf: &Path, outfile: &Option<PathBuf>) -> Result<String> {
-    Ok(if let Some(outbuf) = outfile {
-        if outbuf == &PathBuf::from("-") {
+fn get_outfile(inbuf: &Path, outfile: &PathBuf) -> Result<String> {
+    Ok(if !outfile.is_empty() {
+        if outfile == &PathBuf::from("-") {
             "-".to_string()
-        } else if outbuf == &PathBuf::from("=") {
+        } else if outfile == &PathBuf::from("=") {
             inbuf.to_string_lossy().to_string()
         } else {
-            check_same_file(inbuf, outbuf)?;
-            let outpath = canonicalize_file(outbuf)?;
+            check_same_file(inbuf, outfile)?;
+            let outpath = canonicalize_file(outfile)?;
             outpath.to_string_lossy().to_string()
         }
     } else {
@@ -242,10 +241,10 @@ struct Format {
     #[clap(value_parser)]
     infile: PathBuf,
 
-    /// Optional outfile; use - to write to stdout or = to overwrite
+    /// Required outfile; use - to write to stdout or = to overwrite
     /// infile
     #[clap(value_parser)]
-    outfile: Option<PathBuf>,
+    outfile: PathBuf,
 }
 
 impl Format {
@@ -259,7 +258,7 @@ impl Format {
             wrapwidth: 96,
             compact: false,
             infile: file.to_path_buf(),
-            outfile: None,
+            outfile: PathBuf::new(),
         }
     }
 }
@@ -267,8 +266,8 @@ impl Format {
 #[derive(Args, Debug)]
 struct Lint {
     /// The file(s) to lint. (Use l or lnt or lint)
-    #[clap(value_parser)]
-    files: Vec<PathBuf>, // TODO how to say "at least 1"?
+    #[clap(value_parser, required=true)]
+    files: Vec<PathBuf>,
 }
 
 #[derive(Args, Debug)]

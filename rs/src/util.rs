@@ -127,3 +127,14 @@ pub(crate) fn hex_as_bytes(
     }
     Ok(raw)
 }
+
+pub trait PathBufExt {
+    fn is_empty(&self) -> bool;
+}
+
+impl PathBufExt for PathBuf {
+    fn is_empty(&self) -> bool {
+        self.as_os_str().is_empty()
+    }
+}
+

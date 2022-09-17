@@ -100,8 +100,6 @@ st.sh
 
 # TODO port tlm to use rust uxf
 # NOTE IDEAS:
-# - ~/rs/bin/benchmark.rs (use gen.py files so I can compare with py?)
-# - try regression.py & benchmark.py with pypy to compare speeds
 # - create geo.uxi based on GeoJSON and if successful create:
 #   uxfgeo.py <infile.{json,geojson,uxf,uxg}>
 #	      <outfile.{json,geojson,uxf,uxg}>
@@ -133,15 +131,17 @@ st.sh
 #   tableclass=Table, & uses these rather than List, Map, and Table, so
 #   the user can use their own subclasses
 # NOTE Rejected Ideas
-# - Elide ttypes: e.g., given =Pair a b
-#	[Pair (Pair 1 2) (Pair 3 4)] → [Pair (1 2) (3 4)]
-#   redundant because we can rewrite it as this:
-#	(Pair 1 2 3 4)
 # - Replace yes and no bools with built-in fieldless tables, (Y) (N)
 # - Union types.
 # - Money type (twelth type), e.g., MONEY ::= '$' REAL; use, say
 #   =Money currency:str amount; or, =USD amount, or similar, (where
 #   amount could be str or int or real)
-# - datetimes with timezones; use, say =DateTime when:datetime tz:str
+# - datetimes with timezones; use, say =DateTime when:datetime tz:str,
+#   or use say =TimeZone tz:str, e.g.,
+#   (TimeZone <+00:30> 2021-11-17 ...)
+# - Elide ttypes: e.g., given =Pair a b
+#	[Pair (Pair 1 2) (Pair 3 4)] → [Pair (1 2) (3 4)]
+#   redundant because we can rewrite it as this:
+#	(Pair 1 2 3 4)
 
 # vim: syn=yaml
