@@ -2938,7 +2938,7 @@ class _Writer:
 
     def write(self, text):
         if self.pending_rws:
-            self.out.write(' ')
+            text = ' ' + text
             self.pending_rws = False
         self.out.write(text)
         self.set_pos(text)

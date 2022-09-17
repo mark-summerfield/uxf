@@ -70,16 +70,16 @@ fn handle_compare(compare: &Compare) -> Result<()> {
     )?;
     let eq = if compare.equivalent {
         if uxo1.is_equivalent(&uxo2, uxf::Compare::EQUIVALENT) {
-            "Equivalent"
+            "EQUIV"
         } else {
-            "Unequivalent"
+            "UNEQUIV"
         }
     } else if uxo1 == uxo2 {
-        "Equal"
+        "EQUAL"
     } else {
-        "Unequal"
+        "UNEQUAL"
     };
-    println!("{}: {:?} {:?}", eq, compare.file1, compare.file2);
+    println!("{} {:?} {:?}", eq, compare.file1, compare.file2);
     Ok(())
 }
 

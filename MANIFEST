@@ -1,19 +1,10 @@
-# TODO (1) Improve uxf.py's ttype def output to properly honour wrap
-# width (and only widen if it necessary); (i) with comment; (ii) without
-# comment.
-#   (i)
-#   =#<A comment no matter how short always followed by NL & depth += 1>
-#     Name fields....
-#   (ii)
-#   =Name fields ...
-
 regression.py
 testdata/regression.dat.gz
 # TODO add every testdata UXF file -cl (and -l after uxf pretty)
 # TODO add testdata/big.uxd.gz after uxf pretty
 
 rs/src/bin/uxf.rs
-rs/src/lib.rs # TODO (3) docs
+rs/src/lib.rs # TODO docs
 rs/src/value.rs
 rs/src/key.rs
 rs/src/list.rs
@@ -32,7 +23,7 @@ rs/src/parser/parse.rs
 rs/src/parser/lexer.rs
 rs/src/parser/token.rs
 rs/src/pprint/mod.rs
-rs/src/pprint/pretty.rs # TODO (2) (then update .gvimrc to use rust uxf)
+rs/src/pprint/pretty.rs # TODO ### (then update .gvimrc to use rust uxf)
 rs/src/test_utils.rs
 rs/tests/test_value.rs
 rs/tests/test_list.rs
@@ -104,7 +95,7 @@ st.sh
 #   uxfgeo.py <infile.{json,geojson,uxf,uxg}>
 #	      <outfile.{json,geojson,uxf,uxg}>
 # - article(s) on replacing csv with uxf & ini/json/toml with uxf
-# - uxfdiff.py
+# - uxfdiff.py to show actual differences
 # - uxfedit (GUI) applications
 # - UXF libraries:
 #   . for .js use Dart or TypeScript or similar that can output JS?

@@ -351,18 +351,20 @@ seven:int eight:str nine ten eleven twelve
 ''' # noqa: W291
     uxt_default_format = '''uxf 1
 =Test one:int two:bool three:datetime four:real five:date six:bool \
-seven:int eight:str nine ten eleven 
-  twelve
+seven:int eight:str nine ten 
+  eleven twelve
 (Test 1 yes 1980-01-17T23:59:07 98.654321 2022-07-29 no 2 \
-<A short string of text> 9 <ten> <eleven> 12.0)
+<A short string of text> 9 <ten> 
+<eleven> 12.0)
 ''' # noqa: W291
     uxt_custom_format = '''uxf 1
 =Test one:int two:bool three:datetime 
   four:real five:date six:bool seven:int 
   eight:str nine ten eleven twelve
-(Test 1 yes 1980-01-17T23:59:07 98.654321 
-2022-07-29 no 2 <A short string of text> 9 
-<ten> <eleven> 12.0)
+(Test 1 yes 1980-01-17T23:59:07 
+98.654321 2022-07-29 no 2 
+<A short string of text> 9 <ten> 
+<eleven> 12.0)
 ''' # noqa: W291
     total += 1
     uxo = uxf.loads(uxt_original)

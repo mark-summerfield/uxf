@@ -26,10 +26,10 @@ def main():
         eq = compare(filename1, filename2, equivalent=equivalent,
                      on_event=on_event)
         if eq:
-            eq = 'Equivalent' if equivalent else 'Equal'
+            eq = 'EQUIV' if equivalent else 'EQUAL'
         else:
-            eq = 'Unequivalent' if equivalent else 'Unequal'
-        print(f'{eq}: {filename1!r} {filename2!r}')
+            eq = 'UNEQUIV' if equivalent else 'UNEQUAL'
+        print(f'{eq} {filename1!r} {filename2!r}')
     else:
         raise SystemExit(
             'usage: compare.py [-e|--equiv[alent]] file1.uxf file2.uxf')

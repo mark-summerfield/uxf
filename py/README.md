@@ -799,7 +799,7 @@ or
 
 ## Changes
 
-- 2.5.8 Slighty changed uxfcompare.py's output.
+- 2.5.8 Subtle line-wrapping bugfix. Changed uxfcompare.py's output.
 - 2.5.7 Removed redundant code and added more tests.
 - 2.5.6 uxf.py can now overwrite the infile (e.g., to be used as a formatter
   in an editor)

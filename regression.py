@@ -191,7 +191,7 @@ def compare(lang, compare, file1, file2):
         cmd.append('-e')
     cmd += [file1, file2]
     reply = subprocess.run(cmd, capture_output=True, text=True)
-    return reply.stdout.startswith('Equ')
+    return reply.stdout.startswith('EQU')
 
 
 def cleanup():
