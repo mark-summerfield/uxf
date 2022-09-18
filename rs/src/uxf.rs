@@ -103,9 +103,9 @@ impl Uxf {
     /// Use `to_string()` for compact output if human readability isn't
     /// needed.
     /// This is a convenience wrapper for
-    /// `pretty_options(&Format::default(), None)`
-    pub fn pretty(&self) -> Result<String> {
-        self.pretty_options(&Format::default(), None)
+    /// `to_text_options(&Format::default(), None)`
+    pub fn to_text(&self) -> Result<String> {
+        self.to_text_options(&Format::default(), None)
     }
 
     /// Returns the text of a valid UXF file using the given `Format`
@@ -113,9 +113,9 @@ impl Uxf {
     /// and using the default `on_event` event handler.
     /// Use `to_string()` for compact output if human readability isn't
     /// needed.
-    /// This is a convenience wrapper for `pretty_options(&format, None)`
-    pub fn pretty_format(&self, format: &Format) -> Result<String> {
-        self.pretty_options(format, None)
+    /// This is a convenience wrapper for `to_text_options(&format, None)`
+    pub fn to_text_format(&self, format: &Format) -> Result<String> {
+        self.to_text_options(format, None)
     }
 
     /// Returns the text of a valid UXF file using the given `Format`
@@ -124,12 +124,12 @@ impl Uxf {
     /// handler if `None`).
     /// Use `to_string()` for compact output if neither human readability
     /// nor custom event handling is needed.
-    pub fn pretty_options(
+    pub fn to_text_options(
         &self,
         format: &Format,
         on_event: Option<OnEventFn>,
     ) -> Result<String> {
-        pprint::pretty(format, on_event)
+        pprint::to_text(format, on_event)
     }
 
     /// Returns `true` if this `Uxf` and the `other` `Uxf` have the same

@@ -32,12 +32,12 @@ populating a `List`, `Map`, or `Table`; see the corresponding test files for
 some basic examples.
 
 To write a `Uxf` object to a string (e.g., to write to a file) using
-canonical human-readable output, use `pretty()` (or `pretty_format()` for
-more control, or `pretty_options()` for even more control). Or use
+canonical human-readable output, use `to_text()` (or `to_text_format()` for
+more control, or `to_text_options()` for even more control). Or use
 `to_string() for bare bones not very human friendly output.
 
 ```rust,ignore
-let uxt = uxo.pretty()?;
+let uxt = uxo.to_text()?;
 // write uxt of type String to the target...
 ```
 

@@ -30,6 +30,8 @@ human unfriendly output. Aim is for 1.0.0 to include human-friendly output
 
 ## Changes
 
+- 0.15.0 Changed uxf CLI to use subcommands: can now do compare, format, and
+  lint (so dropped redundant uxfcmp).
 - 0.14.0 Implemented uxfcmp.
 - 0.13.0 Cleanups.
 - 0.12.0 Parser does everything including imports.

@@ -103,7 +103,7 @@ fn output(outfile: &str, format: &Format, uxo: &uxf::Uxf) -> Result<()> {
     let text = if format.compact {
         uxo.to_string()
     } else {
-        uxo.pretty_options(
+        uxo.to_text_options(
             &uxf::Format::new(format.indent, format.wrapwidth, None),
             if format.lint {
                 None // use default linting output

@@ -1,7 +1,7 @@
 regression.py
 testdata/regression.dat.gz
-# TODO add every testdata UXF file -cl (and -l after uxf pretty)
-# TODO add testdata/big.uxd.gz after uxf pretty
+# TODO add every testdata UXF file -cl (and -l after uxf to_text)
+# TODO add testdata/big.uxd.gz after uxf to_text
 
 rs/src/bin/uxf.rs
 rs/src/lib.rs # TODO docs
@@ -23,7 +23,7 @@ rs/src/parser/parse.rs
 rs/src/parser/lexer.rs
 rs/src/parser/token.rs
 rs/src/pprint/mod.rs
-rs/src/pprint/pretty.rs # TODO ### (then update .gvimrc to use rust uxf)
+rs/src/pprint/to_text.rs # TODO ###
 rs/src/test_utils.rs
 rs/tests/test_value.rs
 rs/tests/test_list.rs

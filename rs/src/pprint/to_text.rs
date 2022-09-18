@@ -5,9 +5,9 @@ use crate::event::OnEventFn;
 use crate::format::Format;
 use anyhow::{bail, Result};
 
-pub(crate) fn pretty(
+pub(crate) fn to_text(
     format: &Format,
     on_event: Option<OnEventFn>,
 ) -> Result<String> {
-    bail!("TODO: pretty") // TODO
+    bail!("TODO: to_text") // TODO
 }

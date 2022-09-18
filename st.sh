@@ -1,7 +1,7 @@
 #!/bin/bash
 cd $HOME/app/uxf
-tokei -C -f -slines -tPython -esetup.py -eeg -emisc -epy/t
-tokei -C -f -tRust -etarget -e rs/tests \
+tokei -C -f -slines -tPython -esetup.py -eeg -emisc -ex/ -epy/t
+tokei -C -f -tRust -etarget -e rs/tests -e x/rs \
     | grep -v '^-- ' | grep -v '|-'
 unrecognized.py -q
 python3 -m flake8 --ignore=W504,W503,E261,E303 .
