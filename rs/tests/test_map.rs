@@ -321,8 +321,10 @@ mod tests {
         <art> 0\n<Cane> 1\n<zed> 2\n<Zone> 3}");
     }
 
+    /*
     #[test]
     fn t_map_err() {
         // TODO
     }
+    */
 }

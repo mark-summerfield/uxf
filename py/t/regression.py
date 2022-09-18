@@ -392,7 +392,7 @@ seven:int eight:str nine ten
     else:
         print('default format #2 FAIL')
     total += 1
-    uxt2 = uxo.dumps(format=uxf.Format(wrap_width=40))
+    uxt2 = uxo.dumps(format=uxf.Format(wrapwidth=40))
     if uxt2 == uxt_custom_format:
         ok += 1
         if verbose:

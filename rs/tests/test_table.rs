@@ -48,6 +48,7 @@ mod tests {
         // TODO lots more tests with get, get_mut, iter, inner, inner_mut
     }
 
+    /*
     #[test]
     fn t_table_nested() {
         // TODO nested table of tables of lists of maps of tables etc
@@ -58,4 +59,5 @@ mod tests {
         // TODO adding to fieldless (should get error)
         // TODO adding row of wrong size (should get error)
     }
+    */
 }

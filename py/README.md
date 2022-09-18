@@ -583,7 +583,7 @@ methods).
 
 ##### Constructor
 
-**`Format(indent='  ', wrap_width=96, realdp=None)`**
+**`Format(indent='  ', wrapwidth=96, realdp=None)`**
 
 The [dump()](#dump-def) and [dumps()](#dumps-def) functions use the default
 `Format()` which uses the defaults shown (indent is two spaces). However, by
@@ -594,7 +594,7 @@ otherwise specify a value 0-15.
 
 For example, if you had a `Uxf` object wanted the output to limit lines to
 72 characters and to use 3 decimal places for ``real``s, you could pass a
-format of `Format(wrap_width=72, realdp=3)`.
+format of `Format(wrapwidth=72, realdp=3)`.
 
 <a name="error-class"></a>
 #### Error
@@ -799,6 +799,7 @@ or
 
 ## Changes
 
+- 2.6.0 Changed `wrap_width` to `wrapwidth`.
 - 2.5.8 Subtle line-wrapping bugfix. Changed uxfcompare.py's output.
 - 2.5.7 Removed redundant code and added more tests.
 - 2.5.6 uxf.py can now overwrite the infile (e.g., to be used as a formatter

@@ -56,6 +56,16 @@ impl Event {
         }
     }
 
+    pub fn bare_warning(code: u16, message: &str) -> Self {
+        Event {
+            kind: EventKind::Warning,
+            code,
+            message: message.to_string(),
+            filename: "".to_string(),
+            lino: 0,
+        }
+    }
+
     pub fn new_repair(
         code: u16,
         message: &str,

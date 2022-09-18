@@ -9,13 +9,14 @@ use crate::table::Table;
 use crate::tclass::TClass;
 use crate::util::{escape, isclose64, realstr64};
 use crate::uxf::Compare;
+use anyhow::Result;
 use chrono::{NaiveDate, NaiveDateTime};
 use std::fmt::Write as _;
 use std::{cell::RefCell, fmt, rc::Rc};
 
 pub type Values = Vec<Value>; // For Lists
 pub type Record = Values; // For Tables
-pub type Visitor = Rc<dyn Fn(Visit, &Value)>;
+pub type Visitor = Rc<dyn Fn(Visit, &Value) -> Result<()>>;
 
 #[derive(Clone, Debug)]
 pub enum Value {
@@ -310,70 +311,72 @@ impl Value {
     /// value. List values and Table rows (and values within rows) are
     /// visited in order; Map items are visited in key order, key, then
     /// value, key, then value, etc.
-    pub fn visit(&self, visitor: Visitor) {
+    pub fn visit(&self, visitor: Visitor) -> Result<()> {
         match self {
             Value::List(lst) => {
-                (Rc::clone(&visitor))(Visit::ListBegin, self);
+                (Rc::clone(&visitor))(Visit::ListBegin, self)?;
                 for value in lst.iter() {
                     (Rc::clone(&visitor))(
                         Visit::ListValueBegin,
                         &Value::Null,
-                    );
-                    value.visit(Rc::clone(&visitor));
+                    )?;
+                    value.visit(Rc::clone(&visitor))?;
                     (Rc::clone(&visitor))(
                         Visit::ListValueEnd,
                         &Value::Null,
-                    );
+                    )?;
                 }
-                (Rc::clone(&visitor))(Visit::ListEnd, &Value::Null);
+                (Rc::clone(&visitor))(Visit::ListEnd, &Value::Null)?;
             }
             Value::Map(m) => {
-                (Rc::clone(&visitor))(Visit::MapBegin, self);
+                (Rc::clone(&visitor))(Visit::MapBegin, self)?;
                 for key in m.sorted_keys() {
                     (Rc::clone(&visitor))(
                         Visit::MapItemBegin,
                         &Value::Null,
-                    );
+                    )?;
                     // A key is never a collection
                     let key_value = Value::from(key.clone());
-                    (Rc::clone(&visitor))(Visit::Value, &key_value);
-                    m.get(key).unwrap().visit(Rc::clone(&visitor));
-                    (Rc::clone(&visitor))(Visit::MapItemEnd, &Value::Null);
+                    (Rc::clone(&visitor))(Visit::Value, &key_value)?;
+                    m.get(key).unwrap().visit(Rc::clone(&visitor))?;
+                    (Rc::clone(&visitor))(Visit::MapItemEnd, &Value::Null)?;
                 }
-                (Rc::clone(&visitor))(Visit::MapEnd, &Value::Null);
+                (Rc::clone(&visitor))(Visit::MapEnd, &Value::Null)?;
             }
             Value::Table(t) => {
-                (Rc::clone(&visitor))(Visit::TableBegin, self);
+                (Rc::clone(&visitor))(Visit::TableBegin, self)?;
                 for record in t.iter() {
                     (Rc::clone(&visitor))(
                         Visit::TableRecordBegin,
                         &Value::Null,
-                    );
+                    )?;
                     for value in record.iter() {
-                        value.visit(Rc::clone(&visitor));
+                        value.visit(Rc::clone(&visitor))?;
                     }
                     (Rc::clone(&visitor))(
                         Visit::TableRecordEnd,
                         &Value::Null,
-                    );
+                    )?;
                 }
-                (Rc::clone(&visitor))(Visit::TableEnd, &Value::Null);
+                (Rc::clone(&visitor))(Visit::TableEnd, &Value::Null)?;
             }
-            _ => (Rc::clone(&visitor))(Visit::Value, self),
+            _ => (Rc::clone(&visitor))(Visit::Value, self)?,
         }
+        Ok(())
     }
 
     /// Returns a (possibly empty) vec of all the TClasses in this value and
     /// of any values it contains (iterating recursively using `visit()`).
     pub fn tclasses(&self) -> Vec<TClass> {
         let tclasses = Rc::new(RefCell::new(Vec::<TClass>::new()));
-        self.visit({
+        let _ = self.visit({ // Should only return Ok
             let tclasses = Rc::clone(&tclasses);
             Rc::new(move |_: Visit, value: &Value| {
                 if let Some(table) = value.as_table() {
                     let mut tclasses = tclasses.borrow_mut();
                     tclasses.push(table.tclass().clone());
                 }
+                Ok(())
             })
         });
         tclasses.take()
@@ -603,6 +606,8 @@ impl Eq for Value {}
 pub enum Visit {
     UxfBegin,
     UxfEnd,
+    Import,
+    Ttype,
     ListBegin,
     ListEnd,
     ListValueBegin,

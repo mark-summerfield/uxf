@@ -27,8 +27,10 @@ mod tests {
         assert_eq!(i.typename(), "int");
     }
 
+    /*
     #[test]
     fn t_visit() {
         // TODO
     }
+    */
 }

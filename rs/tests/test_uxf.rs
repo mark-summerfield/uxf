@@ -257,8 +257,10 @@ mod tests {
         // TODO
     }
 
+    /*
     #[test]
     fn t_uxf_parse_options_ok() {
         // TODO
     }
+    */
 }

@@ -31,7 +31,7 @@ from xml.sax.saxutils import escape, unescape
 
 import editabletuple
 
-__version__ = '2.5.8' # uxf module version
+__version__ = '2.6.0' # uxf module version
 VERSION = 1 # UXF file format version
 
 UTF8 = 'utf-8'
@@ -105,7 +105,7 @@ def _validate_format(name, value): # If invalid we return the valid default
     if name == 'indent':
         return (value if (value == '' or value == '\t' or (
                 all(c == ' ' for c in value) and len(value) < 9)) else '  ')
-    if name == 'wrap_width':
+    if name == 'wrapwidth':
         return value if (value is None or value == 0 or
                          40 <= value <= 240) else 96
     if name == 'realdp':
@@ -113,13 +113,13 @@ def _validate_format(name, value): # If invalid we return the valid default
 
 
 Format = editabletuple.editableobject(
-    'Format', 'indent', 'wrap_width', 'realdp', defaults=('  ', 96, None),
+    'Format', 'indent', 'wrapwidth', 'realdp', defaults=('  ', 96, None),
     validator=_validate_format,
     doc='''Specifies various aspects of how a UXF file is dumped to file or
 to a string.
 `indent` defaults to 2 spaces and may be an empty string or a tab or up \
 to 8 spaces
-`wrap_width` defaults to 96 characters and may be None (use the default) \
+`wrapwidth` defaults to 96 characters and may be None (use the default) \
 or 40<=240
 `realdp` defaults to None which means use however many digits after the
 decimal place are needed to represent the given `real` (i.e., Python
@@ -2377,7 +2377,7 @@ def _dump(out, data, on_event, format):
 class _PrettyPrinter(_EventMixin): # Functor that can be used as a visitor
 
     def __init__(self, *, on_event=on_event, format=Format(), _debug=False):
-        self.wrap_width = format.wrap_width
+        self.wrapwidth = format.wrapwidth
         self.realdp = format.realdp
         self.indent = format.indent
         self.on_event = on_event
@@ -2391,16 +2391,16 @@ class _PrettyPrinter(_EventMixin): # Functor that can be used as a visitor
 
 
     @property
-    def wrap_width(self):
-        return self._wrap_width
+    def wrapwidth(self):
+        return self._wrapwidth
 
 
-    @wrap_width.setter
-    def wrap_width(self, value):
+    @wrapwidth.setter
+    def wrapwidth(self, value):
         if value is not None and 40 <= value <= 240:
-            self._wrap_width = value # only allow 40-240
+            self._wrapwidth = value # only allow 40-240
         else: # None or out of range → default
-            self._wrap_width = 96 # default
+            self._wrapwidth = 96 # default
 
 
     @property
@@ -2527,9 +2527,9 @@ class _PrettyPrinter(_EventMixin): # Functor that can be used as a visitor
             if len(filename) > widest:
                 widest = len(filename)
         widest += 1 # to allow for '!'
-        if widest > self.wrap_width:
-            self.wrap_width = widest
-            self.warning(563, 'import forced wrap_width to be increased to '
+        if widest > self.wrapwidth:
+            self.wrapwidth = widest
+            self.warning(563, 'import forced wrapwidth to be increased to '
                          f'{widest}')
 
 
@@ -2558,9 +2558,9 @@ class _PrettyPrinter(_EventMixin): # Functor that can be used as a visitor
             self.rnl()
         self.depth = 0
         widest += 1 # to allow for '='
-        if widest > self.wrap_width:
-            self.wrap_width = widest
-            self.warning(564, 'ttype forced wrap_width to be increased to '
+        if widest > self.wrapwidth:
+            self.wrapwidth = widest
+            self.warning(564, 'ttype forced wrapwidth to be increased to '
                          f'{widest}')
 
 
@@ -2685,7 +2685,7 @@ class _PrettyPrinter(_EventMixin): # Functor that can be used as a visitor
 
     def handle_str(self, value, *, prefix='', suffix=''):
         text = escape(value)
-        span = self.wrap_width - len(prefix)
+        span = self.wrapwidth - len(prefix)
         too_wide = False
         for line in text.splitlines():
             if len(line) > span:
@@ -2698,7 +2698,7 @@ class _PrettyPrinter(_EventMixin): # Functor that can be used as a visitor
 
 
     def _handle_long_str(self, text, prefix): # assumes text is escaped
-        span = self.wrap_width - (4 + len(prefix))
+        span = self.wrapwidth - (4 + len(prefix))
         while text:
             i = text.rfind(' ', 0, span) # find last space within span
             i = i + 1 if i != -1 else span # if no space, split at span
@@ -2713,8 +2713,8 @@ class _PrettyPrinter(_EventMixin): # Functor that can be used as a visitor
 
     def handle_bytes(self, value):
         text = value.hex().upper()
-        if len(text) + 4 >= self.wrap_width:
-            span = self.wrap_width - len(self.indent)
+        if len(text) + 4 >= self.wrapwidth:
+            span = self.wrapwidth - len(self.indent)
             self.puts('(:')
             self.rnl()
             while text:
@@ -2755,7 +2755,7 @@ class _PrettyPrinter(_EventMixin): # Functor that can be used as a visitor
         if not self.tokens:
             return
         out = out or io.StringIO()
-        writer = _Writer(self.tokens, out, wrap_width=self.wrap_width,
+        writer = _Writer(self.tokens, out, wrapwidth=self.wrapwidth,
                          realdp=self.realdp, indent=self.indent,
                          debug=self._debug)
         writer.pprint()
@@ -2763,11 +2763,11 @@ class _PrettyPrinter(_EventMixin): # Functor that can be used as a visitor
 
 class _Writer:
 
-    def __init__(self, tokens, out, *, wrap_width, realdp, indent,
+    def __init__(self, tokens, out, *, wrapwidth, realdp, indent,
                  debug=False):
         self.tokens = tokens
         self.out = out
-        self.width = wrap_width + 1 # since we compare with < not <=
+        self.width = wrapwidth + 1 # since we compare with < not <=
         self.realdp = realdp
         self.indent = indent
         self.debug = debug
@@ -3219,7 +3219,7 @@ duplicates removed) to allow later imports to override earlier ones.''')
                         file.write(str(uxo))
             else:
                 format = Format(indent=config.indent,
-                                wrap_width=config.wrapwidth)
+                                wrapwidth=config.wrapwidth)
                 outfile = sys.stdout if outfile == '-' else outfile
                 dump(outfile, uxo, on_event=on_event, format=format)
     except (OSError, Error) as err:
