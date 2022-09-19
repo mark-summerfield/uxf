@@ -50,7 +50,7 @@ def main():
         all_duration += duration
         report(lang, total, ok, duration)
     report('All' if all_total == all_ok else 'Some', all_total, all_ok,
-            all_duration, '=')
+           all_duration, '=')
     if all_total == all_ok:
         cleanup()
 

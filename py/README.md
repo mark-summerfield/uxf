@@ -799,7 +799,9 @@ or
 
 ## Changes
 
-- 2.6.0 Changed `wrap_width` to `wrapwidth`.
+- 2.6.0 Changed `wrap_width` to `wrapwidth` throughout the API. If custom
+  ``Format``s are used the wrap width name will need to be changed to
+  `wrapwidth`.
 - 2.5.8 Subtle line-wrapping bugfix. Changed uxfcompare.py's output.
 - 2.5.7 Removed redundant code and added more tests.
 - 2.5.6 uxf.py can now overwrite the infile (e.g., to be used as a formatter
