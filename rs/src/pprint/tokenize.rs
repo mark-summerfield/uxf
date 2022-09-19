@@ -67,7 +67,7 @@ fn handle_uxf_begin(
     value: &Value,
 ) -> Result<()> {
     if let Some(comment) = value.as_str() {
-        handle_str(Rc::clone(&state), comment, '#', '\n')?;
+        handle_str(Rc::clone(&state), comment, "#", "\n")?;
     }
     Ok(())
 }
@@ -103,8 +103,8 @@ fn handle_ttype(state: Rc<RefCell<State>>, value: &Value) -> Result<()> {
 fn handle_str(
     state: Rc<RefCell<State>>,
     comment: &str,
-    prefix: char,
-    suffix: char,
+    prefix: &str,
+    suffix: &str,
 ) -> Result<()> {
     Ok(())
 }
