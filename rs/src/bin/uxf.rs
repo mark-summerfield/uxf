@@ -114,13 +114,16 @@ fn output(outfile: &str, format: &Format, uxo: &uxf::Uxf) -> Result<()> {
     };
     if outfile == "-" {
         println!("{}", text);
-    } else if outfile.ends_with(".gz") {
-        let mut out = GzEncoder::new(Vec::new(), Compression::best());
-        out.write_all(text.as_bytes())?;
-        out.finish()?;
     } else {
+        let raw = text.as_bytes();
         let mut file = File::create(outfile)?;
-        file.write_all(text.as_bytes())?
+        if outfile.ends_with(".gz") {
+            let mut out = GzEncoder::new(&file, Compression::best());
+            out.write_all(raw)?;
+            out.finish()?;
+        } else {
+            file.write_all(&raw)?;
+        }
     }
     Ok(())
 }
