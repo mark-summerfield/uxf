@@ -69,7 +69,6 @@ pub mod parser;
 pub mod pprint;
 pub mod table;
 pub mod tclass;
-pub mod test_utils;
 pub mod util;
 pub mod uxf;
 pub mod value;

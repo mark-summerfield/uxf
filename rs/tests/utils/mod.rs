@@ -1,17 +1,20 @@
 // Copyright © 2022 Mark Summerfield. All rights reserved.
 // License: GPLv3
 
-use crate::consts::*;
-use crate::event::{Event, EventKind};
+use uxf::consts::*;
+use uxf::event::{Event, EventKind};
 
+#[allow(dead_code)]
 pub fn assert_warning(event: &Event, code: u16, message: &str) {
     assert_event(event, EventKind::Warning, code, "-", 0, message);
 }
 
+#[allow(dead_code)]
 pub fn assert_repair(event: &Event, code: u16, message: &str) {
     assert_event(event, EventKind::Repair, code, "-", 0, message);
 }
 
+#[allow(dead_code)]
 pub fn assert_event(
     event: &Event,
     kind: EventKind,

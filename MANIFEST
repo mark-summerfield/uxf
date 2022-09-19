@@ -27,7 +27,7 @@ rs/src/pprint/to_text.rs # TODO ###
 rs/src/pprint/state.rs
 rs/src/pprint/tokenize.rs
 rs/src/pprint/token.rs
-rs/src/test_utils.rs
+rs/tests/utils/mod.rs
 rs/tests/test_value.rs
 rs/tests/test_list.rs
 rs/tests/test_map.rs
