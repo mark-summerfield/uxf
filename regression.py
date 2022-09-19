@@ -49,16 +49,17 @@ def main():
         all_ok += ok
         all_duration += duration
         report(lang, total, ok, duration)
-    report('All', all_total, all_ok, all_duration, '=')
+    report('All' if all_total == all_ok else 'Some', all_total, all_ok,
+            all_duration, '=')
     if all_total == all_ok:
         cleanup()
 
 
 def report(lang, total, ok, duration, sep='-'):
     if total == ok:
-        print(f'{lang:3} {ok:,}/{total:,} OK ({duration:.3f} sec)')
+        print(f'{lang:4} {ok:,}/{total:,} OK ({duration:.3f} sec)')
     else:
-        print(f'{lang:3} {ok:,}/{total:,} FAIL ({duration:.3f} sec)')
+        print(f'{lang:4} {ok:,}/{total:,} FAIL ({duration:.3f} sec)')
     print(sep * 30)
 
 

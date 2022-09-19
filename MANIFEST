@@ -25,6 +25,7 @@ rs/src/parser/token.rs
 rs/src/pprint/mod.rs
 rs/src/pprint/to_text.rs # TODO ###
 rs/src/pprint/state.rs
+rs/src/pprint/tokenize.rs
 rs/src/pprint/token.rs
 rs/src/test_utils.rs
 rs/tests/test_value.rs
