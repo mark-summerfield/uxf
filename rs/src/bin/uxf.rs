@@ -122,7 +122,7 @@ fn output(outfile: &str, format: &Format, uxo: &uxf::Uxf) -> Result<()> {
             out.write_all(raw)?;
             out.finish()?;
         } else {
-            file.write_all(&raw)?;
+            file.write_all(raw)?;
         }
     }
     Ok(())
