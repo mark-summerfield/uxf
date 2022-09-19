@@ -2,7 +2,7 @@
 // License: GPLv3
 
 use crate::consts::*;
-use crate::event::{self, OnEventFn};
+use crate::event::{self, ignore_event, OnEventFn};
 use crate::format::Format;
 use crate::list::List;
 use crate::parser;
@@ -12,10 +12,13 @@ use crate::util::{escape, read_file};
 use crate::value::{Value, Visit, Visitor};
 use anyhow::{bail, Result};
 use bitflags::bitflags;
+use flate2::{write::GzEncoder, Compression};
 use indexmap::map::IndexMap;
 use std::{
     collections::{HashMap, HashSet},
     fmt,
+    fs::File,
+    io::Write,
     rc::Rc,
 };
 
@@ -92,6 +95,10 @@ impl Uxf {
 
     /// Iterates over the file-level comment, imports, ttypes, and every
     /// value in this Uxf's value; see Value::visit().
+    ///
+    /// For a very short and simple example see the `Value::tclasses()`
+    /// method. For a full example, see the `pprint::to_text::to_text()`
+    /// function.
     pub fn visit(&self, visitor: Visitor) -> Result<()> {
         (Rc::clone(&visitor))(Visit::UxfBegin, &self.comment().into())?;
         let mut seen = HashSet::new();
@@ -158,6 +165,40 @@ impl Uxf {
         on_event: Option<OnEventFn>,
     ) -> Result<String> {
         pprint::to_text(self, format, on_event)
+    }
+
+    /// Writes the Uxf's data to the specified filename (gzip-compressing if
+    /// the filename ends with `.gz`) using the default human readable
+    /// `Format` options and ignoring repair and warning events.
+    /// This is a convenience wrapper for
+    /// `write_format(&Format::default())`
+    pub fn write(&self, filename: &str) -> Result<()> {
+        self.write_format(filename, &Format::default())
+    }
+
+    /// Writes the Uxf's data to the specified filename (gzip-compressing if
+    /// the filename ends with `.gz`) using the given `Format`
+    /// options and ignoring repair and warning events.
+    ///
+    /// (For the most compact output without human friendly formatting, use
+    /// `to_string()` and write the text returned to a file ending `.gz`
+    /// and using gzip compression.)
+    pub fn write_format(
+        &self,
+        filename: &str,
+        format: &Format,
+    ) -> Result<()> {
+        let text =
+            self.to_text_options(format, Some(Rc::new(ignore_event)))?;
+        if filename.ends_with(".gz") {
+            let mut out = GzEncoder::new(Vec::new(), Compression::best());
+            out.write_all(text.as_bytes())?;
+            out.finish()?;
+        } else {
+            let mut file = File::create(filename)?;
+            file.write_all(text.as_bytes())?
+        }
+        Ok(())
     }
 
     /// Returns `true` if this `Uxf` and the `other` `Uxf` have the same

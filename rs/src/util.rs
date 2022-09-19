@@ -137,4 +137,3 @@ impl PathBufExt for PathBuf {
         self.as_os_str().is_empty()
     }
 }
-

@@ -93,11 +93,11 @@ st.sh
 
 # TODO port tlm to use rust uxf
 # NOTE IDEAS:
+# - uxfdiff.py (& rs uxf diff subcommand) to show actual differences
 # - create geo.uxi based on GeoJSON and if successful create:
 #   uxfgeo.py <infile.{json,geojson,uxf,uxg}>
 #	      <outfile.{json,geojson,uxf,uxg}>
 # - article(s) on replacing csv with uxf & ini/json/toml with uxf
-# - uxfdiff.py to show actual differences
 # - uxfedit (GUI) applications
 # - UXF libraries:
 #   . for .js use Dart or TypeScript or similar that can output JS?

@@ -310,7 +310,11 @@ impl Value {
     /// contained value, recursively, calling visitor() once for every
     /// value. List values and Table rows (and values within rows) are
     /// visited in order; Map items are visited in key order, key, then
-    /// value, key, then value, etc.
+    /// value, key, then value, etc. See also `Uxf::visit()`.
+    /// 
+    /// For a very short and simple example see the `Value::tclasses()`
+    /// method. For a full example, see the `pprint::to_text::to_text()`
+    /// function.
     pub fn visit(&self, visitor: Visitor) -> Result<()> {
         match self {
             Value::List(lst) => {
@@ -369,7 +373,8 @@ impl Value {
     /// of any values it contains (iterating recursively using `visit()`).
     pub fn tclasses(&self) -> Vec<TClass> {
         let tclasses = Rc::new(RefCell::new(Vec::<TClass>::new()));
-        let _ = self.visit({ // Should only return Ok
+        let _ = self.visit({
+            // Should only return Ok
             let tclasses = Rc::clone(&tclasses);
             Rc::new(move |_: Visit, value: &Value| {
                 if let Some(table) = value.as_table() {

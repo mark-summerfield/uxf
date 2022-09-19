@@ -32,7 +32,7 @@ fn handle_format(format: &Format) -> Result<()> {
     let uxo = uxf::parse_options(
         &infile,
         options,
-        if format.lint { None } else { Some(Rc::new(move |_event| {})) },
+        if format.lint { None } else { Some(Rc::new(uxf::ignore_event)) },
     )?;
     if !outfile.is_empty() {
         output(&outfile, format, &uxo)?;
@@ -108,7 +108,7 @@ fn output(outfile: &str, format: &Format, uxo: &uxf::Uxf) -> Result<()> {
             if format.lint {
                 None // use default linting output
             } else {
-                Some(Rc::new(move |_event| {})) // filter out lints
+                Some(Rc::new(uxf::ignore_event)) // filter out lints
             },
         )?
     };
@@ -266,7 +266,7 @@ impl Format {
 #[derive(Args, Debug)]
 struct Lint {
     /// The file(s) to lint. (Use l or lnt or lint)
-    #[clap(value_parser, required=true)]
+    #[clap(value_parser, required = true)]
     files: Vec<PathBuf>,
 }
 
