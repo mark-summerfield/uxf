@@ -3,7 +3,7 @@
 " Author:          Mark Summerfield <mark@qtrac.eu>
 " URL:             https://github.com/mark-summerfield/uxf
 " Licence:         Public Domain
-" Latest Revision: 2022-07-05
+" Latest Revision: 2022-09-19
 
 if exists("b:current_syntax")
   finish
@@ -21,7 +21,7 @@ syn keyword uxfType bool int real date datetime str bytes list map table
 syn match uxfPunctuation /[][{}()=:!]/
 syn match uxfIdentifier /\<\w\+\>/ 
 syn region uxfStr start="<" end=">"
-syn region uxfComment start="#<" end=">"
+syn region uxfComment start="#<" end=">" contains=uxfTodo keepend
 syn match uxfBytes /(:[A-Fa-f0-9\s]\+:)/ contains=uxfIdentifier keepend
 syn match uxfNumber /\<[-+]\=\d\+\(\.\d\+\([Ee][-+]\=\d\+\)\=\)\=\>/
 syn match uxfDateTime /\<\d\d\d\d-\d\d-\d\d\(T\d\d\(:\d\d\(:\d\d\)\=\)\=\)\=\>/
