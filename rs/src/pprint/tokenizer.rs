@@ -32,43 +32,11 @@ pub(crate) fn tokenize(
         let tokenizer = Rc::clone(&tokenizer);
         move |visit: Visit, value: &Value| {
             let mut tokenizer = tokenizer.borrow_mut();
-            match visit {
-                Visit::UxfBegin => tokenizer.handle_uxf_begin(value)?,
-                Visit::UxfEnd => tokenizer.eof(),
-                Visit::ListBegin => {
-                    eprintln!("TODO to_text visit ListBegin")
-                }
-                Visit::ListEnd => eprintln!("TODO to_text visit ListEnd"),
-                Visit::ListValueBegin => {
-                    eprintln!("TODO to_text visit ListValueBegin")
-                }
-                Visit::ListValueEnd => {
-                    eprintln!("TODO to_text visit ListValueEnd")
-                }
-                Visit::MapBegin => eprintln!("TODO to_text visit MapBegin"),
-                Visit::MapEnd => eprintln!("TODO to_text visit MapEnd"),
-                Visit::MapItemBegin => {
-                    eprintln!("TODO to_text visit MapItemBegin")
-                }
-                Visit::MapItemEnd => {
-                    eprintln!("TODO to_text visit MapItemEnd")
-                }
-                Visit::TableBegin => {
-                    eprintln!("TODO to_text visit TableBegin")
-                }
-                Visit::TableEnd => eprintln!("TODO to_text visit TableEnd"),
-                Visit::TableRecordBegin => {
-                    eprintln!("TODO to_text visit TableRecordBegin")
-                }
-                Visit::TableRecordEnd => {
-                    eprintln!("TODO to_text visit TableRecordEnd")
-                }
-                Visit::Value => eprintln!("TODO to_text visit Value"),
-            }
-            Ok(())
+            tokenizer.visit(visit, value)
         }
     }))?;
     let tokens = tokenizer.borrow_mut().get_tokens();
+    dbg!(&tokens);
     Ok(tokens)
 }
 
@@ -110,6 +78,43 @@ impl Tokenizer {
             map_item_counts: vec![],
             table_record_counts: vec![],
         }
+    }
+
+    pub fn visit(&mut self, visit: Visit, value: &Value) -> Result<()> {
+        match visit {
+            Visit::UxfBegin => self.handle_uxf_begin(value)?,
+            Visit::UxfEnd => self.eof(),
+            Visit::ListBegin => {
+                eprintln!("TODO to_text visit ListBegin")
+            }
+            Visit::ListEnd => eprintln!("TODO to_text visit ListEnd"),
+            Visit::ListValueBegin => {
+                eprintln!("TODO to_text visit ListValueBegin")
+            }
+            Visit::ListValueEnd => {
+                eprintln!("TODO to_text visit ListValueEnd")
+            }
+            Visit::MapBegin => eprintln!("TODO to_text visit MapBegin"),
+            Visit::MapEnd => eprintln!("TODO to_text visit MapEnd"),
+            Visit::MapItemBegin => {
+                eprintln!("TODO to_text visit MapItemBegin")
+            }
+            Visit::MapItemEnd => {
+                eprintln!("TODO to_text visit MapItemEnd")
+            }
+            Visit::TableBegin => {
+                eprintln!("TODO to_text visit TableBegin")
+            }
+            Visit::TableEnd => eprintln!("TODO to_text visit TableEnd"),
+            Visit::TableRecordBegin => {
+                eprintln!("TODO to_text visit TableRecordBegin")
+            }
+            Visit::TableRecordEnd => {
+                eprintln!("TODO to_text visit TableRecordEnd")
+            }
+            Visit::Value => eprintln!("TODO to_text visit Value"),
+        }
+        Ok(())
     }
 
     pub fn get_tokens(&mut self) -> Tokens {
@@ -212,18 +217,43 @@ impl Tokenizer {
 
     // Don't need duplicate RWS; don't need RWS if RNL present
     fn rws(&mut self) {
-        if !self.tokens.is_empty() {}
-        // TODO
+        if !self.tokens.is_empty() {
+            let mut pos = self.tokens.len() - 1; // last
+            if self.tokens[pos].kind == TokenKind::End
+                && self.tokens.len() > 1
+            {
+                pos += 1;
+            }
+            if self.tokens[pos].kind == TokenKind::Rws
+                || self.tokens[pos].kind == TokenKind::Rnl
+            {
+                return;
+            }
+        }
+        self.append_bare(TokenKind::Rws, self.depth);
     }
 
     // Don't need RWS before newline; don't need dup RNL
     fn rnl(&mut self) {
-        if !self.tokens.is_empty() {}
-        // TODO
+        if !self.tokens.is_empty() {
+            let last = self.tokens.len() - 1;
+            if self.tokens[last].kind == TokenKind::Rws {
+                self.tokens.truncate(self.tokens.len() - 1);
+            }
+            let last = self.tokens.len() - 1;
+            if self.tokens[last].kind == TokenKind::Rnl
+                || (self.tokens.len() > 1
+                    && self.tokens[last].kind == TokenKind::End
+                    && self.tokens[last - 1].kind == TokenKind::Rnl)
+            {
+                return;
+            }
+        }
+        self.append_bare(TokenKind::Rnl, self.depth);
     }
 
     fn eof(&mut self) {
-        // TODO
+        self.append_bare(TokenKind::Eof, self.depth);
     }
 
     fn put_line(&mut self, s: &str, depth: usize) {
@@ -239,7 +269,7 @@ impl Tokenizer {
             if let Some(token) = self.tokens.last_mut() {
                 if token.kind == TokenKind::Str
                     && !token.is_multiline()
-                    && !token.text.ends_with("\n")
+                    && !token.text.ends_with('\n')
                 {
                     token.text.push_str(s); // absorb s into the prev one
                     if let Some(num_records) = num_records {
