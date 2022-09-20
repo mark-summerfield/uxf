@@ -313,7 +313,7 @@ impl Value {
     /// value, key, then value, etc. See also `Uxf::visit()`.
     /// 
     /// For a very short and simple example see the `Value::tclasses()`
-    /// method. For a full example, see the `pprint::to_text::to_text()`
+    /// method. For a full example, see the `pprint::tokenizer::tokenize()`
     /// function.
     pub fn visit(&self, visitor: Visitor) -> Result<()> {
         match self {
