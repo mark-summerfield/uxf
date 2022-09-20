@@ -7,22 +7,22 @@ pub type Tokens = Vec<Token>;
 pub struct Token {
     pub kind: TokenKind,
     pub text: String,
-    pub depth: u16,
-    pub num_records: u32,
+    pub depth: usize,
+    pub num_records: Option<usize>,
 }
 
 impl Token {
     pub fn new(
         kind: TokenKind,
         text: &str,
-        depth: u16,
-        num_records: u32,
+        depth: usize,
+        num_records: Option<usize>,
     ) -> Self {
         Token { kind, text: text.to_string(), depth, num_records }
     }
 
     pub fn new_empty(kind: TokenKind) -> Self {
-        Token { kind, text: "".to_string(), depth: 0, num_records: 0 }
+        Token { kind, text: "".to_string(), depth: 0, num_records: None }
     }
 
     pub fn is_multiline(&self) -> bool {

@@ -611,8 +611,6 @@ impl Eq for Value {}
 pub enum Visit {
     UxfBegin,
     UxfEnd,
-    Import,
-    Ttype,
     ListBegin,
     ListEnd,
     ListValueBegin,

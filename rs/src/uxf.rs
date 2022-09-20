@@ -93,41 +93,13 @@ impl Uxf {
         self.tclass_for_ttype.get(ttype)
     }
 
-    /// Iterates over the file-level comment, imports, ttypes, and every
-    /// value in this Uxf's value; see Value::visit().
+    /// Iterates over every value in this Uxf's value; see Value::visit().
     ///
     /// For a very short and simple example see the `Value::tclasses()`
     /// method. For a full example, see the `pprint::to_text::to_text()`
     /// function.
     pub fn visit(&self, visitor: Visitor) -> Result<()> {
         (Rc::clone(&visitor))(Visit::UxfBegin, &self.comment().into())?;
-        let mut seen = HashSet::new();
-        for filename in self.import_for_ttype.values() {
-            if !seen.contains(&filename) {
-                seen.insert(filename);
-                (Rc::clone(&visitor))(
-                    Visit::Import,
-                    &Value::Str(filename.to_string()),
-                )?;
-            }
-        }
-        for (ttype, tclass) in self.tclass_for_ttype.iter() {
-            // Each tclass is encoded as:
-            // [#<tclass comment> ttype [[#<fieldname1> vtype1] ... ]]
-            if !self.import_for_ttype.contains_key(ttype) {
-                let mut lst = List::new(ttype, tclass.comment())?;
-                if !tclass.is_fieldless() {
-                    for field in tclass.fields() {
-                        let flst = List::new(
-                            field.vtype().unwrap_or(""),
-                            field.name(),
-                        )?;
-                        lst.push(Value::List(flst));
-                    }
-                }
-                (Rc::clone(&visitor))(Visit::Ttype, &Value::List(lst))?;
-            }
-        }
         self.value.visit(Rc::clone(&visitor))?;
         (Rc::clone(&visitor))(Visit::UxfEnd, &Value::Null)
     }

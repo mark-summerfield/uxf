@@ -1,0 +1,270 @@
+// Copyright © 2022 Mark Summerfield. All rights reserved.
+// License: GPLv3
+
+use crate::event::{self, Event, OnEventFn};
+use crate::format::Format;
+use crate::pprint::token::{Token, TokenKind, Tokens};
+use crate::tclass::TClass;
+use crate::uxf::Uxf;
+use crate::value::{Value, Visit};
+use anyhow::{bail, Result};
+use indexmap::map::IndexMap;
+use std::{
+    cell::RefCell,
+    collections::{HashMap, HashSet},
+    rc::Rc,
+};
+
+pub(crate) fn tokenize(
+    uxo: &Uxf,
+    format: &Format,
+    on_event: Option<OnEventFn>,
+    tclass_for_ttype: HashMap<String, TClass>,
+    import_for_ttype: IndexMap<String, String>,
+) -> Result<Tokens> {
+    let tokenizer = Rc::new(RefCell::new(Tokenizer::new(
+        on_event,
+        format,
+        tclass_for_ttype,
+        import_for_ttype,
+    )));
+    uxo.visit(Rc::new({
+        let tokenizer = Rc::clone(&tokenizer);
+        move |visit: Visit, value: &Value| {
+            let mut tokenizer = tokenizer.borrow_mut();
+            match visit {
+                Visit::UxfBegin => tokenizer.handle_uxf_begin(value)?,
+                Visit::UxfEnd => tokenizer.eof(),
+                Visit::ListBegin => {
+                    eprintln!("TODO to_text visit ListBegin")
+                }
+                Visit::ListEnd => eprintln!("TODO to_text visit ListEnd"),
+                Visit::ListValueBegin => {
+                    eprintln!("TODO to_text visit ListValueBegin")
+                }
+                Visit::ListValueEnd => {
+                    eprintln!("TODO to_text visit ListValueEnd")
+                }
+                Visit::MapBegin => eprintln!("TODO to_text visit MapBegin"),
+                Visit::MapEnd => eprintln!("TODO to_text visit MapEnd"),
+                Visit::MapItemBegin => {
+                    eprintln!("TODO to_text visit MapItemBegin")
+                }
+                Visit::MapItemEnd => {
+                    eprintln!("TODO to_text visit MapItemEnd")
+                }
+                Visit::TableBegin => {
+                    eprintln!("TODO to_text visit TableBegin")
+                }
+                Visit::TableEnd => eprintln!("TODO to_text visit TableEnd"),
+                Visit::TableRecordBegin => {
+                    eprintln!("TODO to_text visit TableRecordBegin")
+                }
+                Visit::TableRecordEnd => {
+                    eprintln!("TODO to_text visit TableRecordEnd")
+                }
+                Visit::Value => eprintln!("TODO to_text visit Value"),
+            }
+            Ok(())
+        }
+    }))?;
+    let tokens = tokenizer.borrow_mut().get_tokens();
+    Ok(tokens)
+}
+
+pub struct Tokenizer {
+    pub on_event: OnEventFn,
+    pub indent: String,
+    pub wrapwidth: usize,
+    pub realdp: Option<u8>,
+    pub tclass_for_ttype: HashMap<String, TClass>, // ttype x TClass
+    pub import_for_ttype: IndexMap<String, String>, // ttype x import
+    pub depth: usize,
+    pub tokens: Tokens,
+    pub list_value_counts: Vec<usize>,
+    pub map_item_counts: Vec<usize>,
+    pub table_record_counts: Vec<usize>,
+}
+
+impl Tokenizer {
+    pub fn new(
+        on_event: Option<OnEventFn>,
+        format: &Format,
+        tclass_for_ttype: HashMap<String, TClass>,
+        import_for_ttype: IndexMap<String, String>,
+    ) -> Self {
+        Self {
+            on_event: if let Some(on_event) = on_event {
+                Rc::clone(&on_event)
+            } else {
+                Rc::new(event::on_event)
+            },
+            indent: format.indent.clone(),
+            realdp: format.realdp,
+            wrapwidth: format.wrapwidth as usize,
+            depth: 0,
+            tokens: Tokens::new(),
+            tclass_for_ttype,
+            import_for_ttype,
+            list_value_counts: vec![],
+            map_item_counts: vec![],
+            table_record_counts: vec![],
+        }
+    }
+
+    pub fn get_tokens(&mut self) -> Tokens {
+        let mut tokens = Tokens::new();
+        std::mem::swap(&mut tokens, &mut self.tokens);
+        tokens
+    }
+
+    pub fn handle_imports(&mut self) -> Result<()> {
+        let mut widest = 0;
+        let mut seen = HashSet::new();
+        let imports: Vec<String> =
+            self.import_for_ttype.values().map(|i| i.to_string()).collect();
+        for import in imports {
+            if !seen.contains(&import) {
+                self.puts(&format!("!{}\n", &import));
+                let width = import.chars().count() + 1; // +1 for !
+                if width > widest {
+                    widest = width;
+                }
+                seen.insert(import);
+            }
+        }
+        if widest > self.wrapwidth {
+            self.wrapwidth = widest;
+            (self.on_event)(&Event::bare_warning(
+                563,
+                &format!(
+                    "imports forced wrapwidth to be increased to {}",
+                    widest
+                ),
+            ));
+        }
+        Ok(())
+    }
+
+    pub fn handle_tclasses(&mut self) -> Result<()> {
+        let mut widest = 0;
+        let mut ttype_tclass_pairs: Vec<(String, TClass)> = self
+            .tclass_for_ttype
+            .iter()
+            .filter(|pair| !self.import_for_ttype.contains_key(pair.0))
+            .map(|pair| (pair.0.to_lowercase(), pair.1.clone()))
+            .collect();
+        ttype_tclass_pairs.sort();
+        for (ttype, tclass) in ttype_tclass_pairs {
+            self.puts("=");
+            if !tclass.comment().is_empty() {
+                self.handle_comment(tclass.comment());
+                self.rws();
+            }
+            self.puts(&ttype);
+            let width = ttype.chars().count() + 1; // +1 for =
+            if width > widest {
+                widest = width;
+            }
+            self.depth = 1; // to indent any wrapped fields
+            for field in tclass.fields() {
+                self.rws();
+                self.puts(field.name());
+                if let Some(vtype) = field.vtype() {
+                    self.puts(&format!(":{}", vtype));
+                }
+                let width = field.name().chars().count();
+                if width > widest {
+                    widest = width;
+                }
+            }
+            self.rnl();
+        }
+        self.depth = 0;
+        if widest > self.wrapwidth {
+            self.wrapwidth = widest;
+            (self.on_event)(&Event::bare_warning(
+                564,
+                &format!(
+                    "ttype forced wrapwidth to be increased to {}",
+                    widest
+                ),
+            ));
+        }
+        Ok(())
+    }
+
+    pub fn handle_uxf_begin(&mut self, value: &Value) -> Result<()> {
+        if let Some(comment) = value.as_str() {
+            self.handle_str(comment, "#", "\n");
+        }
+        self.handle_imports()?;
+        self.handle_tclasses()
+    }
+
+    fn handle_str(&mut self, comment: &str, prefix: &str, suffix: &str) {
+        // TODO
+    }
+
+    fn handle_comment(&mut self, comment: &str) {
+        self.handle_str(comment, "#", "")
+    }
+
+    // Don't need duplicate RWS; don't need RWS if RNL present
+    fn rws(&mut self) {
+        if !self.tokens.is_empty() {}
+        // TODO
+    }
+
+    // Don't need RWS before newline; don't need dup RNL
+    fn rnl(&mut self) {
+        if !self.tokens.is_empty() {}
+        // TODO
+    }
+
+    fn eof(&mut self) {
+        // TODO
+    }
+
+    fn put_line(&mut self, s: &str, depth: usize) {
+        self.append(TokenKind::Str, s, depth, None);
+    }
+
+    fn puts(&mut self, s: &str) {
+        self.puts_num(s, None);
+    }
+
+    fn puts_num(&mut self, s: &str, num_records: Option<usize>) {
+        if !self.tokens.is_empty() {
+            if let Some(token) = self.tokens.last_mut() {
+                if token.kind == TokenKind::Str
+                    && !token.is_multiline()
+                    && !token.text.ends_with("\n")
+                {
+                    token.text.push_str(s); // absorb s into the prev one
+                    if let Some(num_records) = num_records {
+                        if token.num_records.is_none() {
+                            token.num_records = Some(num_records);
+                        }
+                    }
+                    return;
+                }
+            }
+        }
+        self.append(TokenKind::Str, s, self.depth, num_records);
+    }
+
+    fn append_bare(&mut self, kind: TokenKind, depth: usize) {
+        self.append(kind, "", depth, None);
+    }
+
+    fn append(
+        &mut self,
+        kind: TokenKind,
+        text: &str,
+        depth: usize,
+        num_records: Option<usize>,
+    ) {
+        self.tokens.push(Token::new(kind, text, depth, num_records));
+    }
+}
