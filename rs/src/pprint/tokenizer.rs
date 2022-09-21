@@ -5,6 +5,7 @@ use crate::event::{self, Event, OnEventFn};
 use crate::format::Format;
 use crate::pprint::token::{Token, TokenKind, Tokens};
 use crate::tclass::TClass;
+use crate::util::{escape, rindex_of_char, str_for_chars};
 use crate::uxf::Uxf;
 use crate::value::{Value, Visit};
 use anyhow::{bail, Result};
@@ -37,13 +38,15 @@ pub(crate) fn tokenize(
     }))?;
     let tokens = tokenizer.borrow_mut().get_tokens();
 
-    // DEBUG
-    for t in &tokens {
+    debug_tokens(&tokens);
+
+    Ok(tokens)
+}
+
+fn debug_tokens(tokens: &Tokens) {
+    for t in tokens {
         eprintln!("{:?}", t);
     }
-    // END DEBUG
-    
-    Ok(tokens)
 }
 
 pub struct Tokenizer {
@@ -86,34 +89,44 @@ impl Tokenizer {
         }
     }
 
-    pub fn visit(&mut self, visit: Visit, value: &Value) -> Result<()> {
-        match visit {
-            Visit::UxfBegin => self.handle_uxf_begin(value)?,
-            Visit::UxfEnd => self.eof(),
-            Visit::ListBegin => (),        // TODO
-            Visit::ListEnd => (),          // TODO
-            Visit::ListValueBegin => (),   // TODO
-            Visit::ListValueEnd => (),     // TODO
-            Visit::MapBegin => (),         // TODO
-            Visit::MapEnd => (),           // TODO
-            Visit::MapItemBegin => (),     // TODO
-            Visit::MapItemEnd => (),       // TODO
-            Visit::TableBegin => (),       // TODO
-            Visit::TableEnd => (),         // TODO
-            Visit::TableRecordBegin => (), // TODO
-            Visit::TableRecordEnd => (),   // TODO
-            Visit::Value => (),            // TODO
-        }
-        Ok(())
-    }
-
     pub fn get_tokens(&mut self) -> Tokens {
         let mut tokens = Tokens::new();
         std::mem::swap(&mut tokens, &mut self.tokens);
         tokens
     }
 
-    pub fn handle_imports(&mut self) -> Result<()> {
+    pub fn visit(&mut self, visit: Visit, value: &Value) -> Result<()> {
+        match visit {
+            Visit::UxfBegin => self.handle_uxf_begin(value)?,
+            Visit::UxfEnd => self.eof(),
+            Visit::ListBegin => self.handle_list_begin(value)?,
+            Visit::ListEnd => self.handle_list_end()?,
+            Visit::ListValueBegin => (), // TODO
+            Visit::ListValueEnd => (),   // TODO
+            Visit::MapBegin => (),       // TODO
+            Visit::MapEnd => (),         // TODO
+            Visit::MapItemBegin => (),   // TODO
+            Visit::MapItemEnd => (),     // TODO
+            Visit::TableBegin => (),     // TODO
+            Visit::TableEnd => (),       // TODO
+            Visit::TableRecordBegin => (), // TODO
+            Visit::TableRecordEnd => (), // TODO
+            Visit::Value => (),          // TODO
+        }
+        Ok(())
+    }
+
+    fn handle_uxf_begin(&mut self, value: &Value) -> Result<()> {
+        if let Some(comment) = value.as_str() {
+            if !comment.is_empty() {
+                self.handle_str(comment, "#", "\n");
+            }
+        }
+        self.handle_imports()?;
+        self.handle_tclasses()
+    }
+
+    fn handle_imports(&mut self) -> Result<()> {
         let mut widest = 0;
         let mut seen = HashSet::new();
         let imports: Vec<String> =
@@ -141,7 +154,7 @@ impl Tokenizer {
         Ok(())
     }
 
-    pub fn handle_tclasses(&mut self) -> Result<()> {
+    fn handle_tclasses(&mut self) -> Result<()> {
         let mut widest = 0;
         let mut ttype_tclass_pairs: Vec<(String, TClass)> = self
             .tclass_for_ttype
@@ -189,20 +202,116 @@ impl Tokenizer {
         Ok(())
     }
 
-    pub fn handle_uxf_begin(&mut self, value: &Value) -> Result<()> {
-        if let Some(comment) = value.as_str() {
-            self.handle_str(comment, "#", "\n");
+    fn handle_list_begin(&mut self, value: &Value) -> Result<()> {
+        // Value is a List or there's a bug
+        let lst = value.as_list().unwrap();
+        self.list_value_counts.push(lst.len());
+        self.begin();
+        self.puts("[");
+        let has_comment = !lst.comment().is_empty();
+        if has_comment {
+            self.handle_comment(lst.comment());
         }
-        self.handle_imports()?;
-        self.handle_tclasses()
+        if !lst.vtype().is_empty() {
+            if has_comment {
+                self.rws();
+            }
+            self.puts(lst.vtype());
+            if lst.len() == 1 {
+                self.rws();
+            }
+        }
+        if lst.len() > 1 {
+            self.rnl();
+        } else if has_comment && lst.len() == 1 {
+            self.rws();
+        }
+        self.depth += 1;
+        Ok(())
     }
 
-    fn handle_str(&mut self, comment: &str, prefix: &str, suffix: &str) {
-        // TODO
+    fn handle_list_end(&mut self) -> Result<()> {
+        if !self.tokens.is_empty()
+            && self.tokens[self.tokens.len() - 1].kind == TokenKind::Rws
+        {
+            // Don't need RWS before closer
+            self.tokens.truncate(self.tokens.len() - 1);
+        }
+        self.depth -= 1;
+        self.puts("]");
+        self.end();
+        self.rws();
+        self.list_value_counts.truncate(self.list_value_counts.len() - 1);
+        Ok(())
+    }
+
+    fn handle_str(&mut self, s: &str, prefix: &str, suffix: &str) {
+        let text = escape(s);
+        let prefix_len = prefix.chars().count();
+        let span = self.wrapwidth - prefix_len;
+        let mut too_wide = false;
+        for line in text.lines() {
+            if line.chars().count() > span {
+                too_wide = true;
+                break;
+            }
+        }
+        if !too_wide {
+            self.puts(&format!("{}<{}>{}", prefix, text, suffix));
+        } else {
+            // Assumes there is no suffix
+            self.handle_long_str(&text, prefix, prefix_len);
+        }
+    }
+
+    // Assumes there is no suffix and that text is already escaped
+    fn handle_long_str(
+        &mut self,
+        text: &str,
+        prefix: &str,
+        prefix_len: usize,
+    ) {
+        let span = self.wrapwidth - (4 + prefix_len);
+        let mut chars: Vec<char> = text.chars().collect();
+        let mut prefix = String::from(prefix);
+        while !chars.is_empty() {
+            // find last space within span; if no space, split at span
+            let i = rindex_of_char(' ', &chars[..span]);
+            let i = if let Some(i) = i { i + 1 } else { span };
+            let chunk = str_for_chars(&chars[..i]);
+            chars.drain(..i);
+            if !chunk.is_empty() {
+                let end = if chars.is_empty() { "" } else { " &" };
+                self.put_line(
+                    &format!("{}<{}>{}", prefix, chunk, end),
+                    self.depth,
+                );
+                prefix.clear();
+                self.rnl();
+            }
+        }
     }
 
     fn handle_comment(&mut self, comment: &str) {
         self.handle_str(comment, "#", "")
+    }
+
+    fn begin(&mut self) {
+        if !self.tokens.is_empty()
+            && self.tokens[self.tokens.len() - 1].kind == TokenKind::End
+        {
+            self.rws();
+        }
+        self.append_bare(TokenKind::Begin, self.depth);
+    }
+
+    fn end(&mut self) {
+        if !self.tokens.is_empty()
+            && self.tokens[self.tokens.len() - 1].kind == TokenKind::Rws
+        {
+            self.tokens.truncate(self.tokens.len() - 1);
+        }
+        self.append_bare(TokenKind::End, self.depth);
     }
 
     // Don't need duplicate RWS; don't need RWS if RNL present
@@ -212,7 +321,7 @@ impl Tokenizer {
             if self.tokens[pos].kind == TokenKind::End
                 && self.tokens.len() > 1
             {
-                pos += 1;
+                pos -= 1;
             }
             if self.tokens[pos].kind == TokenKind::Rws
                 || self.tokens[pos].kind == TokenKind::Rnl

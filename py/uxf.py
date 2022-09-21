@@ -31,7 +31,7 @@ from xml.sax.saxutils import escape, unescape
 
 import editabletuple
 
-__version__ = '2.6.0' # uxf module version
+__version__ = '2.6.1' # uxf module version
 VERSION = 1 # UXF file format version
 
 UTF8 = 'utf-8'
@@ -2455,11 +2455,10 @@ class _PrettyPrinter(_EventMixin): # Functor that can be used as a visitor
         self.tokens.append(_PrintToken(_PrintKind.BEGIN, depth=self.depth))
 
 
-    def end(self, *, num_records=None): # Don't need RWS before END
+    def end(self): # Don't need RWS before END
         if self.tokens and self.tokens[-1].kind is _PrintKind.RWS:
             self.tokens.pop()
-        self.tokens.append(_PrintToken(_PrintKind.END, depth=self.depth,
-                                       num_records=num_records))
+        self.tokens.append(_PrintToken(_PrintKind.END, depth=self.depth))
 
 
     def puts(self, s, num_records=None):

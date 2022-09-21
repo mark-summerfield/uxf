@@ -24,7 +24,11 @@ pub fn unescape(s: &str) -> String {
 pub fn str_for_chars(data: &[char]) -> String {
     data.iter().collect::<String>()
 }
-///
+
+/// Returns the index of c in data or None
+pub fn rindex_of_char(c: char, data: &[char]) -> Option<usize> {
+    data.iter().rposition(|&x| x == c)
+}
 
 /// Returns `true` if `a` and `b` are close enough to be considered equal
 /// for all practical purposes; otherwise returns `false`.

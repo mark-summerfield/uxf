@@ -799,6 +799,7 @@ or
 
 ## Changes
 
+- 2.6.1 Internal code improvements.
 - 2.6.0 Changed `wrap_width` to `wrapwidth` throughout the API. If custom
   ``Format``s are used the wrap width name will need to be changed to
   `wrapwidth`. Hopefully the last breaking change.

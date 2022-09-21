@@ -311,7 +311,7 @@ impl Value {
     /// value. List values and Table rows (and values within rows) are
     /// visited in order; Map items are visited in key order, key, then
     /// value, key, then value, etc. See also `Uxf::visit()`.
-    /// 
+    ///
     /// For a very short and simple example see the `Value::tclasses()`
     /// method. For a full example, see the `pprint::tokenizer::tokenize()`
     /// function.
