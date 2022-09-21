@@ -36,7 +36,13 @@ pub(crate) fn tokenize(
         }
     }))?;
     let tokens = tokenizer.borrow_mut().get_tokens();
-    dbg!(&tokens);
+
+    // DEBUG
+    for t in &tokens {
+        eprintln!("{:?}", t);
+    }
+    // END DEBUG
+    
     Ok(tokens)
 }
 
@@ -84,35 +90,19 @@ impl Tokenizer {
         match visit {
             Visit::UxfBegin => self.handle_uxf_begin(value)?,
             Visit::UxfEnd => self.eof(),
-            Visit::ListBegin => {
-                eprintln!("TODO to_text visit ListBegin")
-            }
-            Visit::ListEnd => eprintln!("TODO to_text visit ListEnd"),
-            Visit::ListValueBegin => {
-                eprintln!("TODO to_text visit ListValueBegin")
-            }
-            Visit::ListValueEnd => {
-                eprintln!("TODO to_text visit ListValueEnd")
-            }
-            Visit::MapBegin => eprintln!("TODO to_text visit MapBegin"),
-            Visit::MapEnd => eprintln!("TODO to_text visit MapEnd"),
-            Visit::MapItemBegin => {
-                eprintln!("TODO to_text visit MapItemBegin")
-            }
-            Visit::MapItemEnd => {
-                eprintln!("TODO to_text visit MapItemEnd")
-            }
-            Visit::TableBegin => {
-                eprintln!("TODO to_text visit TableBegin")
-            }
-            Visit::TableEnd => eprintln!("TODO to_text visit TableEnd"),
-            Visit::TableRecordBegin => {
-                eprintln!("TODO to_text visit TableRecordBegin")
-            }
-            Visit::TableRecordEnd => {
-                eprintln!("TODO to_text visit TableRecordEnd")
-            }
-            Visit::Value => eprintln!("TODO to_text visit Value"),
+            Visit::ListBegin => (),        // TODO
+            Visit::ListEnd => (),          // TODO
+            Visit::ListValueBegin => (),   // TODO
+            Visit::ListValueEnd => (),     // TODO
+            Visit::MapBegin => (),         // TODO
+            Visit::MapEnd => (),           // TODO
+            Visit::MapItemBegin => (),     // TODO
+            Visit::MapItemEnd => (),       // TODO
+            Visit::TableBegin => (),       // TODO
+            Visit::TableEnd => (),         // TODO
+            Visit::TableRecordBegin => (), // TODO
+            Visit::TableRecordEnd => (),   // TODO
+            Visit::Value => (),            // TODO
         }
         Ok(())
     }
