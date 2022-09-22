@@ -5,7 +5,7 @@ use crate::event::{self, Event, OnEventFn};
 use crate::format::Format;
 use crate::pprint::token::{Token, TokenKind, Tokens};
 use crate::tclass::TClass;
-use crate::util::{escape, rindex_of_char, str_for_chars};
+use crate::util::{escape, rindex_of_char, str_for_chars, VecExt};
 use crate::uxf::Uxf;
 use crate::value::{Value, Visit};
 use anyhow::{bail, Result};
@@ -97,36 +97,36 @@ impl Tokenizer {
 
     pub fn visit(&mut self, visit: Visit, value: &Value) -> Result<()> {
         match visit {
-            Visit::UxfBegin => self.handle_uxf_begin(value)?,
+            Visit::UxfBegin => self.handle_uxf_begin(value),
             Visit::UxfEnd => self.eof(),
-            Visit::ListBegin => self.handle_list_begin(value)?,
-            Visit::ListEnd => self.handle_list_end()?,
-            Visit::ListValueBegin => (), // TODO
-            Visit::ListValueEnd => (),   // TODO
-            Visit::MapBegin => (),       // TODO
-            Visit::MapEnd => (),         // TODO
-            Visit::MapItemBegin => (),   // TODO
-            Visit::MapItemEnd => (),     // TODO
-            Visit::TableBegin => (),     // TODO
-            Visit::TableEnd => (),       // TODO
-            Visit::TableRecordBegin => (), // TODO
-            Visit::TableRecordEnd => (), // TODO
-            Visit::Value => (),          // TODO
+            Visit::ListBegin => self.handle_list_begin(value),
+            Visit::ListEnd => self.handle_list_end(),
+            Visit::ListValueBegin => (),
+            Visit::ListValueEnd => self.handle_list_value_end(),
+            Visit::MapBegin => self.handle_map_begin(value),
+            Visit::MapEnd => self.handle_map_end(),
+            Visit::MapItemBegin => self.begin(),
+            Visit::MapItemEnd => self.handle_item_end(),
+            Visit::TableBegin => self.handle_table_begin(value),
+            Visit::TableEnd => self.handle_table_end(),
+            Visit::TableRecordBegin => self.begin(),
+            Visit::TableRecordEnd => self.handle_record_end(),
+            Visit::Value => self.handle_scalar(value),
         }
         Ok(())
     }
 
-    fn handle_uxf_begin(&mut self, value: &Value) -> Result<()> {
+    fn handle_uxf_begin(&mut self, value: &Value) {
         if let Some(comment) = value.as_str() {
             if !comment.is_empty() {
                 self.handle_str(comment, "#", "\n");
             }
         }
-        self.handle_imports()?;
-        self.handle_tclasses()
+        self.handle_imports();
+        self.handle_tclasses();
     }
 
-    fn handle_imports(&mut self) -> Result<()> {
+    fn handle_imports(&mut self) {
         let mut widest = 0;
         let mut seen = HashSet::new();
         let imports: Vec<String> =
@@ -151,10 +151,9 @@ impl Tokenizer {
                 ),
             ));
         }
-        Ok(())
     }
 
-    fn handle_tclasses(&mut self) -> Result<()> {
+    fn handle_tclasses(&mut self) {
         let mut widest = 0;
         let mut ttype_tclass_pairs: Vec<(String, TClass)> = self
             .tclass_for_ttype
@@ -199,10 +198,9 @@ impl Tokenizer {
                 ),
             ));
         }
-        Ok(())
     }
 
-    fn handle_list_begin(&mut self, value: &Value) -> Result<()> {
+    fn handle_list_begin(&mut self, value: &Value) {
         // Value is a List or there's a bug
         let lst = value.as_list().unwrap();
         self.list_value_counts.push(lst.len());
@@ -227,22 +225,127 @@ impl Tokenizer {
             self.rws();
         }
         self.depth += 1;
-        Ok(())
     }
 
-    fn handle_list_end(&mut self) -> Result<()> {
-        if !self.tokens.is_empty()
-            && self.tokens[self.tokens.len() - 1].kind == TokenKind::Rws
-        {
-            // Don't need RWS before closer
-            self.tokens.truncate(self.tokens.len() - 1);
-        }
+    fn handle_list_end(&mut self) {
+        self.chop_if_redundant_rws();
         self.depth -= 1;
         self.puts("]");
         self.end();
         self.rws();
-        self.list_value_counts.truncate(self.list_value_counts.len() - 1);
-        Ok(())
+        self.list_value_counts.chop();
+    }
+
+    fn handle_list_value_end(&mut self) {
+        // Safe index because we can only get here within a list
+        if self.list_value_counts[self.list_value_counts.len() - 1] > 1 {
+            self.rnl();
+        }
+    }
+
+    fn handle_map_begin(&mut self, value: &Value) {
+        // Value is a Map or there's a bug
+        let m = value.as_map().unwrap();
+        self.map_item_counts.push(m.len());
+        self.begin();
+        self.puts("{");
+        let has_comment = !m.comment().is_empty();
+        if has_comment {
+            self.handle_comment(m.comment());
+        }
+        if !m.ktype().is_empty() {
+            if has_comment {
+                self.rws();
+            }
+            let mut text = String::from(m.ktype());
+            if !m.vtype().is_empty() {
+                text.push(' ');
+                text.push_str(m.vtype());
+            }
+            self.puts(&text);
+            if m.len() == 1 {
+                self.rws();
+            }
+        }
+        if m.len() > 1 {
+            self.rnl();
+        } else if has_comment && m.len() == 1 {
+            self.rws();
+        }
+        self.depth += 1;
+    }
+
+    fn handle_map_end(&mut self) {
+        self.chop_if_redundant_rws();
+        self.depth -= 1;
+        self.puts("}");
+        self.end();
+        self.map_item_counts.chop();
+    }
+
+    fn handle_item_end(&mut self) {
+        self.end();
+        // Safe index because we can only get here within a list
+        if self.map_item_counts[self.map_item_counts.len() - 1] > 1 {
+            self.rnl();
+        }
+    }
+
+    #[allow(clippy::comparison_chain)]
+    fn handle_table_begin(&mut self, value: &Value) {
+        // Value is a Table or there's a bug
+        let t = value.as_table().unwrap();
+        self.table_record_counts.push(t.len());
+        self.begin();
+        self.puts("(");
+        if !t.comment().is_empty() {
+            self.handle_comment(t.comment());
+            self.rws();
+        }
+        self.puts_num(t.ttype(), Some(t.len()));
+        if t.len() == 1 {
+            self.rws();
+        } else if t.len() > 1 {
+            self.rnl();
+            self.depth += 1;
+        }
+    }
+
+    fn handle_table_end(&mut self) {
+        self.chop_if_redundant_rws();
+        // Safe because only called inside a table
+        let count =
+            self.table_record_counts[self.table_record_counts.len() - 1];
+        if count > 1 {
+            self.depth -= 1;
+        }
+        self.puts(")");
+        self.end();
+        if count > 1 {
+            self.rnl();
+        } else {
+            self.rws()
+        }
+        self.table_record_counts.chop();
+    }
+
+    fn handle_record_end(&mut self) {
+        self.end();
+        // Safe index because we can only get here within a list
+        if self.table_record_counts[self.table_record_counts.len() - 1] > 1
+        {
+            self.rnl();
+        }
+    }
+
+    fn handle_scalar(&mut self, value: &Value) {
+        match value {
+            Value::Null => self.puts("?"),
+            Value::Bool(b) => self.puts(if *b { "yes" } else { "no" }),
+            Value::Int(i) => self.puts(&format!("{}", i)),
+            // TODO Real Date DateTime Str Bytes
+            _ => (), // TODO warning
+        }
     }
 
     fn handle_str(&mut self, s: &str, prefix: &str, suffix: &str) {
@@ -309,7 +412,7 @@ impl Tokenizer {
         if !self.tokens.is_empty()
             && self.tokens[self.tokens.len() - 1].kind == TokenKind::Rws
         {
-            self.tokens.truncate(self.tokens.len() - 1);
+            self.tokens.chop();
         }
         self.append_bare(TokenKind::End, self.depth);
     }
@@ -337,7 +440,7 @@ impl Tokenizer {
         if !self.tokens.is_empty() {
             let last = self.tokens.len() - 1;
             if self.tokens[last].kind == TokenKind::Rws {
-                self.tokens.truncate(self.tokens.len() - 1);
+                self.tokens.chop();
             }
             let last = self.tokens.len() - 1;
             if self.tokens[last].kind == TokenKind::Rnl
@@ -395,5 +498,14 @@ impl Tokenizer {
         num_records: Option<usize>,
     ) {
         self.tokens.push(Token::new(kind, text, depth, num_records));
+    }
+
+    // Don't need RWS before closer
+    fn chop_if_redundant_rws(&mut self) {
+        if !self.tokens.is_empty()
+            && self.tokens[self.tokens.len() - 1].kind == TokenKind::Rws
+        {
+            self.tokens.chop();
+        }
     }
 }

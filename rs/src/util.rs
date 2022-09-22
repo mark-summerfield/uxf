@@ -141,3 +141,16 @@ impl PathBufExt for PathBuf {
         self.as_os_str().is_empty()
     }
 }
+
+pub trait VecExt {
+    fn chop(&mut self);
+}
+
+impl<T> VecExt for Vec<T> {
+    /// Chops of the last value without returning it.
+    /// Assumes len() > 0.
+    fn chop(&mut self) {
+        assert!(!self.is_empty());
+        self.truncate(self.len() - 1);
+    }
+}
