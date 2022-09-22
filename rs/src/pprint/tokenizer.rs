@@ -343,8 +343,9 @@ impl Tokenizer {
             Value::Null => self.puts("?"),
             Value::Bool(b) => self.puts(if *b { "yes" } else { "no" }),
             Value::Int(i) => self.puts(&format!("{}", i)),
-            // TODO Real Date DateTime Str Bytes
-            _ => (), // TODO warning
+            // TODO Real (use util::realstr64 on top of py algo);
+            // Date DateTime Str Bytes
+            _ => panic!("expected scalar, got {:?}", value),
         }
     }
 
