@@ -1,6 +1,7 @@
 // Copyright © 2022 Mark Summerfield. All rights reserved.
 // License: GPLv3
 
+use crate::consts::*;
 use crate::event::{self, Event, OnEventFn};
 use crate::format::Format;
 use crate::pprint::token::{Token, TokenKind, Tokens};
@@ -343,15 +344,34 @@ impl Tokenizer {
         match value {
             Value::Null => self.puts("?"),
             Value::Bool(b) => self.puts(if *b { "yes" } else { "no" }),
-            Value::Bytes(d) => (), // TODO
-            Value::Date(d) => (), // TODO
-            Value::DateTime(dt) => (), // TODO
+            Value::Bytes(b) => self.handle_bytes(b),
+            Value::Date(d) => {
+                self.puts(&d.format(ISO8601_DATE).to_string())
+            }
+            Value::DateTime(dt) => {
+                self.puts(&dt.format(ISO8601_DATETIME).to_string())
+            }
             Value::Int(i) => self.puts(&format!("{}", i)),
-            Value::Real(r) => (), // TODO Real (use util::realstr64 on top
-            // of py algo) or add Option<realdp> to realstr()
-            Value::Str(s) => (), // TODO
+            Value::Real(r) => self.handle_real(*r),
+            Value::Str(s) => self.handle_str(s, "", ""),
             _ => panic!("expected scalar, got {:?}", value),
         }
+    }
+
+    fn handle_bytes(&mut self, b: &[u8]) {
+        // TODO
+    }
+
+    fn handle_real(&mut self, r: f64) {
+        let mut text = if let Some(realdp) = self.realdp {
+            format!("{:.*}", realdp as usize, r)
+        } else {
+            format!("{}", r)
+        };
+        if !text.contains(&['.', 'e', 'E']) {
+            text.push_str(".0");
+        }
+        self.puts(&text);
     }
 
     fn handle_str(&mut self, s: &str, prefix: &str, suffix: &str) {
