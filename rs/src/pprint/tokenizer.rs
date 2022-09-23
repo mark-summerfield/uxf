@@ -345,7 +345,7 @@ impl Tokenizer {
             Value::Bool(b) => self.puts(if *b { "yes" } else { "no" }),
             Value::Bytes(d) => (), // TODO
             Value::Date(d) => (), // TODO
-            Value::DateTime(d) => (), // TODO
+            Value::DateTime(dt) => (), // TODO
             Value::Int(i) => self.puts(&format!("{}", i)),
             Value::Real(r) => (), // TODO Real (use util::realstr64 on top
             // of py algo) or add Option<realdp> to realstr()
