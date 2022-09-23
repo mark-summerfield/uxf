@@ -342,9 +342,13 @@ impl Tokenizer {
         match value {
             Value::Null => self.puts("?"),
             Value::Bool(b) => self.puts(if *b { "yes" } else { "no" }),
+            Value::Bytes(d) => (), // TODO
+            Value::Date(d) => (), // TODO
+            Value::DateTime(d) => (), // TODO
             Value::Int(i) => self.puts(&format!("{}", i)),
-            // TODO Real (use util::realstr64 on top of py algo);
-            // Date DateTime Str Bytes
+            Value::Real(r) => (), // TODO Real (use util::realstr64 on top
+            // of py algo) or add Option<realdp> to realstr()
+            Value::Str(s) => (), // TODO
             _ => panic!("expected scalar, got {:?}", value),
         }
     }
