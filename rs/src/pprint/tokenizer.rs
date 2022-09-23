@@ -291,7 +291,6 @@ impl Tokenizer {
         }
     }
 
-    #[allow(clippy::comparison_chain)]
     fn handle_table_begin(&mut self, value: &Value) {
         // Value is a Table or there's a bug
         let t = value.as_table().unwrap();
@@ -303,11 +302,13 @@ impl Tokenizer {
             self.rws();
         }
         self.puts_num(t.ttype(), Some(t.len()));
-        if t.len() == 1 {
-            self.rws();
-        } else if t.len() > 1 {
-            self.rnl();
-            self.depth += 1;
+        match t.len() {
+            0 => (),
+            1 => self.rws(),
+            _ => {
+                self.rnl();
+                self.depth += 1;
+            }
         }
     }
 
