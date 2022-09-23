@@ -9,7 +9,7 @@ use crate::tclass::TClass;
 use crate::util::{escape, rindex_of_char, str_for_chars, VecExt};
 use crate::uxf::Uxf;
 use crate::value::{Value, Visit};
-use anyhow::{bail, Result};
+use anyhow::Result;
 use indexmap::map::IndexMap;
 use std::{
     cell::RefCell,
@@ -38,17 +38,17 @@ pub(crate) fn tokenize(
         }
     }))?;
     let tokens = tokenizer.borrow_mut().get_tokens();
-
-    debug_tokens(&tokens);
-
+    // debug_tokens(&tokens); // DEBUG
     Ok(tokens)
 }
 
+/* DEBUG
 fn debug_tokens(tokens: &Tokens) {
     for t in tokens {
         eprintln!("{:?}", t);
     }
 }
+*/
 
 pub struct Tokenizer {
     pub on_event: OnEventFn,
@@ -354,12 +354,36 @@ impl Tokenizer {
             Value::Int(i) => self.puts(&format!("{}", i)),
             Value::Real(r) => self.handle_real(*r),
             Value::Str(s) => self.handle_str(s, "", ""),
-            _ => panic!("expected scalar, got {:?}", value),
-        }
+            _ => panic!("expected scalar, got {:?}", value), // impossible
+        };
+        self.rws();
     }
 
     fn handle_bytes(&mut self, b: &[u8]) {
-        // TODO
+        // We can safely slice chars because they're all ASCII
+        let mut text =
+            b.iter().map(|x| format!("{:02X}", x)).collect::<String>();
+        if text.len() + 4 > self.wrapwidth {
+            let span = self.wrapwidth - self.indent.len();
+            self.puts("(:");
+            self.rnl();
+            while !text.is_empty() {
+                let chunk =
+                    if text.len() < span { &text } else { &text[..span] };
+                if !chunk.is_empty() {
+                    self.put_line(chunk, 1);
+                    self.rnl();
+                }
+                if text.len() < span {
+                    break;
+                }
+                text.drain(..span);
+            }
+            self.puts(":)");
+            self.rnl() // newline always follows multiline bytes or str
+        } else {
+            self.puts(&format!("(:{}:)", text))
+        };
     }
 
     fn handle_real(&mut self, r: f64) {
@@ -404,11 +428,11 @@ impl Tokenizer {
         let mut chars: Vec<char> = text.chars().collect();
         let mut prefix = String::from(prefix);
         while !chars.is_empty() {
-            // find last space within span; if no space, split at span
-            let i = rindex_of_char(' ', &chars[..span]);
-            let i = if let Some(i) = i { i + 1 } else { span };
+            let chunk =
+                if chars.len() < span { &chars } else { &chars[..span] };
+            let i = rindex_of_char(' ', chunk);
+            let i = if let Some(i) = i { i + 1 } else { chunk.len() };
             let chunk = str_for_chars(&chars[..i]);
-            chars.drain(..i);
             if !chunk.is_empty() {
                 let end = if chars.is_empty() { "" } else { " &" };
                 self.put_line(
@@ -418,6 +442,10 @@ impl Tokenizer {
                 prefix.clear();
                 self.rnl();
             }
+            if chars.len() < span {
+                break;
+            }
+            chars.drain(..i);
         }
     }
 

@@ -23,10 +23,6 @@ impl Token {
         Token { kind, text: text.to_string(), depth, num_records }
     }
 
-    pub fn new_empty(kind: TokenKind) -> Self {
-        Token { kind, text: "".to_string(), depth: 0, num_records: None }
-    }
-
     pub fn is_multiline(&self) -> bool {
         self.text.contains('\n')
     }
