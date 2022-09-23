@@ -108,7 +108,7 @@ langX  from: {}
 def test_lang(tmin, tmax, lang, verbose, tests):
     total = ok = 0
     start = time.monotonic()
-    print(f'{lang:3} tests ', end='')
+    print(f'{lang:3} tests ', end='\n' if verbose else '')
     for i, t in enumerate(tests):
         if i < tmin:
             continue
@@ -117,14 +117,17 @@ def test_lang(tmin, tmax, lang, verbose, tests):
         if t.langs is not None and lang not in t.langs:
             continue
         total += 1
-        ok += test_one(lang, verbose, i, t)
+        n = test_one(lang, verbose, i, t)
+        ok += n
+        if verbose or not n:
+            print()
     print()
     return total, ok, time.monotonic() - start
 
 
 def test_one(lang, verbose, i, t):
     if verbose:
-        print(i)
+        print(f'{i: 4}: ', end='', flush=True)
     else:
         print(f'{i} ', end='', flush=True)
     cmd = list(EXE_FOR_LANG[lang])
@@ -135,11 +138,11 @@ def test_one(lang, verbose, i, t):
         afile = 'actual/' + (t.ifile if t.afile is SAME else t.afile)
         cmd.append(afile)
     if verbose:
-        print(' ', ' '.join(cmd))
+        print(' '.join(cmd), end='', flush=True)
     reply = subprocess.run(cmd, capture_output=True, text=True)
     if reply.returncode != t.returncode:
-        print(f'\nexpected returncode {t.returncode}, got '
-              f'{reply.returncode}')
+        print(f'expected returncode {t.returncode}, got '
+              f'{reply.returncode}', end='', flush=True)
         return 0
     if reply.stderr:
         if not check_stderr(lang, verbose, t, reply.stderr):
@@ -160,25 +163,40 @@ def check_stderr(lang, verbose, t, rstderr):
     with open(stderr, 'rt', encoding='utf-8') as file:
         stderr = file.read()
     if rstderr.strip() != stderr.strip():
-        print(f'\nexpected stderr:\n{stderr}\n-got-\n{rstderr}')
-        return False
+        rstderr = normalize(rstderr)
+        stderr = normalize(stderr)
+        if rstderr != stderr:
+            print(f'\nexpected stderr:\n{stderr}\n-got-\n{rstderr}')
+            return False
     if verbose:
-        print('  stderr matched')
+        print(' • stderr ok', end='', flush=True)
     return True
+
+
+def normalize(s):
+    if s.startswith('uxf:'):
+        s = s[4:]
+    s = s.replace("'", '').replace('"', '')
+    i = s.find(':')
+    j = s.find('testdata')
+    if i > -1 and j > -1:
+        s = s[:i + 1] + s[j + len('testdata') + 1:]
+    return s
 
 
 def check_expected(lang, verbose, t, afile):
     efile = 'expected/' + (t.ifile if t.efile is SAME else t.efile)
-    if not compare(lang, t.i_vs_e, t.ifile, efile):
-        print(f'\nnot {t.i_vs_e.value}: {t.ifile!r} {efile!r}')
+    if not compare(lang, t.o_vs_e, t.ifile, efile):
+        print(f'{t.ifile!r} !{t.o_vs_e.symbol} {efile!r}', end='',
+              flush=True)
         return False
     elif verbose:
-        print(f'  original vs expected {t.i_vs_e.value}')
+        print(f' • o_vs_e {t.o_vs_e.symbol}', end='', flush=True)
     if not compare(lang, t.a_vs_e, afile, efile):
-        print(f'\nnot {t.a_vs_e.value}: {afile!r} {efile!r}')
+        print(f'{afile!r} !{t.a_vs_e.symbol} {efile!r}', end='', flush=True)
         return False
     elif verbose:
-        print(f'  actual vs expected {t.i_vs_e.value}')
+        print(f' • a_vs_e {t.o_vs_e.symbol}', end='', flush=True)
     return True
 
 
@@ -220,7 +238,7 @@ def read_tests(filename):
     for record in uxo.value:
         langs = None if record.langs is None else set(record.langs)
         yield Test(record.ifile, tuple(record.opts), xfile(record.afile),
-                   xfile(record.efile), cmp(record.i_vs_e),
+                   xfile(record.efile), cmp(record.o_vs_e),
                    cmp(record.a_vs_e), record.stderr, record.returncode,
                    langs)
 
@@ -232,6 +250,17 @@ class Compare(enum.Enum):
     EQUAL = 'equal'
     IDENTICAL = 'same'
 
+    @property
+    def symbol(self):
+        if self == Compare.SKIP:
+            return '?'
+        elif self == Compare.EQUIV:
+            return '~'
+        elif self == Compare.EQUAL:
+            return '='
+        elif self == Compare.IDENTICAL:
+            return '=='
+
 
 SAME = object()
 
@@ -241,7 +270,7 @@ Test = collections.namedtuple(
              'opts', # e.g., ['-l'] or ['-cl'] or ['-cl', '-i9', '-w40']
              'afile', # None or SAME or actual filename
              'efile', # None or SAME or expected filename
-             'i_vs_e', # whether and if so how to compare
+             'o_vs_e', # whether and if so how to compare
              'a_vs_e', # whether and if so how to compare
              'stderr', # None or expected stderr filename
              'returncode', # expected return code
