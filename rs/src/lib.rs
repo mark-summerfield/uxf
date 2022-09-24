@@ -63,8 +63,7 @@ objects.
 
 Most of the tests are blackbox regression tests from
 `../testdata/regression.dat.gz` (itself a UXF file) and using the
-`../regression.py' test runner.
-
+`../regression.py` test runner.
 
 */
 
