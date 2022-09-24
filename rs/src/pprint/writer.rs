@@ -19,8 +19,8 @@ pub struct Writer {
     pub indent: String,
     pub wrapwidth: usize,
     pub realdp: Option<u8>,
-    pub pos: usize,
-    pub tp: usize,
+    pub pos: usize, // line position
+    pub tp: usize,  // token position
     pub end_nl: bool,
     pub pending_rws: bool,
 }

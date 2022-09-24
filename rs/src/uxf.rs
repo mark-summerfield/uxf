@@ -110,7 +110,7 @@ impl Uxf {
     /// needed.
     /// This is a convenience wrapper for
     /// `to_text_format(&Format::default())`
-    pub fn to_text(&self) -> Result<String> {
+    pub fn to_text(&self) -> String {
         self.to_text_format(&Format::default())
     }
 
@@ -119,7 +119,7 @@ impl Uxf {
     /// `Format::default()` for the human readable defaults).
     /// Use `to_string()` for compact output if human readability isn't
     /// needed.
-    pub fn to_text_format(&self, format: &Format) -> Result<String> {
+    pub fn to_text_format(&self, format: &Format) -> String {
         pprint::to_text(self, format)
     }
 
@@ -144,7 +144,7 @@ impl Uxf {
         filename: &str,
         format: &Format,
     ) -> Result<()> {
-        let text = self.to_text_format(format)?;
+        let text = self.to_text_format(format);
         if filename.ends_with(".gz") {
             let mut out = GzEncoder::new(Vec::new(), Compression::best());
             out.write_all(text.as_bytes())?;

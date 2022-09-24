@@ -107,7 +107,7 @@ fn output(outfile: &str, format: &Format, uxo: &uxf::Uxf) -> Result<()> {
             format.indent,
             format.wrapwidth,
             None,
-        ))?
+        ))
     };
     if outfile == "-" {
         println!("{}", text);

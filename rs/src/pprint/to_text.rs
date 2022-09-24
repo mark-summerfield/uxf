@@ -5,18 +5,16 @@ use crate::consts::UXF_VERSION;
 use crate::format::Format;
 use crate::pprint::{tokenizer::tokenize, writer};
 use crate::uxf::Uxf;
-use anyhow::Result;
 
-pub(crate) fn to_text(uxo: &Uxf, format: &Format) -> Result<String> {
+pub(crate) fn to_text(uxo: &Uxf, format: &Format) -> String {
+    let header = header(uxo.custom());
     let tokens = tokenize(
         uxo,
         format,
         uxo.tclass_for_ttype.clone(),
         uxo.import_for_ttype.clone(),
-    )?;
-    let header = header(uxo.custom());
-    let text = writer::to_text(&header, tokens, format);
-    Ok(text)
+    );
+    writer::to_text(&header, tokens, format)
 }
 
 fn header(custom: &str) -> String {

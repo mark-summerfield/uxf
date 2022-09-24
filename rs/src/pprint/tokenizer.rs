@@ -21,7 +21,7 @@ pub(crate) fn tokenize(
     format: &Format,
     tclass_for_ttype: HashMap<String, TClass>,
     import_for_ttype: IndexMap<String, String>,
-) -> Result<Tokens> {
+) -> Tokens {
     let tokenizer = Rc::new(RefCell::new(Tokenizer::new(
         format,
         tclass_for_ttype,
@@ -33,10 +33,11 @@ pub(crate) fn tokenize(
             let mut tokenizer = tokenizer.borrow_mut();
             tokenizer.visit(visit, value)
         }
-    }))?;
+    }))
+    .unwrap(); // Safe since Tokenizer::visit() always returns Ok(())
     let tokens = tokenizer.borrow_mut().get_tokens();
     // debug_tokens(&tokens); // DEBUG
-    Ok(tokens)
+    tokens
 }
 
 /* DEBUG
@@ -103,7 +104,7 @@ impl Tokenizer {
             Visit::TableRecordBegin => self.begin(),
             Visit::TableRecordEnd => self.handle_record_end(),
             Visit::Value => self.handle_scalar(value),
-        }
+        };
         Ok(())
     }
 
