@@ -33,8 +33,8 @@ some basic examples.
 
 To write a `Uxf` object to a string (e.g., to write to a file) using
 canonical human-readable output, use `to_text()` (or `to_text_format()` for
-more control)` for even more control). Or use `to_string() for bare bones
-not very human friendly output.
+more control)). Or use `to_string() for bare bones not very human friendly
+output.
 
 ```rust,ignore
 let uxt = uxo.to_text();
