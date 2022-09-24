@@ -33,11 +33,11 @@ some basic examples.
 
 To write a `Uxf` object to a string (e.g., to write to a file) using
 canonical human-readable output, use `to_text()` (or `to_text_format()` for
-more control, or `to_text_options()` for even more control). Or use
-`to_string() for bare bones not very human friendly output.
+more control)` for even more control). Or use `to_string() for bare bones
+not very human friendly output.
 
 ```rust,ignore
-let uxt = uxo.to_text()?;
+let uxt = uxo.to_text();
 // write uxt of type String to the target...
 ```
 
@@ -54,6 +54,17 @@ TODO
 Comments, ktypes, vtypes, are all strings. If a ktype or vtype is empty this
 means that any valid ktype or vtype respectively is acceptable.
 For TClasses the ttype is also a string, and this may not be empty.
+
+# Tests
+
+The whitebox unit tests (in the `tests` folder) provide some simple examples
+of how to create and modify `Uxf`, `Table`, `Map`, `List`, and `Value`
+objects.
+
+Most of the tests are blackbox regression tests from
+`../testdata/regression.dat.gz` (itself a UXF file) and using the
+`../regression.py' test runner.
+
 
 */
 
