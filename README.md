@@ -979,7 +979,7 @@ mandatory `list`, `map`, or `table` (which may be empty).
     STR          ::= STR_FRAGMENT (OWS '&' OWS STR_FRAGMENT)*
     STR_FRAGMENT ::= /[<][^<>]*?[>]/ # newlines allowed, and &amp; &lt; &gt; supported i.e., XML
     BYTES        ::= '(:' (OWS [A-Fa-f0-9]{2})* OWS ':)'
-    IDENFIFIER   ::= /[_\p{L}]\w{0,59}/ # Must start with a letter or underscore; may not be a built-in typename or constant
+    IDENFIFIER   ::= /[_\p{L}]\w{0,31}/ # Must start with a letter or underscore; may not be a built-in typename or constant
     OWS          ::= /[\s\n]*/
     RWS          ::= /[\s\n]+/ # in some cases RWS is actually optional
 

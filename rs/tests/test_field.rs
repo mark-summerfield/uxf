@@ -89,11 +89,7 @@ fn t_field_new_invalid_name() {
         (304, VTYPE_NAME_REAL),
         (304, VTYPE_NAME_STR),
         (304, VTYPE_NAME_TABLE),
-        (
-            306,
-            "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\
-                   xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxy",
-        ),
+        (306, "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxy"),
         (310, "e—"),
         (310, "_almost#1"),
         (310, "f1:"),
@@ -123,11 +119,7 @@ fn t_field_new_invalid_vtype() {
         (300, "€200"),
         (302, BOOL_FALSE),
         (302, BOOL_TRUE),
-        (
-            306,
-            "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\
-                xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxy",
-        ),
+        (306, "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxy"),
         (310, "My.Type"),
         (310, "_9.9"),
         (310, "_almost#1"),

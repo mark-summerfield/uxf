@@ -35,7 +35,7 @@ __version__ = '2.6.1' # uxf module version
 VERSION = 1 # UXF file format version
 
 UTF8 = 'utf-8'
-_MAX_IDENTIFIER_LEN = 60
+MAX_IDENTIFIER_LEN = 32
 _SEP = ' '
 _KTYPES = frozenset({'int', 'date', 'datetime', 'str', 'bytes'})
 _VTYPES = frozenset(_KTYPES | {'bool', 'real'})
@@ -107,7 +107,7 @@ def _validate_format(name, value): # If invalid we return the valid default
                 all(c == ' ' for c in value) and len(value) < 9)) else '  ')
     if name == 'wrapwidth':
         return value if (value is None or value == 0 or
-                         40 <= value <= 240) else 96
+                         (MAX_IDENTIFIER_LEN + 8) <= value <= 240) else 96
     if name == 'realdp':
         return value if (value is None or 0 <= value <= 15) else None
 
@@ -786,7 +786,7 @@ class _Lexer(_EventMixin):
                     self.text[self.pos] != '_'):
                 break
             self.pos += 1
-        identifier = self.text[start:self.pos][:_MAX_IDENTIFIER_LEN]
+        identifier = self.text[start:self.pos][:MAX_IDENTIFIER_LEN]
         if identifier:
             return identifier
         text = self.text[start:start + 10]
@@ -1277,8 +1277,8 @@ def _check_type_name(name, callback=None):
                         f'underscore, got {name}')
     if name in _BOOLS:
         return callback(302, f'names may not be yes or no got {name}')
-    if len(name) > _MAX_IDENTIFIER_LEN:
-        return callback(306, f'names may at most {_MAX_IDENTIFIER_LEN} char'
+    if len(name) > MAX_IDENTIFIER_LEN:
+        return callback(306, f'names may at most {MAX_IDENTIFIER_LEN} char'
                         f'acters long, got {name} ({len(name)} characters)')
     for c in name:
         if not (c == '_' or c.isalnum()):
@@ -2397,7 +2397,7 @@ class _PrettyPrinter(_EventMixin): # Functor that can be used as a visitor
 
     @wrapwidth.setter
     def wrapwidth(self, value):
-        if value is not None and 40 <= value <= 240:
+        if value is not None and (MAX_IDENTIFIER_LEN + 8) <= value <= 240:
             self._wrapwidth = value # only allow 40-240
         else: # None or out of range → default
             self._wrapwidth = 96 # default
@@ -3091,7 +3091,7 @@ def canonicalize(name):
     if name == prefix:
         name += str(canonicalize.count)
         canonicalize.count += 1
-    return name[:_MAX_IDENTIFIER_LEN]
+    return name[:MAX_IDENTIFIER_LEN]
 canonicalize.count = 1 # noqa: E305
 
 

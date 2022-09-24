@@ -138,11 +138,7 @@ fn t_tclass_invalid_ttype() {
         (304, VTYPE_NAME_REAL),
         (304, VTYPE_NAME_STR),
         (304, VTYPE_NAME_TABLE),
-        (
-            306,
-            "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\
-                   xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxy",
-        ),
+        (306, "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxy"),
         (310, "e—"),
         (310, "_almost#1"),
         (310, "f1:"),

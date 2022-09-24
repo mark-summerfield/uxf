@@ -3,7 +3,7 @@
 
 pub const UXF_VERSION: u16 = 1;
 
-pub const MAX_IDENTIFIER_LEN: usize = 60;
+pub const MAX_IDENTIFIER_LEN: usize = 32;
 
 pub const NL: char = '\n';
 pub const NUL: char = '\0';

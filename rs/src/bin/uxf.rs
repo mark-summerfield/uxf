@@ -230,6 +230,7 @@ struct Format {
         value_parser=clap::value_parser!(u8).range(0..=9))]
     indent: u8,
 
+    // The 40 is from (MAX_IDENTIFIER_LEN + 8)
     /// Wrapwidth (40-240; ignored if -c|--compact used)
     #[clap(short, long, default_value_t=96,
         value_parser=clap::value_parser!(u8).range(40..=240))]

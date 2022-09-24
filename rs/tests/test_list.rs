@@ -246,13 +246,8 @@ fn t_list_err() {
     assert!(List::new("$1", "").is_err());
     let err = List::new("-x", "").unwrap_err();
     check_error(&err.to_string(), 300, "-x");
-    let err = List::new(&"y".repeat(61), "").unwrap_err();
-    check_error(
-        &err.to_string(),
-        306,
-        "yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy\
-            yyyyyyyyyyyyyyy",
-    );
+    let err = List::new(&"y".repeat(33), "").unwrap_err();
+    check_error(&err.to_string(), 306, "yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy");
     let err = List::new("alpha_b=", "").unwrap_err();
     check_error(&err.to_string(), 310, "alpha_b=");
 }
