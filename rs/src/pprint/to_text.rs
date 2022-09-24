@@ -15,7 +15,7 @@ pub(crate) fn to_text(uxo: &Uxf, format: &Format) -> Result<String> {
         uxo.import_for_ttype.clone(),
     )?;
     let header = header(uxo.custom());
-    let text = writer::to_text(&header, &tokens, format);
+    let text = writer::to_text(&header, tokens, format);
     Ok(text)
 }
 
