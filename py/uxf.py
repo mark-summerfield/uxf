@@ -2520,20 +2520,11 @@ class _PrettyPrinter(_EventMixin): # Functor that can be used as a visitor
 
 
     def handle_imports(self, imports):
-        widest = 0
         for filename in imports:
             self.puts(f'!{filename}\n')
-            if len(filename) > widest:
-                widest = len(filename)
-        widest += 1 # to allow for '!'
-        if widest > self.wrapwidth:
-            self.wrapwidth = widest
-            self.warning(563, 'import forced wrapwidth to be increased to '
-                         f'{widest}')
 
 
     def handle_tclasses(self, tclasses, imports):
-        widest = 0
         for ttype, tclass in sorted(tclasses.items(),
                                     key=lambda t: t[0].lower()):
             if imports and ttype in imports:
@@ -2544,23 +2535,14 @@ class _PrettyPrinter(_EventMixin): # Functor that can be used as a visitor
                 self.handle_comment(tclass.comment)
                 self.rws()
             self.puts(tclass.ttype)
-            if len(tclass.ttype) > widest:
-                widest = len(tclass.ttype)
             self.depth = 1 # to indent any wrapped fields
             for field in tclass.fields:
                 self.rws()
                 self.puts(field.name)
                 if field.vtype is not None:
                     self.puts(f':{field.vtype}')
-                if len(field.name) > widest:
-                    widest = len(field.name)
             self.rnl()
         self.depth = 0
-        widest += 1 # to allow for '='
-        if widest > self.wrapwidth:
-            self.wrapwidth = widest
-            self.warning(564, 'ttype forced wrapwidth to be increased to '
-                         f'{widest}')
 
 
     def handle_list_begin(self, value):
@@ -2766,7 +2748,7 @@ class _Writer:
                  debug=False):
         self.tokens = tokens
         self.out = out
-        self.width = wrapwidth + 1 # since we compare with < not <=
+        self.wrapwidth = wrapwidth
         self.realdp = realdp
         self.indent = indent
         self.debug = debug
@@ -2831,7 +2813,7 @@ class _Writer:
 
     def find_matching_end(self, needed, i, depth):
         needed += (1 if self.pending_rws else 0)
-        while needed < self.width and i < len(self.tokens):
+        while needed <= self.wrapwidth and i < len(self.tokens):
             token = self.tokens[i]
             i += 1
             if token.kind is _PrintKind.END:
@@ -2872,13 +2854,13 @@ class _Writer:
         else:
             if self.pos: # in a line
                 n = 1 if self.pending_rws else 0
-                if self.pos + len(token.text) + n < self.width: # fits line
-                    self.write(token.text)
+                if self.pos + len(token.text) + n <= self.wrapwidth:
+                    self.write(token.text) # fits line
                     return
                 else:
                     self.write('\n')
             tab = self.indent * token.depth
-            if len(tab) + len(token.text) < self.width:
+            if len(tab) + len(token.text) <= self.wrapwidth:
                 self.write(tab) # fits after indent
             self.write(token.text)
 
@@ -2887,7 +2869,7 @@ class _Writer:
         if self.pos: # in a line:
             n = 1 if self.pending_rws else 0
             first, rest = token.text.split('\n', 1)
-            if self.pos + len(first) + n < self.width:
+            if self.pos + len(first) + n <= self.wrapwidth:
                 if self.pending_rws:
                     self.out.write(' ')
                     self.pending_rws = False
@@ -2908,7 +2890,7 @@ class _Writer:
 
     def rws(self):
         if self.pos > 0: # safe to ignore RWS at start of line
-            if self.pos + self.peek_len(self.tp + 1) < self.width:
+            if self.pos + self.peek_len(self.tp + 1) <= self.wrapwidth:
                 self.pending_rws = True
             else:
                 self.rnl()

@@ -103,14 +103,11 @@ fn output(outfile: &str, format: &Format, uxo: &uxf::Uxf) -> Result<()> {
     let text = if format.compact {
         uxo.to_string()
     } else {
-        uxo.to_text_options(
-            &uxf::Format::new(format.indent, format.wrapwidth, None),
-            if format.lint {
-                None // use default linting output
-            } else {
-                Some(Rc::new(uxf::ignore_event)) // filter out lints
-            },
-        )?
+        uxo.to_text_format(&uxf::Format::new(
+            format.indent,
+            format.wrapwidth,
+            None,
+        ))?
     };
     if outfile == "-" {
         println!("{}", text);

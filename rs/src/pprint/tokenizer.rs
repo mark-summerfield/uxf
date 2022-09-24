@@ -2,7 +2,6 @@
 // License: GPLv3
 
 use crate::consts::*;
-use crate::event::{self, Event, OnEventFn};
 use crate::format::Format;
 use crate::pprint::token::{Token, TokenKind, Tokens};
 use crate::tclass::TClass;
@@ -20,12 +19,10 @@ use std::{
 pub(crate) fn tokenize(
     uxo: &Uxf,
     format: &Format,
-    on_event: Option<OnEventFn>,
     tclass_for_ttype: HashMap<String, TClass>,
     import_for_ttype: IndexMap<String, String>,
 ) -> Result<Tokens> {
     let tokenizer = Rc::new(RefCell::new(Tokenizer::new(
-        on_event,
         format,
         tclass_for_ttype,
         import_for_ttype,
@@ -51,7 +48,6 @@ fn debug_tokens(tokens: &Tokens) {
 */
 
 pub struct Tokenizer {
-    pub on_event: OnEventFn,
     pub indent: String,
     pub wrapwidth: usize,
     pub realdp: Option<u8>,
@@ -66,17 +62,11 @@ pub struct Tokenizer {
 
 impl Tokenizer {
     pub fn new(
-        on_event: Option<OnEventFn>,
         format: &Format,
         tclass_for_ttype: HashMap<String, TClass>,
         import_for_ttype: IndexMap<String, String>,
     ) -> Self {
         Self {
-            on_event: if let Some(on_event) = on_event {
-                Rc::clone(&on_event)
-            } else {
-                Rc::new(event::on_event)
-            },
             indent: format.indent.clone(),
             realdp: format.realdp,
             wrapwidth: format.wrapwidth as usize,
@@ -128,34 +118,18 @@ impl Tokenizer {
     }
 
     fn handle_imports(&mut self) {
-        let mut widest = 0;
         let mut seen = HashSet::new();
         let imports: Vec<String> =
             self.import_for_ttype.values().map(|i| i.to_string()).collect();
         for import in imports {
             if !seen.contains(&import) {
                 self.puts(&format!("!{}\n", &import));
-                let width = import.chars().count() + 1; // +1 for !
-                if width > widest {
-                    widest = width;
-                }
                 seen.insert(import);
             }
-        }
-        if widest > self.wrapwidth {
-            self.wrapwidth = widest;
-            (self.on_event)(&Event::bare_warning(
-                563,
-                &format!(
-                    "imports forced wrapwidth to be increased to {}",
-                    widest
-                ),
-            ));
         }
     }
 
     fn handle_tclasses(&mut self) {
-        let mut widest = 0;
         let mut ttype_tclass_pairs: Vec<(String, TClass)> = self
             .tclass_for_ttype
             .iter()
@@ -170,10 +144,6 @@ impl Tokenizer {
                 self.rws();
             }
             self.puts(&ttype);
-            let width = ttype.chars().count() + 1; // +1 for =
-            if width > widest {
-                widest = width;
-            }
             self.depth = 1; // to indent any wrapped fields
             for field in tclass.fields() {
                 self.rws();
@@ -181,24 +151,10 @@ impl Tokenizer {
                 if let Some(vtype) = field.vtype() {
                     self.puts(&format!(":{}", vtype));
                 }
-                let width = field.name().chars().count();
-                if width > widest {
-                    widest = width;
-                }
             }
             self.rnl();
         }
         self.depth = 0;
-        if widest > self.wrapwidth {
-            self.wrapwidth = widest;
-            (self.on_event)(&Event::bare_warning(
-                564,
-                &format!(
-                    "ttype forced wrapwidth to be increased to {}",
-                    widest
-                ),
-            ));
-        }
     }
 
     fn handle_list_begin(&mut self, value: &Value) {

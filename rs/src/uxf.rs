@@ -2,7 +2,7 @@
 // License: GPLv3
 
 use crate::consts::*;
-use crate::event::{self, ignore_event, OnEventFn};
+use crate::event::{self, OnEventFn};
 use crate::format::Format;
 use crate::list::List;
 use crate::parser;
@@ -105,38 +105,22 @@ impl Uxf {
     }
 
     /// Returns the text of a valid UXF file using the default human
-    /// readable `Format` options and using the default `on_event` event
-    /// handler.
+    /// readable `Format` options.
     /// Use `to_string()` for compact output if human readability isn't
     /// needed.
     /// This is a convenience wrapper for
-    /// `to_text_options(&Format::default(), None)`
+    /// `to_text_format(&Format::default())`
     pub fn to_text(&self) -> Result<String> {
-        self.to_text_options(&Format::default(), None)
+        self.to_text_format(&Format::default())
     }
 
     /// Returns the text of a valid UXF file using the given `Format`
-    /// options (or use `Format::default()` for the human readable defaults)
-    /// and using the default `on_event` event handler.
+    /// options (or use the `to_text()` convenience method or pass
+    /// `Format::default()` for the human readable defaults).
     /// Use `to_string()` for compact output if human readability isn't
     /// needed.
-    /// This is a convenience wrapper for `to_text_options(&format, None)`
     pub fn to_text_format(&self, format: &Format) -> Result<String> {
-        self.to_text_options(format, None)
-    }
-
-    /// Returns the text of a valid UXF file using the given `Format`
-    /// options (or use `Format::default()` for the human readable defaults)
-    /// and using the given `on_event` event handler (or the default
-    /// handler if `None`).
-    /// Use `to_string()` for compact output if neither human readability
-    /// nor custom event handling is needed.
-    pub fn to_text_options(
-        &self,
-        format: &Format,
-        on_event: Option<OnEventFn>,
-    ) -> Result<String> {
-        pprint::to_text(self, format, on_event)
+        pprint::to_text(self, format)
     }
 
     /// Writes the Uxf's data to the specified filename (gzip-compressing if
@@ -160,8 +144,7 @@ impl Uxf {
         filename: &str,
         format: &Format,
     ) -> Result<()> {
-        let text =
-            self.to_text_options(format, Some(Rc::new(ignore_event)))?;
+        let text = self.to_text_format(format)?;
         if filename.ends_with(".gz") {
             let mut out = GzEncoder::new(Vec::new(), Compression::best());
             out.write_all(text.as_bytes())?;
