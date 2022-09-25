@@ -1,4 +1,4 @@
-regression.py
+regression.py # TODO colorama ################
 testdata/regression.dat.gz
 # TODO add every testdata UXF file -cl (and -l after uxf to_text)
 # TODO add testdata/big.uxd.gz after uxf to_text
@@ -94,7 +94,6 @@ st.sh
 
 # TODO port tlm to use rust uxf
 # NOTE IDEAS:
-# - uxfdiff.py (& rs uxf diff subcommand) to show actual differences
 # - create geo.uxi based on GeoJSON and if successful create:
 #   uxfgeo.py <infile.{json,geojson,uxf,uxg}>
 #	      <outfile.{json,geojson,uxf,uxg}>

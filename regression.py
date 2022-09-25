@@ -14,6 +14,8 @@ import sys
 import tempfile
 import time
 
+from colorama import init, Fore, Back, Style
+
 try:
     ROOT = pathlib.Path(__file__).parent.resolve()
     sys.path.append(str(ROOT / 'py/t'))
@@ -23,6 +25,7 @@ try:
     except ImportError:
         sys.path.append(str(ROOT / 'py'))
         import uxf
+    init(autoreset=True)
 finally:
     pass
 
@@ -49,8 +52,8 @@ def main():
         all_ok += ok
         all_duration += duration
         report(lang, total, ok, duration)
-    report('All' if all_total == all_ok else 'Some', all_total, all_ok,
-           all_duration, '=')
+    report((Fore.BLUE + 'All') if all_total == all_ok else
+           (Fore.RED + 'Some'), all_total, all_ok, all_duration, '=')
     if all_total == all_ok:
         cleanup()
 

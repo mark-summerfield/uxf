@@ -21,8 +21,10 @@ human unfriendly output. Aim is for 1.0.0 to include human-friendly output
 
 To read a UXF file into a `Uxf` object use `parse()` (or `parse_options()` for finer control), e.g.:
 
-```rust,ignore
-let uxo = uxf::parse(&uxt_or_filename)?;
+```rust
+let uxt = "uxf 1\n#<File comment>\n{<alpha> 1\n<bravo> 2}\n"; 
+let uxo = uxf::parse(uxt).unwrap(); // -or- pass a filename
+assert!(uxt == uxo.to_string());
 ```
 
 These functions can accept a filename (which may be gzip-compressed if it ends with `.gz`) or the _text_ of a UXF file.
@@ -36,20 +38,25 @@ canonical human-readable output, use `to_text()` (or `to_text_format()` for
 more control)). Or use `to_string() for bare bones not very human friendly
 output.
 
-```rust,ignore
-let uxt = uxo.to_text();
-// write uxt of type String to the target...
+**TODO: delete .to_string() eg and uncomment .to_text() eg**
+```rust
+let uxt = "uxf 1\n=Point x:real y:real\n(Point 3.4 -7.4\n8.0 4.2)\n"; 
+let uxo = uxf::parse(uxt).unwrap(); // -or- pass a filename
+assert!(uxt == uxo.to_string());
+
+/*
+let uxt = "uxf 1\n=Point x:real y:real\n(Point\n  3.4 -7.4\n  8.0 4.2)"; 
+let uxo = uxf::parse(uxt).unwrap(); // -or- pass a filename
+assert!(uxt == uxo.to_text());
+*/
 ```
 
 # Dependencies
 
 To use uxf, add this line your `Cargo.toml` file's `[dependencies]`
-section:
+section: `uxf = "1"`.
 
-```toml,ignore
-uxf = "1"
-```
-TODO
+# API Notes
 
 Comments, ktypes, vtypes, are all strings. If a ktype or vtype is empty this
 means that any valid ktype or vtype respectively is acceptable.
@@ -63,7 +70,9 @@ objects.
 
 Most of the tests are blackbox regression tests from
 `../testdata/regression.dat.gz` (itself a UXF file) and using the
-`../regression.py` test runner.
+`../regression.py` test runner. The test runner will start
+`../misc/test_server.py` if necessary, for tests that depend on HTTP
+imports.
 
 */
 
