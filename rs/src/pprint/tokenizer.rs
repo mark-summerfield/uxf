@@ -48,7 +48,7 @@ fn debug_tokens(tokens: &Tokens) {
 }
 */
 
-pub struct Tokenizer {
+struct Tokenizer {
     pub indent: String,
     pub wrapwidth: usize,
     pub realdp: Option<u8>,
@@ -62,7 +62,7 @@ pub struct Tokenizer {
 }
 
 impl Tokenizer {
-    pub fn new(
+    fn new(
         format: &Format,
         tclass_for_ttype: HashMap<String, TClass>,
         import_for_ttype: IndexMap<String, String>,
@@ -81,13 +81,13 @@ impl Tokenizer {
         }
     }
 
-    pub fn get_tokens(&mut self) -> Tokens {
+    fn get_tokens(&mut self) -> Tokens {
         let mut tokens = Tokens::new();
         std::mem::swap(&mut tokens, &mut self.tokens);
         tokens
     }
 
-    pub fn visit(&mut self, visit: Visit, value: &Value) -> Result<()> {
+    fn visit(&mut self, visit: Visit, value: &Value) -> Result<()> {
         match visit {
             Visit::UxfBegin => self.handle_uxf_begin(value),
             Visit::UxfEnd => self.eof(),

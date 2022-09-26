@@ -31,7 +31,7 @@ from xml.sax.saxutils import escape, unescape
 
 import editabletuple
 
-__version__ = '2.6.1' # uxf module version
+__version__ = '2.6.2' # uxf module version
 VERSION = 1 # UXF file format version
 
 UTF8 = 'utf-8'
@@ -2732,11 +2732,11 @@ class _PrettyPrinter(_EventMixin): # Functor that can be used as a visitor
         self.rws()
 
 
-    def pprint(self, out=None):
+    def pprint(self, uxt=None):
         if not self.tokens:
             return
-        out = out or io.StringIO()
-        writer = _Writer(self.tokens, out, wrapwidth=self.wrapwidth,
+        uxt = uxt or io.StringIO()
+        writer = _Writer(self.tokens, uxt, wrapwidth=self.wrapwidth,
                          realdp=self.realdp, indent=self.indent,
                          debug=self._debug)
         writer.pprint()
@@ -2744,10 +2744,10 @@ class _PrettyPrinter(_EventMixin): # Functor that can be used as a visitor
 
 class _Writer:
 
-    def __init__(self, tokens, out, *, wrapwidth, realdp, indent,
+    def __init__(self, tokens, uxt, *, wrapwidth, realdp, indent,
                  debug=False):
         self.tokens = tokens
-        self.out = out
+        self.uxt = uxt
         self.wrapwidth = wrapwidth
         self.realdp = realdp
         self.indent = indent
@@ -2871,20 +2871,20 @@ class _Writer:
             first, rest = token.text.split('\n', 1)
             if self.pos + len(first) + n <= self.wrapwidth:
                 if self.pending_rws:
-                    self.out.write(' ')
+                    self.uxt.write(' ')
                     self.pending_rws = False
-                self.out.write(first)
-                self.out.write('\n')
-                self.out.write(rest)
+                self.uxt.write(first)
+                self.uxt.write('\n')
+                self.uxt.write(rest)
                 self.set_pos(rest)
             else:
                 self.pending_rws = False
-                self.out.write('\n')
-                self.out.write(token.text)
+                self.uxt.write('\n')
+                self.uxt.write(token.text)
                 self.set_pos(token.text)
         else: # newline
             self.pending_rws = False
-            self.out.write(token.text)
+            self.uxt.write(token.text)
             self.set_pos(token.text)
 
 
@@ -2912,16 +2912,14 @@ class _Writer:
         else:
             self.end_nl = False
             i = text.rfind('\n')
-            if i > -1:
-                text = text[i + i:]
-            self.pos += len(text)
+            self.pos += len(text[i + 1:]) if i > -1 else len(text)
 
 
     def write(self, text):
         if self.pending_rws:
             text = ' ' + text
             self.pending_rws = False
-        self.out.write(text)
+        self.uxt.write(text)
         self.set_pos(text)
 
 
