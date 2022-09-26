@@ -14,7 +14,7 @@ import sys
 import tempfile
 import time
 
-from colorama import init, Fore, Back, Style
+from colorama import init, Fore
 
 try:
     ROOT = pathlib.Path(__file__).parent.resolve()
@@ -35,6 +35,8 @@ EXE_FOR_LANG = {'py': ['python3', str(ROOT / 'py/uxf.py')],
                 'rs': [str(ROOT / 'rs/target/release/uxf'), 'f']}
 CMP_FOR_LANG = {'py': ['python3', str(ROOT / 'py/uxfcompare.py')],
                 'rs': [str(ROOT / 'rs/target/release/uxf'), 'c']}
+OK = Fore.BLUE
+FAIL = Fore.RED
 
 
 def main():
@@ -51,18 +53,20 @@ def main():
         all_total += total
         all_ok += ok
         all_duration += duration
-        report(lang, total, ok, duration)
-    report((Fore.BLUE + 'All') if all_total == all_ok else
-           (Fore.RED + 'Some'), all_total, all_ok, all_duration, '=')
+        report(lang, total, ok, duration, good=total == ok)
+    report('All' if all_total == all_ok else 'Some', all_total, all_ok,
+           all_duration, '=', all_total == all_ok)
     if all_total == all_ok:
         cleanup()
 
 
-def report(lang, total, ok, duration, sep='-'):
+def report(lang, total, ok, duration, sep='-', good=False):
+    color = OK if good else FAIL
     if total == ok:
-        print(f'{lang:4} {ok:,}/{total:,} OK ({duration:.3f} sec)')
+        print(color + f'{lang:4} {ok:,}/{total:,} OK ({duration:.3f} sec)')
     else:
-        print(f'{lang:4} {ok:,}/{total:,} FAIL ({duration:.3f} sec)')
+        print(color +
+              f'{lang:4} {ok:,}/{total:,} FAIL ({duration:.3f} sec)')
     print(sep * 30)
 
 
@@ -144,7 +148,7 @@ def test_one(lang, verbose, i, t):
         print(' '.join(cmd), end='', flush=True)
     reply = subprocess.run(cmd, capture_output=True, text=True)
     if reply.returncode != t.returncode:
-        print(f'expected returncode {t.returncode}, got '
+        print(FAIL + f'expected returncode {t.returncode}, got '
               f'{reply.returncode}', end='', flush=True)
         return 0
     if reply.stderr:
@@ -158,7 +162,7 @@ def test_one(lang, verbose, i, t):
 
 def check_stderr(lang, verbose, t, rstderr):
     if t.stderr is None:
-        print(f'\nunexpected stderr:\n{rstderr}')
+        print(FAIL + f'\nunexpected stderr:\n{rstderr}')
         return False
     stderr = f'expected/{t.stderr}'
     lstderr = stderr.replace('.', f'-{lang}.')
@@ -169,10 +173,10 @@ def check_stderr(lang, verbose, t, rstderr):
         rstderr = normalize(rstderr)
         stderr = normalize(stderr)
         if rstderr != stderr:
-            print(f'\nexpected stderr:\n{stderr}\n-got-\n{rstderr}')
+            print(FAIL + f'\nexpected stderr:\n{stderr}\n-got-\n{rstderr}')
             return False
     if verbose:
-        print(' • stderr ok', end='', flush=True)
+        print(OK + ' • stderr ok', end='', flush=True)
     return True
 
 
@@ -190,16 +194,17 @@ def normalize(s):
 def check_expected(lang, verbose, t, afile):
     efile = 'expected/' + (t.ifile if t.efile is SAME else t.efile)
     if not compare(lang, t.o_vs_e, t.ifile, efile):
-        print(f'{t.ifile!r} !{t.o_vs_e.symbol} {efile!r}', end='',
+        print(FAIL + f'{t.ifile!r} !{t.o_vs_e.symbol} {efile!r}', end='',
               flush=True)
         return False
     elif verbose:
-        print(f' • o_vs_e {t.o_vs_e.symbol}', end='', flush=True)
+        print(OK + f' • o_vs_e {t.o_vs_e.symbol}', end='', flush=True)
     if not compare(lang, t.a_vs_e, afile, efile):
-        print(f'{afile!r} !{t.a_vs_e.symbol} {efile!r}', end='', flush=True)
+        print(FAIL + f'{afile!r} !{t.a_vs_e.symbol} {efile!r}', end='',
+              flush=True)
         return False
     elif verbose:
-        print(f' • a_vs_e {t.o_vs_e.symbol}', end='', flush=True)
+        print(OK + f' • a_vs_e {t.o_vs_e.symbol}', end='', flush=True)
     return True
 
 

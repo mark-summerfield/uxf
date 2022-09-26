@@ -1,4 +1,4 @@
-regression.py # TODO colorama ################
+regression.py
 testdata/regression.dat.gz
 # TODO add every testdata UXF file -cl (and -l after uxf to_text)
 # TODO add testdata/big.uxd.gz after uxf to_text
