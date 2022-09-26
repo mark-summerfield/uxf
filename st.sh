@@ -1,6 +1,7 @@
 #!/bin/bash
 cd $HOME/app/uxf
-tokei -C -f -slines -tPython -esetup.py -eeg -emisc -ex/ -epy/t
+tokei -C -f -slines -tPython -esetup.py -eeg -emisc -ex/ -epy/t \
+    -eregression.py -echeck_lexer.py
 tokei -C -f -tRust -etarget -e rs/tests -e x/rs \
     | grep -v '^-- ' | grep -v '|-'
 unrecognized.py -q
