@@ -2,9 +2,10 @@ regression.py
 testdata/regression.dat.gz
 # TODO add every testdata UXF file
 # TODO add a test for every warning & error
+# TODO once all tests done release 1.0.0
 
 rs/src/bin/uxf.rs
-rs/src/lib.rs # TODO docs
+rs/src/lib.rs
 rs/src/value.rs
 rs/src/key.rs
 rs/src/list.rs

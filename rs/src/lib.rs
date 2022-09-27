@@ -37,17 +37,10 @@ canonical human-readable output, use `to_text()` (or `to_text_format()` for
 more control)). Or use `to_string() for bare bones not very human friendly
 output.
 
-**TODO: delete .to_string() eg and uncomment .to_text() eg**
 ```rust
-let uxt = "uxf 1\n=Point x:real y:real\n(Point 3.4 -7.4\n8.0 4.2)\n"; 
-let uxo = uxf::parse(uxt).unwrap(); // -or- pass a filename
-assert!(uxt == uxo.to_string());
-
-/*
-let uxt = "uxf 1\n=Point x:real y:real\n(Point\n  3.4 -7.4\n  8.0 4.2)"; 
+let uxt = "uxf 1\n=Point x:real y:real\n(Point\n  3.4 -7.4\n  8.0 4.2\n)\n";
 let uxo = uxf::parse(uxt).unwrap(); // -or- pass a filename
 assert!(uxt == uxo.to_text());
-*/
 ```
 
 # Dependencies

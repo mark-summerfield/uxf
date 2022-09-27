@@ -1,0 +1,1 @@
+uxf.py:error:uxf:F176:i64.uxi:1:a UXF file cannot import itself

@@ -14,7 +14,7 @@ import sys
 import tempfile
 import time
 
-from colorama import init, Fore
+from colorama import Fore, init
 
 try:
     ROOT = pathlib.Path(__file__).parent.resolve()
@@ -236,7 +236,7 @@ def read_tests(filename):
             elif field.ttype == 'same':
                 return SAME
             elif field.ttype == 'dummy':
-                return f'{TEMP_PATH}/dummy.uxf'
+                return 'dummy.uxf'
         # else: return None
 
     def cmp(field):

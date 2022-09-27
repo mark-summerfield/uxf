@@ -1,0 +1,1 @@
+E176:/home/mark/app/uxf/testdata/i64.uxi:2:a UXF file cannot import itself
