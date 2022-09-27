@@ -2737,19 +2737,16 @@ class _PrettyPrinter(_EventMixin): # Functor that can be used as a visitor
             return
         uxt = uxt or io.StringIO()
         writer = _Writer(self.tokens, uxt, wrapwidth=self.wrapwidth,
-                         realdp=self.realdp, indent=self.indent,
-                         debug=self._debug)
+                         indent=self.indent, debug=self._debug)
         writer.pprint()
 
 
 class _Writer:
 
-    def __init__(self, tokens, uxt, *, wrapwidth, realdp, indent,
-                 debug=False):
+    def __init__(self, tokens, uxt, *, wrapwidth, indent, debug=False):
         self.tokens = tokens
         self.uxt = uxt
         self.wrapwidth = wrapwidth
-        self.realdp = realdp
         self.indent = indent
         self.debug = debug
         self.pos = 0
@@ -2796,42 +2793,42 @@ class _Writer:
     def begin(self, token):
         tab = self.indent * token.depth
         needed = self.pos if self.pos else len(tab)
-        i = self.find_matching_end(needed, self.tp, token.depth)
-        if i > -1: # found & fits on line
+        tp = self.find_matching_end(needed, self.tp, token.depth)
+        if tp > -1: # found & fits on line
             if self.pos == 0:
                 self.write(tab)
-            self.write_tokens_to(i)
+            self.write_tokens_to(tp)
         elif self.pos: # try to fit begin…end on its own wrapped line
-            i = self.find_matching_end(len(tab), self.tp, token.depth)
-            if i > -1: # found & will fit on next line even with indent
+            tp = self.find_matching_end(len(tab), self.tp, token.depth)
+            if tp > -1: # found & will fit on next line even with indent
                 self.pending_rws = False
                 self.rnl()
                 self.write(tab)
-                self.write_tokens_to(i)
+                self.write_tokens_to(tp)
             # else: # skip this begin and continue from the next token
 
 
-    def find_matching_end(self, needed, i, depth):
+    def find_matching_end(self, needed, tp, depth):
         needed += (1 if self.pending_rws else 0)
-        while needed <= self.wrapwidth and i < len(self.tokens):
-            token = self.tokens[i]
-            i += 1
+        while needed <= self.wrapwidth and tp < len(self.tokens):
+            token = self.tokens[tp]
+            tp += 1
             if token.kind is _PrintKind.END:
                 if token.depth == depth: # matching end
-                    return i
+                    return tp
             elif token.kind in {_PrintKind.RNL, _PrintKind.EOF}:
-                return i # de-facto; forced onto newline anyway or EOF
+                return tp # de-facto; forced onto newline anyway or EOF
             elif token.kind is _PrintKind.RWS:
                 needed += 1
             elif token.kind is _PrintKind.STRING:
-                needed += len(token.text)
                 if token.is_multiline:
-                    return i # de-facto; forced onto newline anyway
+                    return tp # de-facto; forced onto newline anyway
+                needed += len(token.text)
         return -1
 
 
-    def write_tokens_to(self, i):
-        while self.tp < i: # room for more
+    def write_tokens_to(self, tp):
+        while self.tp < tp: # room for more
             token = self.tokens[self.tp]
             self.tp += 1
             if token.kind is _PrintKind.STRING:
@@ -2871,8 +2868,8 @@ class _Writer:
             first, rest = token.text.split('\n', 1)
             if self.pos + len(first) + n <= self.wrapwidth:
                 if self.pending_rws:
-                    self.uxt.write(' ')
                     self.pending_rws = False
+                    self.uxt.write(' ')
                 self.uxt.write(first)
                 self.uxt.write('\n')
                 self.uxt.write(rest)

@@ -138,13 +138,14 @@ impl Tokenizer {
             .map(|pair| (pair.0.to_lowercase(), pair.1.clone()))
             .collect();
         ttype_tclass_pairs.sort();
-        for (ttype, tclass) in ttype_tclass_pairs {
+        for (_, tclass) in ttype_tclass_pairs {
+            self.depth = 0;
             self.puts("=");
             if !tclass.comment().is_empty() {
                 self.handle_comment(tclass.comment());
                 self.rws();
             }
-            self.puts(&ttype);
+            self.puts(tclass.ttype());
             self.depth = 1; // to indent any wrapped fields
             for field in tclass.fields() {
                 self.rws();
@@ -390,6 +391,7 @@ impl Tokenizer {
             let i = rindex_of_char(' ', chunk);
             let i = if let Some(i) = i { i + 1 } else { chunk.len() };
             let chunk = str_for_chars(&chars[..i]);
+            chars.drain(..i);
             if !chunk.is_empty() {
                 let end = if chars.is_empty() { "" } else { " &" };
                 self.put_line(
@@ -399,10 +401,6 @@ impl Tokenizer {
                 prefix.clear();
                 self.rnl();
             }
-            if chars.len() < span {
-                break;
-            }
-            chars.drain(..i);
         }
     }
 
