@@ -31,7 +31,7 @@ from xml.sax.saxutils import escape, unescape
 
 import editabletuple
 
-__version__ = '2.6.2' # uxf module version
+__version__ = '2.7.0' # uxf module version
 VERSION = 1 # UXF file format version
 
 UTF8 = 'utf-8'
@@ -1970,7 +1970,7 @@ class _Parser(_EventMixin):
         if len(diff) == 1:
             handle(code, f'{what}: {diff[0]!r}')
         else:
-            diff = ', '.join(repr(t) for t in diff)
+            diff = ' '.join(repr(t) for t in diff)
             handle(code, f'{what}s: {diff}')
 
 

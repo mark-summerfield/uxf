@@ -317,10 +317,10 @@ uxf:F450:i65.uxi:4:expected table ttype
 uxf:F580:i66.uxi:1:cannot do circular imports 'testdata/i65.uxi'
 uxf:W422:i67.uxi:11:unused ttype: 'dob'
 uxf:F544:pairimportc.uxi:1:conflicting ttype definitions for pair
-uxf:W422:t72.uxi:12:unused ttypes: 'dob', 'point3d'
-uxf:W422:t72l.uxf:12:unused ttypes: 'dob', 'point3d'
-uxf:W422:t72.uxi:12:unused ttypes: 'dob', 'point3d'
-uxf:W422:t72r.uxf:12:unused ttypes: 'dob', 'point3d'
+uxf:W422:t72.uxi:12:unused ttypes: 'dob' 'point3d'
+uxf:W422:t72l.uxf:12:unused ttypes: 'dob' 'point3d'
+uxf:W422:t72.uxi:12:unused ttypes: 'dob' 'point3d'
+uxf:W422:t72r.uxf:12:unused ttypes: 'dob' 'point3d'
 uxf:F102:e87.uxi:0:failed to read UXF text: [Errno 2] No such file or \
 directory: 'testdata/missing.uxi'
 uxf:E586:e87.uxi:2:failed to import 'testdata/missing.uxi': \

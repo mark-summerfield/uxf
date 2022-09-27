@@ -289,7 +289,8 @@ impl<'a> Lexer<'a> {
             } else {
                 bail!(self.error(
                     195,
-                    "attempt to concatenate a str to a non-str"
+                    "attempt to concatenate a str to a non-str \
+                    or to a comment"
                 ));
             }
         } else {

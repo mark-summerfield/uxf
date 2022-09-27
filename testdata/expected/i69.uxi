@@ -1,0 +1,11 @@
+uxf 1
+!http://localhost:5558/ttype-eg.uxf
+!ttype-test.uxi
+!t63.uxt
+=dob dob:date
+=point3d x:int y:int z:int
+[
+  (img (rgb 0 0 127) (:DECADE:))
+  (i <is this oblique?>)
+  {30 (pair <one> 2)}
+]

@@ -1,0 +1,1 @@
+W422:/home/mark/app/uxf/testdata/i69.uxi:10:unused ttypes: dob point3d

@@ -1,0 +1,4 @@
+R486:/home/mark/app/uxf/testdata/l60.uxf:5:converted real 9.0 to int 9
+R486:/home/mark/app/uxf/testdata/l60.uxf:5:converted real 10.1 to int 10
+R486:/home/mark/app/uxf/testdata/l60.uxf:6:converted str <-1> to int -1
+R486:/home/mark/app/uxf/testdata/l60.uxf:6:converted str <13> to int 13

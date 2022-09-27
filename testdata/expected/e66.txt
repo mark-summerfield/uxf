@@ -1,0 +1,1 @@
+uxf.py:error:uxf:F580:i66.uxi:1:cannot do circular imports '/home/mark/app/uxf/testdata/i65.uxi'

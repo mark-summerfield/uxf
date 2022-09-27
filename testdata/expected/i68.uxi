@@ -1,0 +1,9 @@
+uxf 1 UXF Include
+=include filename:str
+(include
+  <t15.uxf>
+  <t16.uxf>
+  <t19.uxf>
+  <t47.uxf>
+  <t63.uxf>
+)

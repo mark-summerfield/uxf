@@ -2,7 +2,7 @@ regression.py
 testdata/regression.dat.gz
 # TODO add every testdata UXF file
 # TODO add a test for every warning & error
-# TODO once all tests done release 1.0.0
+# TODO once all tests done release rs 1.0.0 & py 2.7.0
 
 rs/src/bin/uxf.rs
 rs/src/lib.rs
@@ -36,7 +36,6 @@ rs/tests/test_table.rs
 rs/tests/test_tclass.rs
 rs/tests/test_field.rs
 rs/tests/test_uxf.rs
-# rs/check_lexer.py
 rs/Cargo.toml
 
 rs/README.md

@@ -1,0 +1,1 @@
+E580:/home/mark/app/uxf/testdata/i66.uxi:2:cannot do circular imports "/home/mark/app/uxf/testdata/i65.uxi"

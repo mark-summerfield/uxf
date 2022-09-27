@@ -1,0 +1,7 @@
+R486:/home/mark/app/uxf/testdata/l58.uxf:13:converted str <yes> to bool yes
+R486:/home/mark/app/uxf/testdata/l58.uxf:13:converted str <no> to bool no
+R486:/home/mark/app/uxf/testdata/l58.uxf:13:converted str <t> to bool yes
+R486:/home/mark/app/uxf/testdata/l58.uxf:13:converted str <f> to bool no
+R486:/home/mark/app/uxf/testdata/l58.uxf:13:converted str <true> to bool yes
+R486:/home/mark/app/uxf/testdata/l58.uxf:13:converted str <false> to bool no
+E488:/home/mark/app/uxf/testdata/l58.uxf:13:expected bool, got <duh>
