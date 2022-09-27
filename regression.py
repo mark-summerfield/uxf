@@ -37,6 +37,7 @@ CMP_FOR_LANG = {'py': ['python3', str(ROOT / 'py/uxfcompare.py')],
                 'rs': [str(ROOT / 'rs/target/release/uxf'), 'c']}
 OK = Fore.BLUE
 FAIL = Fore.RED
+SKIP = Fore.GREEN
 
 
 def main():
@@ -122,6 +123,10 @@ def test_lang(tmin, tmax, lang, verbose, tests):
         if i > tmax:
             break
         if t.langs is not None and lang not in t.langs:
+            if verbose:
+                print(f'{i: 4}: ' + SKIP + 'skipped')
+            else:
+                print(f'{i} ' + SKIP + 'skipped')
             continue
         total += 1
         n = test_one(lang, verbose, i, t)

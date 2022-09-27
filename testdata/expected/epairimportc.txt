@@ -1,0 +1,1 @@
+uxf.py:error:uxf:F544:pairimportc.uxi:1:conflicting ttype definitions for pair
