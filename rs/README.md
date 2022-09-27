@@ -13,13 +13,12 @@ see the [UXF Overview](../README.md). ([Alternative link to UXF
 Overview](https://github.com/mark-summerfield/uxf/blob/main/README.md).)
 
 **Note that this is WIP — currently the parser is complete, along with
-human unfriendly output. Aim is for 1.0.0 to include human-friendly output
-(pretty printing).**
+output. Aim is for 1.0.0 to include better docs & more regression tests.**
 
 [crates.io](https://crates.io/crates/uxf)
 [docs](https://docs.rs/uxf/latest/uxf/)
 
-## Commmand Line tools
+## Commmand Line tool
 
 - _uxf_ this can read UXF files (optionally gzip compressed) and lint and
   output UXF files (optionally gzip compressed; optionally replacing imports
