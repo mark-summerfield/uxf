@@ -39,8 +39,12 @@ output.
 
 ```rust
 let uxt = "uxf 1\n=Point x:real y:real\n(Point\n  3.4 -7.4\n  8.0 4.2\n)\n";
-let uxo = uxf::parse(uxt).unwrap(); // -or- pass a filename
-assert!(uxt == uxo.to_text());
+let uxo1 = uxf::parse(uxt).unwrap(); // -or- pass a filename
+assert!(uxt == uxo1.to_text());
+let uxo2 = uxf::parse(&uxo1.to_text()).unwrap(); // round-trip tests:
+assert!(uxo1 == uxo2);
+assert!(uxo1.to_string() == uxo2.to_string());
+assert!(uxo1.to_text() == uxo2.to_text());
 ```
 
 # Dependencies
