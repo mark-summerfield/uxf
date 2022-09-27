@@ -1966,7 +1966,7 @@ class _Parser(_EventMixin):
 
     def _report_problem(self, diff, code, what):
         handle = self.warning if code == 422 else self.error
-        diff = sorted(diff)
+        diff = sorted(diff, key=str.lower)
         if len(diff) == 1:
             handle(code, f'{what}: {diff[0]!r}')
         else:

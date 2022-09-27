@@ -87,7 +87,9 @@ def get_config():
             left, right = arg.split('-', 1)
             if not left.isdecimal():
                 raise SystemExit('error: n must be an integer')
-            if not right.isdecimal():
+            if not right:
+                right = sys.maxsize
+            elif not right.isdecimal():
                 raise SystemExit('error: m must be an integer')
             tmin = int(left)
             tmax = int(right)

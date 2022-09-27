@@ -1,1 +1,1 @@
-uxf:W422:t28.uxf:39:unused ttypes: 'IPv4' 'IntPair' 'Playlists' 'RGB' 'RGBA'
+W422:/home/mark/app/uxf/testdata/t28.uxf:39:unused ttypes: IntPair IPv4 Playlists RGB RGBA
