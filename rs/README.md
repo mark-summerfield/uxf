@@ -24,12 +24,10 @@ human unfriendly output. Aim is for 1.0.0 to include human-friendly output
 - _uxf_ this can read UXF files (optionally gzip compressed) and lint and
   output UXF files (optionally gzip compressed; optionally replacing imports
   and dropping unused ttypes).
-- _uxfcmp_ this compares two UXF files (optionally gzip compressed) for
-  equality or equivalence.
-- _uxflint_ this lints any number of UXF files. 
 
 ## Changes
 
+- 0.20.0 _uxf_ now does linting and comparing; pretty printing complete.
 - 0.16.0 More progress towards pretty printing: but at the moment only
   compact output works (along with parsing of course).
 - 0.15.0 Changed uxf CLI to use subcommands: can now do compare, format, and
