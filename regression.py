@@ -235,6 +235,8 @@ def read_tests(filename):
                 return field
             elif field.ttype == 'same':
                 return SAME
+            elif field.ttype == 'dummy':
+                return f'{TEMP_PATH}/dummy.uxf'
         # else: return None
 
     def cmp(field):

@@ -1,7 +1,7 @@
 regression.py
 testdata/regression.dat.gz
-# TODO add every testdata UXF file -cl (and -l after uxf to_text)
-# TODO add testdata/big.uxd.gz after uxf to_text
+# TODO add every testdata UXF file
+# TODO add a test for every warning & error
 
 rs/src/bin/uxf.rs
 rs/src/lib.rs # TODO docs
@@ -26,7 +26,7 @@ rs/src/pprint/mod.rs
 rs/src/pprint/to_text.rs
 rs/src/pprint/tokenizer.rs
 rs/src/pprint/token.rs
-rs/src/pprint/writer.rs # TODO
+rs/src/pprint/writer.rs
 rs/tests/utils/mod.rs
 rs/tests/test_value.rs
 rs/tests/test_list.rs

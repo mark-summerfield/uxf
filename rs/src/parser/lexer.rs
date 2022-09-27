@@ -250,7 +250,7 @@ impl<'a> Lexer<'a> {
                 self.pos += 1; // skip the leading <
                 let text = self.match_to_char('>', "comment string")?;
                 if !text.is_empty() {
-                    let top = self.tokens.back_mut().unwrap();
+                    let top = self.tokens.back_mut().unwrap(); // safe
                     top.comment = unescape(&text);
                 }
                 Ok(())

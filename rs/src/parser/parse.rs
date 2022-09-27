@@ -372,7 +372,7 @@ impl<'a> Parser<'a> {
             self.lino = token.lino;
             match token.kind {
                 TokenKind::TClassBegin => {
-                    self.handle_tclass_begin(&mut tclass_builder, token);
+                    self.handle_tclass_begin(&mut tclass_builder, token)?;
                     lino = self.lino;
                 }
                 TokenKind::Field => {
@@ -424,9 +424,13 @@ impl<'a> Parser<'a> {
         &self,
         tclass_builder: &mut TClassBuilder,
         token: &Token,
-    ) {
-        tclass_builder
-            .initialize(token.value.as_str().unwrap(), &token.comment);
+    ) -> Result<()> {
+        if let Some(s) = token.value.as_str() {
+            tclass_builder.initialize(s, &token.comment);
+            Ok(())
+        } else {
+            bail!(self.error(523, "invalid or missing ttype name"))
+        }
     }
 
     fn handle_tclass_field(
@@ -435,8 +439,11 @@ impl<'a> Parser<'a> {
         token: &Token,
     ) -> Result<()> {
         if tclass_builder.is_valid() {
-            tclass_builder
-                .append_field(token.value.as_str().unwrap(), &token.vtype)
+            if let Some(s) = token.value.as_str() {
+                tclass_builder.append_field(s, &token.vtype)
+            } else {
+                bail!(self.error(522, "invalid or missing field name"))
+            }
         } else {
             bail!(self.error(524, "Field outside TClass"));
         }
@@ -916,7 +923,7 @@ impl<'a> Parser<'a> {
 
     fn error_t(&self, code: u16, message: &str, t: &Token) -> String {
         format!(
-            "E{}:{}:{}:{}, got {:?}",
+            "E{}:{}:{}:{}, got {}",
             code, self.filename, self.lino, message, t
         )
     }
