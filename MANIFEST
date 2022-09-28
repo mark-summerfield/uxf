@@ -1,5 +1,5 @@
-# TODO use anyhow::Context to improve file error & number parse error
-# messages
+# TODO use anyhow::Context to improve file error & number & date/time
+# etc. parse error messages: see read_negative_number()
 regression.py
 testdata/regression.dat.gz
 testdata/errortests.dat.gz

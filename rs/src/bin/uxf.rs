@@ -20,7 +20,7 @@ fn main() {
         Commands::Lint(lint) => handle_lint(lint),
         Commands::Compare(compare) => handle_compare(compare),
     } {
-        eprintln!("{}", err);
+        eprintln!("{:#}", err);
     }
 }
 

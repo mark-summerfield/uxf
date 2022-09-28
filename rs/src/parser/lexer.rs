@@ -338,12 +338,18 @@ impl<'a> Lexer<'a> {
         let text: String = self.text[start..self.pos].iter().collect();
         if is_real {
             let n: f64 = text.parse().with_context(|| {
-                self.error_s(210, "failed to parse real", &text)
+                self.error(
+                    210,
+                    &format!("failed to parse {:?} as real", &text),
+                )
             })?;
             self.add_token(TokenKind::Real, Value::Real(-n))
         } else {
             let n: i64 = text.parse().with_context(|| {
-                self.error_s(211, "failed to parse int", &text)
+                self.error(
+                    211,
+                    &format!("failed to parse {:?} as int", &text),
+                )
             })?;
             self.add_token(TokenKind::Int, Value::Int(-n))
         }
