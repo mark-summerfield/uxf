@@ -1,0 +1,21 @@
+uxf 1
+!http://localhost:5558/ttype-eg.uxf
+!ttype-test.uxi
+!complex
+!fraction
+!t63.uxt
+=dob dob:date
+=point3d x:int y:int z:int
+[
+  (:DECADE:)
+  <is that so?>
+  {
+    10 [
+      3
+      4
+      5
+    ]
+    20 0.9
+    30 <A one>
+  }
+]
