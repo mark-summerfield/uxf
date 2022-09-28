@@ -1,0 +1,1 @@
+E601:/home/mark/app/uxf/testdata/e200.uxe:2:invalid hex char: 'G'

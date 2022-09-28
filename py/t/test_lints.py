@@ -96,6 +96,9 @@ def check_bad(name, regression):
                   f'got: {actual[:60]!r}…')
         return 0
     if expected != actual:
+        expected = normalize(expected)
+        actual = normalize(actual)
+    if expected != actual:
         if not regression:
             if len(actual) < MAX_DIFF_LEN and len(expected) < MAX_DIFF_LEN:
                 print(f'{cmd} • (bad) FAIL\nEXPECTED {expected!r}\n'
@@ -105,6 +108,15 @@ def check_bad(name, regression):
                       f'ACTUAL   {actual[:60]!r}…')
         return 0
     return 1
+
+
+def normalize(s):
+    match = re.search(r'(?:^|:)[EFRW](?P<code>\d\d\d):', s)
+    code = int(match.group('code')) if match else None
+    s = s.replace('testdata/', '')
+    match = re.search(r':\d+:', s)
+    text = re.sub(r'''['"]''', '', s[match.end():]) if match else s
+    return code, text
 
 
 def check_all(total, ok, regression):

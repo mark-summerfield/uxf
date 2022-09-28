@@ -242,6 +242,18 @@ fn t_uxf_parse_ok() {
     // TODO
 }
 
+#[test]
+fn t_no_such_file() {
+    let err = uxf::parse("no-such-file.uxf").unwrap_err();
+    assert!(err.to_string().starts_with("No such file or directory"));
+}
+
+#[test]
+fn t_not_a_uxf_file() {
+    let err = uxf::parse("UXF 1\n[]").unwrap_err();
+    assert_eq!(err.to_string(), "E130:-:1:not a UXF file");
+}
+
 /*
 #[test]
 fn t_uxf_parse_options_ok() {

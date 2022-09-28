@@ -83,11 +83,11 @@ uxflint:R498:l60.uxf:4:converted real 9.0 to int 9
 uxflint:R498:l60.uxf:4:converted real 10.1 to int 10
 uxflint:R486:l60.uxf:5:converted str '-1' to int -1
 uxflint:R486:l60.uxf:5:converted str '13' to int 13
-uxflint:W191:l86.uxf:4:for concatenated comments, the comment marker (&) should only precede the first fragment
+uxflint:W191:l86.uxf:4:for concatenated comments, the comment marker (#) should only precede the first fragment
 uxflint:E190:l86.uxf:5:inline comments may only occur at the start of Lists, Maps, Tables, and TClasses
-uxflint:W422:t13.uxf:43:unused ttypes: 'IPv4' 'IntPair' 'Playlists' 'RGB' 'RGBA'
-uxflint:W422:t14.uxf:39:unused ttypes: 'Categories' 'IPv4' 'IntPair' 'Playlists' 'RGB' 'RGBA'
-uxflint:W422:t28.uxf:39:unused ttypes: 'IPv4' 'IntPair' 'Playlists' 'RGB' 'RGBA'
+uxflint:W422:t13.uxf:43:unused ttypes: 'IntPair' 'IPv4' 'Playlists' 'RGB' 'RGBA'
+uxflint:W422:t14.uxf:39:unused ttypes: 'Categories' 'IntPair' 'IPv4' 'Playlists' 'RGB' 'RGBA'
+uxflint:W422:t28.uxf:39:unused ttypes: 'IntPair' 'IPv4' 'Playlists' 'RGB' 'RGBA'
 uxflint:E454:t33.uxf:10:expected table value of type map, got table of type Geometry
 uxflint:W422:t54.uxf:4:unused ttype: 'Pair'
 uxflint:W422:t55.uxf:4:unused ttype: 'Pair'

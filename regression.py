@@ -8,6 +8,7 @@ import enum
 import filecmp
 import os
 import pathlib
+import re
 import shutil
 import subprocess
 import sys
@@ -188,14 +189,12 @@ def check_stderr(lang, verbose, t, rstderr):
 
 
 def normalize(s):
-    if s.startswith('uxf:'):
-        s = s[4:]
-    s = s.replace("'", '').replace('"', '')
-    i = s.find(':')
-    j = s.find('testdata')
-    if i > -1 and j > -1:
-        s = s[:i + 1] + s[j + len('testdata') + 1:]
-    return s
+    match = re.search(r'(?:^|:)[EFRW](?P<code>\d\d\d):', s)
+    code = int(match.group('code')) if match else None
+    s = s.replace('testdata/', '')
+    match = re.search(r':\d+:', s)
+    text = re.sub(r'''['"]''', '', s[match.end():]) if match else s
+    return code, text
 
 
 def check_expected(lang, verbose, t, afile):

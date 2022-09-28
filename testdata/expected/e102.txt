@@ -1,0 +1,1 @@
+uxf.py:error:uxf:F102:testdata/e102.missing:0:failed to read UXF text: [Errno 2] No such file or directory: 'testdata/e102.missing'

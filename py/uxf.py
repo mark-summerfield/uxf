@@ -616,7 +616,7 @@ class _Lexer(_EventMixin):
                     self.concatenate = False
                     self.warning(
                         191, 'for concatenated comments, the comment '
-                        'marker (&) should only precede the first fragment')
+                        'marker (#) should only precede the first fragment')
                 else:
                     self.tokens[-1].comment = unescape(value)
         else:

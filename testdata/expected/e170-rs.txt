@@ -1,0 +1,1 @@
+E170:/home/mark/app/uxf/testdata/e170.uxe:2:invalid character encountered, got '$'

@@ -1,2 +1,2 @@
-uxf:W191:l86.uxf:4:for concatenated comments, the comment marker (&) should only precede the first fragment
+uxf:W191:l86.uxf:4:for concatenated comments, the comment marker (#) should only precede the first fragment
 uxf:E190:l86.uxf:5:inline comments may only occur at the start of Lists, Maps, Tables, and TClasses
