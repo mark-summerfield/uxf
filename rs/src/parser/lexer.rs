@@ -12,7 +12,7 @@ use crate::util::{
     dirname, full_filename, hex_as_bytes, str_for_chars, unescape,
 };
 use crate::value::Value;
-use anyhow::{bail, Result};
+use anyhow::{bail, Context, Result};
 use chrono::{NaiveDate, NaiveDateTime};
 use std::{collections::VecDeque, mem, rc::Rc, str};
 
@@ -337,10 +337,14 @@ impl<'a> Lexer<'a> {
         self.pos -= 1; // wind back to terminating non-numeric char
         let text: String = self.text[start..self.pos].iter().collect();
         if is_real {
-            let n: f64 = text.parse()?;
+            let n: f64 = text.parse().with_context(|| {
+                self.error_s(210, "failed to parse real", &text)
+            })?;
             self.add_token(TokenKind::Real, Value::Real(-n))
         } else {
-            let n: i64 = text.parse()?;
+            let n: i64 = text.parse().with_context(|| {
+                self.error_s(211, "failed to parse int", &text)
+            })?;
             self.add_token(TokenKind::Int, Value::Int(-n))
         }
     }
