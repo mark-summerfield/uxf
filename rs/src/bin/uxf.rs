@@ -2,7 +2,7 @@
 // License: GPLv3
 
 use anyhow::{bail, Context, Result};
-use clap::{AppSettings, Args, Parser, Subcommand};
+use clap::{Args, Parser, Subcommand};
 use flate2::{write::GzEncoder, Compression};
 use std::{
     env,
@@ -169,7 +169,6 @@ fn canonicalize_file(p: &Path) -> Result<PathBuf> {
 }
 
 #[derive(Parser, Debug)]
-#[clap(global_setting(AppSettings::DeriveDisplayOrder))]
 #[clap(
     version,
     about = "Provides comparing, linting, and formatting \
