@@ -627,7 +627,7 @@ class _Lexer(_EventMixin):
 
     def read_string(self):
         s = self.match_to('>', what='string')
-        if not s:
+        if s is None:
             return # error has already been handled in self.match_to()
         value = unescape(s)
         if self.concatenate:
