@@ -10,7 +10,7 @@ use crate::pprint;
 use crate::tclass::TClass;
 use crate::util::{escape, read_file};
 use crate::value::{Value, Visit, Visitor};
-use anyhow::{bail, Result};
+use anyhow::{bail, Context, Result};
 use bitflags::bitflags;
 use flate2::{write::GzEncoder, Compression};
 use indexmap::map::IndexMap;
@@ -147,11 +147,17 @@ impl Uxf {
         let text = self.to_text_format(format);
         if filename.ends_with(".gz") {
             let mut out = GzEncoder::new(Vec::new(), Compression::best());
-            out.write_all(text.as_bytes())?;
-            out.finish()?;
+            out.write_all(text.as_bytes()).with_context(|| {
+                format!("failed to write gzipped {:?}", filename)
+            })?;
+            out.finish().with_context(|| {
+                format!("failed to gzip {:?}", filename)
+            })?;
         } else {
             let mut file = File::create(filename)?;
-            file.write_all(text.as_bytes())?
+            file.write_all(text.as_bytes()).with_context(|| {
+                format!("failed to write {:?}", filename)
+            })?
         }
         Ok(())
     }

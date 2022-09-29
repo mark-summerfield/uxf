@@ -1,7 +1,7 @@
 // Copyright © 2022 Mark Summerfield. All rights reserved.
 // License: GPLv3
 
-use crate::check::{check_ktype, check_ttype, check_vtype};
+use crate::check::{check_ktype_x, check_ttype_x, check_vtype_x};
 use crate::consts::*;
 use crate::event::{Event, OnEventFn};
 /* DEBUG
@@ -217,7 +217,8 @@ impl<'a> Lexer<'a> {
         if c != ')' {
             bail!(self.error_c(269, "unterminated bytes", c))
         }
-        let raw = hex_as_bytes(&text, self.filename, self.lino)?;
+        let raw = hex_as_bytes(&text)
+            .with_context(|| self.error(601, "invalid bytes"))?;
         self.add_token(TokenKind::Bytes, Value::Bytes(raw))
     }
 
@@ -394,16 +395,38 @@ impl<'a> Lexer<'a> {
                     16 => ISO8601_DATETIME_M, // YYYY-MM-DDTHH:MM
                     _ => ISO8601_DATETIME,    // YYYY-MM-DDTHH:MM:SS
                 },
-            )?;
+            )
+            .with_context(|| {
+                self.error(
+                    240,
+                    &format!("failed to parse {:?} as datetime", text),
+                )
+            })?;
             self.add_token(TokenKind::DateTime, Value::DateTime(d))
         } else if hyphens == 2 {
-            let d = NaiveDate::parse_from_str(&text, ISO8601_DATE)?;
+            let d = NaiveDate::parse_from_str(&text, ISO8601_DATE)
+                .with_context(|| {
+                    self.error(
+                        241,
+                        &format!("failed to parse {:?} as date", text),
+                    )
+                })?;
             self.add_token(TokenKind::Date, Value::Date(d))
         } else if is_real {
-            let n: f64 = text.parse()?;
+            let n: f64 = text.parse().with_context(|| {
+                self.error(
+                    210,
+                    &format!("failed to parse {:?} as real", &text),
+                )
+            })?;
             self.add_token(TokenKind::Real, Value::Real(n))
         } else {
-            let n: i64 = text.parse()?;
+            let n: i64 = text.parse().with_context(|| {
+                self.error(
+                    211,
+                    &format!("failed to parse {:?} as int", &text),
+                )
+            })?;
             self.add_token(TokenKind::Int, Value::Int(n))
         }
     }
@@ -598,7 +621,7 @@ impl<'a> Lexer<'a> {
         if top.vtype.is_empty() {
             if let Some(vtype) = value.as_str() {
                 assert!(!vtype.is_empty());
-                check_vtype(vtype)?;
+                check_vtype_x(vtype, self.filename, self.lino)?;
                 top.vtype = vtype.to_string();
             } else {
                 bail!(self.error_v(271, "invalid vtype", value))
@@ -622,7 +645,7 @@ impl<'a> Lexer<'a> {
             }
             if let Some(ktype) = value.as_str() {
                 assert!(!ktype.is_empty());
-                check_ktype(ktype)?;
+                check_ktype_x(ktype, self.filename, self.lino)?;
                 top.ktype = ktype.to_string();
             } else {
                 bail!(self.error_v(275, "invalid ktype", value))
@@ -630,7 +653,7 @@ impl<'a> Lexer<'a> {
         } else if top.vtype.is_empty() {
             if let Some(vtype) = value.as_str() {
                 assert!(!vtype.is_empty());
-                check_vtype(vtype)?;
+                check_vtype_x(vtype, self.filename, self.lino)?;
                 top.vtype = vtype.to_string();
             } else {
                 bail!(self.error_v(277, "invalid vtype", value))
@@ -647,7 +670,7 @@ impl<'a> Lexer<'a> {
         if top.vtype.is_empty() {
             if let Some(ttype) = value.as_str() {
                 assert!(!ttype.is_empty());
-                check_ttype(ttype)?;
+                check_ttype_x(ttype, self.filename, self.lino)?;
                 top.vtype = ttype.to_string();
             } else {
                 bail!(self.error_v(278, "invalid ttype", value))

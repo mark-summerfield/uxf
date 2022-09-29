@@ -96,7 +96,7 @@ impl Table {
         if record.len() != self.tclass.len() {
             bail!(
                 "E736:-:0:rows for table of ttype {} must have exactly {} \
-                           values, got {}",
+                values, got {}",
                 self.ttype(),
                 self.tclass.len(),
                 record.len()

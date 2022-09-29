@@ -1,7 +1,7 @@
 // Copyright © 2022 Mark Summerfield. All rights reserved.
 // License: GPLv3
 
-use crate::check::{check_fieldname, check_vtype};
+use crate::check::{check_name, check_vtype};
 use anyhow::{bail, Result};
 use std::{cmp::Ordering, collections::HashSet, fmt};
 
@@ -20,23 +20,54 @@ use std::{cmp::Ordering, collections::HashSet, fmt};
 pub fn make_fields(
     name_vtype_pairs: &[(&str, &str)],
 ) -> Result<Vec<Field>> {
+    make_fields_x(name_vtype_pairs, "", 0)
+}
+
+/// Returns a vector of fields which when unwrapped is suitable for
+/// TClass::new(). Use an empty string for vtypes that should be None.
+///
+/// ```
+/// let fields = uxf::field::make_fields(&[("Data", ""), ("Date", "date"),
+///         ("Level", "real"), ("name", "str")]).unwrap();
+/// assert_eq!(fields.len(), 4);
+/// assert_eq!(format!("{}", fields[0]), "Data");
+/// assert_eq!(format!("{}", fields[1]), "Date:date");
+/// assert_eq!(format!("{}", fields[2]), "Level:real");
+/// assert_eq!(format!("{}", fields[3]), "name:str");
+/// ```
+pub fn make_fields_x(
+    name_vtype_pairs: &[(&str, &str)],
+    filename: &str,
+    lino: usize,
+) -> Result<Vec<Field>> {
     let mut fields = vec![];
     for (name, vtype) in name_vtype_pairs {
         fields.push(Field::new(name, vtype)?);
     }
-    check_fields(&fields)?;
+    check_fields_x(&fields, filename, lino)?;
     Ok(fields)
 }
 
 /// Returns `Ok(())` if there are no duplicate fields; otherwise `Err`.
 pub(crate) fn check_fields(fields: &Vec<Field>) -> Result<()> {
+    check_fields_x(fields, "-", 0)
+}
+
+/// Returns `Ok(())` if there are no duplicate fields; otherwise `Err`.
+pub(crate) fn check_fields_x(
+    fields: &Vec<Field>,
+    filename: &str,
+    lino: usize,
+) -> Result<()> {
     let mut seen = HashSet::<&str>::new();
     for field in fields {
         let name = field.name();
         if seen.contains(&name) {
             bail!(
-                "E336:-:0:can't have duplicate table tclass \
+                "E336:{}:{}:can't have duplicate table tclass \
                 field names, got {:?} twice",
+                filename,
+                lino,
                 &name
             )
         } else {
@@ -62,7 +93,7 @@ impl Field {
     /// A `vtype` of "" signifies `None`, i.e., that this field will accept
     /// an vtype
     pub fn new(name: &str, vtype: &str) -> Result<Self> {
-        check_fieldname(name)?;
+        check_name(name)?;
         let vtype = if vtype.is_empty() {
             None
         } else {

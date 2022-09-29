@@ -3,7 +3,7 @@
 
 use crate::consts::*;
 use crate::event::{Event, OnEventFn};
-use crate::field::make_fields;
+use crate::field::make_fields_x;
 use crate::list::List;
 use crate::map::Map;
 use crate::parser::{
@@ -317,10 +317,18 @@ impl<'a> Parser<'a> {
         import: &str,
     ) -> Result<()> {
         let fields = if ttype == "Complex" {
-            make_fields(&[("Real", "real"), ("Imag", "real")])?
+            make_fields_x(
+                &[("Real", "real"), ("Imag", "real")],
+                self.filename,
+                self.lino,
+            )?
         } else {
             // Fraction
-            make_fields(&[("numerator", "int"), ("denominator", "int")])?
+            make_fields_x(
+                &[("numerator", "int"), ("denominator", "int")],
+                self.filename,
+                self.lino,
+            )?
         };
         let tclass = TClass::new(ttype, fields, "")?;
         if add_to_tclasses(
