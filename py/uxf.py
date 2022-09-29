@@ -626,7 +626,10 @@ class _Lexer(_EventMixin):
 
 
     def read_string(self):
-        value = unescape(self.match_to('>', what='string'))
+        s = self.match_to('>', what='string')
+        if not s:
+            return # error has already been handled in self.match_to()
+        value = unescape(s)
         if self.concatenate:
             token = self.tokens[-1]
             if token.kind in {_Kind.FILE_COMMENT, _Kind.STR}:

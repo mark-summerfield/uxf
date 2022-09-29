@@ -1,0 +1,1 @@
+E308:/home/mark/app/uxf/testdata/e308.uxe:2:a ktype must be one of ["bytes", "date", "int", "str"], got bool

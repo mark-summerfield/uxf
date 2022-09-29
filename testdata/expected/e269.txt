@@ -1,0 +1,1 @@
+E269:/home/mark/app/uxf/testdata/e269.uxe:2:unterminated bytes, got ']'

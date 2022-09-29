@@ -585,7 +585,7 @@ impl<'a> Lexer<'a> {
                 return Ok(str_for_chars(text));
             }
         }
-        bail!(self.error_s(270, "unterminated", what))
+        bail!(self.error(270, &format!("unterminated {}", what)))
     }
 
     fn add_token(&mut self, kind: TokenKind, value: Value) -> Result<()> {
