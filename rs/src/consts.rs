@@ -5,7 +5,6 @@ pub const UXF_VERSION: u16 = 1;
 
 pub const MAX_IDENTIFIER_LEN: usize = 32;
 
-pub(crate) const URL_CACHE_SIZE: usize = 97;
 pub const NL: char = '\n';
 pub const NUL: char = '\0';
 

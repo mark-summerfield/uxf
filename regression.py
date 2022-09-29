@@ -141,11 +141,13 @@ def test_lang(tmin, tmax, lang, verbose, tests):
 
 
 def test_one(lang, verbose, i, t):
+    cmd = list(EXE_FOR_LANG[lang])
+    if not os.path.exists(cmd[0]) and lang == 'rs':
+        build_rs(verbose)
     if verbose:
         print(f'{i: 4}: ', end='', flush=True)
     else:
         print(f'{i} ', end='', flush=True)
-    cmd = list(EXE_FOR_LANG[lang])
     if t.opts:
         cmd += t.opts
     cmd.append(t.ifile)
@@ -166,6 +168,12 @@ def test_one(lang, verbose, i, t):
         if not check_expected(lang, verbose, t, afile):
             return 0
     return 1
+
+
+def build_rs(verbose):
+    if verbose:
+        print('building rs uxf')
+    subprocess.run(['cargo', 'build', '--release'], cwd=str(ROOT / 'rs'))
 
 
 def check_stderr(lang, verbose, t, rstderr):

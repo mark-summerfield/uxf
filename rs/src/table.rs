@@ -117,7 +117,7 @@ impl Table {
     /// Allows records to be added one value at a time
     pub(crate) fn push(&mut self, value: Value) -> Result<()> {
         if self.is_fieldless() {
-            bail!("E738:-:0:cannot add values to a fieldless table")
+            bail!("E334:-:0:can't append to a fieldless table")
         }
         self.pending_record.push(value);
         if self.pending_record.len() == self.tclass.len() {
