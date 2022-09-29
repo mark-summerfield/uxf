@@ -1,0 +1,2 @@
+uxf:E260:1.uxf:2:expected field vtype, got (A 1)
+…

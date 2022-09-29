@@ -177,7 +177,9 @@ def check_stderr(lang, verbose, t, rstderr):
     stderr = lstderr if os.path.exists(lstderr) else stderr
     with open(stderr, 'rt', encoding='utf-8') as file:
         stderr = file.read()
-    if rstderr.strip() != stderr.strip():
+    rstderr = rstderr.strip()
+    stderr = stderr.strip()
+    if rstderr != stderr:
         rstderr = normalize(rstderr)
         stderr = normalize(stderr)
         if rstderr != stderr:

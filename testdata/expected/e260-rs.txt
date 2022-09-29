@@ -1,0 +1,1 @@
+E260:/home/mark/app/uxf/testdata/e260.uxe:3:expected field vtype, got "(A 1)"…

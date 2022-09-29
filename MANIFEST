@@ -1,4 +1,3 @@
-# TODO fix false +ve E508 in uxf.py
 regression.py
 testdata/regression.dat.gz
 testdata/errortests.dat.gz
@@ -124,6 +123,8 @@ st.sh
 # - Python: load(), loads(), etc., accept listclass=List, mapclass=Map,
 #   tableclass=Table, & uses these rather than List, Map, and Table, so
 #   the user can use their own subclasses
+# NOTE Bugs
+# - rs & py: uxf 1\n{1} → uxf 1\n{} — silent; ought to error?
 # NOTE Rejected Ideas
 # - Replace yes and no bools with built-in fieldless tables, (Y) (N)
 # - Union types.
