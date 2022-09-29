@@ -1,1 +1,1 @@
-uxf.py:error:uxf:F334:-:0:can't append to a fieldless table
+E334:/home/mark/app/uxf/testdata/e334.uxe:3:can't append to a fieldless table

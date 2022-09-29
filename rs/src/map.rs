@@ -91,11 +91,21 @@ impl Map {
 
     /// Allows key-value items to be added one part at a time
     pub(crate) fn push(&mut self, value: Value) -> Result<()> {
+        self.push_x(value, "-", 0)
+    }
+
+    /// Allows key-value items to be added one part at a time
+    pub(crate) fn push_x(
+        &mut self,
+        value: Value,
+        filename: &str,
+        lino: usize,
+    ) -> Result<()> {
         if let Some(key) = &self.pending_key {
             self.insert(key.clone(), value);
             self.pending_key = None;
         } else {
-            self.pending_key = Some(Key::from(value)?);
+            self.pending_key = Some(Key::from_x(value, filename, lino)?);
         }
         Ok(())
     }

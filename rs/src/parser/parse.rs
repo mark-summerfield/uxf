@@ -467,9 +467,9 @@ impl<'a> Parser<'a> {
             if let Some(lst) = collection.as_list_mut() {
                 lst.push(element);
             } else if let Some(m) = collection.as_map_mut() {
-                m.push(element)?;
+                m.push_x(element, self.filename, self.lino)?;
             } else if let Some(t) = collection.as_table_mut() {
-                t.push(element)?;
+                t.push_x(element, self.filename, self.lino)?;
             } else {
                 bail!(self.error_t(
                     402,

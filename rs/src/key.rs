@@ -94,6 +94,14 @@ impl Key {
     }
 
     pub(crate) fn from(value: Value) -> Result<Key> {
+        Key::from_x(value, "-", 0)
+    }
+
+    pub(crate) fn from_x(
+        value: Value,
+        filename: &str,
+        lino: usize,
+    ) -> Result<Key> {
         match value {
             Value::Bytes(b) => Ok(Key::Bytes(b)),
             Value::Date(d) => Ok(Key::Date(d)),
@@ -101,9 +109,11 @@ impl Key {
             Value::Int(i) => Ok(Key::Int(i)),
             Value::Str(s) => Ok(Key::Str(s)),
             _ => bail!(
-                "E600:-:0:can only convert bytes, date, datetime, \
-                int, str from Value to Key, got {:?}",
-                value
+                "E294:{}:{}:can only convert bytes, date, datetime, \
+                int, str from Value to Key, got {}",
+                filename,
+                lino,
+                value.typename()
             ),
         }
     }
