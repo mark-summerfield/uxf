@@ -93,13 +93,27 @@ impl Table {
     /// returns `Err` if `record` doesn't have `Table::ttype_len()` values
     /// or if this is a fieldless table.
     pub fn append(&mut self, record: Record) -> Result<()> {
+        self.append_x(record, "-", 0)
+    }
+
+    /// Appends the given `record` of `Value`s to the end of the table or
+    /// returns `Err` if `record` doesn't have `Table::ttype_len()` values
+    /// or if this is a fieldless table.
+    pub fn append_x(
+        &mut self,
+        record: Record,
+        filename: &str,
+        lino: usize,
+    ) -> Result<()> {
         if record.len() != self.tclass.len() {
             bail!(
-                "E736:-:0:rows for table of ttype {} must have exactly {} \
-                values, got {}",
+                "E736:{}:{}:rows for table of ttype {} must have exactly \
+                {} values, got {}",
                 self.ttype(),
                 self.tclass.len(),
-                record.len()
+                record.len(),
+                filename,
+                lino
             )
         }
         self.records.push(record);
@@ -109,7 +123,17 @@ impl Table {
     /// Appends a `record` of `Value::Null`s to the end of the table or
     /// returns `Err` if this is a fieldless table.
     pub fn append_empty(&mut self) -> Result<()> {
-        let record = self.tclass.record_of_nulls()?;
+        self.append_empty_x("-", 0)
+    }
+
+    /// Appends a `record` of `Value::Null`s to the end of the table or
+    /// returns `Err` if this is a fieldless table.
+    pub fn append_empty_x(
+        &mut self,
+        filename: &str,
+        lino: usize,
+    ) -> Result<()> {
+        let record = self.tclass.record_of_nulls_x(filename, lino)?;
         self.records.push(record);
         Ok(())
     }
@@ -137,7 +161,7 @@ impl Table {
         if self.pending_record.len() == self.tclass.len() {
             let mut record = Values::new();
             std::mem::swap(&mut self.pending_record, &mut record);
-            self.append(record)?;
+            self.append_x(record, filename, lino)?;
         }
         Ok(())
     }

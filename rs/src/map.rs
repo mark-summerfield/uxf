@@ -1,7 +1,7 @@
 // Copyright © 2022 Mark Summerfield. All rights reserved.
 // License: GPLv3
 
-use crate::check::{check_ktype, check_vtype};
+use crate::check::{check_ktype_x, check_vtype_x};
 use crate::key::Key;
 use crate::util::escape;
 use crate::uxf::Compare;
@@ -32,17 +32,40 @@ impl Map {
     /// The Map does _not_ enforce the `ktype` or `vtype` if either or both
     /// is specified (although keys must be _a_ valid `ktype`).
     pub fn new(ktype: &str, vtype: &str, comment: &str) -> Result<Self> {
+        Map::new_x(ktype, vtype, comment, "-", 0)
+    }
+
+    /// Returns a new Map with the given `ktype`, `vtype`, and `comment` and
+    /// no items, _or_ returns an Err if the `ktype` or `vtype` is invalid.
+    /// A `ktype` of `""` means that any valid `ktype` is acceptable;
+    /// otherwise the `ktype` must be a specific `ktype` (e.g., `bytes`,
+    /// `date`, `int`, or `str`).
+    /// A `vtype` of `""` means that any `vtype` is acceptable; otherwise
+    /// the `vtype` should be a built-in UXF type (e.g., `int`, `str`,
+    /// `date`, etc), or a `ttype`.
+    /// The `vtype` and `comment` are immutable after construction.
+    /// The Map does _not_ enforce the `ktype` or `vtype` if either or both
+    /// is specified (although keys must be _a_ valid `ktype`).
+    pub fn new_x(
+        ktype: &str,
+        vtype: &str,
+        comment: &str,
+        filename: &str,
+        lino: usize,
+    ) -> Result<Self> {
         if !ktype.is_empty() {
-            check_ktype(ktype)?;
+            check_ktype_x(ktype, filename, lino)?;
         }
         if !vtype.is_empty() {
             if ktype.is_empty() {
                 bail!(
-                    "E299:-:0:a map may only have a vtype if it has \
+                    "E299:{}:{}:a map may only have a vtype if it has \
                       a ktype",
+                    filename,
+                    lino
                 )
             }
-            check_vtype(vtype)?;
+            check_vtype_x(vtype, filename, lino)?;
         }
         Ok(Map {
             ktype: ktype.to_string(),

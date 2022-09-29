@@ -92,10 +92,23 @@ impl TClass {
     /// each holding a `Value::Null`.
     /// This is a helper for adding new rows to ``Table``s.
     pub fn record_of_nulls(&self) -> Result<Record> {
+        self.record_of_nulls_x("-", 0)
+    }
+
+    /// Returns a record with `TClass.len()` (i.e., `fields.len()`) fields,
+    /// each holding a `Value::Null`.
+    /// This is a helper for adding new rows to ``Table``s.
+    pub fn record_of_nulls_x(
+        &self,
+        filename: &str,
+        lino: usize,
+    ) -> Result<Record> {
         if self.is_fieldless() {
             bail!(
-                "E732:-:0:can't create a record of nulls for a \
+                "E732:{}:{}:can't create a record of nulls for a \
                 fieldless table's tclass",
+                filename,
+                lino
             )
         }
         let mut record = Record::new();

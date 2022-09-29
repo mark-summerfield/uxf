@@ -1,5 +1,3 @@
-# TODO for every f(..) that has bail!("Ennn:-:0 add & use f(.., filename,
-# lino) & update the bail
 regression.py
 testdata/regression.dat.gz
 testdata/errortests.dat.gz

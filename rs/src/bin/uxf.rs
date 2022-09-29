@@ -149,7 +149,7 @@ fn check_same_file(a: &Path, b: &Path) -> Result<()> {
         let a = canonicalize_file(a)?;
         let b = canonicalize_file(b)?;
         if a == b {
-            bail!("won't overwrite {}; use = to force", a.display());
+            bail!("E955:{}:0:won't overwrite: use = to force", a.display());
         }
     }
     Ok(())

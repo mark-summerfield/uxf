@@ -93,7 +93,10 @@ pub(crate) fn check_vtype_x(
     let first = name.chars().next().unwrap(); // safe because nonempty
     if !(first == '_' || first.is_alphabetic()) {
         bail!(
-            "E300:{}:{}:names must start with a letter or underscore, got {}", filename, lino,
+            "E300:{}:{}:names must start with a letter or underscore, \
+            got {}",
+            filename,
+            lino,
             name
         )
     }

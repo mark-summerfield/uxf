@@ -112,7 +112,7 @@ impl<'a> Parser<'a> {
         if !filename.is_empty() && filename != "-" {
             let filename = full_filename(filename, ".");
             if imported.contains(&filename) {
-                bail!("E400:-:0:already imported {:?}", filename)
+                bail!("E400:{}:0:already imported", filename)
             }
             imported.insert(filename);
         }
@@ -533,10 +533,12 @@ impl<'a> Parser<'a> {
             bail!(self.error_s(440, "expected map ktype", &token.ktype))
         }
         self.verify_type_identifier(&token.vtype)?;
-        Ok(Value::from(Map::new(
+        Ok(Value::from(Map::new_x(
             &token.ktype,
             &token.vtype,
             &token.comment,
+            self.filename,
+            self.lino,
         )?))
     }
 
