@@ -52,17 +52,17 @@ pub(crate) fn read_file(filename: &str) -> Result<String> {
     let compressed = is_compressed(filename)?;
     let mut text = String::new();
     let file = File::open(&filename)
-        .with_context(|| format!("failed to open {:?}", filename))?;
+        .with_context(|| format!("E950:{}:0:failed to open", filename))?;
     if compressed {
         let mut gz = GzDecoder::new(file);
         gz.read_to_string(&mut text).with_context(|| {
-            format!("failed to read gzipped {:?}", filename)
+            format!("E951:{}:0:failed to read gzipped", filename)
         })?;
     } else {
         let mut buffer = BufReader::new(file);
         buffer
             .read_to_string(&mut text)
-            .with_context(|| format!("failed to read {:?}", filename))?;
+            .with_context(|| format!("E952:{}:0:failed to read", filename))?;
     }
     Ok(text)
 }
@@ -72,7 +72,7 @@ pub(crate) fn is_compressed(filename: &str) -> Result<bool> {
     let mut file = File::open(&filename)?;
     let mut buffer = [0; 2]; // 0x1F 0x8B gzip magic
     file.read_exact(&mut buffer).with_context(|| {
-        format!("failed to read start of {:?}", filename)
+        format!("E953:{}:0:failed to read start of", filename)
     })?;
     Ok(buffer[0] == 0x1F && buffer[1] == 0x8B)
 }

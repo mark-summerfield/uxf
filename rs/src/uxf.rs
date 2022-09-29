@@ -148,15 +148,15 @@ impl Uxf {
         if filename.ends_with(".gz") {
             let mut out = GzEncoder::new(Vec::new(), Compression::best());
             out.write_all(text.as_bytes()).with_context(|| {
-                format!("failed to write gzipped {:?}", filename)
+                format!("E900:{}:0:failed to write gzipped", filename)
             })?;
             out.finish().with_context(|| {
-                format!("failed to gzip {:?}", filename)
+                format!("E901:{}:0:failed to gzip", filename)
             })?;
         } else {
             let mut file = File::create(filename)?;
             file.write_all(text.as_bytes()).with_context(|| {
-                format!("failed to write {:?}", filename)
+                format!("E902:{}:0:failed to write", filename)
             })?
         }
         Ok(())

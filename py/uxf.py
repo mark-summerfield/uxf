@@ -46,6 +46,7 @@ _BOOLS = frozenset(_BOOL_FALSE | _BOOL_TRUE)
 _BAREWORDS = frozenset(_ANY_VTYPES | _BOOLS)
 RESERVED_WORDS = frozenset(_ANY_VTYPES | {'null'} | _BOOLS)
 _MISSING = object()
+_URL_CACHE_SIZE = 97
 
 
 @enum.unique
@@ -2192,6 +2193,11 @@ class _Parser(_EventMixin):
     def _url_import(self, url):
         if url in self.imported:
             raise _AlreadyImported # don't reimport
+        return self._url_import_x(url)
+
+
+    @functools.lru_cache(maxsize=_URL_CACHE_SIZE)
+    def _url_import_x(self, url):
         try:
             with urllib.request.urlopen(url) as file:
                 return file.read().decode()

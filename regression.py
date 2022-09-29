@@ -203,14 +203,14 @@ def check_expected(lang, verbose, t, afile):
         print(FAIL + f'{t.ifile!r} !{t.o_vs_e.symbol} {efile!r}', end='',
               flush=True)
         return False
-    elif verbose:
+    elif verbose and t.o_vs_e is not Compare.SKIP:
         print(OK + f' • o_vs_e {t.o_vs_e.symbol}', end='', flush=True)
     if not compare(lang, t.a_vs_e, afile, efile):
         print(FAIL + f'{afile!r} !{t.a_vs_e.symbol} {efile!r}', end='',
               flush=True)
         return False
-    elif verbose:
-        print(OK + f' • a_vs_e {t.o_vs_e.symbol}', end='', flush=True)
+    elif verbose and t.a_vs_e is not Compare.SKIP:
+        print(OK + f' • a_vs_e {t.a_vs_e.symbol}', end='', flush=True)
     return True
 
 

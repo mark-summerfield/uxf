@@ -113,18 +113,20 @@ fn output(outfile: &str, format: &Format, uxo: &uxf::Uxf) -> Result<()> {
         println!("{}", text);
     } else {
         let raw = text.as_bytes();
-        let mut file = File::create(outfile)
-            .with_context(|| format!("failed to create {:?}", outfile))?;
+        let mut file = File::create(outfile).with_context(|| {
+            format!("E913:{}:0:failed to create", outfile)
+        })?;
         if outfile.ends_with(".gz") {
             let mut out = GzEncoder::new(&file, Compression::best());
             out.write_all(raw).with_context(|| {
-                format!("failed to write gzipped {:?}", outfile)
+                format!("E910:{}:0:failed to write gzipped", outfile)
             })?;
-            out.finish()
-                .with_context(|| format!("failed to gzip {:?}", outfile))?;
+            out.finish().with_context(|| {
+                format!("E911:{}:0:failed to gzip", outfile)
+            })?;
         } else {
             file.write_all(raw).with_context(|| {
-                format!("failed to write {:?}", outfile)
+                format!("E912:{}:0:failed to write", outfile)
             })?;
         }
     }
@@ -158,7 +160,7 @@ fn canonicalize_file(p: &Path) -> Result<PathBuf> {
         if let Ok(p) = p.canonicalize() { p } else { p.to_path_buf() };
     if p.is_relative() {
         let mut cwd = env::current_dir().with_context(|| {
-            format!("failed to find folder for {:?}", p)
+            format!("E954:{}:0:failed to find folder for", p.display())
         })?;
         cwd.push(p);
         p = cwd;

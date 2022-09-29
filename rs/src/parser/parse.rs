@@ -17,9 +17,11 @@ use crate::uxf::{ParserOptions, Uxf};
 use crate::value::{Value, Values};
 use anyhow::{bail, Result};
 use indexmap::map::IndexMap;
+use lru::LruCache;
 use std::{
     collections::{HashMap, HashSet},
     env,
+    num::NonZeroUsize,
     path::Path,
     rc::Rc,
 };
@@ -92,6 +94,7 @@ pub struct Parser<'a> {
     lino_for_tclass: HashMap<String, usize>,    // key=ttype value=lino
     used_tclasses: HashSet<String>, // ttype (of ttypes actually used)
     lino: usize,
+    cache: LruCache<String, String>,
 }
 
 impl<'a> Parser<'a> {
@@ -129,6 +132,9 @@ impl<'a> Parser<'a> {
             lino_for_tclass: HashMap::new(),
             used_tclasses: HashSet::new(),
             lino: 0,
+            cache: LruCache::new(
+                NonZeroUsize::new(URL_CACHE_SIZE).unwrap(),
+            ),
         })
     }
 
@@ -259,18 +265,25 @@ impl<'a> Parser<'a> {
             return Ok(("".to_string(), true));
         }
         self.imported.insert(url.to_string()); // don't want to retry
-        match reqwest::blocking::get(url) {
-            Ok(reply) => match reply.text() {
-                Ok(text) => Ok((text, false)),
+        if let Some(text) = self.cache.get(url) {
+            Ok((text.clone(), false))
+        } else {
+            match reqwest::blocking::get(url) {
+                Ok(reply) => match reply.text() {
+                    Ok(text) => {
+                        self.cache.push(url.to_string(), text.clone());
+                        Ok((text, false))
+                    }
+                    Err(err) => bail!(self.error(
+                        551,
+                        &format!("failed to read import's text: {}", err)
+                    )),
+                },
                 Err(err) => bail!(self.error(
-                    551,
-                    &format!("failed to read import's text: {}", err)
+                    550,
+                    &format!("failed to download import: {}", err)
                 )),
-            },
-            Err(err) => bail!(self.error(
-                550,
-                &format!("failed to download import: {}", err)
-            )),
+            }
         }
     }
 

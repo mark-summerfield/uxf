@@ -4,6 +4,7 @@
 
 import os
 import sys
+import time
 
 try:
     PATH = os.path.abspath(os.path.dirname(__file__))
@@ -22,6 +23,7 @@ def main():
     if len(sys.argv) > 1 and sys.argv[1] in {'-r', '--regression'}:
         regression = True
     total = ok = 0
+    t = time.monotonic()
 
     # good mixed imports
     filename = 't63.uxf'
@@ -204,7 +206,8 @@ def main():
                 print('E', e)
                 print('A', a)
     if not regression:
-        result = 'OK' if total == ok else 'FAIL'
+        t = time.monotonic() - t
+        result = f'OK ({t:.3f} sec)' if total == ok else 'FAIL'
         print(f'{ok}/{total} {result}')
     else:
         print(f'total={total} ok={ok}')
