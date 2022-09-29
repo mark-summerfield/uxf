@@ -128,8 +128,8 @@ There are two common approaches to handling custom types in UXF. Both
 allow for UXFs to remain round-trip readable and writeable even by UXF
 processors that aren't aware of the use of custom types as such.
 
-Here, we'll look at both approaches for two different custom types, a
-point and an enumeration.
+Here, we'll look at both approaches for three different custom types, a
+point and some constants which we'll treat as enumerations.
 
     uxf 1
     [
@@ -139,8 +139,8 @@ point and an enumeration.
 
 This first approach shows three points, each represented by a `map` with a
 `str` indicating the custom type (“Point”), and using ``list``s of two
-``real``s for the _x_ and _y_ coordinates. The example also shows a traffic
-light enumeration each represented by a `str`.
+``real``s for the _x_ and _y_ coordinates. The example also shows traffic
+light constants each represented by a `str`.
 
     uxf 1
     [
@@ -153,10 +153,10 @@ of point values. This is more compact but assumes that the reading
 application knows that points come in pairs.
 
 A UXF processor has no knowledge of these representations of points or
-enumerations, but will handle both seamlessly since they are both
-represented in terms of built-in UXF types. Nonetheless, an application that
-reads such UXF data can recognize and convert to and from these
-representations to and from the actual types.
+constants (or constants used as enumerations), but will handle both
+seamlessly since they are both represented in terms of built-in UXF types.
+Nonetheless, an application that reads such UXF data can recognize and
+convert to and from these representations to and from the actual types.
 
     uxf 1
     =Point x:real y:real
@@ -171,7 +171,7 @@ representations to and from the actual types.
 This second approach uses four _ttypes_ (custom table types). For the Point
 we specify it as having two real fields (so the processor now knows that
 Points have two `real` values). And for the enumeration we used three
-separate fieldless tables.
+separate fieldless tables, i.e., three constants.
 
 Using tables has the advantage that we can represent any number of values of
 a particular _ttype_ in a single table (including just one, or even none),
@@ -1005,7 +1005,7 @@ is the table's _ttype_. This is followed by the table's values. There's no
 need to distinguish between one row and the next (although it is common to
 start new rows on new lines) since the number of fields indicate how many
 values each row has. It is possible to create tables that have no fields;
-these might be used for representing enumerations or states.
+these might be used for representing constants (or enumerations or states).
 
 Note that for any given table each field name must be unique.
 

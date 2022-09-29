@@ -1538,7 +1538,7 @@ class Table(_CommentMixin):
     custom class instance if it isn't one already. The custom class allows
     fields to be accessed by name and by index.
 
-    Some tables are fieldless, for example to represent enumerations.
+    Some tables are fieldless, for example to represent constants.
     '''
 
     def __init__(self, tclass, *, records=None, comment=None):

@@ -25,6 +25,7 @@ pub struct Lexer<'a> {
     lino: usize,
     in_tclass: bool,
     concatenate: bool,
+    has_collection: bool,
     tokens: Tokens,
 }
 
@@ -43,6 +44,7 @@ impl<'a> Lexer<'a> {
             lino: 0,
             in_tclass: false,
             concatenate: false,
+            has_collection: false,
             tokens: VecDeque::new(),
         }
     }
@@ -52,6 +54,9 @@ impl<'a> Lexer<'a> {
         self.maybe_read_file_comment()?;
         while !self.at_end() {
             self.scan_next()?;
+        }
+        if !self.has_collection {
+            bail!(self.error(131, "expected List, Map, or Table"));
         }
         self.add_token(TokenKind::Eof, Value::Null)?;
         /* DEBUG
@@ -177,12 +182,14 @@ impl<'a> Lexer<'a> {
             self.read_bytes()
         } else {
             self.check_in_tclass()?;
+            self.has_collection = true;
             self.add_token(TokenKind::TableBegin, Value::Null)
         }
     }
 
     fn handle_list_begin(&mut self) -> Result<()> {
         self.check_in_tclass()?;
+        self.has_collection = true;
         self.add_token(TokenKind::ListBegin, Value::Null)
     }
 
@@ -195,6 +202,7 @@ impl<'a> Lexer<'a> {
 
     fn handle_map_begin(&mut self) -> Result<()> {
         self.check_in_tclass()?;
+        self.has_collection = true;
         self.add_token(TokenKind::MapBegin, Value::Null)
     }
 

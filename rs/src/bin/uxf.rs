@@ -1,7 +1,7 @@
 // Copyright © 2022 Mark Summerfield. All rights reserved.
 // License: GPLv3
 
-use anyhow::{bail, Result};
+use anyhow::{bail, Context, Result};
 use clap::{AppSettings, Args, Parser, Subcommand};
 use flate2::{write::GzEncoder, Compression};
 use std::{
@@ -43,7 +43,7 @@ fn handle_format(format: &Format) -> Result<()> {
 fn handle_lint(lint: &Lint) -> Result<()> {
     for file in &lint.files {
         if let Err(err) = handle_format(&Format::new_lint(file)) {
-            eprintln!("{}", err);
+            eprintln!("{:#}", err);
         }
     }
     Ok(())
@@ -113,13 +113,19 @@ fn output(outfile: &str, format: &Format, uxo: &uxf::Uxf) -> Result<()> {
         println!("{}", text);
     } else {
         let raw = text.as_bytes();
-        let mut file = File::create(outfile)?;
+        let mut file = File::create(outfile)
+            .with_context(|| format!("failed to create {:?}", outfile))?;
         if outfile.ends_with(".gz") {
             let mut out = GzEncoder::new(&file, Compression::best());
-            out.write_all(raw)?;
-            out.finish()?;
+            out.write_all(raw).with_context(|| {
+                format!("failed to write gzipped {:?}", outfile)
+            })?;
+            out.finish()
+                .with_context(|| format!("failed to gzip {:?}", outfile))?;
         } else {
-            file.write_all(raw)?;
+            file.write_all(raw).with_context(|| {
+                format!("failed to write {:?}", outfile)
+            })?;
         }
     }
     Ok(())
@@ -151,7 +157,9 @@ fn canonicalize_file(p: &Path) -> Result<PathBuf> {
     let mut p =
         if let Ok(p) = p.canonicalize() { p } else { p.to_path_buf() };
     if p.is_relative() {
-        let mut cwd = env::current_dir()?;
+        let mut cwd = env::current_dir().with_context(|| {
+            format!("failed to find folder for {:?}", p)
+        })?;
         cwd.push(p);
         p = cwd;
     }

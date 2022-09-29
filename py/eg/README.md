@@ -89,10 +89,10 @@ This example shows a practical use case of saving and loading application
 configuration data, preserving comments, providing defaults, and validating.
 
 The UXF file format used here is very short but also the most complex of the
-examples. It includes an enumeration with two valid values, and three other
-custom _ttypes_. The data is held in a `map` with `str` keys, with one value
-being an `int`, another a `list` of ``table``s, and another a `map` with
-`str` keys and values.
+examples. It includes two _ttype_ constants, and three other custom
+_ttypes_. The data is held in a `map` with `str` keys, with one value being
+an `int`, another a `list` of ``table``s, and another a `map` with `str`
+keys and values.
 
 The `Config` class hides the complexity to present a very simple
 property-based API. (Of course there's no free lunch—the API's simplicity is
