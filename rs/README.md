@@ -12,9 +12,6 @@ For details of the Uniform eXchange Format (UXF) supported by this library,
 see the [UXF Overview](../README.md). ([Alternative link to UXF
 Overview](https://github.com/mark-summerfield/uxf/blob/main/README.md).)
 
-**Note that this is WIP — currently the parser is complete, along with
-output. Aim is for 1.0.0 to include better docs & more regression tests.**
-
 [crates.io](https://crates.io/crates/uxf)
 [docs](https://docs.rs/uxf/latest/uxf/)
 
@@ -22,7 +19,9 @@ output. Aim is for 1.0.0 to include better docs & more regression tests.**
 
 - _uxf_ this can read UXF files (optionally gzip compressed) and lint and
   output UXF files (optionally gzip compressed; optionally replacing imports
-  and dropping unused ttypes).
+  and dropping unused ttypes). It can also compare two UXF files for
+  equality or equivalence. (For a full diff, format the two files with the
+  same options, and use a standard diff tool.)
 
 ## Changes
 
