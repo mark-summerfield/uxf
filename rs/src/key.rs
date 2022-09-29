@@ -93,6 +93,7 @@ impl Key {
         }
     }
 
+    #[allow(dead_code)]
     pub(crate) fn from(value: Value) -> Result<Key> {
         Key::from_x(value, "-", 0)
     }

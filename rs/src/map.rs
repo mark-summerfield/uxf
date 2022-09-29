@@ -113,6 +113,7 @@ impl Map {
     }
 
     /// Allows key-value items to be added one part at a time
+    #[allow(dead_code)]
     pub(crate) fn push(&mut self, value: Value) -> Result<()> {
         self.push_x(value, "-", 0)
     }

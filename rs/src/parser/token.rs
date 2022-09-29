@@ -157,7 +157,11 @@ impl TokenKind {
 
 impl fmt::Display for TokenKind {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "{:?}", self)
+        if self == &TokenKind::Eof {
+            write!(f, "EOF")
+        } else {
+            write!(f, "{:?}", self)
+        }
     }
 }
 

@@ -5,6 +5,7 @@ use crate::consts::*;
 use anyhow::{bail, Result};
 
 /// Returns `Ok(())` if `ktype` is a valid ktype; otherwise `Err`.
+#[allow(dead_code)]
 pub(crate) fn check_ktype(ktype: &str) -> Result<()> {
     check_ktype_x(ktype, "-", 0)
 }

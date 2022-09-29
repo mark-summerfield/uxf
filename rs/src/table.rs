@@ -139,6 +139,7 @@ impl Table {
     }
 
     /// Allows records to be added one value at a time
+    #[allow(dead_code)]
     pub(crate) fn push(&mut self, value: Value) -> Result<()> {
         self.push_x(value, "-", 0)
     }
