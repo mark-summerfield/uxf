@@ -1,6 +1,7 @@
 // Copyright © 2022 Mark Summerfield. All rights reserved.
 // License: GPLv3
 
+use crate::consts::*;
 use crate::value::Value;
 use std::{collections::VecDeque, fmt};
 
@@ -27,73 +28,32 @@ impl Token {
             vtype: "".to_string(), // stores vtype _or_ ttype
         }
     }
+
+    pub(crate) fn typename(&self) -> &str {
+        match self.kind {
+            TokenKind::TableBegin => VTYPE_NAME_TABLE,
+            TokenKind::ListBegin => VTYPE_NAME_LIST,
+            TokenKind::MapBegin => VTYPE_NAME_MAP,
+            TokenKind::Null => VALUE_NAME_NULL,
+            TokenKind::Bool => VTYPE_NAME_BOOL,
+            TokenKind::Int => VTYPE_NAME_INT,
+            TokenKind::Real => VTYPE_NAME_REAL,
+            TokenKind::Date => VTYPE_NAME_DATE,
+            TokenKind::DateTime => VTYPE_NAME_DATETIME,
+            TokenKind::Str => VTYPE_NAME_STR,
+            TokenKind::Bytes => VTYPE_NAME_BYTES,
+            _ => "",
+        }
+    }
 }
 
 impl fmt::Display for Token {
-    /// Purely for debugging
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        let kind = if self.kind == TokenKind::TClassBegin {
-            format!("{} ttype={}", &self.kind, &self.value)
-        } else if matches!(
-            &self.kind,
-            TokenKind::Field | TokenKind::FileComment | TokenKind::Import
-        ) {
-            format!("{} ", &self.kind)
-        } else if !matches!(
-            self.kind,
-            TokenKind::TClassBegin
-                | TokenKind::TClassEnd
-                | TokenKind::TableBegin
-                | TokenKind::TableEnd
-                | TokenKind::ListBegin
-                | TokenKind::ListEnd
-                | TokenKind::MapBegin
-                | TokenKind::MapEnd
-                | TokenKind::Eof
-        ) {
-            "".to_string()
+        if self.kind == TokenKind::Eof {
+            write!(f, "{}", self.kind)
         } else {
-            format!("{}", &self.kind)
-        };
-        let comment = if !self.comment.is_empty() {
-            format!(" # {}", self.comment)
-        } else {
-            "".to_string()
-        };
-        let value = if matches!(
-            self.kind,
-            TokenKind::TClassBegin
-                | TokenKind::TClassEnd
-                | TokenKind::TableBegin
-                | TokenKind::TableEnd
-                | TokenKind::ListBegin
-                | TokenKind::ListEnd
-                | TokenKind::MapBegin
-                | TokenKind::MapEnd
-                | TokenKind::Eof
-        ) {
-            "".to_string()
-        } else if self.value == Value::Null {
-            "?".to_string()
-        } else if self.kind == TokenKind::Bytes {
-            format!("Bytes( {} )", self.value)
-        } else {
-            format!("{:?}", self.value)
-        };
-        let xtype = if !self.ktype.is_empty() && !self.vtype.is_empty() {
-            format!(" ktype={} vtype={}", self.ktype, self.vtype)
-        } else if !self.ktype.is_empty() {
-            format!(" ktype={}", self.ktype)
-        } else if !self.vtype.is_empty() {
-            format!(
-                " {}type={}",
-                if self.kind == TokenKind::TableBegin { 't' } else { 'v' },
-                self.vtype
-            )
-        } else {
-            "".to_string()
-        };
-        write!(f, "{}{}{}{}", kind, value, xtype, comment)
+            write!(f, "{} {}", self.kind, self.value)
+        }
     }
 }
 

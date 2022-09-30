@@ -1934,7 +1934,7 @@ class _Parser(_EventMixin):
         unused = defined - self.used_tclasses
         unused -= imported # don't warn on unused imports
         unused = {ttype for ttype in unused # don't warn on fieldless
-                  if not self.tclasses[ttype].isfieldless}
+                  if not self.tclasses[ttype].isfieldless} # (constants)
         if unused:
             self._report_problem(unused, 422, 'unused ttype')
         undefined = self.used_tclasses - defined

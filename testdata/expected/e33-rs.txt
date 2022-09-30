@@ -1,1 +1,1 @@
-E456:/home/mark/app/uxf/testdata/t33.uxf:11:expected table value of type map, got value of type Geometry
+E506:/home/mark/app/uxf/testdata/t33.uxf:11:expected map, got table of type Geometry

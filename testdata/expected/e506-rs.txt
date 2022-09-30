@@ -1,0 +1,1 @@
+E506:/home/mark/app/uxf/testdata/e506.uxe:2:expected int, got map

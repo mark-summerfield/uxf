@@ -1,1 +1,1 @@
-E410:/home/mark/app/uxf/testdata/e410.uxe:2:unexpected token, got Str("int")
+E410:/home/mark/app/uxf/testdata/e410.uxe:2:unexpected token, got Type <int>

@@ -488,6 +488,7 @@ impl<'a> Parser<'a> {
         token: &Token,
     ) -> Result<Option<Value>> {
         let expected_type = self.expected_type(stack);
+        self.check_contained_collection_type(token, &expected_type)?;
         let next_value = if pos < self.tokens.len() {
             Some(self.tokens[pos].clone())
         } else {
@@ -499,6 +500,36 @@ impl<'a> Parser<'a> {
             &expected_type,
         )?);
         Ok(None)
+    }
+
+    fn check_contained_collection_type(
+        &self,
+        token: &Token,
+        expected_type: &str,
+    ) -> Result<()> {
+        let typename = token.typename();
+        if expected_type.is_empty()
+            || expected_type == typename
+            || expected_type == token.vtype /* can't be ktype */
+            || expected_type == token.value.as_str().unwrap_or("")
+        {
+            Ok(())
+        } else {
+            let xtype = if !token.vtype.is_empty() {
+                format!(" of type {}", &token.vtype)
+            } else if let Some(value) = token.value.as_str() {
+                format!(" {}", value)
+            } else {
+                "".to_string()
+            };
+            bail!(self.error(
+                506,
+                &format!(
+                    "expected {}, got {}{}",
+                    expected_type, typename, xtype
+                )
+            ))
+        }
     }
 
     fn handle_collection_start(

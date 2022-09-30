@@ -1,0 +1,1 @@
+E506:/home/mark/app/uxf/testdata/e456.uxe:4:expected A, got table of type B
