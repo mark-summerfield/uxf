@@ -1,0 +1,1 @@
+E450:/home/mark/app/uxf/testdata/e450b.uxe:2:expected table ttype, got "Str(\"int\")"

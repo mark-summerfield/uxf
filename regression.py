@@ -164,6 +164,9 @@ def test_one(lang, verbose, i, t):
     if reply.stderr:
         if not check_stderr(lang, verbose, t, reply.stderr):
             return 0
+    elif t.stderr is not None:
+        print(FAIL + ' • missing stderr')
+        return 0
     if t.efile is not None:
         if not check_expected(lang, verbose, t, afile):
             return 0

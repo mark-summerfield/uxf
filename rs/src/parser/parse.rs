@@ -522,7 +522,7 @@ impl<'a> Parser<'a> {
     }
 
     fn handle_list_start(&mut self, token: &Token) -> Result<Value> {
-        self.verify_type_identifier(&token.vtype)?;
+        self.verify_type_identifier(&token.vtype, "list")?;
         Ok(Value::from(List::new(&token.vtype, &token.comment)?))
     }
 
@@ -532,7 +532,7 @@ impl<'a> Parser<'a> {
         {
             bail!(self.error_s(440, "expected map ktype", &token.ktype))
         }
-        self.verify_type_identifier(&token.vtype)?;
+        self.verify_type_identifier(&token.vtype, "map")?;
         Ok(Value::from(Map::new_x(
             &token.ktype,
             &token.vtype,
@@ -671,7 +671,11 @@ impl<'a> Parser<'a> {
         )
     }
 
-    fn verify_type_identifier(&mut self, vtype: &str) -> Result<()> {
+    fn verify_type_identifier(
+        &mut self,
+        vtype: &str,
+        what: &str,
+    ) -> Result<()> {
         if !vtype.is_empty() {
             if VTYPES.contains(&vtype) {
                 return Ok(()); // built-in type
@@ -679,7 +683,10 @@ impl<'a> Parser<'a> {
             if let Some(tclass) = self.tclass_for_ttype.get(vtype) {
                 self.used_tclasses.insert(tclass.ttype().to_string());
             } else {
-                bail!(self.error_s(446, "expected vtype", vtype));
+                bail!(self.error(
+                    446,
+                    &format!("expected {} vtype, got {}", what, vtype)
+                ));
             }
         }
         Ok(())

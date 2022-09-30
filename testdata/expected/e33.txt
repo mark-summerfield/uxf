@@ -1,1 +1,2 @@
+uxf:E456:t33.uxf:10:expected table value of type map, got value of type Geometry
 uxf:E454:t33.uxf:10:expected table value of type map, got table of type Geometry

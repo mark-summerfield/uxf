@@ -1994,7 +1994,7 @@ class _Parser(_EventMixin):
             self.fatal(450, f'expected table ttype{value}')
         else:
             self.used_tclasses.add(tclass.ttype)
-            if len(self.stack) > 1:
+            if len(self.stack):
                 parent = self.stack[-1]
                 vtype = getattr(parent, 'vtype', None)
                 if (vtype is not None and vtype != 'table' and

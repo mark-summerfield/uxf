@@ -1,3 +1,4 @@
+# TODO fix py/t/regression.py
 regression.py
 testdata/regression.dat.gz
 testdata/errortests.dat.gz
@@ -124,10 +125,13 @@ st.sh
 #   tableclass=Table, & uses these rather than List, Map, and Table, so
 #   the user can use their own subclasses
 # NOTE Bugs
-# - rs & py: uxf 1\n{1} → uxf 1\n{} — silent; ought to error?
+# - rs & py: uxf 1\n{1} → uxf 1\n{} — silent repair; ought to error?
 # NOTE Rejected Ideas
 # - Replace yes and no bools with built-in fieldless tables, (Y) (N)
-# - Union types.
+# - These are too conceptually dificult for broad range of target users
+#   & introduce too much syntactic complexity:
+#   . Union types. 
+#   . Notnullability.
 # - Money type (twelth type), e.g., MONEY ::= '$' REAL; use, say
 #   =Money currency:str amount; or, =USD amount, or similar, (where
 #   amount could be str or int or real)
