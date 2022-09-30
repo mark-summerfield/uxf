@@ -25,7 +25,7 @@ Overview](https://github.com/mark-summerfield/uxf/blob/main/README.md).)
 
 ## Changes
 
-- 0.21.0 Implemented url→import caching. Improved error messages & testing.
+- 0.21.0 Improved error messages & testing.
 - 0.20.0 _uxf_ now does linting and comparing; pretty printing complete.
 - 0.16.0 More progress towards pretty printing: but at the moment only
   compact output works (along with parsing of course).

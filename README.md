@@ -29,7 +29,7 @@ UXF-based formats are very easy to adapt to future requirements
     - [JSON](#json)
     - [TOML](#toml)
     - [Database](#database)
-- [Libraries](#libraries) [[Python](py/README.md)]
+- [Libraries](#libraries) [[Python](py/README.md)] [[Rust](rs/README.md)]
     - [Implementation Notes](#implementation-notes)
 - [Imports](#imports)
 - [BNF](#bnf)
@@ -865,6 +865,7 @@ _Implementations in additional languages are planned._
 |**Library**|**Language**|**Notes**                    |
 |-----------|------------|-----------------------------|
 |uxf        | Python 3   | See the [Python UXF library](py/README.md).|
+|uxf        | Rust       | See the [Rust UXF library](rs/README.md).|
 
 ### Implementation Notes
 
