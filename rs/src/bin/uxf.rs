@@ -275,7 +275,7 @@ impl Format {
 
 #[derive(Args, Debug)]
 struct Lint {
-    /// The file(s) to lint. (Use l or lnt or lint)
+    /// The file(s) to lint.
     #[clap(value_parser, required = true)]
     files: Vec<PathBuf>,
 }

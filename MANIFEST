@@ -123,7 +123,7 @@ st.sh
 # - Python: load(), loads(), etc., accept listclass=List, mapclass=Map,
 #   tableclass=Table, & uses these rather than List, Map, and Table, so
 #   the user can use their own subclasses
-# NOTE Bugs
+# NOTE Silent repairs
 # - rs & py: uxf 1\n{1} → uxf 1\n{} — silent repair; ought to error?
 # NOTE Rejected Ideas
 # - Replace yes and no bools with built-in fieldless tables, (Y) (N)
