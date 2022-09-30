@@ -1,4 +1,4 @@
-uxf:E273:e273.uxe:1:expected ktype got, thing
-uxf:E308:e273.uxe:1:a ktype must be one of (bytes, date, datetime, int, str), got thing
-uxf:E448:e273.uxe:1:expected map ktype, got thing
+uxf:E273:e273.uxe:2:expected ktype got, thing
+uxf:E308:e273.uxe:2:a ktype must be one of (bytes, date, datetime, int, str), got thing
+uxf:E448:e273.uxe:2:expected map ktype, got thing
 uxf.py:error:uxf:F308:-:0:a ktype must be one of (bytes, date, datetime, int, str), got thing

@@ -310,31 +310,31 @@ EXPECTED_IMPORTS63 = {
     'point2d': 't63.uxt'}
 
 EXPECTED_ERRORS = strip_path('''\
-uxf:W422:t63.uxf:14:unused ttype: 'dob'
-uxf:W422:t63.uxf:14:unused ttype: 'dob'
-uxf:W422:t63r.uxf:29:unused ttype: 'dob'
-uxf:F176:i64.uxi:1:a UXF file cannot import itself
-uxf:F450:i66.uxi:4:expected table ttype
-uxf:F580:i65.uxi:1:cannot do circular imports 'testdata/i66.uxi'
-uxf:F450:i65.uxi:4:expected table ttype
-uxf:F580:i66.uxi:1:cannot do circular imports 'testdata/i65.uxi'
-uxf:W422:i67.uxi:11:unused ttype: 'dob'
-uxf:F544:pairimportc.uxi:1:conflicting ttype definitions for pair
-uxf:W422:t72.uxi:12:unused ttypes: 'dob' 'point3d'
-uxf:W422:t72l.uxf:12:unused ttypes: 'dob' 'point3d'
-uxf:W422:t72.uxi:12:unused ttypes: 'dob' 'point3d'
-uxf:W422:t72r.uxf:12:unused ttypes: 'dob' 'point3d'
+uxf:W422:t63.uxf:15:unused ttype: 'dob'
+uxf:W422:t63.uxf:15:unused ttype: 'dob'
+uxf:W422:t63r.uxf:30:unused ttype: 'dob'
+uxf:F176:i64.uxi:2:a UXF file cannot import itself
+uxf:F450:i66.uxi:5:expected table ttype
+uxf:F580:i65.uxi:2:cannot do circular imports 'testdata/i66.uxi'
+uxf:F450:i65.uxi:5:expected table ttype
+uxf:F580:i66.uxi:2:cannot do circular imports 'testdata/i65.uxi'
+uxf:W422:i67.uxi:12:unused ttype: 'dob'
+uxf:F544:pairimportc.uxi:2:conflicting ttype definitions for pair
+uxf:W422:t72.uxi:13:unused ttypes: 'dob' 'point3d'
+uxf:W422:t72l.uxf:13:unused ttypes: 'dob' 'point3d'
+uxf:W422:t72.uxi:13:unused ttypes: 'dob' 'point3d'
+uxf:W422:t72r.uxf:13:unused ttypes: 'dob' 'point3d'
 uxf:F102:e87.uxi:0:failed to read UXF text: [Errno 2] No such file or \
 directory: 'testdata/missing.uxi'
-uxf:E586:e87.uxi:2:failed to import 'testdata/missing.uxi': \
+uxf:E586:e87.uxi:3:failed to import 'testdata/missing.uxi': \
 uxf:F102:e87.uxi:0:failed to read UXF text: [Errno 2] No such file or \
 directory: 'testdata/missing.uxi'
 uxf:F102:e87.uxi:0:failed to read UXF text: [Errno 2] No such file or \
 directory: 'testdata/missing.uxi'
-uxf:E586:e87.uxi:2:failed to import 'testdata/missing.uxi': \
+uxf:E586:e87.uxi:3:failed to import 'testdata/missing.uxi': \
 uxf:F102:e87.uxi:0:failed to read UXF text: [Errno 2] No such file or \
 directory: 'testdata/missing.uxi'
-uxf:E550:e89.uxi:2:failed to import 'http://localhost:5558/missing.uxf': \
+uxf:E550:e89.uxi:3:failed to import 'http://localhost:5558/missing.uxf': \
 HTTP Error 404: File not found
 ''').splitlines()
 

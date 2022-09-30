@@ -799,7 +799,8 @@ or
 
 ## Changes
 
-- 2.6.3 Code improvement.
+- 2.6.3 Code improvement. Line numbers for warnings & errors now begin at
+  the traditional 1.
 - 2.6.2 Code improvement.
 - 2.6.1 Max identifier length is now 32 so minimum wrapwidth of 40 is now
   always possible; as a result warnings W563 and W564 have been removed.

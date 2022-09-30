@@ -469,7 +469,7 @@ class _Lexer(_EventMixin):
 
     def clear(self):
         self.pos = 0 # current
-        self.lino = 0
+        self.lino = 1 # file linos traditionally start at 1
         self.custom = None
         self.in_tclass = False
         self.concatenate = False

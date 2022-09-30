@@ -1,2 +1,2 @@
-uxf:E402:e402.uxe:1:expected a map, list, or table, got 1:INT=5
-uxf.py:error:uxf:F590:e402.uxe:1:invalid UXF data
+uxf:E402:e402.uxe:2:expected a map, list, or table, got 2:INT=5
+uxf.py:error:uxf:F590:e402.uxe:2:invalid UXF data

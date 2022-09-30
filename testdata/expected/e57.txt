@@ -1,2 +1,2 @@
-uxf:E488:l57.uxf:14:expected real, got str wrong
-uxf:R496:l57.uxf:20:converted int 9 to real 9.0
+uxf:E488:l57.uxf:15:expected real, got str wrong
+uxf:R496:l57.uxf:21:converted int 9 to real 9.0

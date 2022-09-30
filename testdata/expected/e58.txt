@@ -1,66 +1,66 @@
-uxf:R486:l58.uxf:12:converted str 'yes' to bool yes
-uxf:R486:l58.uxf:12:converted str 'no' to bool no
-uxf:R486:l58.uxf:12:converted str 't' to bool t
-uxf:R486:l58.uxf:12:converted str 'f' to bool f
-uxf:R486:l58.uxf:12:converted str 'true' to bool true
-uxf:R486:l58.uxf:12:converted str 'false' to bool false
-uxf:E488:l58.uxf:12:expected bool, got str duh
-uxf:R498:l58.uxf:13:converted real -0.1 to int 0
-uxf:R498:l58.uxf:13:converted real -1.0 to int -1
-uxf:R498:l58.uxf:13:converted real 0.0 to int 0
-uxf:R498:l58.uxf:13:converted real 0.1 to int 0
-uxf:R498:l58.uxf:13:converted real 1.0 to int 1
-uxf:R486:l58.uxf:14:converted str '-1' to int -1
-uxf:R486:l58.uxf:14:converted str '0' to int 0
-uxf:R486:l58.uxf:14:converted str '1' to int 1
-uxf:R486:l58.uxf:15:converted str '-0.1' to int -0.1
-uxf:R486:l58.uxf:15:converted str '-1.0' to int -1.0
-uxf:R486:l58.uxf:15:converted str '0.0' to int 0.0
-uxf:R486:l58.uxf:15:converted str '0.1' to int 0.1
-uxf:R486:l58.uxf:15:converted str '1.0' to int 1.0
-uxf:E488:l58.uxf:16:expected int, got str one
-uxf:R496:l58.uxf:17:converted int -1 to real -1.0
-uxf:R496:l58.uxf:17:converted int 0 to real 0.0
-uxf:R496:l58.uxf:17:converted int 1 to real 1.0
-uxf:R486:l58.uxf:18:converted str '-1' to real -1
-uxf:R486:l58.uxf:18:converted str '0' to real 0
-uxf:R486:l58.uxf:18:converted str '1' to real 1
-uxf:R486:l58.uxf:19:converted str '-0.1' to real -0.1
-uxf:R486:l58.uxf:19:converted str '-1.0' to real -1.0
-uxf:R486:l58.uxf:19:converted str '0.0' to real 0.0
-uxf:R486:l58.uxf:19:converted str '0.1' to real 0.1
-uxf:R486:l58.uxf:19:converted str '1.0' to real 1.0
-uxf:E488:l58.uxf:20:expected real, got str one
-uxf:E500:l58.uxf:22:expected date, got int 1990
-uxf:E500:l58.uxf:22:expected date, got float 1980.5
-uxf:R486:l58.uxf:22:converted str '1906' to date 1906
-uxf:E488:l58.uxf:22:expected date, got str 1907-05
-uxf:R486:l58.uxf:22:converted str '1909-08-18' to date 1909-08-18
-uxf:E500:l58.uxf:24:expected datetime, got int 1990
-uxf:E500:l58.uxf:24:expected datetime, got float 1980.5
-uxf:R486:l58.uxf:24:converted str '1906' to datetime 1906
-uxf:E488:l58.uxf:24:expected datetime, got str 1907-05
-uxf:R486:l58.uxf:24:converted str '1909-08-18' to datetime 1909-08-18
-uxf:R486:l58.uxf:25:converted str '1911-11-13T04' to datetime 1911-11-13T04
-uxf:R486:l58.uxf:25:converted str '1913-12-01T05:19' to datetime 1913-12-01T05:19
-uxf:E500:l58.uxf:28:expected str, got int 3
-uxf:E500:l58.uxf:28:expected str, got int 4
-uxf:E500:l58.uxf:28:expected str, got float 5.6
-uxf:E500:l58.uxf:28:expected str, got float -7.9
-uxf:E500:l58.uxf:28:expected str, got int -8
-uxf:E500:l58.uxf:28:expected str, got date 1990-01-11
-uxf:E500:l58.uxf:28:expected str, got datetime 1995-03-15 22:30:00
-uxf:E500:l58.uxf:29:expected str, got datetime 1998-10-17 20:18:45
-uxf:E500:l58.uxf:30:expected str, got bytes b'UXF 1.0'
-uxf:E488:l58.uxf:31:expected int, got str one
-uxf:E488:l58.uxf:31:expected int, got str two
-uxf:R498:l58.uxf:33:converted real 5.6 to int 6
-uxf:R498:l58.uxf:33:converted real -7.9 to int -8
-uxf:E500:l58.uxf:34:expected int, got date 1990-01-11
-uxf:E500:l58.uxf:35:expected int, got datetime 1995-03-15 22:30:00
-uxf:E500:l58.uxf:35:expected int, got datetime 1998-10-17 20:18:45
-uxf:E500:l58.uxf:36:expected int, got bytes b'UXF 1.0'
-uxf:E506:l58.uxf:36:expected int, got Table (p)
-uxf:E488:l58.uxf:36:expected int, got str a
-uxf:E488:l58.uxf:36:expected int, got str b
-uxf:W422:l58.uxf:39:unused ttype: 'by'
+uxf:R486:l58.uxf:13:converted str 'yes' to bool yes
+uxf:R486:l58.uxf:13:converted str 'no' to bool no
+uxf:R486:l58.uxf:13:converted str 't' to bool t
+uxf:R486:l58.uxf:13:converted str 'f' to bool f
+uxf:R486:l58.uxf:13:converted str 'true' to bool true
+uxf:R486:l58.uxf:13:converted str 'false' to bool false
+uxf:E488:l58.uxf:13:expected bool, got str duh
+uxf:R498:l58.uxf:14:converted real -0.1 to int 0
+uxf:R498:l58.uxf:14:converted real -1.0 to int -1
+uxf:R498:l58.uxf:14:converted real 0.0 to int 0
+uxf:R498:l58.uxf:14:converted real 0.1 to int 0
+uxf:R498:l58.uxf:14:converted real 1.0 to int 1
+uxf:R486:l58.uxf:15:converted str '-1' to int -1
+uxf:R486:l58.uxf:15:converted str '0' to int 0
+uxf:R486:l58.uxf:15:converted str '1' to int 1
+uxf:R486:l58.uxf:16:converted str '-0.1' to int -0.1
+uxf:R486:l58.uxf:16:converted str '-1.0' to int -1.0
+uxf:R486:l58.uxf:16:converted str '0.0' to int 0.0
+uxf:R486:l58.uxf:16:converted str '0.1' to int 0.1
+uxf:R486:l58.uxf:16:converted str '1.0' to int 1.0
+uxf:E488:l58.uxf:17:expected int, got str one
+uxf:R496:l58.uxf:18:converted int -1 to real -1.0
+uxf:R496:l58.uxf:18:converted int 0 to real 0.0
+uxf:R496:l58.uxf:18:converted int 1 to real 1.0
+uxf:R486:l58.uxf:19:converted str '-1' to real -1
+uxf:R486:l58.uxf:19:converted str '0' to real 0
+uxf:R486:l58.uxf:19:converted str '1' to real 1
+uxf:R486:l58.uxf:20:converted str '-0.1' to real -0.1
+uxf:R486:l58.uxf:20:converted str '-1.0' to real -1.0
+uxf:R486:l58.uxf:20:converted str '0.0' to real 0.0
+uxf:R486:l58.uxf:20:converted str '0.1' to real 0.1
+uxf:R486:l58.uxf:20:converted str '1.0' to real 1.0
+uxf:E488:l58.uxf:21:expected real, got str one
+uxf:E500:l58.uxf:23:expected date, got int 1990
+uxf:E500:l58.uxf:23:expected date, got float 1980.5
+uxf:R486:l58.uxf:23:converted str '1906' to date 1906
+uxf:E488:l58.uxf:23:expected date, got str 1907-05
+uxf:R486:l58.uxf:23:converted str '1909-08-18' to date 1909-08-18
+uxf:E500:l58.uxf:25:expected datetime, got int 1990
+uxf:E500:l58.uxf:25:expected datetime, got float 1980.5
+uxf:R486:l58.uxf:25:converted str '1906' to datetime 1906
+uxf:E488:l58.uxf:25:expected datetime, got str 1907-05
+uxf:R486:l58.uxf:25:converted str '1909-08-18' to datetime 1909-08-18
+uxf:R486:l58.uxf:26:converted str '1911-11-13T04' to datetime 1911-11-13T04
+uxf:R486:l58.uxf:26:converted str '1913-12-01T05:19' to datetime 1913-12-01T05:19
+uxf:E500:l58.uxf:29:expected str, got int 3
+uxf:E500:l58.uxf:29:expected str, got int 4
+uxf:E500:l58.uxf:29:expected str, got float 5.6
+uxf:E500:l58.uxf:29:expected str, got float -7.9
+uxf:E500:l58.uxf:29:expected str, got int -8
+uxf:E500:l58.uxf:29:expected str, got date 1990-01-11
+uxf:E500:l58.uxf:29:expected str, got datetime 1995-03-15 22:30:00
+uxf:E500:l58.uxf:30:expected str, got datetime 1998-10-17 20:18:45
+uxf:E500:l58.uxf:31:expected str, got bytes b'UXF 1.0'
+uxf:E488:l58.uxf:32:expected int, got str one
+uxf:E488:l58.uxf:32:expected int, got str two
+uxf:R498:l58.uxf:34:converted real 5.6 to int 6
+uxf:R498:l58.uxf:34:converted real -7.9 to int -8
+uxf:E500:l58.uxf:35:expected int, got date 1990-01-11
+uxf:E500:l58.uxf:36:expected int, got datetime 1995-03-15 22:30:00
+uxf:E500:l58.uxf:36:expected int, got datetime 1998-10-17 20:18:45
+uxf:E500:l58.uxf:37:expected int, got bytes b'UXF 1.0'
+uxf:E506:l58.uxf:37:expected int, got Table (p)
+uxf:E488:l58.uxf:37:expected int, got str a
+uxf:E488:l58.uxf:37:expected int, got str b
+uxf:W422:l58.uxf:40:unused ttype: 'by'

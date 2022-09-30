@@ -1,6 +1,6 @@
-uxf:E160:e160.uxe:1:invalid comment syntax: expected '<', got [
-uxf:E272:e160.uxe:1:expected value got type, comment
-uxf:E272:e160.uxe:1:expected value got type, syntax
-uxf:E170:e160.uxe:1:invalid character encountered: '>'
-uxf:E446:e160.uxe:1:expected list vtype, got invalid
-uxf:E506:e160.uxe:2:expected invalid, got List []
+uxf:E160:e160.uxe:2:invalid comment syntax: expected '<', got [
+uxf:E272:e160.uxe:2:expected value got type, comment
+uxf:E272:e160.uxe:2:expected value got type, syntax
+uxf:E170:e160.uxe:2:invalid character encountered: '>'
+uxf:E446:e160.uxe:2:expected list vtype, got invalid
+uxf:E506:e160.uxe:3:expected invalid, got List []
