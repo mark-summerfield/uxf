@@ -38,7 +38,8 @@ try:
     except ImportError:
         sys.path.append(str(ROOT / 'py'))
         import uxf
-    init(autoreset=True)
+    if OK:
+        init(autoreset=True)
 finally:
     pass
 
@@ -176,7 +177,8 @@ def test_one(lang, verbose, i, t):
         cmd.append(afile)
     if verbose:
         print(' '.join(cmd), end='', flush=True)
-    reply = subprocess.run(cmd, capture_output=True, text=True)
+    reply = subprocess.run(cmd, capture_output=True, text=True,
+                           encoding='utf-8')
     if reply.returncode != t.returncode:
         print(FAIL + f'expected returncode {t.returncode}, got '
               f'{reply.returncode}', end='', flush=True)
@@ -196,7 +198,8 @@ def test_one(lang, verbose, i, t):
 def build_rs(verbose):
     if verbose:
         print('building rs uxf')
-    subprocess.run(['cargo', 'build', '--release'], cwd=str(ROOT / 'rs'))
+    subprocess.run(['cargo', 'build', '--release'], cwd=str(ROOT / 'rs'),
+                   encoding='utf-8')
 
 
 def check_stderr(lang, verbose, t, rstderr):
@@ -205,7 +208,17 @@ def check_stderr(lang, verbose, t, rstderr):
         return False
     stderr = f'expected/{t.stderr}'
     lstderr = stderr.replace('.', f'-{lang}.')
-    stderr = lstderr if os.path.exists(lstderr) else stderr
+    if WIN:
+        wstderr = stderr.replace('.', '-win.')
+        wlstderr = lstderr.replace('.', '-win.')
+        if os.path.exists(wlstderr):
+            stderr = wlstderr
+        elif os.path.exists(wstderr):
+            stderr = wstderr
+        elif os.path.exists(lstderr):
+            stderr = lstderr
+    elif os.path.exists(lstderr):
+        stderr = lstderr
     with open(stderr, 'rt', encoding='utf-8') as file:
         stderr = file.read()
     rstderr = rstderr.strip()
@@ -224,7 +237,7 @@ def check_stderr(lang, verbose, t, rstderr):
 def normalize(s):
     match = re.search(r'(?:^|:)[EFRW](?P<code>\d\d\d):', s)
     code = int(match.group('code')) if match else None
-    s = s.replace('testdata/', '')
+    s = re.sub(r'[/\\][^:]+testdata[/\\]', '', s)
     match = re.search(r':\d+:', s)
     text = re.sub(r'''['"]''', '', s[match.end():]) if match else s
     return code, text
@@ -256,7 +269,8 @@ def compare(lang, compare, file1, file2):
     if compare is Compare.EQUIV:
         cmd.append('-e')
     cmd += [file1, file2]
-    reply = subprocess.run(cmd, capture_output=True, text=True)
+    reply = subprocess.run(cmd, capture_output=True, text=True,
+                           encoding='utf-8')
     return reply.stdout.startswith('EQU')
 
 
