@@ -507,7 +507,7 @@ impl<'a> Lexer<'a> {
             bail!(self.error(
                 260,
                 &format!(
-                    "expected {}, got {:?}…",
+                    "expected {}, got {:?}",
                     what,
                     &self.peek_chunk(start)
                 )

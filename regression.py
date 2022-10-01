@@ -61,7 +61,7 @@ else:
 def main():
     os.chdir(ROOT / 'testdata')
     if WIN:
-        print('manually run (in another console): '
+        print('have you manually run (in another console): '
               'py38.bat misc/test_server.py')
     else:
         util.check_server(SERVER_PATH)
@@ -206,19 +206,7 @@ def check_stderr(lang, verbose, t, rstderr):
     if t.stderr is None:
         print(FAIL + f'\nunexpected stderr:\n{rstderr}')
         return False
-    stderr = f'expected/{t.stderr}'
-    lstderr = stderr.replace('.', f'-{lang}.')
-    if WIN:
-        wstderr = stderr.replace('.', '-win.')
-        wlstderr = lstderr.replace('.', '-win.')
-        if os.path.exists(wlstderr):
-            stderr = wlstderr
-        elif os.path.exists(wstderr):
-            stderr = wstderr
-        elif os.path.exists(lstderr):
-            stderr = lstderr
-    elif os.path.exists(lstderr):
-        stderr = lstderr
+    stderr = get_stderr_file(lang, t.stderr)
     with open(stderr, 'rt', encoding='utf-8') as file:
         stderr = file.read()
     rstderr = rstderr.strip()
@@ -234,10 +222,27 @@ def check_stderr(lang, verbose, t, rstderr):
     return True
 
 
+def get_stderr_file(lang, stderr):
+    stderr = f'expected/{stderr}'
+    lstderr = stderr.replace('.', f'-{lang}.')
+    if WIN:
+        wstderr = stderr.replace('.', '-win.')
+        wlstderr = lstderr.replace('.', '-win.')
+        if os.path.exists(wlstderr):
+            stderr = wlstderr
+        elif os.path.exists(wstderr):
+            stderr = wstderr
+        elif os.path.exists(lstderr):
+            stderr = lstderr
+    elif os.path.exists(lstderr):
+        stderr = lstderr
+    return stderr
+
+
 def normalize(s):
     match = re.search(r'(?:^|:)[EFRW](?P<code>\d\d\d):', s)
     code = int(match.group('code')) if match else None
-    s = re.sub(r'[/\\][^:]+testdata[/\\]', '', s)
+    s = re.sub(r'(:?(?:[A-Za-z]:)?[/\\]+[^:]+)?testdata[/\\]+', '', s)
     match = re.search(r':\d+:', s)
     text = re.sub(r'''['"]''', '', s[match.end():]) if match else s
     return code, text

@@ -793,7 +793,7 @@ class _Lexer(_EventMixin):
         if identifier:
             return identifier
         text = self.text[start:start + 10]
-        self.error(260, f'expected {what}, got {text}…')
+        self.error(260, f'expected {what}, got {text}')
 
 
     def match_to(self, target, *, what):
@@ -1126,8 +1126,8 @@ class Map(collections.UserDict, _CommentMixin):
                 prefix = ('map keys may only be of type int, date, '
                           'datetime, str, or bytes, got ')
                 if isinstance(value, Table):
-                    _raise_error(290, f'{prefix}a Table ( … ), maybe '
-                                 'bytes (: … :) was intended?')
+                    _raise_error(290, f'{prefix}a Table ( ... ), maybe '
+                                 'bytes (: ... :) was intended?')
                 else:
                     _raise_error(294, f'{prefix}{value.__class__.__name__} '
                                  f'{value!r}')
