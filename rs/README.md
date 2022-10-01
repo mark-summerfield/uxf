@@ -12,7 +12,7 @@ For details of the Uniform eXchange Format (UXF) supported by this library,
 see the [UXF Overview](../README.md). ([Alternative link to UXF
 Overview](https://github.com/mark-summerfield/uxf/blob/main/README.md).)
 
-[crates.io](https://crates.io/crates/uxf)
+[crates.io](https://crates.io/crates/uxf) •
 [docs](https://docs.rs/uxf/latest/uxf/)
 
 ## Commmand Line tool
