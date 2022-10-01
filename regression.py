@@ -15,10 +15,22 @@ import sys
 import tempfile
 import time
 
-from colorama import Fore, init
+try:
+    from colorama import Fore, init
+    OK = Fore.BLUE
+    FAIL = Fore.RED
+    SKIP = Fore.GREEN
+except ImportError:
+    OK = FAIL = SKIP = ''
 
 try:
+    WIN = sys.platform == 'win32'
     ROOT = pathlib.Path(__file__).parent.resolve()
+    if WIN:
+        root = str(ROOT)
+        if (root.startswith(r'\\VBOXSVR\app') or
+                root.startswith('//VBOXSVR/app')):
+            ROOT = pathlib.Path(root[13:])
     sys.path.append(str(ROOT / 'py/t'))
     import util
     try:
@@ -32,18 +44,26 @@ finally:
 
 SERVER_PATH = ROOT / 'misc'
 TEMP_PATH = tempfile.gettempdir()
-EXE_FOR_LANG = {'py': ['python3', str(ROOT / 'py/uxf.py')],
-                'rs': [str(ROOT / 'rs/target/release/uxf'), 'f']}
-CMP_FOR_LANG = {'py': ['python3', str(ROOT / 'py/uxfcompare.py')],
-                'rs': [str(ROOT / 'rs/target/release/uxf'), 'c']}
-OK = Fore.BLUE
-FAIL = Fore.RED
-SKIP = Fore.GREEN
+if WIN:
+    EXE_FOR_LANG = {'py': ['C:\\bin\\py38.bat', str(ROOT / 'py/uxf.py')],
+                    'rs': [str(ROOT / 'rs/target/release/uxf.exe'), 'f']}
+    CMP_FOR_LANG = {'py': ['C:\\bin\\py38.bat',
+                           str(ROOT / 'py/uxfcompare.py')],
+                    'rs': [str(ROOT / 'rs/target/release/uxf.exe'), 'c']}
+else:
+    EXE_FOR_LANG = {'py': ['python3', str(ROOT / 'py/uxf.py')],
+                    'rs': [str(ROOT / 'rs/target/release/uxf'), 'f']}
+    CMP_FOR_LANG = {'py': ['python3', str(ROOT / 'py/uxfcompare.py')],
+                    'rs': [str(ROOT / 'rs/target/release/uxf'), 'c']}
 
 
 def main():
     os.chdir(ROOT / 'testdata')
-    util.check_server(SERVER_PATH)
+    if WIN:
+        print('manually run (in another console): '
+              'py38.bat misc/test_server.py')
+    else:
+        util.check_server(SERVER_PATH)
     tmin, tmax, langs, verbose = get_config()
     cleanup()
     all_total = all_ok = 0

@@ -142,7 +142,7 @@ fn t_uxf_parse_os2() {
         })),
     )
     .unwrap_err();
-    assert_eq!(err.to_string(), "No such file or directory (os error 2)");
+    assert!(err.to_string().contains("(os error 2)"));
     assert!(&events.borrow().is_empty());
 }
 
@@ -245,7 +245,7 @@ fn t_uxf_parse_ok() {
 #[test]
 fn t_no_such_file() {
     let err = uxf::parse("no-such-file.uxf").unwrap_err();
-    assert!(err.to_string().starts_with("No such file or directory"));
+    assert!(err.to_string().contains("(os error 2)"));
 }
 
 #[test]

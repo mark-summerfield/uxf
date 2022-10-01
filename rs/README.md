@@ -8,6 +8,10 @@ toml, and yaml formats. One key advantage of UXF is that it supports custom
 and easier to parse data. And in some contexts it may prove to be a
 convenient alternative to sqlite or xml.
 
+Every `Uxf` object contains one `value` of type `Value`: this is always a
+collection (a `List`, `Map`, or `Table`), which may be empty or contain any
+number of other values—any mix of scalar or collections.
+
 For details of the Uniform eXchange Format (UXF) supported by this library,
 see the [UXF Overview](../README.md). ([Alternative link to UXF
 Overview](https://github.com/mark-summerfield/uxf/blob/main/README.md).)

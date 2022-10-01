@@ -211,7 +211,8 @@ enum Commands {
 
 #[derive(Args, Debug)]
 struct Format {
-    /// Print lints to stderr. If only lints are wanted use l or lint.
+    /// Print lints to stderr. If only lints are wanted use l or lnt or
+    /// lint.
     #[clap(short, long, action)]
     lint: bool,
 
