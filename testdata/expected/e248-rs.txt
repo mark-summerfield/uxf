@@ -1,0 +1,1 @@
+E248:/home/mark/app/uxf/testdata/e248.uxe:2:expected field vtype, got "int"
