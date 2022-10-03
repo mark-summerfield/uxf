@@ -72,7 +72,7 @@ pub(crate) fn is_compressed(filename: &str) -> Result<bool> {
     let mut file = File::open(&filename)?;
     let mut buffer = [0; 2]; // 0x1F 0x8B gzip magic
     file.read_exact(&mut buffer).with_context(|| {
-        format!("E953:{}:0:failed to read start of", filename)
+        format!("E953:{}:0:failed to read start", filename)
     })?;
     Ok(buffer[0] == 0x1F && buffer[1] == 0x8B)
 }
