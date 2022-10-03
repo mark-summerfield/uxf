@@ -1,0 +1,1 @@
+E601:/home/mark/app/uxf/testdata/e601.uxe:2:invalid bytes: odd number of hex chars, unpaired: 'f'

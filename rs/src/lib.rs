@@ -13,9 +13,6 @@ convenient alternative to sqlite or xml.
 For details of the Uniform eXchange Format (UXF) supported by this library,
 see the [UXF Overview](https://github.com/mark-summerfield/uxf/blob/main/README.md).
 
-**Note that this is WIP — currently the parser is complete, along with
-output. Aim is for 1.0.0 to include better docs & more regression tests.**
-
 # Reading and Writing UXF Files
 
 To read a UXF file into a `Uxf` object use `parse()` (or `parse_options()` for finer control), e.g.:

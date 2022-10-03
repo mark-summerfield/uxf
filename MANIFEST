@@ -1,8 +1,7 @@
 regression.py
 testdata/regression.dat.gz
 testdata/errortests.dat.gz
-# TODO add a test for every repair, warning, & error
-# TODO once all tests done release rs 1.0.0 & py 2.7.0
+# TODO once all tests done, port to tlm; then release rs 1.0.0 & py 2.7.0
 
 rs/src/bin/uxf.rs
 rs/src/lib.rs

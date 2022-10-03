@@ -60,9 +60,9 @@ pub(crate) fn read_file(filename: &str) -> Result<String> {
         })?;
     } else {
         let mut buffer = BufReader::new(file);
-        buffer
-            .read_to_string(&mut text)
-            .with_context(|| format!("E952:{}:0:failed to read", filename))?;
+        buffer.read_to_string(&mut text).with_context(|| {
+            format!("E952:{}:0:failed to read", filename)
+        })?;
     }
     Ok(text)
 }
@@ -116,21 +116,24 @@ pub(crate) fn dirname(filename: &str) -> String {
 /// whitespace).
 pub(crate) fn hex_as_bytes(h: &str) -> Result<Vec<u8>> {
     let mut raw = vec![];
-    let mut b = NUL;
+    let mut pending = NUL;
     for c in h.chars() {
         if c.is_ascii_hexdigit() {
-            if b == NUL {
-                b = c;
+            if pending == NUL {
+                pending = c;
             } else {
                 // safe to unwrap because of is_ascii_hexdigit()
-                let x = b.to_digit(16).unwrap() * 16;
+                let x = pending.to_digit(16).unwrap() * 16;
                 let y = c.to_digit(16).unwrap();
                 raw.push((x | y) as u8);
-                b = NUL;
+                pending = NUL;
             }
         } else if !c.is_ascii_whitespace() {
             bail!("invalid hex char: {:?}", c)
         }
+    }
+    if pending != NUL {
+        bail!("odd number of hex chars, unpaired: {:?}", pending)
     }
     Ok(raw)
 }

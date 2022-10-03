@@ -1,0 +1,1 @@
+uxf.py:error:uxf:F110:empty.uxe:1:missing UXF file header or empty file
