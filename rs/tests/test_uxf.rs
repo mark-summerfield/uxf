@@ -83,6 +83,46 @@ fn t_uxf_set_value() {
 }
 
 #[test]
+fn t_uxf_value_mut() {
+    let mut uxo = Uxf::default();
+    assert_eq!(uxo.to_string(), "uxf 1\n[]\n");
+    let tc1 = TClass::new_fieldless("ReadyState", "enum").unwrap();
+    uxo.add_tclass(tc1.clone());
+    let t1 = Table::new(tc1, "");
+    uxo.add_tclass(t1.tclass().clone());
+    let t2 = Table::new_fieldless("WaitState", "enum").unwrap();
+    uxo.add_tclass(t2.tclass().clone());
+    let fields = make_fields(&[("x", "int"), ("y", "int")]).unwrap();
+    let tc3 = TClass::new("Point", fields, "").unwrap();
+    uxo.add_tclass(tc3.clone());
+    let mut t3 = Table::new(tc3, "");
+    let _ = t3.append(vec![Value::Int(0), 0.into()]);
+    let _ = t3.append(vec![Value::Int(-7), 11.into()]);
+    let _ = t3.append(t3.tclass().record_of_nulls().unwrap());
+    let _ = t3.append(vec![Value::Int(19), (-23).into()]);
+    let value = uxo.value_mut();
+    if let Some(lst) = value.as_list_mut() {
+        lst.push(t1.into());
+        lst.push(t2.into());
+        lst.push(t3.into());
+    }
+    assert_eq!(
+        value.to_string(),
+        "[(ReadyState)\n(#<enum> WaitState)\n(Point 0 0\n-7 11\n? ?\n\
+        19 -23)]"
+    );
+    assert_eq!(
+        uxo.to_string(),
+        "uxf 1\n\
+        =Point x:int y:int\n\
+        =#<enum> ReadyState\n\
+        =WaitState\n\
+        [(ReadyState)\n(#<enum> WaitState)\n(Point 0 0\n-7 11\n? ?\n\
+        19 -23)]\n"
+    );
+}
+
+#[test]
 fn t_uxf_set_value_invalid() {
     let mut uxo = Uxf::default();
     assert_eq!(uxo.to_string(), "uxf 1\n[]\n");

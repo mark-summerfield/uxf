@@ -69,6 +69,12 @@ impl Uxf {
         &self.value
     }
 
+    /// A mutable reference to the collection value. This defaults to an
+    /// empty List.
+    pub fn value_mut(&mut self) -> &mut Value {
+        &mut self.value
+    }
+
     /// Sets the collection value which must be a List, Map, or Table.
     /// (Normally a Uxf is created using parse() or parse_options().)
     pub fn set_value(&mut self, value: Value) -> Result<()> {
