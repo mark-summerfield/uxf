@@ -310,7 +310,7 @@ impl Value {
     }
 
     /// Returns how many values, items, or records are in this Value if
-    /// it is a collection; otherwise returns 0.
+    /// it is a collection; otherwise returns None.
     pub fn len(&self) -> Option<usize> {
         match self {
             Value::List(lst) => Some(lst.len()),
