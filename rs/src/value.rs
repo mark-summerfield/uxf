@@ -287,6 +287,70 @@ impl Value {
         }
     }
 
+    /// Add a single Value to a collection Value.
+    /// For a List this appends one item.
+    /// For a Map this adds a pending key (or returns false if the Value
+    /// isn't a valid key type) or if there's already one, adds an item
+    /// with them pending key and the Value.
+    /// For a Table this adds a pending field or if this would be the last
+    /// one of a record, adds the pending record with this as the last
+    /// field.
+    /// Returns true if successful; otherwise (e.g., if used on a scalar
+    /// value or a value is an invalid map key), false.
+    pub fn push(&mut self, value: Value) -> bool {
+        match self {
+            Value::List(lst) => {
+                lst.push(value);
+                true
+            }
+            Value::Map(m) => m.push(value).is_ok(),
+            Value::Table(t) => t.push(value).is_ok(),
+            _ => false,
+        }
+    }
+
+    /// Returns how many values, items, or records are in this Value if
+    /// it is a collection; otherwise returns 0.
+    pub fn len(&self) -> Option<usize> {
+        match self {
+            Value::List(lst) => Some(lst.len()),
+            Value::Map(m) => Some(m.len()),
+            Value::Table(t) => Some(t.len()),
+            _ => None,
+        }
+    }
+
+    /// Returns true if Value is an empty collection or a scalar;
+    /// otherwise returns false.
+    pub fn is_empty(&self) -> bool {
+        match self {
+            Value::List(lst) => lst.is_empty(),
+            Value::Map(m) => m.is_empty(),
+            Value::Table(t) => t.is_empty(),
+            _ => true,
+        }
+    }
+
+    /// Returns `Some(&Value)` if this is a `Value::List` and `index` is
+    /// in bounds; otherwise `None`.
+    pub fn get(&self, index: usize) -> Option<&Value> {
+        if let Some(lst) = self.as_list() {
+            lst.get(index)
+        } else {
+            None
+        }
+    }
+
+    /// Returns `Some(&mut Value)` if this is a `Value::List` and `index`
+    /// is in bounds; otherwise `None`.
+    pub fn get_mut(&mut self, index: usize) -> Option<&mut Value> {
+        if let Some(lst) = self.as_list_mut() {
+            lst.get_mut(index)
+        } else {
+            None
+        }
+    }
+
     // Can't be vtype() because VALUE_NAME_NULL "null" is not a valid vtype
     /// Returns "null" if the Value is `Value::Null`; otherwise returns the
     /// Value's `vtype` (`bool`, `bytes', ... `table`).
