@@ -29,6 +29,7 @@ Overview](https://github.com/mark-summerfield/uxf/blob/main/README.md).)
 
 ## Changes
 
+- 0.25.0 Added `Uxf::add_tclass()`
 - 0.24.0 Now correctly writes gzipped to .gz files (before it wrote nothing
   to these).
 - 0.23.0 Bug fixes. Improved error messages & testing.
