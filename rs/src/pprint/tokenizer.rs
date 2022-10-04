@@ -43,7 +43,7 @@ pub(crate) fn tokenize(
 /* DEBUG
 fn debug_tokens(tokens: &Tokens) {
     for t in tokens {
-        eprintln!("{:?}", t);
+        eprintln!("{t:?}");
     }
 }
 */
@@ -124,7 +124,7 @@ impl Tokenizer {
             self.import_for_ttype.values().map(|i| i.to_string()).collect();
         for import in imports {
             if !seen.contains(&import) {
-                self.puts(&format!("!{}\n", &import));
+                self.puts(&format!("!{import}\n"));
                 seen.insert(import);
             }
         }
@@ -151,7 +151,7 @@ impl Tokenizer {
                 self.rws();
                 self.puts(field.name());
                 if let Some(vtype) = field.vtype() {
-                    self.puts(&format!(":{}", vtype));
+                    self.puts(&format!(":{vtype}"));
                 }
             }
             self.rnl();
@@ -309,10 +309,10 @@ impl Tokenizer {
             Value::DateTime(dt) => {
                 self.puts(&dt.format(ISO8601_DATETIME).to_string())
             }
-            Value::Int(i) => self.puts(&format!("{}", i)),
+            Value::Int(i) => self.puts(&format!("{i}")),
             Value::Real(r) => self.handle_real(*r),
             Value::Str(s) => self.handle_str(s, "", ""),
-            _ => panic!("expected scalar, got {:?}", value), // impossible
+            _ => panic!("expected scalar, got {value:?}"), // impossible
         };
         self.rws();
     }
@@ -320,7 +320,7 @@ impl Tokenizer {
     fn handle_bytes(&mut self, b: &[u8]) {
         // We can safely slice chars because they're all ASCII
         let mut text =
-            b.iter().map(|x| format!("{:02X}", x)).collect::<String>();
+            b.iter().map(|x| format!("{x:02X}")).collect::<String>();
         if text.len() + 4 > self.wrapwidth {
             let span = self.wrapwidth - self.indent.len();
             self.puts("(:");
@@ -340,15 +340,15 @@ impl Tokenizer {
             self.puts(":)");
             self.rnl() // newline always follows multiline bytes or str
         } else {
-            self.puts(&format!("(:{}:)", text))
+            self.puts(&format!("(:{text}:)"))
         };
     }
 
     fn handle_real(&mut self, r: f64) {
         let mut text = if let Some(realdp) = self.realdp {
-            format!("{:.*}", realdp as usize, r)
+            format!("{r:.*}", realdp as usize)
         } else {
-            format!("{}", r)
+            format!("{r}")
         };
         if !text.contains(&['.', 'e', 'E']) {
             text.push_str(".0");
@@ -368,7 +368,7 @@ impl Tokenizer {
             }
         }
         if !too_wide {
-            self.puts(&format!("{}<{}>{}", prefix, text, suffix));
+            self.puts(&format!("{prefix}<{text}>{suffix}"));
         } else {
             // Assumes there is no suffix
             self.handle_long_str(&text, prefix, prefix_len);
@@ -395,7 +395,7 @@ impl Tokenizer {
             if !chunk.is_empty() {
                 let end = if chars.is_empty() { "" } else { " &" };
                 self.put_line(
-                    &format!("{}<{}>{}", prefix, chunk, end),
+                    &format!("{prefix}<{chunk}>{end}"),
                     self.depth,
                 );
                 prefix.clear();

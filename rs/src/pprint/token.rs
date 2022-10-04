@@ -31,7 +31,7 @@ impl Token {
 impl fmt::Debug for Token {
     fn fmt<'a>(&'a self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         let n = if let Some(num_records) = self.num_records {
-            format!(" #{} ", num_records)
+            format!(" #{num_records} ")
         } else {
             "".to_string()
         };
@@ -40,14 +40,7 @@ impl fmt::Debug for Token {
         } else {
             format!(" {:?}", self.text)
         };
-        write!(
-            f,
-            "{}{:?}{}{}",
-            "    ".repeat(self.depth),
-            self.kind,
-            n,
-            text
-        )
+        write!(f, "{}{:?}{n}{text}", "    ".repeat(self.depth), self.kind,)
     }
 }
 

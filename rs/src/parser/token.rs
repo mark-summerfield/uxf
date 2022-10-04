@@ -141,7 +141,7 @@ pub(crate) fn debug_tokens(tokens: &[Token]) {
         if indent > 0 {
             print!("{}", "  ".repeat(indent));
         }
-        println!("{}", token);
+        println!("{token}");
         if matches!(
             &token.kind,
             TokenKind::TClassBegin

@@ -227,8 +227,8 @@ impl<'a> Parser<'a> {
             bail!(self.error(
                 540,
                 &format!(
-                    "there are no ttype definitions to import {} ({:?})",
-                    value, filename
+                    "there are no ttype definitions to import \
+                    {value} ({filename:?})"
                 )
             ));
         };
@@ -264,13 +264,11 @@ impl<'a> Parser<'a> {
                 Ok(text) => Ok((text, false)),
                 Err(err) => bail!(self.error(
                     551,
-                    &format!("failed to read import's text: {}", err)
+                    &format!("failed to read import's text: {err}")
                 )),
             },
-            Err(err) => bail!(self.error(
-                550,
-                &format!("failed to download import: {}", err)
-            )),
+            Err(err) => bail!(self
+                .error(550, &format!("failed to download import: {err}"))),
         }
     }
 
@@ -288,7 +286,7 @@ impl<'a> Parser<'a> {
             Ok(uxo) => Ok((Some(uxo), false)),
             Err(err) => bail!(self.error(
                 530,
-                &format!("failed to import {:?}: {}", filename, err)
+                &format!("failed to import {filename:?}: {err}")
             )),
         }
     }
@@ -304,8 +302,7 @@ impl<'a> Parser<'a> {
             _ => bail!(self.error(
                 560,
                 &format!(
-                    "there is no system ttype import called {:?}",
-                    import
+                    "there is no system ttype import called {import:?}",
                 )
             )),
         }
@@ -518,16 +515,13 @@ impl<'a> Parser<'a> {
             let xtype = if !token.vtype.is_empty() {
                 format!(" of type {}", &token.vtype)
             } else if let Some(value) = token.value.as_str() {
-                format!(" {}", value)
+                format!(" {value}")
             } else {
                 "".to_string()
             };
             bail!(self.error(
                 506,
-                &format!(
-                    "expected {}, got {}{}",
-                    expected_type, typename, xtype
-                )
+                &format!("expected {expected_type}, got {typename}{xtype}",)
             ))
         }
     }
@@ -631,11 +625,9 @@ impl<'a> Parser<'a> {
                 (self.on_event)(&Event::new_repair(
                     486,
                     &format!(
-                        "converted {} {} to {} {}",
+                        "converted {} {value} to {} {new_value}",
                         value.typename(),
-                        value,
                         new_value.typename(),
-                        new_value
                     ),
                     self.filename,
                     self.lino,
@@ -670,11 +662,9 @@ impl<'a> Parser<'a> {
             (self.on_event)(&Event::new_repair(
                 486,
                 &format!(
-                    "converted {} {} to {} {}",
+                    "converted {} {value} to {} {new_value}",
                     value.typename(),
-                    value,
                     new_value.typename(),
-                    new_value
                 ),
                 self.filename,
                 self.lino,
@@ -716,7 +706,7 @@ impl<'a> Parser<'a> {
             } else {
                 bail!(self.error(
                     446,
-                    &format!("expected {} vtype, got {}", what, vtype)
+                    &format!("expected {what} vtype, got {vtype}")
                 ));
             }
         }
@@ -735,9 +725,8 @@ impl<'a> Parser<'a> {
             bail!(self.error(
                 456,
                 &format!(
-                    "expected table value of type {}, got value \
-                    of type {}",
-                    expected_type, ttype
+                    "expected table value of type {expected_type}, \
+                    got value of type {ttype}",
                 )
             ));
         }
@@ -750,15 +739,11 @@ impl<'a> Parser<'a> {
             if VTYPES.contains(&expected_type) {
                 if value.typename() != expected_type {
                     return format!(
-                        "expected {}, got {}",
-                        expected_type, &value
+                        "expected {expected_type}, got {value}"
                     );
                 }
             } else if !self.tclass_for_ttype.contains_key(expected_type) {
-                return format!(
-                    "expected {}, got {}",
-                    expected_type, &value
-                );
+                return format!("expected {expected_type}, got {value}",);
             }
         }
         "".to_string()
@@ -893,7 +878,7 @@ impl<'a> Parser<'a> {
         let mut diff: Vec<String> =
             diff.iter().map(|s| s.to_string()).collect();
         diff.sort_by_key(|x| x.to_lowercase());
-        let message = format!("{} ttype{}: {}", what, s, diff.join(" "));
+        let message = format!("{what} ttype{s}: {}", diff.join(" "));
         if code == 422 {
             (self.on_event)(&Event::new_warning(
                 code,
@@ -952,27 +937,27 @@ impl<'a> Parser<'a> {
     }
 
     fn error(&self, code: u16, message: &str) -> String {
-        format!("E{}:{}:{}:{}", code, self.filename, self.lino, message)
+        format!("E{code}:{}:{}:{message}", self.filename, self.lino)
     }
 
     fn error_f(&self, code: u16, message: &str, filename: &str) -> String {
         format!(
-            "E{}:{}:{}:{} {:?}",
-            code, self.filename, self.lino, message, filename
+            "E{code}:{}:{}:{message} {filename:?}",
+            self.filename, self.lino
         )
     }
 
     fn error_s(&self, code: u16, message: &str, s: &str) -> String {
         format!(
-            "E{}:{}:{}:{}, got {:?}",
-            code, self.filename, self.lino, message, s
+            "E{code}:{}:{}:{message}, got {s:?}",
+            self.filename, self.lino
         )
     }
 
     fn error_t(&self, code: u16, message: &str, t: &Token) -> String {
         format!(
-            "E{}:{}:{}:{}, got {}",
-            code, self.filename, self.lino, message, t
+            "E{code}:{}:{}:{message}, got {t}",
+            self.filename, self.lino
         )
     }
 }

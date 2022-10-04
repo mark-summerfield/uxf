@@ -220,7 +220,7 @@ impl Writer {
         // This method is bypassed in multiline()
         let s = if self.pending_rws {
             self.pending_rws = false;
-            format!(" {}", s)
+            format!(" {s}")
         } else {
             s.to_string()
         };

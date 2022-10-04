@@ -90,10 +90,7 @@ impl<'a> Lexer<'a> {
             if version > UXF_VERSION {
                 (self.on_event)(&Event::new_warning(
                     141,
-                    &format!(
-                        "version {} > current {}",
-                        version, UXF_VERSION
-                    ),
+                    &format!("version {version} > current {UXF_VERSION}",),
                     self.filename,
                     self.lino,
                 ));
@@ -349,16 +346,13 @@ impl<'a> Lexer<'a> {
             let n: f64 = text.parse().with_context(|| {
                 self.error(
                     210,
-                    &format!("failed to parse {:?} as real", &text),
+                    &format!("failed to parse {text:?} as real"),
                 )
             })?;
             self.add_token(TokenKind::Real, Value::Real(-n))
         } else {
             let n: i64 = text.parse().with_context(|| {
-                self.error(
-                    211,
-                    &format!("failed to parse {:?} as int", &text),
-                )
+                self.error(211, &format!("failed to parse {text:?} as int"))
             })?;
             self.add_token(TokenKind::Int, Value::Int(-n))
         }
@@ -399,7 +393,7 @@ impl<'a> Lexer<'a> {
             .with_context(|| {
                 self.error(
                     240,
-                    &format!("failed to parse {:?} as datetime", text),
+                    &format!("failed to parse {text:?} as datetime"),
                 )
             })?;
             self.add_token(TokenKind::DateTime, Value::DateTime(d))
@@ -408,7 +402,7 @@ impl<'a> Lexer<'a> {
                 .with_context(|| {
                     self.error(
                         241,
-                        &format!("failed to parse {:?} as date", text),
+                        &format!("failed to parse {text:?} as date"),
                     )
                 })?;
             self.add_token(TokenKind::Date, Value::Date(d))
@@ -416,16 +410,13 @@ impl<'a> Lexer<'a> {
             let n: f64 = text.parse().with_context(|| {
                 self.error(
                     210,
-                    &format!("failed to parse {:?} as real", &text),
+                    &format!("failed to parse {text:?} as real"),
                 )
             })?;
             self.add_token(TokenKind::Real, Value::Real(n))
         } else {
             let n: i64 = text.parse().with_context(|| {
-                self.error(
-                    211,
-                    &format!("failed to parse {:?} as int", &text),
-                )
+                self.error(211, &format!("failed to parse {text:?} as int"))
             })?;
             self.add_token(TokenKind::Int, Value::Int(n))
         }
@@ -507,8 +498,7 @@ impl<'a> Lexer<'a> {
             bail!(self.error(
                 260,
                 &format!(
-                    "expected {}, got {:?}",
-                    what,
+                    "expected {what}, got {:?}",
                     &self.peek_chunk(start)
                 )
             ))
@@ -585,7 +575,7 @@ impl<'a> Lexer<'a> {
                 return Ok(str_for_chars(text));
             }
         }
-        bail!(self.error(270, &format!("unterminated {}", what)))
+        bail!(self.error(270, &format!("unterminated {what}")))
     }
 
     fn add_token(&mut self, kind: TokenKind, value: Value) -> Result<()> {
@@ -682,27 +672,27 @@ impl<'a> Lexer<'a> {
     }
 
     fn error(&self, code: u16, message: &str) -> String {
-        format!("E{}:{}:{}:{}", code, self.filename, self.lino, message)
+        format!("E{code}:{}:{}:{message}", self.filename, self.lino)
     }
 
     fn error_c(&self, code: u16, message: &str, c: char) -> String {
         format!(
-            "E{}:{}:{}:{}, got {:?}",
-            code, self.filename, self.lino, message, c
+            "E{code}:{}:{}:{message}, got {c:?}",
+            self.filename, self.lino
         )
     }
 
     fn error_s(&self, code: u16, message: &str, s: &str) -> String {
         format!(
-            "E{}:{}:{}:{}, got {:?}",
-            code, self.filename, self.lino, message, s
+            "E{code}:{}:{}:{message}, got {s:?}",
+            self.filename, self.lino
         )
     }
 
     fn error_v(&self, code: u16, message: &str, v: &Value) -> String {
         format!(
-            "E{}:{}:{}:{}, got {}",
-            code, self.filename, self.lino, message, v
+            "E{code}:{}:{}:{message}, got {v}",
+            self.filename, self.lino
         )
     }
 }

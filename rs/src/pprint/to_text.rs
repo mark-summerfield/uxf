@@ -18,7 +18,7 @@ pub(crate) fn to_text(uxo: &Uxf, format: &Format) -> String {
 }
 
 fn header(custom: &str) -> String {
-    let mut text = format!("uxf {}", UXF_VERSION);
+    let mut text = format!("uxf {UXF_VERSION}");
     if !custom.is_empty() {
         text.push(' ');
         text.push_str(custom);

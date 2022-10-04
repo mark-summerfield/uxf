@@ -10,7 +10,7 @@ pub type OnEventFn = Rc<dyn Fn(&Event)>;
 
 /// Used to output warning and repair events
 pub fn on_event(event: &Event) {
-    eprintln!("{}", event);
+    eprintln!("{event}");
 }
 
 /// Used to ignore warning and repair events

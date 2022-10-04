@@ -31,18 +31,18 @@ fn t_field() {
     .enumerate()
     {
         // With Some vtype
-        let name = format!("{}{}", vtype, i + 1);
+        let name = format!("{vtype}{}", i + 1);
         let f = Field::new(&name, vtype).unwrap();
-        assert_eq!(f.to_string(), format!("{}:{}", name, vtype));
+        assert_eq!(f.to_string(), format!("{name}:{vtype}"));
         assert_eq!(f.name(), name);
         assert_eq!(&f.vtype().unwrap(), vtype);
         let g = Field::new(&name, vtype).unwrap();
         assert!(f == g);
 
         // With vtype None
-        let name = format!("{}{}", vtype, i + 1);
+        let name = format!("{vtype}{}", i + 1);
         let h = Field::new(&name, "").unwrap();
-        assert_eq!(h.to_string(), format!("{}", name));
+        assert_eq!(h.to_string(), format!("{name}"));
         assert_eq!(h.name(), name);
         assert!(&h.vtype().is_none());
         let i = Field::new(&name, "").unwrap();

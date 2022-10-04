@@ -20,7 +20,7 @@ fn main() {
         Commands::Lint(lint) => handle_lint(lint),
         Commands::Compare(compare) => handle_compare(compare),
     } {
-        eprintln!("{:#}", err);
+        eprintln!("{err:#}");
     }
 }
 
@@ -43,7 +43,7 @@ fn handle_format(format: &Format) -> Result<()> {
 fn handle_lint(lint: &Lint) -> Result<()> {
     for file in &lint.files {
         if let Err(err) = handle_format(&Format::new_lint(file)) {
-            eprintln!("{:#}", err);
+            eprintln!("{err:#}");
         }
     }
     Ok(())
@@ -79,7 +79,7 @@ fn handle_compare(compare: &Compare) -> Result<()> {
     } else {
         "UNEQUAL"
     };
-    println!("{} {:?} {:?}", eq, compare.file1, compare.file2);
+    println!("{eq} {:?} {:?}", compare.file1, compare.file2);
     Ok(())
 }
 
@@ -110,23 +110,23 @@ fn output(outfile: &str, format: &Format, uxo: &uxf::Uxf) -> Result<()> {
         ))
     };
     if outfile == "-" {
-        println!("{}", text);
+        println!("{text}");
     } else {
         let raw = text.as_bytes();
         let mut file = File::create(outfile).with_context(|| {
-            format!("E913:{}:0:failed to create", outfile)
+            format!("E913:{outfile}:0:failed to create")
         })?;
         if outfile.ends_with(".gz") {
             let mut out = GzEncoder::new(&file, Compression::best());
             out.write_all(raw).with_context(|| {
-                format!("E910:{}:0:failed to write gzipped", outfile)
+                format!("E910:{outfile}:0:failed to write gzipped")
             })?;
             out.finish().with_context(|| {
-                format!("E911:{}:0:failed to gzip", outfile)
+                format!("E911:{outfile}:0:failed to gzip")
             })?;
         } else {
             file.write_all(raw).with_context(|| {
-                format!("E912:{}:0:failed to write", outfile)
+                format!("E912:{outfile}:0:failed to write")
             })?;
         }
     }

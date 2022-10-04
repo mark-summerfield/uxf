@@ -46,8 +46,8 @@ pub fn check_error(err: &str, code: i32, name: &str) {
         160 => assert_eq!(
             err,
             format!(
-                "E160:-:2:invalid comment syntax: expected '<', got '{}'",
-                name
+                "E160:-:2:invalid comment syntax: expected '<', \
+                got '{name}'",
             )
         ),
         304 => {
@@ -56,8 +56,7 @@ pub fn check_error(err: &str, code: i32, name: &str) {
                 format!(
                     "E304:-:0:table names (ttypes) and fieldnames \
                     cannot be the same as built-in type names or \
-                    constants, got {}",
-                    name
+                    constants, got {name}",
                 )
             );
         }
@@ -66,22 +65,20 @@ pub fn check_error(err: &str, code: i32, name: &str) {
             err,
             format!(
                 "E300:-:0:names must start with a letter or underscore, \
-                got {}",
-                name
+                got {name}",
             )
         ),
         302 => assert_eq!(
             err,
-            format!("E302:-:0:names may not be yes or no got {}", name)
+            format!("E302:-:0:names may not be yes or no got {name}")
         ),
         306 => {
             let n = name.len(); // byte count is fine: all ASCII
             assert_eq!(
                 err,
                 format!(
-                    "E306:-:0:names may be at most {} characters long, \
-                    got {} ({} characters)",
-                    MAX_IDENTIFIER_LEN, name, n
+                    "E306:-:0:names may be at most {MAX_IDENTIFIER_LEN} \
+                    characters long, got {name} ({n} characters)"
                 )
             );
         }
@@ -89,18 +86,16 @@ pub fn check_error(err: &str, code: i32, name: &str) {
             err,
             format!(
                 "E310:-:0:names may only contain letters, digits, or \
-                underscores, got {}",
-                name
+                underscores, got {name}",
             )
         ),
         336 => assert_eq!(
             err,
             format!(
                 "E336:-:0:can't have duplicate table tclass field \
-                names, got {:?} twice",
-                name
+                names, got {name:?} twice",
             )
         ),
-        _ => panic!("unexpected error code {} ({:?})", code, name),
+        _ => panic!("unexpected error code {code} ({name:?})"),
     }
 }

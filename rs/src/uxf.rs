@@ -149,14 +149,14 @@ impl Uxf {
         if filename.ends_with(".gz") {
             let mut out = GzEncoder::new(file, Compression::best());
             out.write_all(text.as_bytes()).with_context(|| {
-                format!("E900:{}:0:failed to write gzipped", filename)
+                format!("E900:{filename}:0:failed to write gzipped")
             })?;
             out.finish().with_context(|| {
-                format!("E901:{}:0:failed to gzip", filename)
+                format!("E901:{filename}:0:failed to gzip")
             })?;
         } else {
             file.write_all(text.as_bytes()).with_context(|| {
-                format!("E902:{}:0:failed to write", filename)
+                format!("E902:{filename}:0:failed to write")
             })?
         }
         Ok(())
@@ -260,7 +260,7 @@ impl fmt::Display for Uxf {
     /// output formatting and event handling.
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         const NL: &str = "\n";
-        let mut parts = vec![format!("uxf {}", UXF_VERSION)];
+        let mut parts = vec![format!("uxf {UXF_VERSION}")];
         if !self.custom().is_empty() {
             parts.push(" ".to_string());
             parts.push(self.custom().to_string());
@@ -274,7 +274,7 @@ impl fmt::Display for Uxf {
         let mut seen: HashSet<&str> = HashSet::new();
         for (_, import) in &self.import_for_ttype {
             if !seen.contains(import.as_str()) {
-                parts.push(format!("!{}\n", &import));
+                parts.push(format!("!{import}\n"));
                 seen.insert(import);
             }
         }
