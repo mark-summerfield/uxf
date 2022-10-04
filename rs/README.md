@@ -8,9 +8,9 @@ toml, and yaml formats. One key advantage of UXF is that it supports custom
 and easier to parse data. And in some contexts it may prove to be a
 convenient alternative to sqlite or xml.
 
-Every `Uxf` object contains one `value` of type `Value`: this is always a
-collection (a `List`, `Map`, or `Table`), which may be empty or contain any
-number of other values—any mix of scalar or collections.
+Every `Uxf` object contains one `value` of type ``Value``: this is always a
+collection (a ``List``, ``Map``, or ``Table``), which may be empty or
+contain any number of other values—any mix of scalars and collections.
 
 For details of the Uniform eXchange Format (UXF) supported by this library,
 see the [UXF Overview](../README.md). ([Alternative link to UXF
@@ -25,10 +25,13 @@ Overview](https://github.com/mark-summerfield/uxf/blob/main/README.md).)
   output UXF files (optionally gzip compressed; optionally replacing imports
   and dropping unused ttypes). It can also compare two UXF files for
   equality or equivalence. (For a full diff, format the two files with the
-  same options, and use a standard diff tool.)
+  same format options, and use a standard diff tool.)
 
 ## Changes
 
+- 0.24.0 Now correctly writes gzipped to .gz files (before it wrote nothing
+  to these).
+- 0.23.0 Bug fixes. Improved error messages & testing.
 - 0.22.0 Bug fixes. Improved error messages & testing.
 - 0.21.0 Improved error messages & testing.
 - 0.20.0 _uxf_ now does linting and comparing; pretty printing complete.
