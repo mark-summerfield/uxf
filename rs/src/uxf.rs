@@ -93,6 +93,11 @@ impl Uxf {
         self.tclass_for_ttype.get(ttype)
     }
 
+    /// Adds a new TClass
+    pub fn add_tclass(&mut self, tclass: TClass) {
+        self.tclass_for_ttype.insert(tclass.ttype().to_string(), tclass);
+    }
+
     /// Iterates over every value in this Uxf's value; see Value::visit().
     ///
     /// For a very short and simple example see the `Value::tclasses()`
