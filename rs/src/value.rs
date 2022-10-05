@@ -34,6 +34,21 @@ pub enum Value {
 }
 
 impl Value {
+    /// Convenience for Value::List(List::default())
+    pub fn new_list() -> Value {
+        Value::List(List::default())
+    }
+
+    /// Convenience for Value::Map(Map::default())
+    pub fn new_map() -> Value {
+        Value::Map(Map::default())
+    }
+
+    /// Convenience for Value::Table(Table::new(tclass, ""))
+    pub fn new_table(tclass: TClass) -> Value {
+        Value::Table(Table::new(tclass, ""))
+    }
+
     /// Returns `true` if `Value::Null`; otherwise returns `false`.
     pub fn is_null(&self) -> bool {
         matches!(self, Value::Null)
@@ -295,17 +310,52 @@ impl Value {
     /// For a Table this adds a pending field or if this would be the last
     /// one of a record, adds the pending record with this as the last
     /// field.
-    /// Returns true if successful; otherwise (e.g., if used on a scalar
-    /// value or a value is an invalid map key), false.
-    pub fn push(&mut self, value: Value) -> bool {
+    /// Returns Ok if successful; otherwise Err: or panics if this isn't a
+    /// collection.
+    pub fn push(&mut self, value: Value) -> Result<()> {
         match self {
             Value::List(lst) => {
                 lst.push(value);
-                true
+                Ok(())
             }
-            Value::Map(m) => m.push(value).is_ok(),
-            Value::Table(t) => t.push(value).is_ok(),
-            _ => false,
+            Value::Map(m) => m.push(value),
+            Value::Table(t) => t.push(value),
+            _ => panic!("can't push a value onto a scalar"),
+        }
+    }
+
+    /// Add a single Value to a collection Value or if this is a
+    /// nonempty Value::List whose last item is a table and the new value
+    /// is a Value::Table with the same ttype as the list's last table item,
+    /// combines the new value with the last table item.
+    /// Otherwise, behaves the same as for ``push()``.
+    pub fn push_or_combine(&mut self, value: Value) -> Result<()> {
+        match self {
+            Value::List(lst) => {
+                if let Some(tbl) = value.as_table() {
+                    let tbl_ttype = tbl.ttype();
+                    if let Some(end) = lst.last_mut() {
+                        let end_ttype =
+                            if let Some(end_tbl) = end.as_table() {
+                                end_tbl.ttype()
+                            } else {
+                                ""
+                            };
+                        if end_ttype == tbl_ttype {
+                            let end_tbl = end.as_table_mut().unwrap();
+                            for record in tbl.iter() {
+                                end_tbl.append(record.clone())?;
+                            }
+                            return Ok(());
+                        }
+                    }
+                }
+                lst.push(value);
+                Ok(())
+            }
+            Value::Map(m) => m.push(value),
+            Value::Table(t) => t.push(value),
+            _ => panic!("can't push or combine a value onto a scalar"),
         }
     }
 

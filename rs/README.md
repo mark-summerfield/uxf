@@ -29,6 +29,9 @@ Overview](https://github.com/mark-summerfield/uxf/blob/main/README.md).)
 
 ## Changes
 
+- 1.0.0 Added various convenience methods. For a real-world example, see
+  [TLM (Track List Manager)](https://crates.io/crates/tlm) a cross-platform
+  GUI application for managing playlists and playing tracks.
 - 0.26.0 Added `Uxf::value_mut()`.
 - 0.25.0 Added `Uxf::add_tclass()`.
 - 0.24.0 Now correctly writes gzipped to .gz files (before it wrote nothing

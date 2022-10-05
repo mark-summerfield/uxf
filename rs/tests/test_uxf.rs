@@ -55,10 +55,10 @@ fn t_uxf_set_value() {
     let fields = make_fields(&[("x", "int"), ("y", "int")]).unwrap();
     let tc3 = TClass::new("Point", fields, "").unwrap();
     let mut t3 = Table::new(tc3, "");
-    let _ = t3.append(vec![Value::Int(0), 0.into()]);
-    let _ = t3.append(vec![Value::Int(-7), 11.into()]);
-    let _ = t3.append(t3.tclass().record_of_nulls().unwrap());
-    let _ = t3.append(vec![Value::Int(19), (-23).into()]);
+    t3.append(vec![Value::Int(0), 0.into()]).unwrap();
+    t3.append(vec![Value::Int(-7), 11.into()]).unwrap();
+    t3.append(t3.tclass().record_of_nulls().unwrap()).unwrap();
+    t3.append(vec![Value::Int(19), (-23).into()]).unwrap();
     let mut lst = List::default();
     lst.push(t1.into());
     lst.push(t2.into());
@@ -96,10 +96,10 @@ fn t_uxf_value_mut() {
     let tc3 = TClass::new("Point", fields, "").unwrap();
     uxo.add_tclass(tc3.clone());
     let mut t3 = Table::new(tc3, "");
-    let _ = t3.append(vec![Value::Int(0), 0.into()]);
-    let _ = t3.append(vec![Value::Int(-7), 11.into()]);
-    let _ = t3.append(t3.tclass().record_of_nulls().unwrap());
-    let _ = t3.append(vec![Value::Int(19), (-23).into()]);
+    t3.append(vec![Value::Int(0), 0.into()]).unwrap();
+    t3.append(vec![Value::Int(-7), 11.into()]).unwrap();
+    t3.append(t3.tclass().record_of_nulls().unwrap()).unwrap();
+    t3.append(vec![Value::Int(19), (-23).into()]).unwrap();
     let value = uxo.value_mut();
     if let Some(lst) = value.as_list_mut() {
         lst.push(t1.into());
@@ -136,14 +136,14 @@ fn t_uxf_value_mut_push() {
     let tc3 = TClass::new("Point", fields, "").unwrap();
     uxo.add_tclass(tc3.clone());
     let mut t3 = Table::new(tc3, "");
-    let _ = t3.append(vec![Value::Int(0), 0.into()]);
-    let _ = t3.append(vec![Value::Int(-7), 11.into()]);
-    let _ = t3.append(t3.tclass().record_of_nulls().unwrap());
-    let _ = t3.append(vec![Value::Int(19), (-23).into()]);
+    t3.append(vec![Value::Int(0), 0.into()]).unwrap();
+    t3.append(vec![Value::Int(-7), 11.into()]).unwrap();
+    t3.append(t3.tclass().record_of_nulls().unwrap()).unwrap();
+    t3.append(vec![Value::Int(19), (-23).into()]).unwrap();
     let value = uxo.value_mut();
-    value.push(t1.into());
-    value.push(t2.into());
-    value.push(t3.into());
+    value.push(t1.into()).unwrap();
+    value.push(t2.into()).unwrap();
+    value.push(t3.into()).unwrap();
     assert_eq!(
         value.to_string(),
         "[(ReadyState)\n(#<enum> WaitState)\n(Point 0 0\n-7 11\n? ?\n\

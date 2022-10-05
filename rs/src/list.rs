@@ -71,6 +71,16 @@ impl List {
         self.values.get_mut(index)
     }
 
+    /// Returns the list's last value if there is one
+    pub fn last(&self) -> Option<&Value> {
+        self.values.last()
+    }
+
+    /// Returns the list's last value if there is one
+    pub fn last_mut(&mut self) -> Option<&mut Value> {
+        self.values.last_mut()
+    }
+
     /// Appends the given `Value` to the end of the list.
     pub fn push(&mut self, value: Value) {
         self.values.push(value);
