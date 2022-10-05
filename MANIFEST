@@ -91,11 +91,6 @@ uxf.vim
 st.sh
 
 # NOTE IDEAS:
-# - create geo.uxi based on GeoJSON and if successful create:
-#   uxfgeo.py <infile.{json,geojson,uxf,uxg}>
-#	      <outfile.{json,geojson,uxf,uxg}>
-# - article(s) on replacing csv with uxf & ini/json/toml with uxf
-# - uxfedit (GUI) applications
 # - UXF libraries:
 #   . for .js use Dart or TypeScript or similar that can output JS?
 #   . uxf.cpp (use zig toolchain?) uxf.java uxf.rb ... ?
@@ -116,6 +111,11 @@ st.sh
 # - Experiment with using UXF format to store various kinds of data,
 #   e.g., typesetting language, spreadsheet, graphics, etc., &
 #   equivalents to other formats, e.g., geojson, etc.
+# - create geo.uxi based on GeoJSON and if successful create:
+#   uxfgeo.py <infile.{json,geojson,uxf,uxg}>
+#	      <outfile.{json,geojson,uxf,uxg}>
+# - article(s) on replacing csv with uxf & ini/json/toml with uxf
+# - uxfedit (GUI) applications
 # - Language: allow '.' in identifiers (excl. first char)?
 # - Python: load(), loads(), etc., accept listclass=List, mapclass=Map,
 #   tableclass=Table, & uses these rather than List, Map, and Table, so
