@@ -90,7 +90,6 @@ uxf.vim
 
 st.sh
 
-# TODO port tlm to use rust uxf
 # NOTE IDEAS:
 # - create geo.uxi based on GeoJSON and if successful create:
 #   uxfgeo.py <infile.{json,geojson,uxf,uxg}>
