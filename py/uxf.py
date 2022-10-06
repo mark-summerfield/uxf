@@ -109,7 +109,7 @@ def _validate_format(name, value): # If invalid we return the valid default
         return value if (value is None or value == 0 or
                          (MAX_IDENTIFIER_LEN + 8) <= value <= 240) else 96
     if name == 'realdp':
-        return value if (value is None or 0 <= value <= 15) else None
+        return 0 if (value is None or not (0 <= value <= 15)) else value
 
 
 Format = editabletuple.editableobject(
@@ -121,9 +121,9 @@ to a string.
 to 8 spaces
 `wrapwidth` defaults to 96 characters and may be None (use the default) \
 or 40<=240
-`realdp` defaults to None which means use however many digits after the
-decimal place are needed to represent the given `real` (i.e., Python
-`float`); if not None specify an int 0<=15''')
+`realdp` decimal digits defaults to 0 which means use at least one \
+(even if `.0`) and as many as needed; 1-15 means use that fixed number \
+of digits (also accepts None as a legacy value for 0)''')
 
 
 @enum.unique
@@ -2413,10 +2413,8 @@ class _PrettyPrinter(_EventMixin): # Functor that can be used as a visitor
 
     @realdp.setter
     def realdp(self, value):
-        if value is None or 0 <= value <= 15:
-            self._realdp = value # only allow None or 0-15
-        else:
-            self._realdp = None # default i.e., output 'natural' decimals
+        self._realdp = (0 if value is None or not (0 <= value <= 15) else
+                        value)
 
 
     def __call__(self, kind, value):
@@ -2655,9 +2653,7 @@ class _PrettyPrinter(_EventMixin): # Functor that can be used as a visitor
 
 
     def handle_real(self, value):
-        if self.realdp is not None:
-            value = round(value, self.realdp)
-        text = str(value)
+        text = f'{value:.{self.realdp}f}' if self.realdp > 0 else str(value)
         if '.' not in text and 'e' not in text and 'E' not in text:
             text += '.0'
         self.puts(text)
@@ -3153,6 +3149,11 @@ similar.''')
         '-w', '--wrapwidth', type=int, default=96,
         help='wrapwidth (40-240; default 96; default is used if out of '
         'range; ignored if -c|--compact used)')
+    parser.add_argument(
+        '-D', '--decimals', type=int, default=0,
+        help='decimal places (0-15; default 0 means use at least one '
+        '(even if .0) and as many as needed; 1-15 means use that fixed '
+        'number of digits; default is used if out of range)')
     parser.add_argument('-v', '--version', action='version',
                         version=f'%(prog)s v{__version__} (uxf {VERSION})')
     parser.add_argument(
@@ -3203,7 +3204,8 @@ similar.''')
                         file.write(str(uxo))
             else:
                 format = Format(indent=config.indent,
-                                wrapwidth=config.wrapwidth)
+                                wrapwidth=config.wrapwidth,
+                                realdp=config.decimals)
                 outfile = sys.stdout if outfile == '-' else outfile
                 dump(outfile, uxo, on_event=on_event, format=format)
     except (OSError, Error) as err:

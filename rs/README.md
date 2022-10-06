@@ -29,6 +29,9 @@ Overview](https://github.com/mark-summerfield/uxf/blob/main/README.md).)
 
 ## Changes
 
+- 1.1.0 Added `-D|--decimals` to the command line and improved the CLI.
+  Breaking change: the `Format` type now has `realdp` as `u8` rather than
+  `Option<u8>`: to fix replace `None` with `0` and `Some(n)` with `n`.
 - 1.0.0 Added various convenience methods. For a real-world example, see
   [TLM (Track List Manager)](https://crates.io/crates/tlm) a cross-platform
   GUI application for managing playlists and playing tracks.

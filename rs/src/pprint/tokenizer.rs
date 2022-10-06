@@ -51,7 +51,7 @@ fn debug_tokens(tokens: &Tokens) {
 struct Tokenizer {
     pub indent: String,
     pub wrapwidth: usize,
-    pub realdp: Option<u8>,
+    pub realdp: u8,
     pub tclass_for_ttype: HashMap<String, TClass>, // ttype x TClass
     pub import_for_ttype: IndexMap<String, String>, // ttype x import
     pub depth: usize,
@@ -345,8 +345,8 @@ impl Tokenizer {
     }
 
     fn handle_real(&mut self, r: f64) {
-        let mut text = if let Some(realdp) = self.realdp {
-            format!("{r:.*}", realdp as usize)
+        let mut text = if self.realdp > 0 {
+            format!("{r:.*}", self.realdp as usize)
         } else {
             format!("{r}")
         };

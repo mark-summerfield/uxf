@@ -7,7 +7,7 @@ use crate::consts::*;
 pub struct Format {
     pub indent: String,
     pub wrapwidth: u8,
-    pub realdp: Option<u8>,
+    pub realdp: u8,
 }
 
 impl Format {
@@ -16,10 +16,10 @@ impl Format {
     /// spaces, and 9 meaning use one tab. The default is 2 (i.e., 2
     /// spaces).
     /// wrapwidth should be 40-240. The default is 96.
-    /// realdp should either be None (i.e., use "natural" number of decimal
-    /// places — and for no decimals always use .0 unless e or E is present,
-    /// or use Some(u8) where the u8 is 0-15 for that many decimal places.)
-    pub fn new(indent: u8, wrapwidth: u8, realdp: Option<u8>) -> Self {
+    /// realdp should be 0-15. The default is 0 which means use at least one
+    /// decimal digit (even if .0) and as many as needed; 1-15 mean use that
+    /// fixed number of decimal digits.
+    pub fn new(indent: u8, wrapwidth: u8, realdp: u8) -> Self {
         Format {
             indent: match indent {
                 0 => "".to_string(),
@@ -34,21 +34,13 @@ impl Format {
             } else {
                 96
             },
-            realdp: if let Some(realdp) = realdp {
-                if realdp <= 15 {
-                    Some(realdp)
-                } else {
-                    None
-                }
-            } else {
-                None
-            },
+            realdp: if realdp <= 15 { realdp } else { 0 },
         }
     }
 }
 
 impl Default for Format {
     fn default() -> Self {
-        Format { indent: "  ".to_string(), wrapwidth: 96, realdp: None }
+        Format { indent: "  ".to_string(), wrapwidth: 96, realdp: 0 }
     }
 }

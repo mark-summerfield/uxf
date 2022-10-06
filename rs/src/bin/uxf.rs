@@ -106,7 +106,7 @@ fn output(outfile: &str, format: &Format, uxo: &uxf::Uxf) -> Result<()> {
         uxo.to_text_format(&uxf::Format::new(
             format.indent,
             format.wrapwidth,
-            None,
+            format.decimals,
         ))
     };
     if outfile == "-" {
@@ -169,10 +169,7 @@ fn canonicalize_file(p: &Path) -> Result<PathBuf> {
 }
 
 #[derive(Parser, Debug)]
-#[clap(
-    version,
-    about = "Compares, Formats, and Lints UXF files."
-)]
+#[clap(version, about = "Compares, Formats, and Lints UXF files.")]
 struct Config {
     #[clap(subcommand)]
     command: Commands,
@@ -262,6 +259,12 @@ struct Format {
         value_parser=clap::value_parser!(u8).range(40..=240))]
     wrapwidth: u8,
 
+    /// Decimal digits (0-15; 0 means use at least one (even if .0) and as
+    /// many as needed; 1-15 means used that fixed number of digits)
+    #[clap(short='D', long, default_value_t=0,
+        value_parser=clap::value_parser!(u8).range(0..=15))]
+    decimals: u8,
+
     /// Use compact output format (not human friendly; ignores indent
     /// and wrapwidth)
     #[clap(short, long, action)]
@@ -286,6 +289,7 @@ impl Format {
             replaceimports: false,
             indent: 2,
             wrapwidth: 96,
+            decimals: 0,
             compact: false,
             infile: file.to_path_buf(),
             outfile: PathBuf::new(),

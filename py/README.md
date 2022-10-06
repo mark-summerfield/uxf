@@ -799,6 +799,7 @@ or
 
 ## Changes
 
+- 2.8.0 Added `-D|--decimals` to the command line and improved the CLI.
 - 2.7.0 Minor internal improvements.
 - 2.6.3 Code improvement. Line numbers for warnings & errors now begin at
   the traditional 1.
