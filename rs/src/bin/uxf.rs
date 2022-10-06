@@ -171,13 +171,7 @@ fn canonicalize_file(p: &Path) -> Result<PathBuf> {
 #[derive(Parser, Debug)]
 #[clap(
     version,
-    about = "Provides comparing, linting, and formatting \
-(to produce standardized human-friendly formatting or compact formatting).
-
-Formatting will alphabetically order any ttype definitions \
-and will order map items by key (bytes < date < datetime < int < \
-case-insensitive str). However, the order of imports is preserved (with \
-any duplicates removed) to allow later imports to override earlier ones."
+    about = "Compares, Formats, and Lints UXF files."
 )]
 struct Config {
     #[clap(subcommand)]
@@ -186,27 +180,52 @@ struct Config {
 
 #[derive(Subcommand, Debug)]
 enum Commands {
-    /// Copy the infile to the outfile using the canonical human-readable
-    /// format, or with the specified formatting options. (Use f or fmt or
-    /// format)
-    #[clap(alias("f"))]
-    #[clap(alias("fmt"))]
-    Format(Format),
-
-    /// Print lint warnings (if any) to stderr for the given file(s).
-    /// (Use l or lnt or lint)
-    #[clap(alias("l"))]
-    #[clap(alias("lnt"))]
-    Lint(Lint),
-
     /// Compare two UXF files for equality ignoring insignificant
     /// whitespace, or for equivalence (with -e or --equivalent) in which
     /// case the comparison ignores insignificant whitespace, comments,
     /// unused ttypes, and, in effect replaces any imports with the ttypes
-    /// they define—if they are used. (Use c or cmp or compare)
+    /// they define—if they are used.
+    /// If a diff is required, format the two UXF files using the same
+    /// formatting options (and maybe use the -s --standalone option), then
+    /// use a standard diff tool. (Use c or cmp or compare)
     #[clap(alias("c"))]
     #[clap(alias("cmp"))]
     Compare(Compare),
+
+    /// Copy the infile to the outfile using the canonical human-readable
+    /// format, or with the specified formatting options.
+    /// This will alphabetically order any ttype definitions and will order
+    /// map items by key (bytes < date < datetime < int < case-insensitive
+    /// str). However, the order of imports is preserved (with any
+    /// duplicates removed) to allow later imports to override earlier ones.
+    /// The conversion will also automatically perform type repairs, e.g.,
+    /// converting strings to dates or ints or reals if that is the target
+    /// type, and similar. (Use f or fmt or format)
+    #[clap(alias("f"))]
+    #[clap(alias("fmt"))]
+    Format(Format),
+
+    /// Print the repairs that formatting would apply and lint warnings (if
+    /// any) to stderr for the given file(s). (Use l or lnt or lint)
+    #[clap(alias("l"))]
+    #[clap(alias("lnt"))]
+    Lint(Lint),
+}
+
+#[derive(Args, Debug)]
+struct Compare {
+    /// Compare for equivalance rather than for equality
+    #[clap(short, long, action)]
+    equivalent: bool,
+
+    /// The first required file to compare (can have any suffix, i.e.,
+    /// not just .uxf, and be gzip-compressed if it ends with .gz)
+    #[clap(value_parser)]
+    file1: PathBuf,
+
+    /// The second required file to compare (ditto)
+    #[clap(value_parser)]
+    file2: PathBuf,
 }
 
 #[derive(Args, Debug)]
@@ -279,20 +298,4 @@ struct Lint {
     /// The file(s) to lint.
     #[clap(value_parser, required = true)]
     files: Vec<PathBuf>,
-}
-
-#[derive(Args, Debug)]
-struct Compare {
-    /// Compare for equivalance rather than for equality
-    #[clap(short, long, action)]
-    equivalent: bool,
-
-    /// The first required file to compare (can have any suffix, i.e.,
-    /// not just .uxf, and be gzip-compressed if it ends with .gz)
-    #[clap(value_parser)]
-    file1: PathBuf,
-
-    /// The second required file to compare (ditto)
-    #[clap(value_parser)]
-    file2: PathBuf,
 }

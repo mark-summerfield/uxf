@@ -31,7 +31,7 @@ from xml.sax.saxutils import escape, unescape
 
 import editabletuple
 
-__version__ = '2.7.0' # uxf module version
+__version__ = '2.8.0' # uxf module version
 VERSION = 1 # UXF file format version
 
 UTF8 = 'utf-8'
@@ -3121,9 +3121,14 @@ human-friendly formatting or compact formatting).
 Converting uxf to uxf will alphabetically order any ttype definitions and
 will order map items by key (bytes < date < datetime < int <
 case-insensitive str). However, the order of imports is preserved (with any
-duplicates removed) to allow later imports to override earlier ones.''')
-    parser.add_argument('-l', '--lint', action='store_true',
-                        help='print lint warnings to stderr')
+duplicates removed) to allow later imports to override earlier ones. The
+conversion will also automatically perform type repairs, e.g., converting
+strings to dates or ints or reals if that is the target type, and
+similar.''')
+    parser.add_argument(
+        '-l', '--lint', action='store_true',
+        help='print the repairs that formatting would apply and lint '
+        'warnings (if any) to stderr')
     parser.add_argument(
         '-d', '--dropunused', action='store_true',
         help='drop unused imports and ttype definitions (best to use '

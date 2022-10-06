@@ -1,20 +1,17 @@
 # UXF Overview
 
 Uniform eXchange Format (UXF) is a plain text human readable optionally
-typed storage format. UXF is designed to make life easier for software
-developers and data designers. It directly competes with csv, ini, json,
-toml, and yaml formats. One key advantage of UXF is that it supports custom
-(i.e., user-defined) types. This can result in more compact, more readable,
-and easier to parse data. And in some contexts it may prove to be a
-convenient alternative to sqlite or xml.
+typed storage format.
 
-UXF is an open standard. The UXF software linked from this page is all free
-open source software.
-
-The primary purpose of UXF is to make developers lives easier. It does this
-by providing a convenient, scalable, easy-to-use file format that can be
-used for most purposes, from configuration files to application data. And
-UXF-based formats are very easy to adapt to future requirements
+UXF is designed to make life easier for software developers and data
+designers. One key advantage of UXF is that it supports custom (i.e.,
+user-defined) types. This can result in more compact, more readable, and
+easier to parse data. In general, UXF provides a convenient, scalable,
+editable (by hand or using a library) file format that can be used for most
+purposes, from configuration files to application data. UXF-based formats
+are very easy to adapt to future requirements. UXF directly competes with
+csv, ini, json, toml, yaml, and similar formats. In some contexts it may
+prove to be a convenient alternative to sqlite or xml.
 
 - [Datatypes](#datatypes)
     - [Table of Built-in Types](#table-of-built-in-types)
@@ -22,11 +19,10 @@ UXF-based formats are very easy to adapt to future requirements
     - [Minimal empty UXF](#minimal-empty-uxf)
     - [Built-in Types](#built-in-types)
     - [Custom Types](#custom-types)
-    - [Wrap Width](#wrap-width)
+    - [Formatting](#formatting)
 - [Examples](#examples)
-    - [CSV](#csv)
-    - [INI](#ini)
     - [JSON](#json)
+    - [CSV](#csv)
     - [TOML](#toml)
     - [Database](#database)
 - [Libraries](#libraries) [[Python](py/README.md)] [[Rust](rs/README.md)]
@@ -69,7 +65,7 @@ Note that it is also possible to represent [Custom Types](#custom-types).
 - A “multi-” valued type (`list`, `map`, `table`) is called a _collection_.
 - A `list`, `map`, or `table` which contains only scalar values is called a
   scalar `list`, scalar `map`, or scalar `table`, respectively.
-- A _`ttype`_ is the name of a table's user-defined type.
+- A _`ttype`_ is the name of a user-defined table type.
 
 ### Minimal empty UXF
 
@@ -184,12 +180,16 @@ If many applications need to use the same _ttypes_, it _may_ make sense to
 create some shared _ttype_ definitions. See [Imports](#imports) for how to
 do this.
 
-### Wrap Width
+### Formatting
 
 A UXF file's header must always occupy its own line (i.e., end with a
 newline). The rest of the file could in theory be a single line no matter
 how long. In practice and for human readability it is normal to limit the
 width of lines, for example, to 76, 80, or the UXF default of 96 characters.
+
+A UXF processor is expected to provide formatting options for pretty
+printing UXF files with user defined indentation, wrap width, and real
+number formatting.
 
 UXF `bytes` and ``str``s can be of any length, but nonetheless they can be
 width-limited without changing their semantics.
@@ -264,6 +264,111 @@ the data is a single _empty_ Pair table.
 And here is a UXF with a single Pair table that contains two nested Pair
 tables, the second of which itself contains a nested pair.
 
+## JSON
+
+JSON is a very widely used format, but unlike UXF it lacks user-defined
+types. Here's an example of GeoJSON data from Wikipedia:
+
+    {
+    "type": "FeatureCollection",
+    "features": [
+        {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [102.0, 0.5]
+        },
+        "properties": {
+            "prop0": "value0"
+        }
+        },
+        {
+        "type": "Feature",
+        "geometry": {
+            "type": "LineString",
+            "coordinates": [
+            [102.0, 0.0], [103.0, 1.0], [104.0, 0.0], [105.0, 1.0]
+            ]
+        },
+        "properties": {
+            "prop0": "value0",
+            "prop1": 0.0
+        }
+        },
+        {
+        "type": "Feature",
+        "geometry": {
+            "type": "Polygon",
+            "coordinates": [
+            [
+                [100.0, 0.0], [101.0, 0.0], [101.0, 1.0],
+                [100.0, 1.0], [100.0, 0.0]
+            ]
+            ]
+        },
+        "properties": {
+            "prop0": "value0",
+            "prop1": { "this": "that" }
+        }
+        }
+    ]
+    }
+
+It would be easy to “translate” this directly into UXF:
+
+    uxf 1
+    {
+    <type>: <FeatureCollection>,
+    <features>: [
+        {
+        <type>: <Feature>,
+        <geometry>: {
+            <type>: <Point>,
+            <coordinates>: [102.0, 0.5]
+        },
+        <properties>: {
+            <prop0>: <value0>
+        }
+        ...
+
+Naturally this works, but doesn't take advantage of any of UXF's benefits.
+
+Here's a more realistic possible UXF alternative:
+
+    uxf 1
+    =Feature geometry properties:map
+    =LineString x:real y:real
+    =Point x:real y:real
+    =Polygon x:real y:real
+    (Feature
+        (Point 102.0 0.5) {<prop0> <value0>}
+        (LineString 102.0 0.0 103.0 1.0 104.0 0.0 105.0 1.0)
+                    {<prop0> <value0> <prop1> 0.0}
+        (Polygon 100.0 0.0 101.0 0.0 101.0 1.0 100.0 1.0 100.0 0.0)
+                    {<prop0> <value0> <prop1> {<this> <that>}}
+    )
+
+We don't need a FeatureCollection because UXF tables can accept zero or more
+values, so a Feature table is sufficient.
+
+Here's a last JSON alternative, this time avoiding the duplication of
+`x:real` and `y:real`:
+
+    uxf 1
+    =Feature geometry properties:map
+    =LineString points:Point
+    =Point x:real y:real
+    =Polygon points:Point
+    (Feature
+	(Point 102.0 0.5) {<prop0> <value0>}
+	(LineString (Point 102.0 0.0 103.0 1.0 104.0 0.0 105.0 1.0))
+	            {<prop0> <value0> <prop1> 0.0}
+	(Polygon (Point 100.0 0.0 101.0 0.0 101.0 1.0 100.0 1.0 100.0 0.0))
+	         {<prop0> <value0> <prop1> {<this> <that>}}
+    )
+
+This seems like the clearest solution.
+
 ### CSV
 
 Although widely used, the CSV format is not standardized and has a number of
@@ -272,32 +377,20 @@ from data rows, can handle multiline text (including text with commas and
 quotes) without formality, and can store one—or more—tables in a single UXF
 file.
 
-#### CSV Example
+Here's a simple CSV file:
 
     Date,Price,Quantity,ID,Description
     "2022-09-21",3.99,2,"CH1-A2","Chisels (pair), 1in & 1¼in"
     "2022-10-02",4.49,1,"HV2-K9","Hammer, 2lb"
     "2022-10-02",5.89,1,"SX4-D1","Eversure Sealant, 13-floz"
 
-#### UXF Equivalents
-
-The most obvious translation would be to a `list` of ``list``s:
-
-    uxf 1
-    [
-      [<Price List> <Date> <Price> <Quantity> <ID> <Description>]
-      [2022-09-21 3.99 2 <CH1-A2> <Chisels (pair), 1in &amp; 1¼in>]
-      [2022-10-02 4.49 1 <HV2-K9> <Hammer, 2lb>]
-      [2022-10-02 5.89 1 <SX4-D1> <Eversure Sealant, 13-floz>]
-    ]
-
-This is perfectly valid. However, it has the same problem as `.csv` files:
+Like with JSON we could simply “translate” this directly into UXF as a list
+of lists. But doing so would leave us with the same problem as `.csv` files:
 is the first row data values or column titles? (For software this isn't
-always obvious, for example, if all the values are strings.) Not to mention
-the fact that we have to use a nested `list` of ``list``s. Nonetheless it is
-an improvement, since unlike the `.csv` representation, every value has a
-concrete type (all ``str``s for the first row, and `date`, `real`, `int`,
-`str`, `str`, for the subsequent rows).
+always obvious, for example, if all the values are strings.) Even so, this
+is still an improvement, since unlike the `.csv` representation, every value
+would have a concrete type (all ``str``s for the first row, and `date`,
+`real`, `int`, `str`, `str`, for the subsequent rows).
 
 The most _appropriate_ UXF equivalent is to use a UXF `table`:
 
@@ -351,340 +444,6 @@ added field types to the _ttype_ definition. When types are specified, the
 UXF processor is expected to be able to check that each value is of the
 correct type. Omit the type altogether (as in the earliler examples) to
 indicate _any_ valid table type.
-
-    uxf 1 Price List
-    =PriceList Date:date Price:real Quantity:int ID:str Description:str
-    (PriceList)
-
-Just for completeness, here's an example of an empty price list table.
-
-### INI
-
-Windows `.ini` format (and Unix's often similar `.conf` format) are commonly
-used but unstandardized formats. UXF can be used as a more reliable and
-easier to use alternative.
-
-#### Wikipedia INI Example
-
-Here is a `.ini` example from Wikipedia:
-
-    ; last modified 1 April 2001 by John Doe
-    [owner]
-    name = John Doe
-    organization = Acme Widgets Inc.
-
-    [database]
-    ; use IP address in case network name resolution is not working
-    server = 192.0.2.62     
-    port = 143
-    file = "payroll.dat"
-
-And here is a simple UXF alternative:
-
-    uxf 1
-    #<last modified 1 April 2001 by John Doe>
-    {
-     <owner> {<name> <John Doe> <organization> <Acme Widgets Inc.>}
-     <database>
-        {#<use IP address in case network name resolution is not working>
-         <server> <192.0.2.62>
-         <port> 143
-         <file> <payroll.dat>
-        }
-    }
-
-Here we've just used nested maps to structure the data. UXF only supports
-comments at the start of a file (after the header) and at the start of a
-list, map, or table (before any data).
-
-As it stands, this example doesn't appear to add much to the `.ini` version.
-Here's a version with types and tables.
-
-    uxf 1
-    #<last modified 1 April 2001 by John Doe>
-    =Owner name:str organization:str
-    =#<use IP address in case network name resolution is not working>
-      Database server:str port:int file:str
-    [
-     (Owner <John Doe> <Acme Widgets Inc.>)
-     (Database <192.0.2.62> 143 <payroll.dat>)
-    ]
-
-In the following subsubsections we'll see a much more complex example.
-
-#### INI Example
-
-    shapename = Hexagon
-    zoom = 150
-    showtoolbar = False
-    [Window1]
-    x=615
-    y=252
-    width=592
-    height=636
-    scale=1.1
-    [Window2]
-    x=28
-    y=42
-    width=140
-    height=81
-    scale=1.0
-    [Window3]
-    x=57
-    y=98
-    width=89
-    height=22
-    scale=0.5
-    [Files]
-    current=test1.uxf
-    recent1=/tmp/test2.uxf
-    recent2=C:\Users\mark\test3.uxf
-
-#### UXF Equivalents
-
-This first equivalent is a simplistic conversion that we'll improve in
-stages.
-
-    uxf 1 MyApp 1.0.0 Config
-    =Files Kind Filename
-    {
-      <General> {
-        <shapename> <Hexagon>
-        <zoom> 150
-        <showtoolbar> no
-      }
-      <Window1> {
-        <x> 615
-        <y> 252
-        <width> 592
-        <height> 636
-        <scale> 1.1
-      }
-      <Window2> {
-        <x> 28
-        <y> 42
-        <width> 140
-        <height> 81
-        <scale> 1.0
-      }
-      <Window3> {
-        <x> 57
-        <y> 98
-        <width> 89
-        <height> 22
-        <scale> 0.5
-      }
-      <Files> (Files
-        <current> <test1.uxf> 
-        <recent1> </tmp/test2.uxf> 
-        <recent2> <C:\Users\mark\test3.uxf> 
-      )
-    }
-
-UXF accepts `no` and `yes` for `bool` false and true repectively. (`0` and
-`1` cannot be used as ``bool``s since the UXF processor would interpret them
-as ``int``s.)
-
-For configuration data it is often convenient to use ``map``s with name
-keys and data values. In this case the overall data is a `map` which
-contains each configuration section. The values of each of the first two of
-the ``map``'s keys are themselves ``map``s. But for the third key's value
-we use a `table`. The table's _ttype_ is defined at the start and consists
-of two untyped fields.
-
-Of course, we can nest as deep as we like and mix ``list``s and ``map``s.
-For example, here's an alternative:
-
-    uxf 1 MyApp 1.1.0 Config
-    =pos x:int y:int
-    =size width:int height:int
-    {
-      <General> {#<Miscellaneous settings>
-        <shapename> <Hexagon> <zoom> 150 <showtoolbar> no <Files> {
-          <current> <test1.uxf>
-          <recent> [#<From most to least recent>
-          </tmp/test2.uxf> <C:\Users\mark\test3.uxf>]
-        }
-      }
-      <Window1> {#<Window dimensions and scales> str
-        <pos> (pos 615 252)
-        <size> (size 592 636)
-        <scale> 1.1
-      }
-      <Window2> {
-        <pos> (pos 28 42)
-        <size> (size 140 81)
-        <scale> 1.0
-      }
-      <Window3> {
-        <pos> (pos 57 98)
-        <size> (size 89 22)
-        <scale> 0.5
-      }
-    }
-
-Here, we've laid out the _General_ and _Window_ maps more compactly. We've
-also moved the _Files_ into _General_ and changed the _Files_ from a `table`
-to a two-item `map` with the second item's value being a `list` of
-filenames. We've also changed the _x_, _y_ coordinates and the _width_ and
-_height_ into “pos” and “size” tables. Notice that for each of these tables
-we've defined their _ttype_ to include both field names and types.
-
-We've also added some example comments to two of the ``map``s. A comment is
-a `#` immediately followed by a `str`. In the data, a comment may only be
-placed at the start of a list before the optional _vtype_ or the first
-value, or at the start of a map before the optional _ktype_ or the first
-key, or at the start of a table before the _ttype_ name.
-
-This version probably provides a reasonable balance between human
-readability and programming convenience. But it is possible to go further.
-
-    uxf 1 MyApp 1.2.0 Config
-    =pos x:int y:int
-    =size width:int height:int
-    {#<We want str keys and map values> str map
-      <General> {#<We want str keys and any values> str
-        <shapename> <Hexagon> <zoom> 150 <showtoolbar> no <Files> {str
-          <current> <test1.uxf>
-          <recent> [#<From most to least recent> str
-          </tmp/test2.uxf> <C:\Users\mark\test3.uxf>]
-        }
-      }
-      <Windows> {#<Window dimensions and scales>
-        <pos> (pos 615 252 28 42 57 98)
-        <size> (size 592 636 140 81 89 22)
-        <scale> [1.1 1.0 0.5]
-      }
-    }
-
-The outermost map must have `str` keys and `map` values, and the _General_,
-_Files_, and _Window_ maps must all have `str` keys and _any_ values. For
-``map``s we may specify the key and value types, or just the key type, or
-neither. We've also specified that the _recent_ files ``list``'s values must
-be ``str``s.
-
-Notice that instead of individual “Windows” entries we've just used one.
-Since “pos” and “size” are tables they can have as many rows as we like, in
-this case three (since each row has two fields based on each table's
-_ttype_).
-
-Programatically, this is easy to handle and has the virtue of compactness.
-But its human readability seems a bit less than the previous more verbose
-version.
-
-    uxf 1 MyApp 1.3.0 Config
-    =#<Window dimensions> Geometry x:int y:int width:int height:int scale:real
-    {#<Notes on this configuration file format> str
-      <General> {#<Miscellaneous settings> str
-        <shapename> <Hexagon> <zoom> 150 <showtoolbar> no <Files> {str
-          <current> <test1.uxf>
-          <recent> [#<From most to least recent> str
-          </tmp/test2.uxf> <C:\Users\mark\test3.uxf>]
-        }
-      }
-      <Windows> (#<Window dimensions and scales> Geometry
-         615 252 592 636 1.1
-         28 42 140 81 1.0
-         57 98 89 22 0.5
-      )
-    }
-
-For this variation we've gathered all the window data into a single table
-type and laid it out for human readability. We could, of course, have just
-written it as `(Geometry 615 252 592 636 1.1 28 42 140 81 1.0 57 98 89 22
-0.5)`.
-
-This is even more compact, again at the expense of human readability.
-
-The UXF format supports simple add-hoc lists and maps, all the way to types
-and tables—leaving the software developer or data designer free to strike
-exactly the balance they want.
-
-## JSON
-
-JSON is a widely used format, but unlike UXF it lacks user-defined types.
-Here's an example of GeoJSON data from Wikipedia:
-
-    {
-    "type": "FeatureCollection",
-    "features": [
-        {
-        "type": "Feature",
-        "geometry": {
-            "type": "Point",
-            "coordinates": [102.0, 0.5]
-        },
-        "properties": {
-            "prop0": "value0"
-        }
-        },
-        {
-        "type": "Feature",
-        "geometry": {
-            "type": "LineString",
-            "coordinates": [
-            [102.0, 0.0], [103.0, 1.0], [104.0, 0.0], [105.0, 1.0]
-            ]
-        },
-        "properties": {
-            "prop0": "value0",
-            "prop1": 0.0
-        }
-        },
-        {
-        "type": "Feature",
-        "geometry": {
-            "type": "Polygon",
-            "coordinates": [
-            [
-                [100.0, 0.0], [101.0, 0.0], [101.0, 1.0],
-                [100.0, 1.0], [100.0, 0.0]
-            ]
-            ]
-        },
-        "properties": {
-            "prop0": "value0",
-            "prop1": { "this": "that" }
-        }
-        }
-    ]
-    }
-
-And here's a possible UXF alternative:
-
-    uxf 1
-    =Feature geometry properties:map
-    =LineString x:real y:real
-    =Point x:real y:real
-    =Polygon x:real y:real
-    (Feature
-        (Point 102.0 0.5) {<prop0> <value0>}
-        (LineString 102.0 0.0 103.0 1.0 104.0 0.0 105.0 1.0)
-                    {<prop0> <value0> <prop1> 0.0}
-        (Polygon 100.0 0.0 101.0 0.0 101.0 1.0 100.0 1.0 100.0 0.0)
-                    {<prop0> <value0> <prop1> {<this> <that>}}
-    )
-
-We don't need a FeatureCollection because UXF tables can accept zero or more
-values, so a Feature table is sufficient.
-
-Here's a last JSON alternative, this time avoiding the duplication of
-`x:real` and `y:real`:
-
-    uxf 1
-    =Feature geometry properties:map
-    =LineString points:Point
-    =Point x:real y:real
-    =Polygon points:Point
-    (Feature
-	(Point 102.0 0.5) {<prop0> <value0>}
-	(LineString (Point 102.0 0.0 103.0 1.0 104.0 0.0 105.0 1.0))
-	            {<prop0> <value0> <prop1> 0.0}
-	(Polygon (Point 100.0 0.0 101.0 0.0 101.0 1.0 100.0 1.0 100.0 0.0))
-	         {<prop0> <value0> <prop1> {<this> <that>}}
-    )
-
-This seems like the clearest solution.
 
 ## TOML
 
@@ -745,11 +504,19 @@ And here's a possible UXF alternative:
         <omega>)
     ]
 
+The main differences from ``.toml`` are that UXF quotes strings using
+``<>``s, and uses ``yes`` and ``no`` for ``bool``s. UXF doesn't require the
+use of indentation, but UXF processors default to using it for pretty
+printing.
+
 Unlike TOML, UXF doesn't natively support timezones, so we've created a
 DateTime _ttype_ which has a when datetime and a timezone offset. For
 Clients the data will come in pairs because we've specified two fields.
 Although written compactly, we could have newlines wherever whitespace is
 required—or optional.
+
+There are many similar formats, including ``.conf``, ``.ini``, and
+``.yaml``, all of which can easily be advantageously translated into UXF.
 
 ### Database
 
