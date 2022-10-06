@@ -29,6 +29,7 @@ Overview](https://github.com/mark-summerfield/uxf/blob/main/README.md).)
 
 ## Changes
 
+- 1.1.1 Added more convenience From conversions to Value.
 - 1.1.0 Added `-D|--decimals` to the command line and improved the CLI.
   Breaking change: the `Format` type now has `realdp` as `u8` rather than
   `Option<u8>`: to fix replace `None` with `0` and `Some(n)` with `n`.

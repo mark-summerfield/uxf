@@ -304,7 +304,7 @@ impl Value {
 
     /// Add a single Value to a collection Value.
     /// For a List this appends one item.
-    /// For a Map this adds a pending key (or returns false if the Value
+    /// For a Map this adds a pending key (or returns Err if the Value
     /// isn't a valid key type) or if there's already one, adds an item
     /// with them pending key and the Value.
     /// For a Table this adds a pending field or if this would be the last
@@ -587,6 +587,18 @@ impl From<NaiveDateTime> for Value {
     }
 }
 
+impl From<usize> for Value {
+    fn from(i: usize) -> Self {
+        Value::Int(i as i64)
+    }
+}
+
+impl From<i32> for Value {
+    fn from(i: i32) -> Self {
+        Value::Int(i as i64)
+    }
+}
+
 impl From<i64> for Value {
     fn from(i: i64) -> Self {
         Value::Int(i)
@@ -602,6 +614,12 @@ impl From<List> for Value {
 impl From<Map> for Value {
     fn from(m: Map) -> Self {
         Value::Map(m)
+    }
+}
+
+impl From<f32> for Value {
+    fn from(f: f32) -> Self {
+        Value::Real(f as f64)
     }
 }
 
