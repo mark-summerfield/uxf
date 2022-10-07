@@ -78,6 +78,12 @@ impl Table {
         self.records.is_empty()
     }
 
+    /// Returns `Some(&Record)` if there's at least one record;
+    /// otherwise `None`.
+    pub fn first(&self) -> Option<&Record> {
+        self.records.get(0)
+    }
+
     /// Returns `Some(&Record)` if `index` is in bounds; otherwise `None`.
     pub fn get(&self, index: usize) -> Option<&Record> {
         self.records.get(index)

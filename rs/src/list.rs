@@ -60,6 +60,12 @@ impl List {
         self.values.is_empty()
     }
 
+    /// Returns `Some(&Value)` if there's at least one value;
+    /// otherwise `None`.
+    pub fn first(&self) -> Option<&Value> {
+        self.values.get(0)
+    }
+
     /// Returns `Some(&Value)` if `index` is in bounds; otherwise `None`.
     pub fn get(&self, index: usize) -> Option<&Value> {
         self.values.get(index)
