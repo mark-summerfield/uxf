@@ -91,6 +91,8 @@ uxf.vim
 st.sh
 
 # NOTE IDEAS:
+# - Uxf query() method that returns a (possibly empty) sequence of
+#   matching Values
 # - UXF libraries:
 #   . for .js use Dart or TypeScript or similar that can output JS?
 #   . uxf.cpp (use zig toolchain?) uxf.java uxf.rb ... ?
