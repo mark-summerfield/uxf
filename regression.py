@@ -3,6 +3,7 @@
 # License: GPLv3
 
 import collections
+import concurrent.futures
 import contextlib
 import enum
 import filecmp
@@ -134,6 +135,8 @@ n-m    run tests n to m inclusive
        default: run all tests
 langX  from: {}
        default: all
+
+Tests are run concurrently unless -v|--verbose is set.
 '''
 
 
@@ -141,6 +144,7 @@ def test_lang(tmin, tmax, lang, verbose, tests):
     total = ok = 0
     start = time.monotonic()
     print(f'{lang:3} tests ', end='\n' if verbose else '')
+    jobs = []
     for i, t in enumerate(tests):
         if i < tmin:
             continue
@@ -150,13 +154,17 @@ def test_lang(tmin, tmax, lang, verbose, tests):
             if verbose:
                 print(f'{i: 4}: ' + SKIP + 'skipped')
             else:
-                print(f'{i} ' + SKIP + 'skipped')
+                print(SKIP + '?', end='', flush=True)
             continue
         total += 1
-        n = test_one(lang, verbose, i, t)
-        ok += n
-        if verbose or not n:
+        jobs.append((lang, verbose, i, t))
+    if verbose:
+        for job in jobs:
+            ok += test_one(*job)
             print()
+    else:
+        with concurrent.futures.ThreadPoolExecutor() as exe:
+            ok = sum(exe.map(lambda job: test_one(*job), jobs))
     print()
     return total, ok, time.monotonic() - start
 
@@ -167,8 +175,6 @@ def test_one(lang, verbose, i, t):
         build_rs(verbose)
     if verbose:
         print(f'{i: 4}: ', end='', flush=True)
-    else:
-        print(f'{i} ', end='', flush=True)
     if t.opts:
         cmd += t.opts
     cmd.append(t.ifile)
@@ -180,14 +186,16 @@ def test_one(lang, verbose, i, t):
     reply = subprocess.run(cmd, capture_output=True, text=True,
                            encoding='utf-8')
     if reply.returncode != t.returncode:
-        print(FAIL + f'expected returncode {t.returncode}, got '
-              f'{reply.returncode}', end='', flush=True)
+        if verbose:
+            print(FAIL + f'expected returncode {t.returncode}, got '
+                  f'{reply.returncode}', end='', flush=True)
         return 0
     if reply.stderr:
         if not check_stderr(lang, verbose, t, reply.stderr):
             return 0
     elif t.stderr is not None:
-        print(FAIL + ' • missing stderr')
+        if verbose:
+            print(FAIL + ' • missing stderr')
         return 0
     if t.efile is not None:
         if not check_expected(lang, verbose, t, afile):
@@ -204,7 +212,10 @@ def build_rs(verbose):
 
 def check_stderr(lang, verbose, t, rstderr):
     if t.stderr is None:
-        print(FAIL + f'\nunexpected stderr:\n{rstderr}')
+        if verbose:
+            print(FAIL + f'\nunexpected stderr:\n{rstderr}')
+        else:
+            print(FAIL + '-', end='', flush=True)
         return False
     stderr = get_stderr_file(lang, t.stderr)
     with open(stderr, 'rt', encoding='utf-8') as file:
@@ -215,10 +226,16 @@ def check_stderr(lang, verbose, t, rstderr):
         rstderr = normalize(rstderr)
         stderr = normalize(stderr)
         if rstderr != stderr:
-            print(FAIL + f'\nexpected stderr:\n{stderr}\n-got-\n{rstderr}')
+            if verbose:
+                print(FAIL +
+                      f'\nexpected stderr:\n{stderr}\n-got-\n{rstderr}')
+            else:
+                print(FAIL + '-', end='', flush=True)
             return False
     if verbose:
         print(OK + ' • stderr ok', end='', flush=True)
+    else:
+        print(OK + '+', end='', flush=True)
     return True
 
 
@@ -251,17 +268,26 @@ def normalize(s):
 def check_expected(lang, verbose, t, afile):
     efile = 'expected/' + (t.ifile if t.efile is SAME else t.efile)
     if not compare(lang, t.o_vs_e, t.ifile, efile):
-        print(FAIL + f'{t.ifile!r} !{t.o_vs_e.symbol} {efile!r}', end='',
-              flush=True)
+        if verbose:
+            print(FAIL + f'{t.ifile!r} !{t.o_vs_e.symbol} {efile!r}',
+                  end='', flush=True)
+        else:
+            print(FAIL + '-', end='', flush=True)
         return False
     elif verbose and t.o_vs_e is not Compare.SKIP:
         print(OK + f' • o_vs_e {t.o_vs_e.symbol}', end='', flush=True)
     if not compare(lang, t.a_vs_e, afile, efile):
-        print(FAIL + f'{afile!r} !{t.a_vs_e.symbol} {efile!r}', end='',
-              flush=True)
+        if verbose:
+            print(FAIL + f'{afile!r} !{t.a_vs_e.symbol} {efile!r}', end='',
+                  flush=True)
+        else:
+            print(FAIL + '-', end='', flush=True)
         return False
-    elif verbose and t.a_vs_e is not Compare.SKIP:
-        print(OK + f' • a_vs_e {t.a_vs_e.symbol}', end='', flush=True)
+    elif t.a_vs_e is not Compare.SKIP:
+        if verbose:
+            print(OK + f' • a_vs_e {t.a_vs_e.symbol}', end='', flush=True)
+        else:
+            print(OK + '+', end='', flush=True)
     return True
 
 
