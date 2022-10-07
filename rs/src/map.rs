@@ -118,6 +118,11 @@ impl Map {
         self.push_x(value, "-", 0)
     }
 
+    /// `push_t(value)` is convenience for `push(value.into())`
+    pub fn push_t<T: Into<Value>>(&mut self, value: T) -> Result<()> {
+        self.push_x(value.into(), "-", 0)
+    }
+
     /// Allows key-value items to be added one part at a time
     pub(crate) fn push_x(
         &mut self,

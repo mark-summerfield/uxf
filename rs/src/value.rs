@@ -324,6 +324,12 @@ impl Value {
         }
     }
 
+    /// Add value as a Value to a collection Value.
+    /// `push_t(value)` is convenience for `push(value.into())`.
+    pub fn push_t<T: Into<Value>>(&mut self, value: T) -> Result<()> {
+        self.push(value.into())
+    }
+
     /// Add a single Value to a collection Value or if this is a
     /// nonempty Value::List whose last item is a table and the new value
     /// is a Value::Table with the same ttype as the list's last table item,
@@ -357,6 +363,15 @@ impl Value {
             Value::Table(t) => t.push(value),
             _ => panic!("can't push or combine a value onto a scalar"),
         }
+    }
+
+    /// `push_or_combine_t(value)` is convenience for
+    /// `push_or_combine(value.into())`.
+    pub fn push_or_combine_t<T: Into<Value>>(
+        &mut self,
+        value: T,
+    ) -> Result<()> {
+        self.push_or_combine(value.into())
     }
 
     /// Returns how many values, items, or records are in this Value if

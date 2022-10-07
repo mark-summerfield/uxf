@@ -86,6 +86,11 @@ impl List {
         self.values.push(value);
     }
 
+    /// `push_t(value)` is convenience for `push(value.into())`
+    pub fn push_t<T: Into<Value>>(&mut self, value: T) {
+        self.values.push(value.into());
+    }
+
     /// Truncates the list to contain at most `size` values.
     pub fn truncate(&mut self, size: usize) {
         self.values.truncate(size);
