@@ -151,6 +151,7 @@ impl Map {
     /// Inserts the given `key` and `value` into the map.
     /// If the `key` was already present, returns the previous value;
     /// otherwise returns `None`.
+    /// This ignores any pending key.
     pub fn insert(&mut self, key: Key, value: Value) -> Option<Value> {
         self.items.insert(key, value)
     }

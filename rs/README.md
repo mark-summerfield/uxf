@@ -29,6 +29,7 @@ Overview](https://github.com/mark-summerfield/uxf/blob/main/README.md).)
 
 ## Changes
 
+- 1.2.0 Added `push_t()` and `push_many()` convenience methods.
 - 1.1.1 Added more convenience From conversions to Value.
 - 1.1.0 Added `-D|--decimals` to the command line and improved the CLI.
   Breaking change: the `Format` type now has `realdp` as `u8` rather than

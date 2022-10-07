@@ -74,10 +74,7 @@ fn t_list1() {
 #[test]
 fn t_list2() {
     let mut lst = List::new("int", "Test of int").unwrap();
-    lst.push(Value::Null);
-    lst.push(5.into());
-    lst.push(17.into());
-    lst.push(Value::Null);
+    lst.push_many(&[Value::Null, 5.into(), 17.into(), Value::Null]);
     assert_eq!(lst.to_string(), "[#<Test of int> int ?\n5\n17\n?]");
     assert_eq!(lst.len(), 4);
     assert!(!lst.is_empty());
@@ -199,9 +196,7 @@ fn t_list_nested() {
     assert!(lst.is_empty());
     assert!(lst.vtype().is_empty());
     assert!(lst.comment().is_empty());
-    lst.push(Value::Null); // 0
-    lst.push(Value::Null); // 1
-    lst.push(Value::Null); // 2
+    lst.push_many(&[Value::Null, Value::Null, Value::Null]); // 0 1 2
     assert_eq!(lst.to_string(), "[?\n?\n?]");
     lst.push(List::default().into()); // 3
     assert_eq!(lst.to_string(), "[?\n?\n?\n[]]");
@@ -229,9 +224,11 @@ fn t_list_nested() {
     if let Some(sublist) = lst[3].as_list_mut() {
         sublist.push(List::new("real", "<Totals>").unwrap().into());
         if let Some(subsublist) = sublist[2].as_list_mut() {
-            subsublist.push((7.9).into());
-            subsublist.push((1e2).into());
-            subsublist.push((-19.357).into());
+            subsublist.push_many(&[
+                (7.9).into(),
+                (1e2).into(),
+                (-19.357).into(),
+            ]);
         }
     }
     assert_eq!(

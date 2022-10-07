@@ -144,6 +144,14 @@ impl Table {
         self.push_x(value, "-", 0)
     }
 
+    /// Appends the given `values` to the table
+    pub fn push_many(&mut self, values: &[Value]) -> Result<()> {
+        for value in values {
+            self.push_x(value.clone(), "-", 0)?;
+        }
+        Ok(())
+    }
+
     /// `push_t(value)` is convenience for `push(value.into())`
     pub fn push_t<T: Into<Value>>(&mut self, value: T) -> Result<()> {
         self.push_x(value.into(), "-", 0)

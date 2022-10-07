@@ -86,6 +86,11 @@ impl List {
         self.values.push(value);
     }
 
+    /// Appends the given `values` to the end of the list.
+    pub fn push_many(&mut self, values: &[Value]) {
+        self.values.extend_from_slice(values);
+    }
+
     /// `push_t(value)` is convenience for `push(value.into())`
     pub fn push_t<T: Into<Value>>(&mut self, value: T) {
         self.values.push(value.into());

@@ -324,6 +324,22 @@ impl Value {
         }
     }
 
+    /// Add multiple Values to a List or Table.
+    /// Same behavior as `push()`.
+    pub fn push_many(&mut self, values: &[Value]) -> Result<()> {
+        match self {
+            Value::List(lst) => {
+                lst.push_many(values);
+                Ok(())
+            }
+            Value::Table(t) => t.push_many(values),
+            Value::Map(_) => {
+                panic!("can't push multiple values onto a map")
+            }
+            _ => panic!("can't push values onto a scalar"),
+        }
+    }
+
     /// Add value as a Value to a collection Value.
     /// `push_t(value)` is convenience for `push(value.into())`.
     pub fn push_t<T: Into<Value>>(&mut self, value: T) -> Result<()> {

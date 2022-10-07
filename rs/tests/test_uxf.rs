@@ -60,9 +60,7 @@ fn t_uxf_set_value() {
     t3.append(t3.tclass().record_of_nulls().unwrap()).unwrap();
     t3.append(vec![Value::Int(19), (-23).into()]).unwrap();
     let mut lst = List::default();
-    lst.push_t(t1);
-    lst.push_t(t2);
-    lst.push_t(t3);
+    lst.push_many(&[t1.into(), t2.into(), t3.into()]);
     assert_eq!(
         lst.to_string(),
         "[(ReadyState)\n(#<enum> WaitState)\n(Point 0 0\n-7 11\n? ?\n\
@@ -141,9 +139,7 @@ fn t_uxf_value_mut_push() {
     t3.append(t3.tclass().record_of_nulls().unwrap()).unwrap();
     t3.append(vec![Value::Int(19), (-23).into()]).unwrap();
     let value = uxo.value_mut();
-    value.push_t(t1).unwrap();
-    value.push_t(t2).unwrap();
-    value.push_t(t3).unwrap();
+    value.push_many(&[t1.into(), t2.into(), t3.into()]).unwrap();
     assert_eq!(
         value.to_string(),
         "[(ReadyState)\n(#<enum> WaitState)\n(Point 0 0\n-7 11\n? ?\n\
