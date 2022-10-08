@@ -86,6 +86,7 @@ pub mod uxf;
 pub mod value;
 
 // Public API
+pub use crate::consts::{UXF_VERSION, VERSION};
 pub use crate::event::{ignore_event, on_event, Event};
 pub use crate::field::{make_field, make_fields, Field};
 pub use crate::format::Format;

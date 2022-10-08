@@ -2,6 +2,7 @@
 // License: GPLv3
 
 pub const UXF_VERSION: u16 = 1;
+pub static VERSION: &str = env!("CARGO_PKG_VERSION");
 
 pub const MAX_IDENTIFIER_LEN: usize = 32;
 
