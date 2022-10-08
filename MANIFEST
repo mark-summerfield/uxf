@@ -11,6 +11,7 @@
 # - add module-level docs for uxf.rs, value.rs, etc...
 #   . incl. xrefs to tlm model.rs & amp config.rs
 #   . incl. egs/doctests
+# - lib.rs: mention cli
 # - doc review
 regression.py
 testdata/regression.dat.gz
