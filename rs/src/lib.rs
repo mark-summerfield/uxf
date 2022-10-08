@@ -18,7 +18,7 @@ see the [UXF Overview](https://github.com/mark-summerfield/uxf/blob/main/README.
 To read a UXF file into a `Uxf` object use `parse()` (or `parse_options()` for finer control), e.g.:
 
 ```rust
-let uxt = "uxf 1\n#<File comment>\n{<alpha> 1\n<bravo> 2}\n"; 
+let uxt = "uxf 1\n#<File comment>\n{<alpha> 1\n<bravo> 2}\n";
 let uxo = uxf::parse(uxt).unwrap(); // -or- pass a filename
 assert!(uxt == uxo.to_string());
 ```
@@ -87,7 +87,7 @@ pub mod value;
 
 // Public API
 pub use crate::event::{ignore_event, on_event, Event};
-pub use crate::field::Field;
+pub use crate::field::{make_fields, Field};
 pub use crate::format::Format;
 pub use crate::list::List;
 pub use crate::map::Map;

@@ -6,8 +6,7 @@ use crate::field::{check_fields, Field};
 use crate::util::escape;
 use crate::value::{Record, Value};
 use anyhow::{bail, Result};
-use std::fmt::Write as _;
-use std::{cmp::Ordering, fmt};
+use std::{cmp::Ordering, collections::HashMap, fmt, fmt::Write as _};
 
 /// Provides a definition of a tclass (`name`, `fields`, and `comment`)
 /// for use in ``Table``s.
@@ -18,6 +17,7 @@ pub struct TClass {
     ttype: String,
     fields: Vec<Field>,
     comment: String,
+    columns_for_names_cache: Option<HashMap<String, usize>>,
 }
 
 impl TClass {
@@ -38,6 +38,7 @@ impl TClass {
             ttype: ttype.to_string(),
             fields,
             comment: comment.to_string(),
+            columns_for_names_cache: None,
         })
     }
 
@@ -50,6 +51,7 @@ impl TClass {
             ttype: ttype.to_string(),
             fields: vec![],
             comment: comment.to_string(),
+            columns_for_names_cache: None,
         })
     }
 
@@ -76,6 +78,11 @@ impl TClass {
     /// Returns the `fields` (which will be empty if `is_fieldless()`).
     pub fn fields(&self) -> &Vec<Field> {
         &self.fields
+    }
+
+    /// Returns the field names (which will be empty if `is_fieldless()`).
+    pub fn fieldnames(&self) -> Vec<&str> {
+        self.fields.iter().map(|f| f.name()).collect()
     }
 
     /// Returns how many fields; this will be `0` if `is_fieldless()`.
@@ -114,6 +121,31 @@ impl TClass {
         let mut record = Record::new();
         record.resize(self.len(), Value::Null);
         Ok(record)
+    }
+
+    /// Returns the column for the given fieldname.
+    /// More robust in the face of change than using column indexes
+    /// directly.
+    pub fn column_for_fieldname(
+        &mut self,
+        fieldname: &str,
+    ) -> Option<usize> {
+        if self.columns_for_names_cache.is_none() {
+            let mut named = HashMap::new();
+            for (i, field) in self.fields.iter().enumerate() {
+                named.insert(field.name().to_string(), i);
+            }
+            self.columns_for_names_cache = Some(named);
+        }
+        if let Some(named) = &self.columns_for_names_cache {
+            if let Some(column) = named.get(fieldname) {
+                Some(*column)
+            } else {
+                None
+            }
+        } else {
+            None
+        }
     }
 }
 

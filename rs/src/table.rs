@@ -1,13 +1,25 @@
 // Copyright © 2022 Mark Summerfield. All rights reserved.
 // License: GPLv3
 
+/// The `Table` type is used to store zero or more records (always zero in
+/// the case of a fieldless table).
+///
+/// The safest way to access a record is using one of the `*_named()`
+/// methods, e.g., `first_named(), `last_named()`, or `get_named(index)`.
+/// These return a `HashMap<&str, &Value>` whose keys are field names and
+/// whose values are the corresponding field values. Using these methods is
+/// more robust in the face of change since they are not field-index
+/// dependent as the `first()`, `last()`, and `get(index)` methods are.
 use crate::tclass::TClass;
 use crate::util::escape;
 use crate::uxf::Compare;
 use crate::value::{Record, Value, Values};
 use anyhow::{bail, Result};
-use std::fmt;
-use std::ops::{Index, IndexMut};
+use std::{
+    collections::HashMap,
+    fmt,
+    ops::{Index, IndexMut},
+};
 
 #[derive(Clone, Debug)]
 pub struct Table {
@@ -78,10 +90,80 @@ impl Table {
         self.records.is_empty()
     }
 
-    /// Returns `Some(&Record)` if there's at least one record;
+    /// Returns the record as a `Some(HashMap<&str, &Value>)` whose keys are
+    /// field names and whose values are field values at `index` 0 if any;
     /// otherwise `None`.
+    pub fn first_named(&self) -> Option<HashMap<&str, &Value>> {
+        self.get_named(0)
+    }
+
+    /// Returns `Some(&Record)` at index 0 if any; otherwise `None`.
     pub fn first(&self) -> Option<&Record> {
         self.records.get(0)
+    }
+
+    /// Returns the record as a `Some(HashMap<&str, &Value>)` whose keys are
+    /// field names and whose values are field values at `index` 1 if any;
+    /// otherwise `None`.
+    pub fn second_named(&self) -> Option<HashMap<&str, &Value>> {
+        self.get_named(1)
+    }
+
+    /// Returns `Some(&Record)` at index 1 if any; otherwise `None`.
+    pub fn second(&self) -> Option<&Record> {
+        self.records.get(1)
+    }
+
+    /// Returns the record as a `Some(HashMap<&str, &Value>)` whose keys are
+    /// field names and whose values are field values at `index` 2 if any;
+    /// otherwise `None`.
+    pub fn third_named(&self) -> Option<HashMap<&str, &Value>> {
+        self.get_named(2)
+    }
+
+    /// Returns `Some(&Record)` at index 2 if any; otherwise `None`.
+    pub fn third(&self) -> Option<&Record> {
+        self.records.get(2)
+    }
+
+    /// Returns the record as a `Some(HashMap<&str, &Value>)` whose keys are
+    /// field names and whose values are field values at `index` 3 if any;
+    /// otherwise `None`.
+    pub fn fourth_named(&self) -> Option<HashMap<&str, &Value>> {
+        self.get_named(3)
+    }
+
+    /// Returns `Some(&Record)` at index 3 if any; otherwise `None`.
+    pub fn fourth(&self) -> Option<&Record> {
+        self.records.get(3)
+    }
+
+    /// Returns the last record as a `Some(HashMap<&str, &Value>)` whose
+    /// keys are field names and whose values are field values if the table
+    /// isn't empty; otherwise `None`.
+    pub fn last_named(&self) -> Option<HashMap<&str, &Value>> {
+        self.get_named(self.len() - 1)
+    }
+
+    /// Returns the last `Some(&Record)` if the table isn't empty;
+    /// otherwise `None`.
+    pub fn last(&self) -> Option<&Record> {
+        self.records.get(self.len() - 1)
+    }
+
+    /// Returns a record as a `Some(HashMap<&str, &Value>)` whose keys are
+    /// field names and whose values are field values if `index` is in
+    /// bounds; otherwise `None`.
+    pub fn get_named(&self, index: usize) -> Option<HashMap<&str, &Value>> {
+        if let Some(record) = self.records.get(index) {
+            let mut named = HashMap::new();
+            for (i, name) in self.tclass.fieldnames().iter().enumerate() {
+                named.insert(*name, &record[i]);
+            }
+            Some(named)
+        } else {
+            None
+        }
     }
 
     /// Returns `Some(&Record)` if `index` is in bounds; otherwise `None`.
@@ -93,6 +175,58 @@ impl Table {
     /// `None`.
     pub fn get_mut(&mut self, index: usize) -> Option<&mut Record> {
         self.records.get_mut(index)
+    }
+
+    /// Returns `Some(&mut Value)` if `index` is in bounds and `fieldname`
+    /// is valid; otherwise `None`.
+    ///
+    /// ```
+    /// let fields = uxf::make_fields(&[("x", "real"),
+    ///                                 ("y", "real")]).unwrap();
+    /// let point_tclass = uxf::TClass::new("Point", fields, "").unwrap();
+    /// let mut table = uxf::Table::new(point_tclass, "");
+    /// table.append(vec![6.7.into(), 11.1.into()]);
+    /// if let Some(record) = table.first() {
+    ///     assert_eq!("11.1", &format!("{}", &record[1])); // fragile index
+    /// }
+    /// if let Some(record) = table.get_mut(0) {
+    ///     record[1] = 22.2.into();
+    /// }
+    /// if let Some(record) = table.first() {
+    ///     assert_eq!("22.2", &format!("{}", &record[1])); // fragile index
+    /// }
+    /// // More robust:
+    /// if let Some(value) = table.get_field_mut(0, "y") { // robust field name
+    ///     *value = 44.4.into();
+    /// }
+    /// if let Some(record) = table.first_named() {
+    ///     if let Some(value) = record.get("y") { // robust field name
+    ///         assert_eq!("44.4", &format!("{}",
+    ///                    value.as_real().unwrap()));
+    ///     }
+    /// }
+    /// ```
+    pub fn get_field_mut(
+        &mut self,
+        index: usize,
+        fieldname: &str,
+    ) -> Option<&mut Value> {
+        let mut column = None;
+        for (i, field) in self.tclass.fields().iter().enumerate() {
+            if field.name() == fieldname {
+                column = Some(i);
+                break;
+            }
+        }
+        if let Some(column) = column {
+            if let Some(record) = self.records.get_mut(index) {
+                record.get_mut(column)
+            } else {
+                None
+            }
+        } else {
+            None
+        }
     }
 
     /// Appends the given `record` of `Value`s to the end of the table or
