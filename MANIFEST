@@ -8,8 +8,9 @@
 # 0 if not present. For all other tables this is None for no limit or an
 # int.
 # TODO rs 1.4.0
-# - add module-level docs for uxf.rs, value.rs, etc... incl. xrefs to
-#   tlm model.rs & amp config.rs
+# - add module-level docs for uxf.rs, value.rs, etc...
+#   . incl. xrefs to tlm model.rs & amp config.rs
+#   . incl. egs/doctests
 # - doc review
 regression.py
 testdata/regression.dat.gz
