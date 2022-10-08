@@ -87,11 +87,11 @@ pub mod value;
 
 // Public API
 pub use crate::event::{ignore_event, on_event, Event};
-pub use crate::field::{make_fields, Field};
+pub use crate::field::{make_field, make_fields, Field};
 pub use crate::format::Format;
 pub use crate::list::List;
 pub use crate::map::Map;
 pub use crate::table::Table;
-pub use crate::tclass::TClass;
+pub use crate::tclass::{make_tclass, TClass};
 pub use crate::uxf::{parse, parse_options, Compare, ParserOptions, Uxf};
 pub use crate::value::{Value, Visit};

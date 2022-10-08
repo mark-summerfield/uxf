@@ -5,11 +5,11 @@
 /// the case of a fieldless table).
 ///
 /// The safest way to access a record is using one of the `*_named()`
-/// methods, e.g., `first_named(), `last_named()`, or `get_named(index)`.
+/// methods, e.g., `first_named(), `last_named()`, or `get_named(row)`.
 /// These return a `HashMap<&str, &Value>` whose keys are field names and
 /// whose values are the corresponding field values. Using these methods is
 /// more robust in the face of change since they are not field-index
-/// dependent as the `first()`, `last()`, and `get(index)` methods are.
+/// dependent as the `first()`, `last()`, and `get(row)` methods are.
 use crate::tclass::TClass;
 use crate::util::escape;
 use crate::uxf::Compare;
@@ -91,49 +91,49 @@ impl Table {
     }
 
     /// Returns the record as a `Some(HashMap<&str, &Value>)` whose keys are
-    /// field names and whose values are field values at `index` 0 if any;
+    /// field names and whose values are field values at `row` 0 if any;
     /// otherwise `None`.
     pub fn first_named(&self) -> Option<HashMap<&str, &Value>> {
         self.get_named(0)
     }
 
-    /// Returns `Some(&Record)` at index 0 if any; otherwise `None`.
+    /// Returns `Some(&Record)` at row 0 if any; otherwise `None`.
     pub fn first(&self) -> Option<&Record> {
         self.records.get(0)
     }
 
     /// Returns the record as a `Some(HashMap<&str, &Value>)` whose keys are
-    /// field names and whose values are field values at `index` 1 if any;
+    /// field names and whose values are field values at `row` 1 if any;
     /// otherwise `None`.
     pub fn second_named(&self) -> Option<HashMap<&str, &Value>> {
         self.get_named(1)
     }
 
-    /// Returns `Some(&Record)` at index 1 if any; otherwise `None`.
+    /// Returns `Some(&Record)` at row 1 if any; otherwise `None`.
     pub fn second(&self) -> Option<&Record> {
         self.records.get(1)
     }
 
     /// Returns the record as a `Some(HashMap<&str, &Value>)` whose keys are
-    /// field names and whose values are field values at `index` 2 if any;
+    /// field names and whose values are field values at `row` 2 if any;
     /// otherwise `None`.
     pub fn third_named(&self) -> Option<HashMap<&str, &Value>> {
         self.get_named(2)
     }
 
-    /// Returns `Some(&Record)` at index 2 if any; otherwise `None`.
+    /// Returns `Some(&Record)` at row 2 if any; otherwise `None`.
     pub fn third(&self) -> Option<&Record> {
         self.records.get(2)
     }
 
     /// Returns the record as a `Some(HashMap<&str, &Value>)` whose keys are
-    /// field names and whose values are field values at `index` 3 if any;
+    /// field names and whose values are field values at `row` 3 if any;
     /// otherwise `None`.
     pub fn fourth_named(&self) -> Option<HashMap<&str, &Value>> {
         self.get_named(3)
     }
 
-    /// Returns `Some(&Record)` at index 3 if any; otherwise `None`.
+    /// Returns `Some(&Record)` at row 3 if any; otherwise `None`.
     pub fn fourth(&self) -> Option<&Record> {
         self.records.get(3)
     }
@@ -152,10 +152,10 @@ impl Table {
     }
 
     /// Returns a record as a `Some(HashMap<&str, &Value>)` whose keys are
-    /// field names and whose values are field values if `index` is in
+    /// field names and whose values are field values if `row` is in
     /// bounds; otherwise `None`.
-    pub fn get_named(&self, index: usize) -> Option<HashMap<&str, &Value>> {
-        if let Some(record) = self.records.get(index) {
+    pub fn get_named(&self, row: usize) -> Option<HashMap<&str, &Value>> {
+        if let Some(record) = self.records.get(row) {
             let mut named = HashMap::new();
             for (i, name) in self.tclass.fieldnames().iter().enumerate() {
                 named.insert(*name, &record[i]);
@@ -166,18 +166,36 @@ impl Table {
         }
     }
 
-    /// Returns `Some(&Record)` if `index` is in bounds; otherwise `None`.
-    pub fn get(&self, index: usize) -> Option<&Record> {
-        self.records.get(index)
+    /// Returns `Some(&Record)` if `row` is in bounds; otherwise `None`.
+    pub fn get(&self, row: usize) -> Option<&Record> {
+        self.records.get(row)
     }
 
-    /// Returns `Some(&mut Record)` if `index` is in bounds; otherwise
+    /// Returns `Some(&mut Record)` if `row` is in bounds; otherwise
     /// `None`.
-    pub fn get_mut(&mut self, index: usize) -> Option<&mut Record> {
-        self.records.get_mut(index)
+    pub fn get_mut(&mut self, row: usize) -> Option<&mut Record> {
+        self.records.get_mut(row)
     }
 
-    /// Returns `Some(&mut Value)` if `index` is in bounds and `fieldname`
+    /// Returns `Some(&Value)` if `row` is in bounds and `fieldname`
+    /// is valid; otherwise `None`.
+    pub fn get_field(
+        &mut self,
+        row: usize,
+        fieldname: &str,
+    ) -> Option<&Value> {
+        if let Some(column) = self.tclass.column_for_fieldname(fieldname) {
+            if let Some(record) = self.records.get(row) {
+                record.get(column)
+            } else {
+                None
+            }
+        } else {
+            None
+        }
+    }
+
+    /// Returns `Some(&mut Value)` if `row` is in bounds and `fieldname`
     /// is valid; otherwise `None`.
     ///
     /// ```
@@ -208,18 +226,11 @@ impl Table {
     /// ```
     pub fn get_field_mut(
         &mut self,
-        index: usize,
+        row: usize,
         fieldname: &str,
     ) -> Option<&mut Value> {
-        let mut column = None;
-        for (i, field) in self.tclass.fields().iter().enumerate() {
-            if field.name() == fieldname {
-                column = Some(i);
-                break;
-            }
-        }
-        if let Some(column) = column {
-            if let Some(record) = self.records.get_mut(index) {
+        if let Some(column) = self.tclass.column_for_fieldname(fieldname) {
+            if let Some(record) = self.records.get_mut(row) {
                 record.get_mut(column)
             } else {
                 None
@@ -383,16 +394,16 @@ impl Table {
 impl Index<usize> for Table {
     type Output = Record;
 
-    /// Returns `&Record` if `index` is in bounds; otherwise panics.
-    fn index(&self, index: usize) -> &Self::Output {
-        &self.records[index]
+    /// Returns `&Record` if `row` is in bounds; otherwise panics.
+    fn index(&self, row: usize) -> &Self::Output {
+        &self.records[row]
     }
 }
 
 impl IndexMut<usize> for Table {
-    /// Returns `&mut Record` if `index` is in bounds; otherwise panics.
-    fn index_mut(&mut self, index: usize) -> &mut Self::Output {
-        &mut self.records[index]
+    /// Returns `&mut Record` if `row` is in bounds; otherwise panics.
+    fn index_mut(&mut self, row: usize) -> &mut Self::Output {
+        &mut self.records[row]
     }
 }
 

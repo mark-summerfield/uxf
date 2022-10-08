@@ -60,9 +60,9 @@ pub(crate) fn read_file(filename: &str) -> Result<String> {
         })?;
     } else {
         let mut buffer = BufReader::new(file);
-        buffer.read_to_string(&mut text).with_context(|| {
-            format!("E952:{filename}:0:failed to read")
-        })?;
+        buffer
+            .read_to_string(&mut text)
+            .with_context(|| format!("E952:{filename}:0:failed to read"))?;
     }
     Ok(text)
 }

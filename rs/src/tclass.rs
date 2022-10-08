@@ -2,11 +2,50 @@
 // License: GPLv3
 
 use crate::check::check_ttype;
-use crate::field::{check_fields, Field};
+use crate::field::{check_fields, make_field, Field};
 use crate::util::escape;
 use crate::value::{Record, Value};
 use anyhow::{bail, Result};
-use std::{cmp::Ordering, collections::HashMap, fmt, fmt::Write as _};
+use std::{
+    cmp::Ordering,
+    collections::{HashMap, VecDeque},
+    fmt,
+    fmt::Write as _,
+};
+
+/// Convenience method for making a TClass from a UXF ttype definition,
+/// e.g., `let tclass = make_tclass("=Point x:real y:real").unwrap();`.
+/// The leading `=` is optional, but the rest must be a valid UXF ttype
+/// definition (but may not contain a comment).
+///
+/// BNF:
+///     TCLASS ::= '=' OWS NAME (OWS NAME (OWS ':' OWS NAME))*
+///     NAME ::=/\p{L}\w+/
+///     OWS ::= /\s*/
+pub fn make_tclass(ttype_definition: &str) -> Result<TClass> {
+    let ttype_definition =
+        if let Some(stripped) = ttype_definition.strip_prefix('=') {
+            stripped
+        } else {
+            ttype_definition
+        };
+    let re = regex::Regex::new(r"\s*:\s*").unwrap();
+    let normalized = re.replace_all(ttype_definition, ":");
+    let mut parts: VecDeque<&str> = normalized.split_whitespace().collect();
+    if let Some(ttype) = parts.pop_front() {
+        if parts.is_empty() {
+            TClass::new_fieldless(ttype, "")
+        } else {
+            let mut fields = vec![];
+            for part in parts {
+                fields.push(make_field(part)?);
+            }
+            TClass::new(ttype, fields, "")
+        }
+    } else {
+        bail!("failed to create a TClass from {ttype_definition:?}");
+    }
+}
 
 /// Provides a definition of a tclass (`name`, `fields`, and `comment`)
 /// for use in ``Table``s.
@@ -138,11 +177,7 @@ impl TClass {
             self.columns_for_names_cache = Some(named);
         }
         if let Some(named) = &self.columns_for_names_cache {
-            if let Some(column) = named.get(fieldname) {
-                Some(*column)
-            } else {
-                None
-            }
+            named.get(fieldname).copied()
         } else {
             None
         }

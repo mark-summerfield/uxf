@@ -3,7 +3,7 @@
 
 use uxf::field::make_fields;
 use uxf::table::Table;
-use uxf::tclass::TClass;
+use uxf::tclass::{TClass, make_tclass};
 use uxf::value::Value;
 
 #[test]
@@ -44,6 +44,15 @@ fn t_table_scalar() {
     assert!(!t.is_empty());
     // TODO lots more tests with different scalar types
     // TODO lots more tests with get, get_mut, iter, inner, inner_mut
+}
+
+#[test]
+fn t_make_tclass() {
+    let fields = make_fields(&[("x", "int"), ("y", "int")]).unwrap();
+    let tclass = TClass::new("Point", fields, "").unwrap();
+    assert_eq!(tclass.to_string(), "=Point x:int y:int");
+    let tclass = make_tclass("=Point x:int y : int").unwrap();
+    assert_eq!(tclass.to_string(), "=Point x:int y:int");
 }
 
 /*

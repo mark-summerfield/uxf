@@ -5,8 +5,21 @@ use crate::check::{check_name, check_vtype};
 use anyhow::{bail, Result};
 use std::{cmp::Ordering, collections::HashSet, fmt};
 
-/// Returns a vector of fields which when unwrapped is suitable for
-/// TClass::new(). Use an empty string for vtypes that should be None.
+/// Convenience function that returns a `Field` from a UXF field defintion,
+/// e.g., `"name"` or `"x:int"`.
+pub fn make_field(field_definition: &str) -> Result<Field> {
+    if let Some(i) = field_definition.find(':') {
+        let fname = field_definition[..i].trim();
+        let ftype = field_definition[i + 1..].trim();
+        Field::new(fname, ftype)
+    } else {
+        Field::new(field_definition.trim(), "")
+    }
+}
+
+/// Convenience function that returns a vector of fields which when
+/// unwrapped is suitable for TClass::new(). Use an empty string for
+/// vtypes that should be None.
 ///
 /// ```
 /// let fields = uxf::field::make_fields(&[("Data", ""), ("Date", "date"),
