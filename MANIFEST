@@ -4,8 +4,9 @@
 #   . incl. egs/doctests
 # - lib.rs: mention cli
 # - doc review
-# TODO branch alias & implement py (2.9.0) & rs (1.3.0) [see paper notes]
+# TODO ALIASES.md ### only if I can come up with motivating egs
 # TODO C++ app & lib
+
 regression.py
 testdata/regression.dat.gz
 testdata/errortests.dat.gz
@@ -146,7 +147,8 @@ st.sh
 # - These are too conceptually dificult for broad range of target users
 #   & introduce too much syntactic complexity:
 #   . Union types. (In fact aliases will do far more if introduced)
-#   . Notnullability. (May be able to do this with aliases)
+#   . Notnullability. (May be able to do this with aliases; but is it a
+#     good idea?)
 # - Money type (twelth type), e.g., MONEY ::= '$' REAL; use, say
 #   =Money currency:str amount; or, =USD amount, or similar, (where
 #   amount could be str or int or real)
