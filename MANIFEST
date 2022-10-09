@@ -1,18 +1,11 @@
-# TODO py 2.8.0 & rs 1.3.0
-# add support for Table max_records
-# BNF
-#   TTYPEDEF ::= '=' COMMENT? OWS IDENFIFIER (RWS INT)? (RWS FIELD)*
-# if present the INT is max_records: this is not enforced but _is_
-# warned when linting; typical value would be 1 for a single record table.
-# For fieldless tables this _must_ be 0 if present and is automatically
-# 0 if not present. For all other tables this is None for no limit or an
-# int.
-# TODO rs 1.4.0
+# TODO rs 1.2.2
 # - add module-level docs for uxf.rs, value.rs, etc...
 #   . incl. xrefs to tlm model.rs & amp config.rs
 #   . incl. egs/doctests
 # - lib.rs: mention cli
 # - doc review
+# TODO branch alias & implement py (2.9.0) & rs (1.3.0) [see paper notes]
+# TODO C++ app & lib
 regression.py
 testdata/regression.dat.gz
 testdata/errortests.dat.gz
@@ -141,11 +134,19 @@ st.sh
 # NOTE Silent repairs
 # - rs & py: uxf 1\n{1} → uxf 1\n{} — silent repair; ought to error?
 # NOTE Rejected Ideas
+#   - Support for Table max_records
+#	TTYPEDEF ::= '=' COMMENT? OWS IDENFIFIER (RWS INT)? (RWS FIELD)*
+#     if present the INT is max_records: this is not enforced but _is_
+#     warned when linting; typical value would be 1 for a single record
+#     table. For fieldless tables this _must_ be 0 if present and is
+#     automatically 0 if not present. For all other tables this is None
+#     for no limit or an int.
+#     Adds a little complexity for very little benefit.
 # - Replace yes and no bools with built-in fieldless tables, (Y) (N)
 # - These are too conceptually dificult for broad range of target users
 #   & introduce too much syntactic complexity:
-#   . Union types. 
-#   . Notnullability.
+#   . Union types. (In fact aliases will do far more if introduced)
+#   . Notnullability. (May be able to do this with aliases)
 # - Money type (twelth type), e.g., MONEY ::= '$' REAL; use, say
 #   =Money currency:str amount; or, =USD amount, or similar, (where
 #   amount could be str or int or real)

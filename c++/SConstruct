@@ -1,0 +1,8 @@
+app = 'app.cpp'
+libs = [
+    # base.hpp
+    'base.cpp'
+    ]
+
+Library('base', libs)
+Program(app, LIBS=['base'], LIBPATH='.')

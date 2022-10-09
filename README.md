@@ -640,9 +640,9 @@ If you create a UXF library please let us know so that we can add a link
 here (providing your library passes the regression tests!).
 
 Implmenting a UXF pretty printer whould be doable by a CS major as a final
-year project. Implementing a UXF parser—without support for imports or
-string concatenation—should be doable by a CS major as a _big_ final year
-project.
+year project. Implementing a UXF parser—without support for imports, string
+concatenation, or aliases—should be doable by a CS major as a _big_ final
+year project.
 
 ## Imports
 
