@@ -1,4 +1,4 @@
-# TODO rs 1.2.2
+# TODO rs 1.2.3
 # - add module-level docs for uxf.rs, value.rs, etc...
 #   . incl. xrefs to tlm model.rs & amp config.rs
 #   . incl. egs/doctests
@@ -12,7 +12,7 @@ testdata/errortests.dat.gz
 
 rs/src/bin/uxf.rs
 rs/src/lib.rs
-rs/src/value.rs
+rs/src/value.rs # TODO doc
 rs/src/key.rs
 rs/src/list.rs
 rs/src/map.rs

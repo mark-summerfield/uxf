@@ -1,11 +1,11 @@
 [package]
 name = "uxf"
-version = "1.2.2"
+version = "1.2.3"
 edition = "2021"
 publish = true
 authors = [ "Mark Summerfield <mark@qtrac.eu>",]
 include = [ "Cargo.toml", "src/**/*.rs", "examples/**/*.rs",]
-description = "uxf supports the UXF plain text human readable optionally typed storage format. UXF may serve as a convenient alternative to csv, ini, json, sqlite, toml, xml, or yaml."
+description = "uxf supports the UXF plain text human readable optionally typed storage format that supports custom types. UXF may serve as a convenient alternative to csv, ini, json, sqlite, toml, xml, or yaml."
 documentation = "https://docs.rs/uxf/latest/uxf/"
 homepage = "https://github.com/mark-summerfield/uxf"
 repository = "https://github.com/mark-summerfield/uxf"

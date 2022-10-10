@@ -1,6 +1,12 @@
 // Copyright © 2022 Mark Summerfield. All rights reserved.
 // License: GPLv3
 
+/// The Value type is in many respects the heart of the Rust UXF library
+/// implementation.
+///
+/// A Value may be a scalar or a collection (which in turn may hold scalars
+/// or collections, recursively). So a single Value may hold an arbitrarily
+/// complex data structure.
 use crate::consts::*;
 use crate::key::Key;
 use crate::list::List;
@@ -243,44 +249,10 @@ impl Value {
     pub fn naturalize(&self) -> Self {
         // date/times are ASCII so we can use str.len()
         if let Value::Str(value) = self {
-            let uvalue = value.to_uppercase();
-            if ["T", "TRUE", "Y", "YES"].contains(&uvalue.as_str()) {
-                return Value::Bool(true);
-            }
-            if ["F", "FALSE", "N", "NO"].contains(&uvalue.as_str()) {
-                return Value::Bool(false);
-            }
-            if let Ok(i) = value.parse::<i64>() {
-                return Value::Int(i);
-            } else if let Ok(r) = value.parse::<f64>() {
-                return Value::Real(r);
-            } else if value.len() == 10 {
-                if let Ok(d) =
-                    NaiveDate::parse_from_str(value, ISO8601_DATE)
-                {
-                    return Value::Date(d);
-                }
-            } else if value.len() == 13 {
-                if let Ok(dt) =
-                    NaiveDateTime::parse_from_str(value, ISO8601_DATETIME_H)
-                {
-                    return Value::DateTime(dt);
-                }
-            } else if value.len() == 16 {
-                if let Ok(dt) =
-                    NaiveDateTime::parse_from_str(value, ISO8601_DATETIME_M)
-                {
-                    return Value::DateTime(dt);
-                }
-            } else if value.len() == 19 {
-                if let Ok(dt) =
-                    NaiveDateTime::parse_from_str(value, ISO8601_DATETIME)
-                {
-                    return Value::DateTime(dt);
-                }
-            }
+            naturalize(value)
+        } else {
+            self.clone()
         }
-        self.clone()
     }
 
     /// Returns `Some(&Table)` if `Value::Table`; otherwise returns `None`.
@@ -796,4 +768,45 @@ pub(crate) fn bytes_to_uxf(b: &[u8]) -> String {
     }
     s.push_str(":)");
     s
+}
+
+/// Convert a string into a Value of the most appropriate type (Bool, Int,
+/// Real, Date, or DateTime); otherwise as Str
+pub fn naturalize(value: &str) -> Value {
+    // date/times are ASCII so we can use str.len()
+    let uvalue = value.to_uppercase();
+    if ["T", "TRUE", "Y", "YES"].contains(&uvalue.as_str()) {
+        return Value::Bool(true);
+    }
+    if ["F", "FALSE", "N", "NO"].contains(&uvalue.as_str()) {
+        return Value::Bool(false);
+    }
+    if let Ok(i) = value.parse::<i64>() {
+        return Value::Int(i);
+    } else if let Ok(r) = value.parse::<f64>() {
+        return Value::Real(r);
+    } else if value.len() == 10 {
+        if let Ok(d) = NaiveDate::parse_from_str(value, ISO8601_DATE) {
+            return Value::Date(d);
+        }
+    } else if value.len() == 13 {
+        if let Ok(dt) =
+            NaiveDateTime::parse_from_str(value, ISO8601_DATETIME_H)
+        {
+            return Value::DateTime(dt);
+        }
+    } else if value.len() == 16 {
+        if let Ok(dt) =
+            NaiveDateTime::parse_from_str(value, ISO8601_DATETIME_M)
+        {
+            return Value::DateTime(dt);
+        }
+    } else if value.len() == 19 {
+        if let Ok(dt) =
+            NaiveDateTime::parse_from_str(value, ISO8601_DATETIME)
+        {
+            return Value::DateTime(dt);
+        }
+    }
+    Value::Str(value.to_string())
 }

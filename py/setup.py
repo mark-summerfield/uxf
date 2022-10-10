@@ -16,7 +16,8 @@ setuptools.setup(
     author='Mark Summerfield',
     author_email='mark@qtrac.eu',
     description='A pure Python library supporting Uniform eXchange Format, \
-a plain text human readable optionally typed storage format.',
+a plain text human readable optionally typed storage format that supports \
+custom types.',
     long_description=README,
     long_description_content_type='text/markdown',
     url='https://github.com/mark-summerfield/uxf',

@@ -1,6 +1,10 @@
 // Copyright © 2022 Mark Summerfield. All rights reserved.
 // License: GPLv3
 
+/// A Uxf holds a single value of type Value. This single value is always a
+/// List, Map, or Table, each of which can hold any number of other Values,
+/// both collections and scalars.
+
 use crate::consts::*;
 use crate::event::{self, OnEventFn};
 use crate::format::Format;
