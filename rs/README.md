@@ -29,7 +29,8 @@ Overview](https://github.com/mark-summerfield/uxf/blob/main/README.md).)
 
 ## Changes
 
-- 1.2.3 Added `Value::naturalize()` function to public API.
+- 1.2.3 Added `Value::naturalize()` function to public API. Various minor
+  doc improvements.
 - 1.2.2 Added convenience `NamedRecord` type.
 - 1.2.1 More convenience methods.
 - 1.2.0 Added `push_t()` and `push_many()` convenience methods. Added

@@ -633,12 +633,18 @@ impl From<f64> for Value {
 }
 
 impl From<&str> for Value {
+    /// Converts a &str to a Value::Str.
+    /// Use naturalize(str) to _parse_ a str into a Value::Bool or
+    /// Value::Int or ...
     fn from(s: &str) -> Self {
         Value::Str(s.to_string())
     }
 }
 
 impl From<String> for Value {
+    /// Converts a String to a Value::Str.
+    /// Use naturalize(str) to _parse_ a str into a Value::Bool or
+    /// Value::Int or ...
     fn from(s: String) -> Self {
         Value::Str(s)
     }
@@ -651,6 +657,8 @@ impl From<Table> for Value {
 }
 
 impl From<Key> for Value {
+    /// Converts a Map's Key into a Value::Bytes or Value::Date or
+    /// Value::DateTime or Value::Int or Value::Str as appropriate.
     fn from(key: Key) -> Self {
         match key {
             Key::Bytes(b) => Value::Bytes(b),
@@ -770,8 +778,11 @@ pub(crate) fn bytes_to_uxf(b: &[u8]) -> String {
     s
 }
 
-/// Convert a string into a Value of the most appropriate type (Bool, Int,
-/// Real, Date, or DateTime); otherwise as Str
+/// Convert a string into a Value of the most appropriate type (Value::Bool,
+/// Value::Int, Value::Real, Value::Date, or Value::DateTime); otherwise as
+/// a Value::Str.
+/// If you just want to convert a &str or String as-is to a Value::Str, use
+/// .into() or .from().
 pub fn naturalize(value: &str) -> Value {
     // date/times are ASCII so we can use str.len()
     let uvalue = value.to_uppercase();

@@ -1,8 +1,6 @@
 # TODO rs 1.2.3
 # - add module-level docs for uxf.rs, value.rs, etc...
-#   . incl. xrefs to tlm model.rs & amp config.rs
 #   . incl. egs/doctests
-# - lib.rs: mention cli
 # - doc review
 # TODO C++ app & lib
 
@@ -12,9 +10,9 @@ testdata/errortests.dat.gz
 
 rs/src/bin/uxf.rs
 rs/src/lib.rs
-rs/src/value.rs # TODO doc
+rs/src/value.rs
 rs/src/key.rs
-rs/src/list.rs
+rs/src/list.rs # TODO
 rs/src/map.rs
 rs/src/table.rs
 rs/src/tclass.rs

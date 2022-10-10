@@ -3,6 +3,7 @@
 
 // NOTE Keep in harmony with Value
 
+/// The Key type holds a sclara value suitable for use as a Map key.
 use crate::consts::*;
 use crate::util::escape;
 use crate::value::{bytes_to_uxf, Value};
@@ -151,12 +152,18 @@ impl From<i64> for Key {
 }
 
 impl From<&str> for Key {
+    /// Converts a &str to a Key::Str.
+    /// Use naturalize(str) to _parse_ a str into a Value::Bool or
+    /// Value::Int or ..., and then use Key::from(value) to get a Key.
     fn from(s: &str) -> Self {
         Key::Str(s.to_string())
     }
 }
 
 impl From<String> for Key {
+    /// Converts a String to a Key::Str.
+    /// Use naturalize(str) to _parse_ a str into a Value::Bool or
+    /// Value::Int or ..., and then use Key::from(value) to get a Key.
     fn from(s: String) -> Self {
         Key::Str(s)
     }

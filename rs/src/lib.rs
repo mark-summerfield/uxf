@@ -51,6 +51,11 @@ assert!(uxo1.to_text() == uxo2.to_text());
 To use uxf, add this line your `Cargo.toml` file's `[dependencies]`
 section: `uxf = "1"`.
 
+# Command Line Interface
+
+The library comes with an application, `uxf` which provides UXF comparisons,
+linting, and formatting functionality. Run `uxf -h` for details.
+
 # API Notes
 
 Comments, ktypes, vtypes, are all strings. If a ktype or vtype is empty this
