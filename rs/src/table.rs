@@ -6,10 +6,11 @@
 ///
 /// The safest way to access a record is using one of the `*_named()`
 /// methods, e.g., `first_named(), `last_named()`, or `get_named(row)`.
-/// These return a `HashMap<&str, &Value>` whose keys are field names and
-/// whose values are the corresponding field values. Using these methods is
-/// more robust in the face of change since they are not field-index
-/// dependent as the `first()`, `last()`, and `get(row)` methods are.
+/// These return a `NamedRecord` (a `HashMap<&str, &Value>`) whose keys are
+/// field names and whose values are the corresponding field values. Using
+/// these methods is more robust in the face of change since they are not
+/// field-index dependent as the `first()`, `last()`, and `get(row)` methods
+/// are.
 use crate::tclass::TClass;
 use crate::util::escape;
 use crate::uxf::Compare;
@@ -20,6 +21,10 @@ use std::{
     fmt,
     ops::{Index, IndexMut},
 };
+
+/// The keys are field names and the values are the corresponding field
+/// values.
+pub type NamedRecord<'a> = HashMap<&'a str, &'a Value>;
 
 #[derive(Clone, Debug)]
 pub struct Table {
@@ -90,10 +95,10 @@ impl Table {
         self.records.is_empty()
     }
 
-    /// Returns the record as a `Some(HashMap<&str, &Value>)` whose keys are
+    /// Returns the record as a `Some(NamedRecord)` whose keys are
     /// field names and whose values are field values at `row` 0 if any;
     /// otherwise `None`.
-    pub fn first_named(&self) -> Option<HashMap<&str, &Value>> {
+    pub fn first_named(&self) -> Option<NamedRecord> {
         self.get_named(0)
     }
 
@@ -102,10 +107,10 @@ impl Table {
         self.records.get(0)
     }
 
-    /// Returns the record as a `Some(HashMap<&str, &Value>)` whose keys are
+    /// Returns the record as a `Some(NamedRecord)` whose keys are
     /// field names and whose values are field values at `row` 1 if any;
     /// otherwise `None`.
-    pub fn second_named(&self) -> Option<HashMap<&str, &Value>> {
+    pub fn second_named(&self) -> Option<NamedRecord> {
         self.get_named(1)
     }
 
@@ -114,10 +119,10 @@ impl Table {
         self.records.get(1)
     }
 
-    /// Returns the record as a `Some(HashMap<&str, &Value>)` whose keys are
+    /// Returns the record as a `Some(NamedRecord)` whose keys are
     /// field names and whose values are field values at `row` 2 if any;
     /// otherwise `None`.
-    pub fn third_named(&self) -> Option<HashMap<&str, &Value>> {
+    pub fn third_named(&self) -> Option<NamedRecord> {
         self.get_named(2)
     }
 
@@ -126,10 +131,10 @@ impl Table {
         self.records.get(2)
     }
 
-    /// Returns the record as a `Some(HashMap<&str, &Value>)` whose keys are
+    /// Returns the record as a `Some(NamedRecord)` whose keys are
     /// field names and whose values are field values at `row` 3 if any;
     /// otherwise `None`.
-    pub fn fourth_named(&self) -> Option<HashMap<&str, &Value>> {
+    pub fn fourth_named(&self) -> Option<NamedRecord> {
         self.get_named(3)
     }
 
@@ -138,10 +143,10 @@ impl Table {
         self.records.get(3)
     }
 
-    /// Returns the last record as a `Some(HashMap<&str, &Value>)` whose
+    /// Returns the last record as a `Some(NamedRecord)` whose
     /// keys are field names and whose values are field values if the table
     /// isn't empty; otherwise `None`.
-    pub fn last_named(&self) -> Option<HashMap<&str, &Value>> {
+    pub fn last_named(&self) -> Option<NamedRecord> {
         self.get_named(self.len() - 1)
     }
 
@@ -151,10 +156,10 @@ impl Table {
         self.records.get(self.len() - 1)
     }
 
-    /// Returns a record as a `Some(HashMap<&str, &Value>)` whose keys are
+    /// Returns a record as a `Some(NamedRecord)` whose keys are
     /// field names and whose values are field values if `row` is in
     /// bounds; otherwise `None`.
-    pub fn get_named(&self, row: usize) -> Option<HashMap<&str, &Value>> {
+    pub fn get_named(&self, row: usize) -> Option<NamedRecord> {
         if let Some(record) = self.records.get(row) {
             let mut named = HashMap::new();
             for (i, name) in self.tclass.fieldnames().iter().enumerate() {

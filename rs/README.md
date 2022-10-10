@@ -29,6 +29,8 @@ Overview](https://github.com/mark-summerfield/uxf/blob/main/README.md).)
 
 ## Changes
 
+- 1.2.2 Added convenience `NamedRecord` type.
+- 1.2.1 More convenience methods.
 - 1.2.0 Added `push_t()` and `push_many()` convenience methods. Added
   `first_named()`, `first()`, and similar methods to `Table`.
 - 1.1.1 Added more convenience From conversions to Value.
