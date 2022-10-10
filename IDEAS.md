@@ -1,13 +1,15 @@
-= Ideas
+# Ideas
 
-== More UXF library implementations
+Ideas under considerations (and [rejected ideas](#rejected-ideas)).
+
+## More UXF library implementations
 
 - C++
 - Java?
 - JS: use Dart or TypeScript or similar that can output JS?
 - ...?
 
-== UXF Improvements
+## UXF Improvements
 
 - Add three new pseudo-types:
     - `key` which will accept any ``bytes``, ``date``, ``datetime``,
@@ -25,7 +27,7 @@
 - Silent repairs: rs & py: uxf 1\n{1} → uxf 1\n{} — silent repair; ought to
   error?
 
-== More and better Documentation:
+## More and better Documentation:
 
 - Complete manual with egs and use cases
     - Part I Preliminaries
@@ -38,18 +40,18 @@
         Implementations // Python // Rust? // JS? // ???
 - Uniform eXchange Format - a 7"x9" PDF book? (see paper notes)
 
-== Verification suite
+## Verification suite
 
 Create files (valid & invalid UXF etc) & language/library-neutral scripts
 for validating a UXF processor's conformance.
 
-== UXF as Data Storage
+## UXF as Data Storage
 
 Experiment with using UXF format to store various kinds of data, e.g.,
 typesetting language, spreadsheet, graphics, etc., & equivalents to other
 formats, e.g., geojson, etc.
 
-== UXF Languages
+## UXF Languages
 
 All these using UXF syntax:
 
@@ -57,35 +59,35 @@ All these using UXF syntax:
 - A UXF schema language
 - A UXF transformation (XSLT-like) language
 
-== GeoUXF
+## GeoUXF
 
 create geo.uxi based on GeoJSON and if successful create:
 
    uxfgeo.py <infile.{json,geojson,uxf,uxg}> <outfile.{json,geojson,uxf,uxg}>
 
-== Articles
+## Articles
 
 Article(s) on replacing csv with uxf & ini/json/toml with uxf.
 
-== Applications
+## Applications
 
 uxfedit (GUI) application (fltk-rs?)
 
-== Rejected Ideas
+## Rejected Ideas
 
-=== Aliases
+### Aliases
 
 **This considerably complicates the type system — is it worth it?**
 
 uxf branch alias
 
-==== BNF
+#### BNF
 
     VALUETYPE    ::= KEYTYPE | 'bool' | 'real' | 'list' | 'map' | 'table' | IDENFIFIER # IDENFIFIER is an alias or a table name
     ALIAS        ::= '@' COMMENT? OWS IDENFIFIER (RWS (VALUETYPE | ALIASTYPE))+ # IDENFIFIER is the alias
     ALIASTYPE    ::= '[' OWS (VALUETYPE | ALIASTYPE) OWS ']' '{' OWS KEYTYPE (RWS (VALUETYPE | ALIASTYPE))? '}'
 
-==== Additional system import
+#### Additional system import
 
     !aliases
 
@@ -96,7 +98,7 @@ which is equivalent to:
     @number int real
     @scalar bool key real
 
-==== Examples
+#### Examples
 
 **Motivating examples: if there aren't any then this isn't worth doing!**
 
@@ -108,17 +110,17 @@ which is equivalent to:
       (Point  1 2.3 4 5.6 7 8.9)
     ]
 
-=== Union Types
+### Union Types
 
 Could be done with aliases: too conceptually dificult for broad range of
 target users & introduces too much syntactic complexity.
 
-== Notnullability
+### Notnullability
 
 Could be done with aliases: too conceptually dificult for broad range of
 target users & introduces too much syntactic complexity.
 
-=== Support for Table max\_records
+### Support for Table max\_records
 
 	TTYPEDEF ::= '=' COMMENT? OWS IDENFIFIER (RWS INT)? (RWS FIELD)*
 
@@ -129,23 +131,23 @@ present. For all other tables this is None for no limit or an int.
 
 Adds a little complexity for very little benefit.
 
-=== Use fieldless tables instead of bools
+### Use fieldless tables instead of bools
 
 Replace yes and no bools with built-in fieldless tables, (Y) (N)
 
-=== Money type
+### Money type
 
 A twelfth type) e.g., `MONEY ::= '$' REAL`.
 
 Instead, use, say ``=Money currency:str amount``; or, ``=USD amount``, or
 similar, (where amount could be str or int or real
 
-=== Datetimes with timezones
+### Datetimes with timezones
 
 Use, say ``=DateTime when:datetime tz:str``, or use say ``=TimeZone
 tz:str``, e.g., ``(TimeZone <+00:30> 2021-11-17 ...)``
 
-=== Elide ttypes
+### Elide ttypes
 
 For example, given ``=Pair a b``
 
