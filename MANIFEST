@@ -1,7 +1,3 @@
-# TODO rs 1.2.3
-# - add module-level docs for uxf.rs, value.rs, etc...
-#   . incl. egs/doctests
-# - doc review
 # TODO C++ app & lib
 
 regression.py

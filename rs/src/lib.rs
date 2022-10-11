@@ -64,12 +64,12 @@ For TClasses the ttype is also a string, and this may not be empty.
 
 # Application Examples
 
-- [amp](https://github.com/mark-summerfield/amp-rs) application uses UXF
+- The [amp](https://github.com/mark-summerfield/amp-rs) application uses UXF
 to store its configuration (see its `src/config.rs` file).
-- [tlm](https://github.com/mark-summerfield/tlm) application uses UXF for
-two purposes: to store its configuration (see its `src/config.rs` file), and
-for its application data files (see its `src/model.rs` file—in particular
-the functions whose names end with `_uxf`).
+- The [tlm](https://github.com/mark-summerfield/tlm) application uses UXF
+for two purposes: to store its configuration (see its `src/config.rs` file),
+and for its application data files (see its `src/model.rs` file—in
+particular the functions whose names end with `_uxf`).
 
 # Tests
 
