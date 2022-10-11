@@ -1,9 +1,9 @@
-#ifndef LIB_HPP
-#define LIB_HPP
+#ifndef VALUE_HPP
+#define VALUE_HPP
 
-int version(); // TODO delete: use a const instead
+namespace uxf {
 
-class BaseValue;
+class Value;
 class CollectionValue;
 class MapValue;
 class SerialValue;
@@ -15,11 +15,10 @@ class KeyValue;
 class IntValue;
 class StrValue;
 
-class BaseValue {
-    // TODO operator< operator==
+class Value {
 };
 
-class CollectionValue : BaseValue {
+class CollectionValue : Value {
 };
 
 class MapValue : CollectionValue {
@@ -34,10 +33,10 @@ class ListValue: SerialValue {
 class TableValue: SerialValue {
 };
 
-class ScalarValue : BaseValue {
+class ScalarValue : Value {
 };
 
-class NullValue : ScalarValue {
+class NullValue : Value {
 };
 
 class KeyValue : ScalarValue {
@@ -48,4 +47,6 @@ class IntValue : KeyValue {
 
 class StrValue : KeyValue {
 };
-#endif // LIB_HPP
+
+}
+#endif // VALUE_HPP

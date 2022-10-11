@@ -8,6 +8,14 @@ regression.py
 testdata/regression.dat.gz
 testdata/errortests.dat.gz
 
+c++/src/SConscript
+c++/src/cli.cpp
+c++/src/uxf.hpp
+c++/src/uxf.cpp
+c++/src/value.hpp
+c++/src/value.cpp
+c++/SConstruct
+
 rs/src/bin/uxf.rs
 rs/src/lib.rs
 rs/src/value.rs

@@ -1,0 +1,13 @@
+app = 'cli.cpp'
+libs = [
+   # uxf.hpp
+    'uxf.cpp',
+   # value.hpp
+    'value.cpp',
+    ]
+
+env = Environment()
+uxf_lib = env.Library('uxf', libs)
+uxf_exe = env.Program('uxf', app, LIBS=['uxf'], LIBPATH='.')
+env.Install('../dist', uxf_lib)
+env.Install('../dist', uxf_exe)
