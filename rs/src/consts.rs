@@ -1,7 +1,7 @@
 // Copyright © 2022 Mark Summerfield. All rights reserved.
 // License: GPLv3
 
-/// Constants used throughout the uxf module.
+/*! Constants used throughout the uxf module. */
 pub const UXF_VERSION: u16 = 1;
 pub static VERSION: &str = env!("CARGO_PKG_VERSION");
 

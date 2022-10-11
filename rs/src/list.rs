@@ -1,8 +1,10 @@
 // Copyright © 2022 Mark Summerfield. All rights reserved.
 // License: GPLv3
 
-/// A List holds a vtype (a possibly empty string), a comment (also possibly
-/// empty), and a (possibly empty) vector of Values.
+/*!
+A List holds a vtype (a possibly empty string), a comment (also possibly
+empty), and a (possibly empty) vector of Values.
+*/
 use crate::check::check_vtype;
 use crate::util::escape;
 use crate::uxf::Compare;

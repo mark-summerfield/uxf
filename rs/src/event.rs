@@ -1,21 +1,21 @@
 // Copyright © 2022 Mark Summerfield. All rights reserved.
 // License: GPLv3
 
-/// When parsing a UXF file, errors produce an Err and halt the parse.
-///
-/// To access the Event details from a Result::Err see test_list.rs's
-/// t_list_err() test.
-///
-/// However, warnings and repairs result in a call to on_event() which
-/// prints the details to stderr.
-///
-/// If you want to ignore warnings and repairs, use parse_options() passing
-/// ignore_event() as the on_event handler.
-///
-/// If you want to take over the handling of warnings and repairs, again use
-/// parse_options(), but this time pass your own custom function as the
-/// on_event handler.
+/*! When parsing a UXF file, errors produce an Err and halt the parse.
 
+To access the Event details from a Result::Err see test_list.rs's
+t_list_err() test.
+
+However, warnings and repairs result in a call to on_event() which
+prints the details to stderr.
+
+If you want to ignore warnings and repairs, use parse_options() passing
+ignore_event() as the on_event handler.
+
+If you want to take over the handling of warnings and repairs, again use
+parse_options(), but this time pass your own custom function as the
+on_event handler.
+*/
 use std::{fmt, rc::Rc};
 
 pub type OnEventFn = Rc<dyn Fn(&Event)>;

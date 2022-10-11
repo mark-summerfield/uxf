@@ -1,9 +1,10 @@
 // Copyright © 2022 Mark Summerfield. All rights reserved.
 // License: GPLv3
 
-/// A Map holds a ktype (a possibly empty string), vtype (also possibly
-/// empty), a comment (also possibly empty), and a (possibly empty) map
-/// of Key-Value pairs.
+/*! A Map holds a ktype (a possibly empty string), vtype (also possibly
+empty), a comment (also possibly empty), and a (possibly empty) map
+of Key-Value pairs.
+*/
 use crate::check::{check_ktype_x, check_vtype_x};
 use crate::key::Key;
 use crate::util::escape;

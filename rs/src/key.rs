@@ -3,7 +3,7 @@
 
 // NOTE Keep in harmony with Value
 
-/// The Key type holds a sclara value suitable for use as a Map key.
+/*! The Key type holds a sclara value suitable for use as a Map key. */
 use crate::consts::*;
 use crate::util::escape;
 use crate::value::{bytes_to_uxf, Value};

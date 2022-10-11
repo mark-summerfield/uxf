@@ -1,7 +1,7 @@
 // Copyright © 2022 Mark Summerfield. All rights reserved.
 // License: GPLv3
 
-/// Internal use—publically visible because I don't know how to hide it.
+/*! Internal use—publically visible because I don't know how to hide it. */
 use crate::consts::*;
 use anyhow::{bail, Result};
 

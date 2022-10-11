@@ -1,26 +1,27 @@
 // Copyright © 2022 Mark Summerfield. All rights reserved.
 // License: GPLv3
 
-/// A Uxf object represents a UXF file in memory.
-///
-/// A Uxf object holds a single value of type Value. This single value is
-/// always a List, Map, or Table, each of which can hold any number of other
-/// Values, both collections and scalars. In addition a Uxf object holds a
-/// custom string (which may be empty), a comment string (which may be
-/// empty), a HashMap each of whose keys is a ttype name and whose
-/// corresponding value is a TClass, and an IndexMap each of whose keys is a
-/// ttype name and whose corresponding value is an import string.
-///
-/// The easiest way to obtain a Uxf object is to use one of the module level
-/// parse() or parse_options() methods. These accept a UXF file as a string
-/// literal, or a filename (in which case they read the file).
-///
-/// To save a Uxf object use to_text() to obtain a string in human-friendly
-/// form, or to_string() for faster but not particularly friendly
-/// formatting, or write() or write_format() to wite to a file.
-///
-/// Uxf objects can be created entirely programmatically. And all the data
-/// in a Uxf object can be visited using the visit() method.
+/*! A Uxf object represents a UXF file in memory.
+
+A Uxf object holds a single value of type Value. This single value is
+always a List, Map, or Table, each of which can hold any number of other
+Values, both collections and scalars. In addition a Uxf object holds a
+custom string (which may be empty), a comment string (which may be
+empty), a HashMap each of whose keys is a ttype name and whose
+corresponding value is a TClass, and an IndexMap each of whose keys is a
+ttype name and whose corresponding value is an import string.
+
+The easiest way to obtain a Uxf object is to use one of the module level
+parse() or parse_options() methods. These accept a UXF file as a string
+literal, or a filename (in which case they read the file).
+
+To save a Uxf object use to_text() to obtain a string in human-friendly
+form, or to_string() for faster but not particularly friendly
+formatting, or write() or write_format() to wite to a file.
+
+Uxf objects can be created entirely programmatically. And all the data
+in a Uxf object can be visited using the visit() method.
+*/
 use crate::consts::*;
 use crate::event::{self, OnEventFn};
 use crate::format::Format;
