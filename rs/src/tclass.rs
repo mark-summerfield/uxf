@@ -1,6 +1,14 @@
 // Copyright © 2022 Mark Summerfield. All rights reserved.
 // License: GPLv3
 
+/// A TClass represents a Table's type: its ttype (i.e., table type name),
+/// and its fields.
+///
+/// A TClass may have no fields (for a fieldless table), and may have a
+/// comment.
+///
+/// The easiest way to programmatically create a TClass is to use the
+/// make_tclass() function.
 use crate::check::check_ttype;
 use crate::field::{check_fields, make_field, Field};
 use crate::util::escape;

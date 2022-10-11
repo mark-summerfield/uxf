@@ -2,7 +2,7 @@
 // License: GPLv3
 
 /// A List holds a vtype (a possibly empty string), a comment (also possibly
-/// empty), and a (possibly empty) vector or Values.
+/// empty), and a (possibly empty) vector of Values.
 use crate::check::check_vtype;
 use crate::util::escape;
 use crate::uxf::Compare;

@@ -1,6 +1,12 @@
 // Copyright © 2022 Mark Summerfield. All rights reserved.
 // License: GPLv3
 
+/// A Format is used to specify how to format a UXF file written using a
+/// pretty printing method (Uxf::write(), Uxf::write_format(),
+/// Uxf::to_text(), or Uxf::to_text_format()).
+///
+/// A Format holds an indent, a wrapwidth, and realdp which controls how
+/// real numbers are formatted.
 use crate::consts::*;
 
 #[derive(Clone, Debug)]

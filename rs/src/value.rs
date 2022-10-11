@@ -1,8 +1,7 @@
 // Copyright © 2022 Mark Summerfield. All rights reserved.
 // License: GPLv3
 
-/// The Value type is in many respects the heart of the Rust UXF library
-/// implementation.
+/// A Value object represents a UXF datum in memory.
 ///
 /// A Value may be a scalar or a collection (which in turn may hold scalars
 /// or collections, recursively). So a single Value may hold an arbitrarily

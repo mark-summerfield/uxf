@@ -1,6 +1,7 @@
 // Copyright © 2022 Mark Summerfield. All rights reserved.
 // License: GPLv3
 
+/// This module provides some useful UXF utility functions.
 use crate::consts::*;
 use anyhow::{bail, Context, Result};
 use flate2::read::GzDecoder;

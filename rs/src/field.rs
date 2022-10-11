@@ -1,6 +1,12 @@
 // Copyright © 2022 Mark Summerfield. All rights reserved.
 // License: GPLv3
 
+/// A Field represents one field of a Table's type: its name and vtype
+/// (which may be empty).
+///
+/// The easiest way to create a Field is using the make_field() function.
+/// Note that the easiest way to create a TClass is to use the make_tclass()
+/// function.
 use crate::check::{check_name, check_vtype};
 use anyhow::{bail, Result};
 use std::{cmp::Ordering, collections::HashSet, fmt};

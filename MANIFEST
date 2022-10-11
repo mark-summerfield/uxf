@@ -20,7 +20,7 @@ rs/src/bin/uxf.rs
 rs/src/lib.rs
 rs/src/value.rs
 rs/src/key.rs
-rs/src/list.rs # TODO
+rs/src/list.rs
 rs/src/map.rs
 rs/src/table.rs
 rs/src/tclass.rs

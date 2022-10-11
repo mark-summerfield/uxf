@@ -4,6 +4,9 @@
 /// The `Table` type is used to store zero or more records (always zero in
 /// the case of a fieldless table).
 ///
+/// A Table also has a TClass a ttype (the TClass's name), and a (possibly
+/// empty) comment.
+///
 /// The safest way to access a record is using one of the `*_named()`
 /// methods, e.g., `first_named(), `last_named()`, or `get_named(row)`.
 /// These return a `NamedRecord` (a `HashMap<&str, &Value>`) whose keys are
@@ -11,6 +14,9 @@
 /// these methods is more robust in the face of change since they are not
 /// field-index dependent as the `first()`, `last()`, and `get(row)` methods
 /// are.
+///
+/// The easiest way to create a Table is to use Table::new() with the TClass
+/// provided by the make_tclass() function.
 use crate::tclass::TClass;
 use crate::util::escape;
 use crate::uxf::Compare;
