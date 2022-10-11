@@ -5,9 +5,22 @@ Ideas under considerations (and [rejected ideas](#rejected-ideas)).
 ## More UXF library implementations
 
 - C++
-- Java?
+- Java — or a JVM language (Scala 3, Kotlin, ...?)
 - JS: use Dart or TypeScript or similar that can output JS?
-- ...?
+
+Then focus on uses...
+
+## UXF Uses
+
+Experiment with using UXF format to store various kinds of data, e.g.,
+typesetting language, spreadsheet, graphics, etc., & equivalents to other
+formats, e.g., geojson, etc.
+
+### GeoUXF
+
+create geo.uxi based on GeoJSON and if successful create:
+
+   uxfgeo.py <infile.{json,geojson,uxf,uxg}> <outfile.{json,geojson,uxf,uxg}>
 
 ## UXF Improvements
 
@@ -45,12 +58,6 @@ Ideas under considerations (and [rejected ideas](#rejected-ideas)).
 Create files (valid & invalid UXF etc) & language/library-neutral scripts
 for validating a UXF processor's conformance.
 
-## UXF as Data Storage
-
-Experiment with using UXF format to store various kinds of data, e.g.,
-typesetting language, spreadsheet, graphics, etc., & equivalents to other
-formats, e.g., geojson, etc.
-
 ## UXF Languages
 
 All these using UXF syntax:
@@ -59,17 +66,11 @@ All these using UXF syntax:
 - A UXF schema language
 - A UXF transformation (XSLT-like) language
 
-## GeoUXF
-
-create geo.uxi based on GeoJSON and if successful create:
-
-   uxfgeo.py <infile.{json,geojson,uxf,uxg}> <outfile.{json,geojson,uxf,uxg}>
-
 ## Articles
 
 Article(s) on replacing csv with uxf & ini/json/toml with uxf.
 
-## Applications
+## Supporting Applications
 
 uxfedit (GUI) application (fltk-rs?)
 
