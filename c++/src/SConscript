@@ -1,8 +1,10 @@
 app = 'cli.cpp'
 test = 't.cpp'
 libs = Glob('*.cpp', exclude=[app, test])
-env = Environment(CXXFLAGS='-std=c++17 -Wall -Wextra -O2',
-                  CPPDEFINES='RELEASE')
+cxxflags = '-Wall -O2'
+if Environment()['PLATFORM'] == 'posix':
+    cxxflags += ' -std=c++17 -Wextra'
+env = Environment(CXXFLAGS=cxxflags, CPPDEFINES='RELEASE')
 uxf_lib = env.Library('uxf', libs)
 uxf_exe = env.Program('uxf', app, LIBS=['uxf'], LIBPATH='.')
 test_exe = env.Program('t', test, LIBS=['uxf'], LIBPATH='.')
