@@ -15,7 +15,7 @@ c++/src/listvalue.cpp
 c++/src/mapvalue.cpp
 c++/src/tablevalue.cpp
 c++/src/consts.hpp
-c++/src/err.hpp
+c++/src/error.hpp
 c++/SConstruct
 
 rs/src/bin/uxf.rs
