@@ -1,18 +1,8 @@
 app = 'cli.cpp'
 test = 't.cpp'
-libs = Split('''
-    uxf.cpp
-    value.cpp
-    listvalue.cpp
-    mapvalue.cpp
-    tablevalue.cpp
-''')
-
-env = Environment()
-cxxflags = '-Wall -Wextra -O2'
-if env['PLATFORM'] == 'posix':
-    cxxflags += ' -std=c++2a'
-env.Append(CXXFlags=cxxflags)
+libs = Glob('*.cpp', exclude=[app, test])
+env = Environment(CXXFLAGS='-std=c++17 -Wall -Wextra -O2',
+                  CPPDEFINES='RELEASE')
 uxf_lib = env.Library('uxf', libs)
 uxf_exe = env.Program('uxf', app, LIBS=['uxf'], LIBPATH='.')
 test_exe = env.Program('t', test, LIBS=['uxf'], LIBPATH='.')

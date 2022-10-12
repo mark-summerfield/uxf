@@ -4,6 +4,7 @@
 #ifndef VALUE_HPP
 #define VALUE_HPP
 
+#include <string_view>
 #include "consts.hpp"
 #include "err.hpp"
 
@@ -19,8 +20,10 @@ class SerialValue;
 class ListValue;
 class TableValue;
 class ScalarValue;
+class BoolValue;
 class RealValue;
 class KeyValue;
+class BytesValue;
 class DateValue;
 class DateTimeValue;
 class IntValue;
@@ -31,15 +34,16 @@ Value* naturalize(const char* s);
 class Value {
 public:
     virtual ~Value() {}
-    virtual const char* uxf_typename() const;
+    virtual const string_view uxf_typename() const = 0;
 };
 
 class NullValue : public Value {
 public:
-    const char* uxf_typename() const { return VALUE_NAME_NULL; }
+    const string_view uxf_typename() const { return VALUE_NAME_NULL; }
 };
 
 class CollectionValue : public Value {
+    virtual bool empty() const = 0;
     virtual size_t size() const = 0;
     virtual void push(Value *value) = 0;
     // TODO push_many()
@@ -50,7 +54,7 @@ public:
     bool empty() const;
     void push(Value *value);
     size_t size() const;
-    const char* uxf_typename() const { return VTYPE_NAME_MAP; }
+    const string_view uxf_typename() const { return VTYPE_NAME_MAP; }
 };
 
 class SerialValue : public CollectionValue {
@@ -61,7 +65,7 @@ public:
     bool empty() const;
     void push(Value *value);
     size_t size() const;
-    const char* uxf_typename() const { return VTYPE_NAME_LIST; }
+    const string_view uxf_typename() const { return VTYPE_NAME_LIST; }
 };
 
 class TableValue: public SerialValue {
@@ -69,41 +73,9 @@ public:
     bool empty() const;
     void push(Value *value);
     size_t size() const;
-    const char* uxf_typename() const { return VTYPE_NAME_TABLE; }
-};
-
-class ScalarValue : public Value {
-public:
-};
-
-class RealValue : public ScalarValue {
-public:
-    const char* uxf_typename() const { return VTYPE_NAME_REAL; }
-};
-
-class KeyValue : public ScalarValue {
-public:
-};
-
-class DateValue : public KeyValue {
-public:
-    const char* uxf_typename() const { return VTYPE_NAME_DATE; }
-};
-
-class DateTimeValue : public KeyValue {
-public:
-    const char* uxf_typename() const { return VTYPE_NAME_DATETIME; }
-};
-
-class IntValue : public KeyValue {
-public:
-    const char* uxf_typename() const { return VTYPE_NAME_INT; }
-};
-
-class StrValue : public KeyValue {
-public:
-    const char* uxf_typename() const { return VTYPE_NAME_STR; }
+    const string_view uxf_typename() const { return VTYPE_NAME_TABLE; }
 };
 
 }
+
 #endif // VALUE_HPP

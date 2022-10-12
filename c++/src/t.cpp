@@ -7,6 +7,8 @@
 using namespace std;
 
 int main() {
+    cout << "t (C++ UXF tester) uxf v" << uxf::VERSION << " (uxf "
+         << uxf::UXF_VERSION << ")\n";
     auto v = new uxf::IntValue();
     cout << "int = " << v << endl;
     auto lst = new uxf::ListValue();
