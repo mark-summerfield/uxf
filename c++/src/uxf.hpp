@@ -1,3 +1,6 @@
+// Copyright © 2022 Mark Summerfield. All rights reserved.
+// License: GPLv3
+
 #ifndef UXF_HPP
 #define UXF_HPP
 

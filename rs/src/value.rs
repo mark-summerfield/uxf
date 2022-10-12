@@ -83,12 +83,13 @@ impl Value {
     }
 
     /// Returns `true` if this can be used as a Map key (i.e., Bytes, Date,
-    /// Int, or Str); otherwise returns `false`.
+    /// DateTime, Int, or Str); otherwise returns `false`.
     pub fn is_ktype(&self) -> bool {
         matches!(
             self,
             Value::Bytes(_)
                 | Value::Date(_)
+                | Value::DateTime(_)
                 | Value::Int(_)
                 | Value::Str(_)
         )

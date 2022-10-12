@@ -11,6 +11,10 @@ c++/src/uxf.hpp
 c++/src/uxf.cpp
 c++/src/value.hpp
 c++/src/value.cpp
+c++/src/listvalue.cpp
+c++/src/mapvalue.cpp
+c++/src/tablevalue.cpp
+c++/src/consts.hpp
 c++/src/err.hpp
 c++/SConstruct
 

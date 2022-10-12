@@ -1,15 +1,14 @@
+// Copyright © 2022 Mark Summerfield. All rights reserved.
+// License: GPLv3
+
 #include <iostream>
 #include "uxf.hpp"
 
 using namespace std;
 
 int main() {
-    auto v = new uxf::Value();
-    try {
-        cout << "t " << v->size() << endl;
-    } catch (uxf::Error& err) {
-        cout << "error: " << err.what() << endl;
-    }
+    auto v = new uxf::IntValue();
+    cout << "int = " << v << endl;
     auto lst = new uxf::ListValue();
-    cout << "list size = " << lst->size() << endl;
+    cout << "list size = " << lst->size() << ' ' << lst << endl;
 }

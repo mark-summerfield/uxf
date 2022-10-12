@@ -1,3 +1,6 @@
+// Copyright © 2022 Mark Summerfield. All rights reserved.
+// License: GPLv3
+
 #ifndef ERR_HPP
 #define ERR_HPP
 
