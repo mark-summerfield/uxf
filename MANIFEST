@@ -6,10 +6,12 @@ testdata/errortests.dat.gz
 
 c++/src/SConscript
 c++/src/cli.cpp
+c++/src/t.cpp
 c++/src/uxf.hpp
 c++/src/uxf.cpp
 c++/src/value.hpp
 c++/src/value.cpp
+c++/src/err.hpp
 c++/SConstruct
 
 rs/src/bin/uxf.rs

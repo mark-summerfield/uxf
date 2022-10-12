@@ -1,6 +1,10 @@
 #ifndef VALUE_HPP
 #define VALUE_HPP
 
+#include "err.hpp"
+
+using namespace std;
+
 namespace uxf {
 
 class Value;
@@ -12,40 +16,58 @@ class TableValue;
 class ScalarValue;
 class NullValue;
 class KeyValue;
+class DateValue;
+class DateTimeValue;
 class IntValue;
 class StrValue;
 
 class Value {
+public:
+    virtual ~Value() {}
+
+    virtual size_t size() const {
+        throw Error("scalars don't have a size");
+    }
 };
 
-class CollectionValue : Value {
+class CollectionValue : public Value {
 };
 
-class MapValue : CollectionValue {
+class MapValue : public CollectionValue {
 };
 
-class SerialValue : CollectionValue {
+class SerialValue : public CollectionValue {
 };
 
-class ListValue: SerialValue {
+class ListValue: public SerialValue {
+public:
+    size_t size() const {
+        return 0; // TODO
+    }
 };
 
-class TableValue: SerialValue {
+class TableValue: public SerialValue {
 };
 
-class ScalarValue : Value {
+class ScalarValue : public Value {
 };
 
-class NullValue : Value {
+class NullValue : public Value {
 };
 
-class KeyValue : ScalarValue {
+class KeyValue : public ScalarValue {
 };
 
-class IntValue : KeyValue {
+class DateValue : public KeyValue {
 };
 
-class StrValue : KeyValue {
+class DateTimeValue : public KeyValue {
+};
+
+class IntValue : public KeyValue {
+};
+
+class StrValue : public KeyValue {
 };
 
 }

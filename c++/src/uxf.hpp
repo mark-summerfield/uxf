@@ -3,6 +3,8 @@
 
 #include "value.hpp"
 
+using namespace std;
+
 namespace uxf {
 
 static const char* VERSION = "0.1.0";

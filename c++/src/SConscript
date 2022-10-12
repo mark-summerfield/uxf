@@ -5,9 +5,12 @@ libs = [
    # value.hpp
     'value.cpp',
     ]
+test = 't.cpp'
 
 env = Environment()
 uxf_lib = env.Library('uxf', libs)
 uxf_exe = env.Program('uxf', app, LIBS=['uxf'], LIBPATH='.')
+test_exe = env.Program('t', test, LIBS=['uxf'], LIBPATH='.')
 env.Install('../dist', uxf_lib)
 env.Install('../dist', uxf_exe)
+env.Install('../dist', test_exe)
