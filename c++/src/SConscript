@@ -8,6 +8,7 @@ libs = [
 test = 't.cpp'
 
 env = Environment()
+env.Append(CPPFlags='-Wall -Wextra -O2')
 uxf_lib = env.Library('uxf', libs)
 uxf_exe = env.Program('uxf', app, LIBS=['uxf'], LIBPATH='.')
 test_exe = env.Program('t', test, LIBS=['uxf'], LIBPATH='.')

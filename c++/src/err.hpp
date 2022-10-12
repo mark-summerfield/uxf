@@ -9,10 +9,10 @@ namespace uxf {
 
 class Error : public std::exception {
 public:
-    Error(const char* message) : m_message(message) {}
-    const char* what() const throw() { return m_message; }
+    Error(const char* message) : message_(message) {}
+    const char* what() const throw() { return message_; }
 private:
-    const char* m_message;
+    const char* message_;
 };
 
 }
