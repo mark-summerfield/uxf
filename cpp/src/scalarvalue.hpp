@@ -14,12 +14,16 @@ public:
 
 class BoolValue : public ScalarValue {
 public:
-    const string_view uxf_typename() const { return VTYPE_NAME_BOOL; }
+    const string_view uxf_typename() const {
+        return VTYPE_NAME_BOOL;
+    }
 };
 
 class RealValue : public ScalarValue {
 public:
-    const string_view uxf_typename() const { return VTYPE_NAME_REAL; }
+    const string_view uxf_typename() const {
+        return VTYPE_NAME_REAL;
+    }
 };
 
 class KeyValue : public ScalarValue {
@@ -28,27 +32,37 @@ public:
 
 class BytesValue : public KeyValue {
 public:
-    const string_view uxf_typename() const { return VTYPE_NAME_BYTES; }
+    const string_view uxf_typename() const {
+        return VTYPE_NAME_BYTES;
+    }
 };
 
 class DateValue : public KeyValue {
 public:
-    const string_view uxf_typename() const { return VTYPE_NAME_DATE; }
+    const string_view uxf_typename() const {
+        return VTYPE_NAME_DATE;
+    }
 };
 
 class DateTimeValue : public KeyValue {
 public:
-    const string_view uxf_typename() const { return VTYPE_NAME_DATETIME; }
+    const string_view uxf_typename() const {
+        return VTYPE_NAME_DATETIME;
+    }
 };
 
 class IntValue : public KeyValue {
 public:
-    const string_view uxf_typename() const { return VTYPE_NAME_INT; }
+    const string_view uxf_typename() const {
+        return VTYPE_NAME_INT;
+    }
 };
 
 class StrValue : public KeyValue {
 public:
-    const string_view uxf_typename() const { return VTYPE_NAME_STR; }
+    const string_view uxf_typename() const {
+        return VTYPE_NAME_STR;
+    }
 };
 
 }

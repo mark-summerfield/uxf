@@ -39,7 +39,9 @@ public:
 
 class NullValue : public Value {
 public:
-    const string_view uxf_typename() const { return VALUE_NAME_NULL; }
+    const string_view uxf_typename() const {
+        return VALUE_NAME_NULL;
+    }
 };
 
 class CollectionValue : public Value {
@@ -54,7 +56,9 @@ public:
     bool empty() const;
     void push(Value *value);
     size_t size() const;
-    const string_view uxf_typename() const { return VTYPE_NAME_MAP; }
+    const string_view uxf_typename() const {
+        return VTYPE_NAME_MAP;
+    }
 };
 
 class SerialValue : public CollectionValue {
@@ -65,7 +69,9 @@ public:
     bool empty() const;
     void push(Value *value);
     size_t size() const;
-    const string_view uxf_typename() const { return VTYPE_NAME_LIST; }
+    const string_view uxf_typename() const {
+        return VTYPE_NAME_LIST;
+    }
 };
 
 class TableValue: public SerialValue {
@@ -73,7 +79,9 @@ public:
     bool empty() const;
     void push(Value *value);
     size_t size() const;
-    const string_view uxf_typename() const { return VTYPE_NAME_TABLE; }
+    const string_view uxf_typename() const {
+        return VTYPE_NAME_TABLE;
+    }
 };
 
 }
