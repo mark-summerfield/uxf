@@ -2,21 +2,21 @@ regression.py
 testdata/regression.dat.gz
 testdata/errortests.dat.gz
 
-c++/src/SConscript
-c++/src/cli.cpp
-c++/src/t.cpp
-c++/src/uxf.hpp
-c++/src/uxf.cpp
-c++/src/value.hpp
-c++/src/value.cpp
-c++/src/scalarvalue.hpp
-c++/src/scalarvalue.cpp
-c++/src/listvalue.cpp
-c++/src/mapvalue.cpp
-c++/src/tablevalue.cpp
-c++/src/consts.hpp
-c++/src/error.hpp
-c++/SConstruct
+cpp/src/SConscript
+cpp/src/cli.cpp
+cpp/src/t.cpp
+cpp/src/uxf.hpp
+cpp/src/uxf.cpp
+cpp/src/value.hpp
+cpp/src/value.cpp
+cpp/src/scalarvalue.hpp
+cpp/src/scalarvalue.cpp
+cpp/src/listvalue.cpp
+cpp/src/mapvalue.cpp
+cpp/src/tablevalue.cpp
+cpp/src/consts.hpp
+cpp/src/error.hpp
+cpp/SConstruct
 
 rs/src/bin/uxf.rs
 rs/src/lib.rs
