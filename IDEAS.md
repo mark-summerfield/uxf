@@ -78,9 +78,11 @@ uxfedit (GUI) application (fltk-rs?)
 
 ### Aliases
 
-**This considerably complicates the type system — is it worth it?**
+_This considerably complicates the type system — is it worth it?_
 
 uxf branch alias
+
+Aliases may be used only within ttype definitions.
 
 #### BNF
 
@@ -101,14 +103,15 @@ which is equivalent to:
 
 #### Examples
 
-**Motivating examples: if there aren't any then this isn't worth doing!**
-
     uxf 1
     !aliases
+    @ismap {int str}
     =Point x:number y:number
+    =Data name ismap
     [
       [number 1 2.3 4 5.6 7 8.9]
       (Point  1 2.3 4 5.6 7 8.9)
+      (Data <thing> {1 <one> 2 <two>})
     ]
 
 ### Union Types

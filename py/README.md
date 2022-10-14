@@ -1,12 +1,14 @@
 # Python UXF Library
 
 Uniform eXchange Format (UXF) is a plain text human readable optionally
-typed storage format. UXF is designed to make life easier for software
-developers and data designers. It directly competes with csv, ini, json,
-toml, and yaml formats. One key advantage of UXF is that it supports custom
-(i.e., user-defined) types. This can result in more compact, more readable,
-and easier to parse data. And in some contexts it may prove to be a
-convenient alternative to sqlite or xml.
+typed storage format that supports custom types.
+
+UXF is designed to make life easier for software developers and data
+designers. It directly competes with csv, ini, json, toml, and yaml formats.
+A key advantage of UXF is its support for custom (i.e., user-defined) types.
+This can result in more compact, more readable, and easier to parse data.
+And in some contexts it may prove to be a convenient alternative to sqlite
+or xml.
 
 For details of the Uniform eXchange Format (UXF) supported by this library,
 see the [UXF Overview](../README.md). ([PyPI link to UXF

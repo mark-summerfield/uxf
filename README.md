@@ -1,17 +1,14 @@
 # UXF Overview
 
 Uniform eXchange Format (UXF) is a plain text human readable optionally
-typed storage format.
+typed storage format that supports custom types.
 
 UXF is designed to make life easier for software developers and data
-designers. One key advantage of UXF is that it supports custom (i.e.,
-user-defined) types. This can result in more compact, more readable, and
-easier to parse data. In general, UXF provides a convenient, scalable,
-editable (by hand or using a library) file format that can be used for most
-purposes, from configuration files to application data. UXF-based formats
-are very easy to adapt to future requirements. UXF directly competes with
-csv, ini, json, toml, yaml, and similar formats. In some contexts it may
-prove to be a convenient alternative to sqlite or xml.
+designers. It directly competes with csv, ini, json, toml, and yaml formats.
+A key advantage of UXF is its support for custom (i.e., user-defined) types.
+This can result in more compact, more readable, and easier to parse data.
+And in some contexts it may prove to be a convenient alternative to sqlite
+or xml.
 
 - [Datatypes](#datatypes)
     - [Table of Built-in Types](#table-of-built-in-types)
