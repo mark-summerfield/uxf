@@ -23,11 +23,22 @@ Overview](https://github.com/mark-summerfield/uxf/blob/main/README.md).)
 
 ## Commmand Line tool
 
-- _uxf_ this can read UXF files (optionally gzip compressed) and lint and
-  output UXF files (optionally gzip compressed; optionally replacing imports
-  and dropping unused ttypes). It can also compare two UXF files for
-  equality or equivalence. (For a full diff, format the two files with the
-  same format options, and use a standard diff tool.)
+The _uxf_ tool can read UXF files (optionally gzip compressed) and lint and
+output UXF files (optionally gzip compressed; optionally replacing imports
+and dropping unused ttypes). It can also compare two UXF files for equality
+or equivalence. (For a full diff, format the two files with the same format
+options, and use a standard diff tool.)
+
+## Feedback
+
+Suggestions, comments, and pull requests for this library are welcome.
+
+Especially useful would be ideas on how to improve the APIs to improve
+usability.
+
+In this library `Uxf` objects and all the ``Value``s they contain are owned
+(like `String`); would it be possible/desirable to have an unsized type
+(like `str`)?
 
 ## Changes
 

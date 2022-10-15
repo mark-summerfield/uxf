@@ -21,6 +21,7 @@ or xml.
     - [JSON](#json)
     - [CSV](#csv)
     - [TOML](#toml)
+    - [Configuration Files](#configuration-files)
     - [Database](#database)
 - [Libraries](#libraries) [[Python](py/README.md)] [[Rust](rs/README.md)]
     - [Implementation Notes](#implementation-notes)
@@ -515,6 +516,86 @@ required—or optional.
 There are many similar formats, including ``.conf``, ``.ini``, and
 ``.yaml``, all of which can easily be advantageously translated into UXF.
 
+### Configuration Files
+
+In general, if you want all available options to be in the UXF file then it
+is best to use _ttypes_. However, if you are happy for the UXF file to
+have only those options the user chooses to change from the defaults, it is
+probably easiest to use a ``map``.
+
+In this example we have a configuration file which uses _ttypes_ ao all data
+is always present:
+
+    uxf 1 TLM Config
+    =Config window:Window volume:real historysize:int recentfiles:list
+    =Window x:int y:int width:int height:int
+    (Config
+        (Window 441 67 729 702)
+        1.00
+        35
+        [
+            </home/mark/data/Suki-Playlists.tlm.gz>
+            </home/mark/data/playlists-all.tlm.gz>
+            </home/mark/app/rs/tlm/Test-Playlists.tlm.gz>
+        ]
+    )
+
+If we are happy to use default values, we could, of course use ``null``s or
+empty tables:
+
+    uxf 1 TLM Config
+    =Config window:Window volume:real historysize:int recentfiles:list
+    =Window x:int y:int width:int height:int
+    (Config
+        (Window)
+        ?
+        ?
+        [
+            </home/mark/data/Suki-Playlists.tlm.gz>
+            </home/mark/data/playlists-all.tlm.gz>
+            </home/mark/app/rs/tlm/Test-Playlists.tlm.gz>
+        ]
+    )
+
+Here, the `Window` table is empty; an equally valid alternative would be to
+make it null (`?`). Then, when this file is loaded a null or empty `Window`
+would cause the application to use the default size and position, and
+similarly, the nulls for `volume` and `historysize` would lead to defaults
+being used.
+
+The advantage of using _ttypes_ is that every option is always visible in
+the UXF file (even if only in the _ttype_ definitions).
+
+However, if you want the simplest and most minimal configuration files,
+using a `map` is a sensible alternative:
+
+    uxf 1 TLM Config
+    {
+        <window> [441 67 729 702]
+        <volume> 1.00
+        <historysize> 35
+        <recentfiles> [
+            </home/mark/data/Suki-Playlists.tlm.gz>
+            </home/mark/data/playlists-all.tlm.gz>
+            </home/mark/app/rs/tlm/Test-Playlists.tlm.gz>
+        ]
+    }
+
+Here we've shown every option in use, but of course, with a `map` we need
+only store the options actually used:
+
+    uxf 1 TLM Config
+    {
+        <recentfiles> [
+            </home/mark/data/Suki-Playlists.tlm.gz>
+            </home/mark/data/playlists-all.tlm.gz>
+            </home/mark/app/rs/tlm/Test-Playlists.tlm.gz>
+        ]
+    }
+
+As with using nulls in the _ttype_-based version, here the application is
+assumed to use default values for absent items.
+
 ### Database
 
 Database files aren't normally human readable and usually require
@@ -624,8 +705,6 @@ library (e.g., `py/t` and `py/eg`) for additional examples.
 
 ## Libraries
 
-_Implementations in additional languages are planned._
-
 |**Library**|**Language**|**Notes**                    |
 |-----------|------------|-----------------------------|
 |uxf        | Python 3   | See the [Python UXF library](py/README.md).|
@@ -633,13 +712,17 @@ _Implementations in additional languages are planned._
 
 ### Implementation Notes
 
+We very much hope that additional UXF library implementations will be
+written in other languages (as well as superior implementations—e.g., faster
+and with better APIs—in Python and Rust).
+
 If you create a UXF library please let us know so that we can add a link
 here (providing your library passes the regression tests!).
 
-Implmenting a UXF pretty printer whould be doable by a CS major as a final
-year project. Implementing a UXF parser—without support for imports, string
-concatenation, or aliases—should be doable by a CS major as a _big_ final
-year project.
+Implmenting a UXF pretty printer should be doable by a CS major as a final
+year project. Implementing a UXF parser—without support for imports or
+string concatenation—should be doable by a CS major as a _big_ final year
+project.
 
 ## Imports
 

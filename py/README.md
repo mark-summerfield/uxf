@@ -19,6 +19,7 @@ Overview](https://github.com/mark-summerfield/uxf/blob/main/README.md).)
 - [API](#api)
     - [Reading and Writing UXF Data](#reading-and-writing-uxf-data)
     - [API Notes](#api-notes)
+    - [Feedback](#feedback)
     - [Classes](#classes)
     - [Functions](#functions)
     - [Constants](#constants)
@@ -171,6 +172,22 @@ current folder, and if not there either, in each of the paths in `UXF_PATH`
 Note that the `__version__` is the module version (i.e., the version of this
 implementation), while the `VERSION` is the maximum UXF version that this
 module can read (and the UXF version that it writes).
+
+### Feedback
+
+Suggestions, comments, and pull requests for this library are welcome.
+
+Especially useful would be ideas on how to improve the APIs to improve
+usability.
+
+Also of interest would be code changes that improve speed.
+
+The current implementation uses native types where possible and
+`isinstance()` checks. It would be possible to create a `Value` abstract
+base class and subclasses, but even using `__slots__` this would end up
+making the library use more memory, and most likely slower—however, a
+classic class-based implementation would be of great interest if it proved
+this intuition wrong!
 
 ### Classes
 
