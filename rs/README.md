@@ -42,6 +42,7 @@ In this library `Uxf` objects and all the ``Value``s they contain are owned
 
 ## Changes
 
+- 1.2.5 Doc improvements.
 - 1.2.3 Added `Value::naturalize()` function to public API. Various minor
   doc improvements.
 - 1.2.2 Added convenience `NamedRecord` type.
