@@ -31,6 +31,12 @@ create geo.uxi based on GeoJSON and if successful create:
       ``datetime``, ``int``, ``real``, or ``str``;
     - `number` which will accept either ``int`` or ``real``.
 
+- Support enums, e.g.,
+    |State Pending Active Finished
+  This would mean we had three fieldless tables (Pending) (Active) and
+  (Finished) and could specify them in a ttype using State, e.g.,
+    =Task name:str state:State args:list
+
 - Language: allow '.' in identifiers (excl. first char)?
 
 - Python library: load(), loads(), etc., accept listclass=List,
@@ -62,9 +68,41 @@ for validating a UXF processor's conformance.
 
 All these using UXF syntax:
 
-- A UXF query language
-- A UXF schema language
-- A UXF transformation (XSLT-like) language
+### A UXF query language
+
+For example, system import `!query` is the equivalent of `query.uxq`:
+
+    =EQ
+    =NEQ
+    =LT
+    =LTE
+    =GT
+    =GTE
+    =Match op value
+    =Table name fields:map
+    =List match
+    =Map keymatch valuematch
+    =Int match
+    =Str match
+    ...
+
+This would allow queries like:
+
+    uxf 1
+    (#<match any table called Point> Table <Point> ?)
+
+    uxf 1
+    (#<match any table called Point2D or Point3D>
+     Table [<Point2D> <Point3d>] ?)
+
+    uxf 1
+    (#<match any table which has x and y fields where the x field's value is
+     an int &gt;= 0 and the y field's value is &lt; 0>
+     Table ? {<x> (Match (GTE 0)) <y> (Match (LT 0))})
+
+### A UXF schema language
+
+### A UXF transformation (XSLT-like) language
 
 ## Articles
 
