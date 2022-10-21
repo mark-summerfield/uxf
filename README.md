@@ -523,7 +523,7 @@ is best to use _ttypes_. However, if you are happy for the UXF file to
 have only those options the user chooses to change from the defaults, it is
 probably easiest to use a ``map``.
 
-In this example we have a configuration file which uses _ttypes_ ao all data
+In this example we have a configuration file which uses _ttypes_ so all data
 is always present:
 
     uxf 1 TLM Config
