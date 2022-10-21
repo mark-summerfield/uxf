@@ -4,11 +4,9 @@ Ideas under considerations (and [rejected ideas](#rejected-ideas)).
 
 ## More UXF library implementations
 
-- C++
-- Java — or a JVM language (Scala 3, Kotlin, ...?)
-- JS: use Dart or TypeScript or similar that can output JS?
-
-Then focus on uses...
+- C, Go, JavaScript, ...
+- C++ — I'm too rusty; hopefully someone else will
+- Java — ditto
 
 ## UXF Uses
 
