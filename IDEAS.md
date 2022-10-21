@@ -18,7 +18,9 @@ formats, e.g., geojson, etc.
 
 create geo.uxi based on GeoJSON and if successful create:
 
-   uxfgeo.py <infile.{json,geojson,uxf,uxg}> <outfile.{json,geojson,uxf,uxg}>
+```
+uxfgeo.py <infile.{json,geojson,uxf,uxg}> <outfile.{json,geojson,uxf,uxg}>
+```
 
 ## UXF Improvements
 
@@ -30,19 +32,24 @@ create geo.uxi based on GeoJSON and if successful create:
     - `number` which will accept either ``int`` or ``real``.
 
 - Support enums, e.g.,
-    |State Pending Active Finished
-  This would mean we had three fieldless tables (Pending) (Active) and
-  (Finished) and could specify them in a ttype using State, e.g.,
+    `|State Pending Active Finished`
+  This would mean we had three fieldless tables `(Pending)` `(Active)` and
+  `(Finished)` and could specify them in a _ttype_ using `State`, e.g.,
+
+    ```
+    uxf 1
     =Task name:str state:State args:list
+    (Task <t1> (Active) [] <t2> (Pending) [1 2 3])
+    ```
 
 - Language: allow '.' in identifiers (excl. first char)?
 
-- Python library: load(), loads(), etc., accept listclass=List,
-  mapclass=Map, tableclass=Table, & uses these rather than List, Map, and
-  Table, so the user can use their own subclasses
+- Python library: ``load()``, ``loads()``, etc., accept ``listclass=List``,
+  ``mapclass=Map``, ``tableclass=Table``, & uses these rather than ``List``,
+  ``Map``, and ``Table``, so the user can use their own subclasses
 
-- Silent repairs: rs & py: uxf 1\n{1} → uxf 1\n{} — silent repair; ought to
-  error?
+- Silent repairs: rs & py: `uxf 1\n{1}` → `uxf 1\n{}` — silent repair; ought
+  to error?
 
 ## More and better Documentation:
 
@@ -54,7 +61,7 @@ create geo.uxi based on GeoJSON and if successful create:
     - Part III Technicalities
         Railroad Diagrams / BNF / Limits (e.g., date/time/numeric;
         str and bytes lengths; etc) / Lists / Maps / Tables /
-        Implementations // Python // Rust? // JS? // ???
+        Implementations // Python // Rust // ...
 - Uniform eXchange Format - a 7"x9" PDF book? (see paper notes)
 
 ## Verification suite
@@ -177,10 +184,10 @@ Replace yes and no bools with built-in fieldless tables, (Y) (N)
 
 ### Money type
 
-A twelfth type) e.g., `MONEY ::= '$' REAL`.
+A twelfth type, e.g., `MONEY ::= '$' REAL`.
 
 Instead, use, say ``=Money currency:str amount``; or, ``=USD amount``, or
-similar, (where amount could be str or int or real
+similar, (where amount could be str or int or real).
 
 ### Datetimes with timezones
 
