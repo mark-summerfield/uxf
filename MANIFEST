@@ -2,9 +2,10 @@ regression.py
 testdata/regression.dat.gz
 testdata/errortests.dat.gz
 
-go/uxf.go
-go/uxf_test.go
-go/README.md
+go/uxf.go # TODO cf ~/app/go/tdb/MANIFEST
+go/uxf_test.go # TODO
+go/README.md # TODO cf py/README.md
+# go/bin/uxf.go # TODO cf rs/src/bin/uxf.rs - compare|format|lint
 
 rs/src/bin/uxf.rs
 rs/src/lib.rs
