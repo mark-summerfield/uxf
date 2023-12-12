@@ -2,6 +2,10 @@ regression.py
 testdata/regression.dat.gz
 testdata/errortests.dat.gz
 
+go/uxf.go
+go/uxf_test.go
+go/README.md
+
 rs/src/bin/uxf.rs
 rs/src/lib.rs
 rs/src/value.rs

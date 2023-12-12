@@ -4,7 +4,9 @@ Ideas under considerations (and [rejected ideas](#rejected-ideas)).
 
 ## More UXF library implementations
 
-- C, Go, JavaScript, ...
+- Go — could introspection be used to create table records accessible by
+  field name and column index?
+- C, JavaScript, ...
 - C++ — I'm too rusty; hopefully someone else will
 - Java — ditto
 
