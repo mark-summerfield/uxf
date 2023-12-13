@@ -14,9 +14,9 @@ For details of the Uniform eXchange Format (UXF) supported by this library,
 see the [UXF Overview](../README.md). ([Go UXF
 Overview](https://pkg.go.dev/github.com/mark-summerfield/uxf).)
 
-**WIP**
-
-**TODO docs**
+**Hopefully someone else will implement Go Marshal() and Unmarshall() for
+UXF format…** _This could be an ideal—although challenging—computer science
+undergraduate final year project._
 
 ## License
 
